@@ -1,0 +1,9 @@
+let g:netrw_dirhistmax  =10
+let g:netrw_dirhist_cnt =7
+let g:netrw_dirhist_1='/home/iberianpig/work/angular-phonecat/test'
+let g:netrw_dirhist_2='/home/iberianpig/work/angular-phonecat/test/unit'
+let g:netrw_dirhist_3='/home/iberianpig/work'
+let g:netrw_dirhist_4='/home/iberianpig/work/angularJS/angular-phonecat'
+let g:netrw_dirhist_5='/usr/share/everpad'
+let g:netrw_dirhist_6='/var/log/lightdm'
+let g:netrw_dirhist_7='/var/log/gdm'

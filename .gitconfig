@@ -1,0 +1,23 @@
+[user]
+	name = iberianpig
+	email = yhkyky@gmail.com
+[alias]
+	co = checkout
+	tr = log --graph --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
+	st = status
+	ci = commit -a
+	di = diff
+	br = branch
+	lo = log --graph --color --decorate
+	sd = stash drop
+	sl = stash list
+	sp = stash pop
+	ss = stash save
+	delete-merged-branches = !git branch --merged | grep -v \\* | xargs -I % git branch -d %
+	rebase-master = rebase master
+	remove-deleted-files = !git ls-files --deleted | xargs -I % git rm %
+[core]
+	editor = vim
+	excludesfile = /home/iberianpig/.gitignore
+[color]
+	ui = true

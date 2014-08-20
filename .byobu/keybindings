@@ -1,0 +1,2 @@
+source $BYOBU_PREFIX/share/byobu/keybindings/common
+escape ^g
