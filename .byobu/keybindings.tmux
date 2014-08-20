@@ -1,2 +1,2 @@
-set -g prefix F12
+set -g prefix C-g
 unbind-key -n C-a

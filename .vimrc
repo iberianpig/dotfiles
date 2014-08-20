@@ -15,7 +15,7 @@ set list           " 不可視文字を表示
 set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
 
-nnoremap <C-S-r> :<C-u>setlocal relativenumber!<CR>  "相対行番号表示
+nnoremap sr :<C-u>setlocal relativenumber!<CR>  "相対行番号表示
 
 " Charset, Line ending -----------------
 " scriptencoding utf-8
@@ -102,8 +102,9 @@ set history=1000
 " OSのクリップボードをレジスタ指定無しで Yank, Put 出来るようにする
 set clipboard=unnamed,unnamedplus
 "screen利用時設定
-" set ttymouse=xterm2
-set ttymouse=xterm
+ set ttymouse=xterm2
+"set ttymouse=xterm
+
 " マウスの入力を受け付ける
 set mouse=a
 " インサートモードから抜けると自動的にIMEをオフにする
@@ -173,6 +174,8 @@ endfunction
 
 " NeoBundle よるプラグインのロードと各プラグインの初期化
 function! s:LoadBundles()
+
+  NeoBundleCheck
   " 読み込むプラグインの指定
   NeoBundle 'Shougo/neobundle.vim'
   NeoBundle 'Shougo/neocomplcache.vim'
@@ -362,20 +365,20 @@ function! s:LoadBundles()
   " http://d.hatena.ne.jp/thinca/20130131/1359567419
   " ウィンドウサイズの変更キーを簡易化する
   " [C-w],[+]または、[C-w],[-]
-  call submode#enter_with('winsize', 'n', '', '<C-w>>', '<C-w>>')
-  call submode#enter_with('winsize', 'n', '', '<C-w><', '<C-w><')
-  call submode#enter_with('winsize', 'n', '', '<C-w>+', '<C-w>-')
-  call submode#enter_with('winsize', 'n', '', '<C-w>-', '<C-w>+')
-  call submode#map('winsize', 'n', '', '>', '<C-w>>')
-  call submode#map('winsize', 'n', '', '<', '<C-w><')
-  call submode#map('winsize', 'n', '', '+', '<C-w>-')
-  call submode#map('winsize', 'n', '', '-', '<C-w>+')
+  call submode#enter_with('winsize', 'n', '', '<C-w>L', '<C-w>>')
+  call submode#enter_with('winsize', 'n', '', '<C-w>H', '<C-w><')
+  call submode#enter_with('winsize', 'n', '', '<C-w>J', '<C-w>-')
+  call submode#enter_with('winsize', 'n', '', '<C-w>K', '<C-w>+')
+  call submode#map('winsize', 'n', '', 'L', '<C-w>>')
+  call submode#map('winsize', 'n', '', 'H', '<C-w><')
+  call submode#map('winsize', 'n', '', 'J', '<C-w>-')
+  call submode#map('winsize', 'n', '', 'K', '<C-w>+')
 
   " Shift + 矢印でウィンドウサイズを変更
-  nnoremap <A-S-Left>  <C-w><<CR>
-  nnoremap <A-S-Right> <C-w>><CR>
-  nnoremap <A-S-Up>    <C-w>-<CR>
-  nnoremap <A-S-Down>  <C-w>+<CR>
+  " nnoremap <A-S-Left>  <C-w><<CR>
+  " nnoremap <A-S-Right> <C-w>><CR>
+  " nnoremap <A-S-Up>    <C-w>-<CR>
+  " nnoremap <A-S-Down>  <C-w>+<CR>
 
   "" over.vim
   " over.vimの起動
