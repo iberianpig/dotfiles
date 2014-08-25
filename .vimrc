@@ -15,6 +15,7 @@ set list           " 不可視文字を表示
 set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
 
+set relativenumber!  "相対行番号表示
 nnoremap sr :<C-u>setlocal relativenumber!<CR>  "相対行番号表示
 
 " Charset, Line ending -----------------
@@ -33,8 +34,8 @@ set whichwrap=b,s,h,l,<,>,[,] "行頭行末の左右移動で行をまたぐ
 set scrolloff=8                "上下8行の視界を確保
 set sidescrolloff=16           " 左右スクロール時の視界を確保
 set sidescroll=1               " 左右スクロールは一文字づつ行う
-set lazyredraw                 "描画を遅延させる"
-" set nolazyredraw                 "描画を遅延させない"
+" set lazyredraw                 "描画を遅延させる"
+set nolazyredraw                 "描画を遅延させない"
 set redrawtime=100             "再描画までの時間(デフォルトは2000)"
 set ttyfast                    " カーソル移動高速化
 
@@ -120,7 +121,7 @@ if has('unix') && !has('gui_running')
   " ESC後にすぐ反映されない対策
   " inoremap <silent> <ESC> <ESC>
   " inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
-  map <silent> <ESC> <ESC>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
+  map <silent> <ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
 endif
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
@@ -266,8 +267,8 @@ function! s:LoadBundles()
   " 読み込んだプラグインの設定
   " ...
   
-  set background=light "明るめの背景
-  " set background=dark "暗めの背景
+  "set background=light "明るめの背景
+  set background=dark "暗めの背景
   colorscheme hybrid "set colorscheme
   let g:lightline = {
         \ 'colorscheme': 'Tomorrow_Night',
@@ -437,10 +438,10 @@ function! s:LoadBundles()
   nnoremap <silent> [unite]g  :<C-u>Unite grep:. -buffer-name=search-buffer <CR>
   " カーソル位置の単語をgrep検索
   nnoremap <silent> [unite]cg :<C-u>Unite grep:. -buffer-name=search-buffer <CR><C-R><C-W>
+  " git-grep
+  nnoremap <silent> [unite]gg  :<C-u>:Unite vcs_grep/git:. -buffer-name=search-buffer <CR>
   " grep検索結果の再呼出
   nnoremap <silent> [unite]r  :<C-u>UniteResume search-buffer <CR>
-  " git-grep
-  nnoremap <silent> [unite]gg  :<C-u>:Unite vcs_grep/git <CR>
   " bookmark
   nnoremap <silent> [unite]b :<C-u>Unite bookmark <CR>
   " add to  bookmark
@@ -528,20 +529,21 @@ function! s:LoadBundles()
   let g:octopress_published = 0
   let g:octopress_bundle_exec = 1
   let g:octopress_prompt_categories = 1
+  let g:octopress_prompt_tags = 1
   let g:octopress_unite = 1
   " let g:octopress_auto_open_results = 1
   " use unite (default 0)
   let g:octopress_unite = 1
   " use arbitrary unite option (default is empty)
-  let g:octopress_unite_option = "-no-split -start-insert -auto-preview"
+  let g:octopress_unite_option = "-start-insert "
   " use arbitrary unite source (default is 'file')
-  " let g:octopress_unite_source = "file_rec/async"
-  " let g:octopress_qfixgrep = 0
+  let g:octopress_unite_source = "file"
+  let g:octopress_qfixgrep = 0
   map [unite]on  :OctopressNew<CR>
   map [unite]ol  :OctopressList<CR>
   map [unite]og  :OctopressGrep<CR>
   map [unite]oG   :OctopressGenerate<CR>
-  map [unite]oD  :OctopressDeploy<CR>
+  map [unite]od  :OctopressDeploy<CR>
 
   " "gist-vim
   " let g:gist_detect_filetype = 1
