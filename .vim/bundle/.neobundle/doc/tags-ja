@@ -30,6 +30,8 @@ g:over_command_line_key_mappings	over.jax	/*g:over_command_line_key_mappings*
 g:over_command_line_prompt	over.jax	/*g:over_command_line_prompt*
 g:over_enable_auto_nohlsearch	over.jax	/*g:over_enable_auto_nohlsearch*
 g:over_enable_cmd_window	over.jax	/*g:over_enable_cmd_window*
+g:previm_custom_css_path	previm.jax	/*g:previm_custom_css_path*
+g:previm_disable_default_css	previm.jax	/*g:previm_disable_default_css*
 g:previm_open_cmd	previm.jax	/*g:previm_open_cmd*
 g:quickrun#default_config	quickrun.jax	/*g:quickrun#default_config*
 g:quickrun_config	quickrun.jax	/*g:quickrun_config*
@@ -63,6 +65,9 @@ g:ref_source_webdict_encoding	ref-webdict.jax	/*g:ref_source_webdict_encoding*
 g:ref_source_webdict_sites	ref-webdict.jax	/*g:ref_source_webdict_sites*
 g:ref_source_webdict_use_cache	ref-webdict.jax	/*g:ref_source_webdict_use_cache*
 g:ref_use_vimproc	ref.jax	/*g:ref_use_vimproc*
+g:unite#filters#converter_quickfix_highlight#enable_bold_for_message	unite_quickfix.jax	/*g:unite#filters#converter_quickfix_highlight#enable_bold_for_message*
+g:unite_quickfix_filename_is_pathshorten	unite_quickfix.jax	/*g:unite_quickfix_filename_is_pathshorten*
+g:unite_quickfix_is_multiline	unite_quickfix.jax	/*g:unite_quickfix_is_multiline*
 g:unite_source_git_grep_max_candidates	unite-vcs_grep.jax	/*g:unite_source_git_grep_max_candidates*
 g:unite_source_git_grep_required_pattern_length	unite-vcs_grep.jax	/*g:unite_source_git_grep_required_pattern_length*
 g:unite_source_hg_grep_max_candidates	unite-vcs_grep.jax	/*g:unite_source_hg_grep_max_candidates*
@@ -350,6 +355,15 @@ unite-outline-usage	unite-outline.jax	/*unite-outline-usage*
 unite-outline-utility-functions	unite-outline.jax	/*unite-outline-utility-functions*
 unite-outline-variables	unite-outline.jax	/*unite-outline-variables*
 unite-outline.txt	unite-outline.jax	/*unite-outline.txt*
+unite-quickfix-example	unite_quickfix.jax	/*unite-quickfix-example*
+unite-quickfix-example-highlight	unite_quickfix.jax	/*unite-quickfix-example-highlight*
+unite-quickfix-highlight	unite_quickfix.jax	/*unite-quickfix-highlight*
+unite-quickfix-highlight-UniteQuickFixError	unite_quickfix.jax	/*unite-quickfix-highlight-UniteQuickFixError*
+unite-quickfix-highlight-UniteQuickFixWarning	unite_quickfix.jax	/*unite-quickfix-highlight-UniteQuickFixWarning*
+unite-quickfix-setting	unite_quickfix.jax	/*unite-quickfix-setting*
+unite-quickfix-usage	unite_quickfix.jax	/*unite-quickfix-usage*
+unite-quickfix-variables	unite_quickfix.jax	/*unite-quickfix-variables*
+unite-quickfix.txt	unite_quickfix.jax	/*unite-quickfix.txt*
 unite-vcs_grep	unite-vcs_grep.jax	/*unite-vcs_grep*
 unite-vcs_grep-changelog	unite-vcs_grep.jax	/*unite-vcs_grep-changelog*
 unite-vcs_grep-contents	unite-vcs_grep.jax	/*unite-vcs_grep-contents*
@@ -358,3 +372,5 @@ unite-vcs_grep-introduction	unite-vcs_grep.jax	/*unite-vcs_grep-introduction*
 unite-vcs_grep-usage	unite-vcs_grep.jax	/*unite-vcs_grep-usage*
 unite-vcs_grep-variables	unite-vcs_grep.jax	/*unite-vcs_grep-variables*
 unite-vcs_grep.txt	unite-vcs_grep.jax	/*unite-vcs_grep.txt*
+unite_quickfix-contents	unite_quickfix.jax	/*unite_quickfix-contents*
+unite_quickfix-introduction	unite_quickfix.jax	/*unite_quickfix-introduction*

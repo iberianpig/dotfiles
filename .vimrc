@@ -1,25 +1,27 @@
 "http://vimblog.hatenablog.com/entry/vimrc_introduction
+" autocmdのリセット
+autocmd!
 set number         " 行番号を表示する
-" set cursorline     " カーソル行の背景色を変える
+set cursorline     " カーソル行の背景色を変える
 " set cursorcolumn   " カーソル位置のカラムの背景色を変える
-au WinEnter * set cursorline cursorcolumn
-au WinLeave * set nocursorline nocursorcolumn
-autocmd InsertEnter,InsertLeave * set cursorline!
-autocmd InsertEnter,InsertLeave * set cursorcolumn!
+autocmd InsertEnter,InsertLeave * set cursorline!  redraw!
+" autocmd InsertEnter,InsertLeave * set cursorcolumn!
+au WinEnter * set cursorline "cursorcolumn
+au WinLeave * set nocursorline "nocursorcolumn
 
 set laststatus=2   " ステータス行を常に表示
 set cmdheight=1    " メッセージ表示欄を2行確保
 set showmatch      " 対応する括弧を強調表示
 set helpheight=998 " ヘルプを画面いっぱいに開く
 set list           " 不可視文字を表示
-set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮ " 不可視文字の表示記号指定
+set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
 
-set relativenumber!  "相対行番号表示
+" set relativenumber!  "相対行番号表示
 nnoremap sr :<C-u>setlocal relativenumber!<CR>  "相対行番号表示
 
 " Charset, Line ending -----------------
-" scriptencoding utf-8
+scriptencoding utf-8
 set termencoding=utf-8
 set encoding=utf-8
 set fileencodings=utf-8,cp932,euc-jp,iso-2022-jp
@@ -32,12 +34,12 @@ endif
 set backspace=indent,eol,start "Backspaceキーの影響範囲に制限を設けない
 set whichwrap=b,s,h,l,<,>,[,] "行頭行末の左右移動で行をまたぐ
 set scrolloff=8                "上下8行の視界を確保
-set sidescrolloff=16           " 左右スクロール時の視界を確保
-set sidescroll=1               " 左右スクロールは一文字づつ行う
+" set sidescrolloff=16           " 左右スクロール時の視界を確保
+" set sidescroll=1               " 左右スクロールは一文字づつ行う
 set lazyredraw                 "描画を遅延させる"
-" set nolazyredraw                 "描画を遅延させない"
-set redrawtime=100             "再描画までの時間(デフォルトは2000)"
-" set ttyfast                    " カーソル移動高速化
+" set nolazyredraw                 "描画を遅延させない
+" set redrawtime=4000             "再描画までの時間(デフォルトは2000)
+set ttyfast                    " カーソル移動高速化
 
 "File処理関連
 set confirm "保存されていないファイルがあるときは終了前に保存確認
@@ -45,6 +47,7 @@ set hidden "保存されていないファイルがあるときでも別のフ�
 set autoread "外部でファイルに変更がされた場合は読みなおす
 set nobackup "ファイル保存時にバックアップファイルを作らない
 set noswapfile "ファイル編集中にスワップファイルを作らない
+set updatetime=0 "ファイル編集中にスワップファイルを作らない
 
 "検索関連
 set hlsearch "検索文字列をハイライトする
@@ -76,8 +79,8 @@ inoremap <C-u> <C-o>d^
 inoremap <C-w> <C-o>db
 
 " " j, k による移動を折り返されたテキストでも自然に振る舞うように変更
-" nnoremap j gj
-" nnoremap k gk
+nnoremap j gj
+nnoremap k gk
 nnoremap <Up> gk
 nnoremap <Down> gj
 
@@ -98,6 +101,7 @@ set noerrorbells "エラーメッセージの表示時にビープを鳴らさ�
 set wildmenu wildmode=list:longest,full
 " コマンドラインの履歴を1000件保存する
 set history=1000
+set ttyscroll=20
 
 " 動作環境との統合
 " OSのクリップボードをレジスタ指定無しで Yank, Put 出来るようにする
@@ -107,7 +111,7 @@ set clipboard=unnamed,unnamedplus
 "set ttymouse=xterm
 
 " マウスの入力を受け付ける
-set mouse=a
+" set mouse=a
 " インサートモードから抜けると自動的にIMEをオフにする
 " set iminsert=2
 " ESCでIMEを確実にOFF
@@ -115,12 +119,9 @@ set mouse=a
 " inoremap <ESC> <ESC>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
 ""Ctrl-Cでインサートモードを抜ける
 inoremap <C-c> <ESC>
-"map <ESC> <C-[>
 
 if has('unix') && !has('gui_running')
   " ESC後にすぐ反映されない対策
-  " inoremap <silent> <ESC> <ESC>
-  " inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
   map <silent> <ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
 endif
 
@@ -130,8 +131,8 @@ cmap w!! w !sudo tee > /dev/null %
 " 入力モード中に素早くJJと入力した場合はESCとみなす
 inoremap jj <Esc>
 
-" ESCを二回押すことでハイライトを消す
-nmap <silent> <Esc><Esc> :nohlsearch<CR>:redraw!<CR>:redraws!<CR>
+" " ESCを二回押すことでハイライトを消す
+" nmap <silent> <Esc><Esc> :nohlsearch<CR>:redraw!<CR>:redraws!<CR>
 
 
 "tab/indentの設定
@@ -147,21 +148,35 @@ set smartindent "改行時に入力された行の末尾に合わせて次の行
 set helplang=ja,en
 
 ".vimrcの編集用
-nnoremap <Space>. :<C-u>tabedit $MYVIMRC<CR>
+nnoremap <Space>. :<C-u>tabedit $HOME/dotfiles/.vimrc<CR>
+
+" Set augroup.
+augroup MyAutoCmd
+    autocmd!
+augroup END
+
+if !has('gui_running') && !(has('win32') || has('win64'))
+  " .vimrcの再読込時にも色が変化するようにする
+  autocmd MyAutoCmd BufWritePost $MYVIMRC nested source $MYVIMRC
+else
+  " .vimrcの再読込時にも色が変化するようにする
+  autocmd MyAutoCmd BufWritePost $MYVIMRC source $MYVIMRC |
+        \if !has('gui_running') | source $MYGVIMRC
+  autocmd MyAutoCmd BufWritePost $MYGVIMRC if has('gui_running') | source $MYGVIMRC
+endif
 
 "タブの設定
 " The prefix key.
-nnoremap    [Tag]   <Nop>
+nnoremap [Tag]   <Nop>
 nmap  t [Tag]
 " Tab jump
 for n in range(1, 9)
   execute 'nnoremap <silent> [Tag]'.n  ':<C-u>tabnext'.n.'<CR>'
 endfor
 " tn 新しいタブを一番右に作る
-map <silent> [Tag]n :tablast <bar> tabnew<CR>
+map <silent> [Tag]c :tablast <bar> tabnew<CR>
 " " tx タブを閉じる
 map <silent> [Tag]x :tabclose<CR>
-map <silent> [Tag]c :tabclose<CR>
 map <silent> [Tag]h :tabprevious<CR>
 map <silent> [Tag]l :tabnext<CR>
 
@@ -183,7 +198,7 @@ function! s:LoadBundles()
   NeoBundle 'Shougo/neosnippet.vim'
   NeoBundle 'Shougo/neosnippet-snippets'
   NeoBundle 'Shougo/neomru.vim'
-  NeoBundle 'Shougo/vimshell.git'
+  " NeoBundle 'Shougo/vimshell.git'
   " vimprocのインストールとbuild
   " " 自動でインストールしてビルド(make)してくれる
   NeoBundle 'Shougo/vimproc', {
@@ -200,13 +215,13 @@ function! s:LoadBundles()
   NeoBundle 'tpope/vim-fugitive'
   NeoBundle 'Shougo/unite.vim'
   NeoBundle 'ujihisa/unite-colorscheme'
-  NeoBundle 'sgur/unite-qf'
+  NeoBundle 'osyo-manga/unite-quickfix.git'
   NeoBundle 'thinca/vim-quickrun'
   NeoBundle 'rcmdnk/vim-markdown'
   " NeoBundle 'superbrothers/vim-quickrun-markdown-gfm'
   NeoBundle 'tyru/open-browser.vim'
   NeoBundle 'Shougo/vimfiler'
-  NeoBundle 'thinca/vim-guicolorscheme'
+  " NeoBundle 'thinca/vim-guicolorscheme'
   NeoBundle 'itchyny/lightline.vim'
   NeoBundle 'junegunn/vim-easy-align'
   NeoBundle 'terryma/vim-multiple-cursors'
@@ -219,7 +234,7 @@ function! s:LoadBundles()
   " NeoBundle 'tpope/vim-liquid' 
   " NeoBundle 'mattn/gist-vim'
   NeoBundle 'mattn/webapi-vim'
-  NeoBundle 'vim-scripts/vim-auto-save'
+  " NeoBundle 'vim-scripts/vim-auto-save'
   NeoBundle 'syui/cscroll.vim'
   " NeoBundle 'xolox/vim-session', { 'depends' : 'xolox/vim-misc',}
   NeoBundle 'Shougo/unite-outline'
@@ -228,28 +243,29 @@ function! s:LoadBundles()
   NeoBundle 'ujihisa/quicklearn'
   NeoBundle 'thinca/vim-ref'
   NeoBundle 'mfumi/ref-dicts-en'
-  NeoBundle 'tyru/vim-altercmd'
+  " NeoBundle 'tyru/vim-altercmd'
   NeoBundle 'ujihisa/neco-look'
   NeoBundle 'scrooloose/syntastic'
-  NeoBundle 'alpaca-tc/alpaca_tags'
   NeoBundle 'vim-ruby/vim-ruby'
   NeoBundle 'Townk/vim-autoclose' 
   NeoBundle 'ujihisa/unite-font' 
-  NeoBundle 'airblade/vim-gitgutter'
+  NeoBundle 'sgur/vim-gitgutter'
   NeoBundle 'rhysd/migemo-search.vim'
   " NeoBundle 'haya14busa/vim-migemo'
   NeoBundle 'kien/ctrlp.vim'
-  NeoBundle 'vim-scripts/fcitx.vim'
+  " NeoBundle 'vim-scripts/fcitx.vim'
   NeoBundle 'Lokaltog/vim-easymotion'
-  " NeoBundle 'joker1007/vim-markdown-quote-syntax'
   NeoBundle 'kannokanno/previm'
   NeoBundle 'lambdalisue/vim-gista' 
-  NeoBundle 'alpaca-tc/vim-endwise.git'
+  " NeoBundle 'tpope/vim-endwise.git'
   NeoBundle 'edsono/vim-matchit'
   NeoBundle 'basyura/unite-rails'
-  NeoBundle 'alpaca-tc/neorspec.vim'
   NeoBundle 'tpope/vim-dispatch'
   NeoBundle 'aurigadl/vim-angularjs'
+  NeoBundle 'mattn/benchvimrc-vim'
+  NeoBundle 'Yggdroot/indentLine'
+  NeoBundle 'skwp/vim-rspec'
+  NeoBundle 'rking/ag.vim'
 
 
   "colorscheme
@@ -257,163 +273,149 @@ function! s:LoadBundles()
   NeoBundle 'croaker/mustang-vim'
   NeoBundle 'jeffreyiacono/vim-colors-wombat'
   NeoBundle 'nanotech/jellybeans.vim'
-  NeoBundle 'vim-scripts/Lucius'
   NeoBundle 'vim-scripts/Zenburn'
   NeoBundle 'mrkn/mrkn256.vim'
   NeoBundle 'jpo/vim-railscasts-theme'
   NeoBundle 'therubymug/vim-pyte'
   NeoBundle 'w0ng/vim-hybrid'
+  NeoBundle 'chriskempson/vim-tomorrow-theme' 
+
   " ...
   " 読み込んだプラグインの設定
   " ...
   
   "set background=light "明るめの背景
-  set background=dark "暗めの背景
+  "set background=dark "暗めの背景
   colorscheme hybrid "set colorscheme
-  " let g:lightline = {
-  "       \ 'colorscheme': 'Tomorrow_Night',
-  "       \ 'active': {
-  "       \   'right': [ [ 'syntastic', 'lineinfo' ],
-  "       \              [ 'percent' ],
-  "       \              [ 'fileformat', 'fileencoding', 'filetype' ] ]
-  "       \ },
-  "       \ 'component_expand': {
-  "       \   'syntastic': 'SyntasticStatuslineFlag',
-  "       \ },
-  "       \ 'component_type': {
-  "       \   'syntastic': 'error',
-  "       \ }
-  "       \ }
+
+  let g:lightline = {
+        \ 'colorscheme': 'Tomorrow_Night',
+        \ 'active': {
+        \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
+        \   'right': [ [ 'syntastic', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+        \ },
+        \ 'component_function': {
+        \   'filename': 'MyFilename',
+        \   'fileformat': 'MyFileformat',
+        \   'filetype': 'MyFiletype',
+        \   'fileencoding': 'MyFileencoding',
+        \   'mode': 'MyMode',
+        \   'ctrlpmark': 'CtrlPMark',
+        \   'currentworkingdir': 'CurrentWorkingDir',
+        \ },
+        \ 'component_expand': {
+        \   'syntastic': 'SyntasticStatuslineFlag',
+        \ },
+        \ 'component_type': {
+        \   'syntastic': 'error',
+        \ },
+        \ 'separator': { 'left': '⮀', 'right': '⮂' },
+        \ 'subseparator': { 'left': '⮁', 'right': '⮃' },
+        \ 'tabline': {
+        \   'left': [ [ 'tabs' ] ],
+        \   'right': [ [ 'currentworkingdir' ] ],
+        \ },
+        \}
 
 
-let g:lightline = {
-      \ 'colorscheme': 'Tomorrow_Night',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
-      \   'right': [ [ 'syntastic', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
-      \ },
-      \ 'component_function': {
-      \   'fugitive': 'MyFugitive',
-      \   'filename': 'MyFilename',
-      \   'fileformat': 'MyFileformat',
-      \   'filetype': 'MyFiletype',
-      \   'fileencoding': 'MyFileencoding',
-      \   'mode': 'MyMode',
-      \   'ctrlpmark': 'CtrlPMark',
-      \ },
-      \ 'component_expand': {
-      \   'syntastic': 'SyntasticStatuslineFlag',
-      \ },
-      \ 'component_type': {
-      \   'syntastic': 'error',
-      \ },
-      \ 'subseparator': { 'left': '|', 'right': '|' }
-      \ }
+  function! MyModified()
+    return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+  endfunction
 
-function! MyModified()
-  return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
-endfunction
+  function! MyReadonly()
+    return &ft !~? 'help' && &readonly ? 'RO' : ''
+  endfunction
 
-function! MyReadonly()
-  return &ft !~? 'help' && &readonly ? 'RO' : ''
-endfunction
+  function! MyFilename()
+    let fname = expand('%:t')
+    return fname == 'ControlP' ? g:lightline.ctrlp_item :
+          \ fname == '__Tagbar__' ? g:lightline.fname :
+          \ fname =~ '__Gundo\|NERD_tree' ? '' :
+          \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
+          \ &ft == 'unite' ? unite#get_status_string() :
+          \ &ft == 'vimshell' ? vimshell#get_status_string() :
+          \ ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
+          \ ('' != fname ? fname : '[No Name]') .
+          \ ('' != MyModified() ? ' ' . MyModified() : '')
+  endfunction
 
-function! MyFilename()
-  let fname = expand('%:t')
-  return fname == 'ControlP' ? g:lightline.ctrlp_item :
-        \ fname == '__Tagbar__' ? g:lightline.fname :
-        \ fname =~ '__Gundo\|NERD_tree' ? '' :
-        \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
-        \ &ft == 'unite' ? unite#get_status_string() :
-        \ &ft == 'vimshell' ? vimshell#get_status_string() :
-        \ ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-        \ ('' != fname ? fname : '[No Name]') .
-        \ ('' != MyModified() ? ' ' . MyModified() : '')
-endfunction
+  function! MyFileformat()
+    return winwidth(0) > 70 ? &fileformat : ''
+  endfunction
 
-function! MyFugitive()
-  try
-    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &ft !~? 'vimfiler' && exists('*fugitive#head')
-      let mark = ''  " edit here for cool mark
-      let _ = fugitive#head()
-      return strlen(_) ? mark._ : ''
+  function! MyFiletype()
+    return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+  endfunction
+
+  function! MyFileencoding()
+    return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+  endfunction
+
+  function! MyMode()
+    let fname = expand('%:t')
+    return fname == '__Tagbar__' ? 'Tagbar' :
+          \ fname == 'ControlP' ? 'CtrlP' :
+          \ fname == '__Gundo__' ? 'Gundo' :
+          \ fname == '__Gundo_Preview__' ? 'Gundo Preview' :
+          \ fname =~ 'NERD_tree' ? 'NERDTree' :
+          \ &ft == 'unite' ? 'Unite' :
+          \ &ft == 'vimfiler' ? 'VimFiler' :
+          \ &ft == 'vimshell' ? 'VimShell' :
+          \ winwidth(0) > 60 ? lightline#mode() : ''
+  endfunction
+
+  function! CtrlPMark()
+    if expand('%:t') =~ 'ControlP'
+      call lightline#link('iR'[g:lightline.ctrlp_regex])
+      return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
+            \ , g:lightline.ctrlp_next], 0)
+    else
+      return ''
     endif
-  catch
-  endtry
-  return ''
-endfunction
+  endfunction
 
-function! MyFileformat()
-  return winwidth(0) > 70 ? &fileformat : ''
-endfunction
+  let g:ctrlp_status_func = {
+        \ 'main': 'CtrlPStatusFunc_1',
+        \ 'prog': 'CtrlPStatusFunc_2',
+        \ }
 
-function! MyFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
-endfunction
+  function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
+    let g:lightline.ctrlp_regex = a:regex
+    let g:lightline.ctrlp_prev = a:prev
+    let g:lightline.ctrlp_item = a:item
+    let g:lightline.ctrlp_next = a:next
+    return lightline#statusline(0)
+  endfunction
 
-function! MyFileencoding()
-  return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
-endfunction
+  function! CtrlPStatusFunc_2(str)
+    return lightline#statusline(0)
+  endfunction
 
-function! MyMode()
-  let fname = expand('%:t')
-  return fname == '__Tagbar__' ? 'Tagbar' :
-        \ fname == 'ControlP' ? 'CtrlP' :
-        \ fname == '__Gundo__' ? 'Gundo' :
-        \ fname == '__Gundo_Preview__' ? 'Gundo Preview' :
-        \ fname =~ 'NERD_tree' ? 'NERDTree' :
-        \ &ft == 'unite' ? 'Unite' :
-        \ &ft == 'vimfiler' ? 'VimFiler' :
-        \ &ft == 'vimshell' ? 'VimShell' :
-        \ winwidth(0) > 60 ? lightline#mode() : ''
-endfunction
+  let g:tagbar_status_func = 'TagbarStatusFunc'
 
-function! CtrlPMark()
-  if expand('%:t') =~ 'ControlP'
-    call lightline#link('iR'[g:lightline.ctrlp_regex])
-    return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
-          \ , g:lightline.ctrlp_next], 0)
-  else
-    return ''
-  endif
-endfunction
-
-let g:ctrlp_status_func = {
-  \ 'main': 'CtrlPStatusFunc_1',
-  \ 'prog': 'CtrlPStatusFunc_2',
-  \ }
-
-function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
-  let g:lightline.ctrlp_regex = a:regex
-  let g:lightline.ctrlp_prev = a:prev
-  let g:lightline.ctrlp_item = a:item
-  let g:lightline.ctrlp_next = a:next
-  return lightline#statusline(0)
-endfunction
-
-function! CtrlPStatusFunc_2(str)
-  return lightline#statusline(0)
-endfunction
-
-let g:tagbar_status_func = 'TagbarStatusFunc'
-
-function! TagbarStatusFunc(current, sort, fname, ...) abort
+  function! TagbarStatusFunc(current, sort, fname, ...) abort
     let g:lightline.fname = a:fname
-  return lightline#statusline(0)
-endfunction
+    return lightline#statusline(0)
+  endfunction
 
-augroup AutoSyntastic
-  autocmd!
-  autocmd BufWritePost *.c,*.cpp call s:syntastic()
-augroup END
-function! s:syntastic()
-  SyntasticCheck
-  call lightline#update()
-endfunction
+  augroup AutoSyntastic
+    autocmd!
+    autocmd BufWritePost *.c,*.cpp call s:syntastic()
+    " autocmd InsertLeave,TextChanged * call s:syntastic() 
+  augroup END
+  function! s:syntastic()
+    SyntasticCheck
+    call lightline#update()
+  endfunction
 
-let g:unite_force_overwrite_statusline = 0
-let g:vimfiler_force_overwrite_statusline = 0
-let g:vimshell_force_overwrite_statusline = 0
+  function! CurrentWorkingDir()
+    return fnamemodify(getcwd(),':')
+  endfunction
+
+  let g:unite_force_overwrite_statusline = 1
+  let g:vimfiler_force_overwrite_statusline = 1
+  " let g:vimshell_force_overwrite_statusline = 0
+
 
   "" vimfiler
   let g:vimfiler_as_default_explorer=1
@@ -471,13 +473,21 @@ let g:vimshell_force_overwrite_statusline = 0
     set conceallevel=2 concealcursor=i
   endif
 
-  " " neosnippet.vim公式指定をちょっといじる
+  " neosnippet.vim公式指定をちょっといじる
   imap <expr><TAB> neosnippet#jumpable() ?
          \ "\<Plug>(neosnippet_expand_or_jump)"
          \: pumvisible() ? "\<C-n>" : "\<TAB>"
   smap <expr><TAB> neosnippet#jumpable() ?
          \ "\<Plug>(neosnippet_expand_or_jump)"
          \: "\<TAB>"
+
+  " rails
+  autocmd BufEnter * if exists("b:rails_root") | NeoComplCacheSetFileType ruby.rails | endif
+  autocmd BufEnter * if (expand("%") =~ "_spec\.rb$") || (expand("%") =~ "^spec.*\.rb$") | NeoComplCacheSetFileType ruby.rspec | endif
+
+  " rspec
+  let g:neocomplcache_snippets_dir = $HOME . '/.vim/snippets'
+  nnoremap <Space>se :<C-U>NeoComplCacheEditSnippets<CR>
 
   "" switch
   nnoremap - :Switch<cr>
@@ -559,6 +569,16 @@ let g:vimshell_force_overwrite_statusline = 0
   nnoremap <silent> [unite]cg :<C-u>Unite grep:. -buffer-name=search-buffer <CR><C-R><C-W>
   " git-grep
   nnoremap <silent> [unite]gg  :<C-u>:Unite vcs_grep/git:. -buffer-name=search-buffer <CR>
+
+  if executable('ag')
+    let g:unite_source_grep_command = 'ag'
+    " let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
+    let g:unite_source_grep_recursive_opt = ''
+  end
+
+  let g:unite_source_git_grep_max_candidates=200
+  let g:unite_source_git_grep_required_pattern_length=4
+
   " grep検索結果の再呼出
   nnoremap <silent> [unite]r  :<C-u>UniteResume search-buffer <CR>
   " bookmark
@@ -575,14 +595,13 @@ let g:vimshell_force_overwrite_statusline = 0
   "       \ '-default-action=tabopen'<CR>
 
   "unite.vimを開いている間のキーマッピング
-  autocmd FileType unite call s:unite_my_settings()
+  autocmd FileType unite* call s:unite_my_settings()
   function! s:unite_my_settings()
-    " ESCでuniteを終了
-    " nnoremap <silent><ESC> <Plug>(unite_all_exit)
     " rerwite chache
     nnoremap <C-c> <Plug>(unite_redraw)
     "ESCでuniteを終了
     nmap <buffer> <ESC> <Plug>(unite_exit)
+    nmap <buffer> <ESC><ESC> <Plug>(unite_exit)
     "入力モードのときjjでノーマルモードに移動
     imap <buffer> jj <Plug>(unite_insert_leave)
     "入力モードのときctrl+wでバックスラッシュも削除
@@ -603,6 +622,7 @@ let g:vimshell_force_overwrite_statusline = 0
 
   " ctrlp.vim
   let g:ctrlp_map = "[unite]<CR>"
+  let g:ctrlp_user_command = 'ag %s -l'
   let g:ctrlp_use_migemo = 1
   let g:ctrlp_clear_cache_on_exit = 0   " 終了時キャッシュをクリアしない
   let g:ctrlp_mruf_max            = 500 " MRUの最大記録数
@@ -685,7 +705,7 @@ let g:vimshell_force_overwrite_statusline = 0
   " nnoremap <buffer> <Leader>f :ChromeKey<Space>
 
     "quickrun
-  set spelllang+=cjk
+  " set spelllang+=cjk
   autocmd BufNewFile,BufReadPost *.md set filetype=markdown
   let g:quickrun_config = {}
   " let g:quickrun_config['markdown'] = {
@@ -700,26 +720,7 @@ let g:vimshell_force_overwrite_statusline = 0
   "       \ }
   au FileType markdown nmap <Leader>r :PrevimOpen<CR>
 
-  nnoremap <space>R :<C-u>Unite quicklearn -immediately<Cr>
-
-  " " vim-session
-  " " 現在のディレクトリ直下の .vimsessions/ を取得 
-  " let s:local_session_directory = xolox#misc#path#merge(getcwd(), '.vimsessions')
-  " " 存在すれば
-  " if isdirectory(s:local_session_directory)
-  "   " session保存ディレクトリをそのディレクトリの設定
-  "   let g:session_directory = s:local_session_directory
-  "   " vimを辞める時に自動保存
-  "   let g:session_autosave = 'yes'
-  "   " 引数なしでvimを起動した時にsession保存ディレクトリのdefault.vimを開く
-  "   let g:session_autoload = 'yes'
-  "   " 1分間に1回自動保存
-  "   let g:session_autosave_periodic = 1
-  " else
-  "   let g:session_autosave = 'no'
-  "   let g:session_autoload = 'no'
-  " endif
-
+  " nnoremap <Leader>r :<C-u>Unite quicklearn -immediately<CR>
 
   " vim-ref のバッファを q で閉じられるようにする
   autocmd FileType ref-* nnoremap <buffer> <silent> q :<C-u>close<CR>
@@ -740,16 +741,16 @@ let g:vimshell_force_overwrite_statusline = 0
   " 出力に対するフィルタ
   " 最初の数行を削除
   function! g:ref_source_webdict_sites.je.filter(output)
-    return join(split(a:output, "\n")[15 :], "\n")
+    return join(split(a:output, "\n")[40 :], "\n")
   endfunction
 
   function! g:ref_source_webdict_sites.ej.filter(output)
-    return join(split(a:output, "\n")[15 :], "\n")
+    return join(split(a:output, "\n")[40 :], "\n")
   endfunction
 
-  call altercmd#load()
-  CAlterCommand ej Ref webdict ej
-  CAlterCommand je Ref webdict je
+  " call altercmd#load()
+  " CAlterCommand ej Ref webdict ej
+  " CAlterCommand je Ref webdict je
 
   "syntasitc[rubocop]
   " let g:syntastic_ruby_checkers = ['rubocop']
@@ -764,17 +765,6 @@ let g:vimshell_force_overwrite_statusline = 0
   "   w
   "   SyntasticCheck
   " endfunction
-
-  " " AlpacaTags
-  " augroup AlpacaTags
-  "   autocmd!
-  "   if exists(':Tags')
-  "     autocmd BufWritePost Gemfile TagsBundle
-  "     autocmd BufEnter * TagsSet
-  "     " 毎回保存と同時更新する場合はコメントを外す
-  "     autocmd BufWritePost * TagsUpdate
-  "   endif
-  " augroup END
 
   "tcomment_vim 
   " tcommentで使用する形式を追加
@@ -801,9 +791,6 @@ let g:vimshell_force_overwrite_statusline = 0
 
   " erubyのときだけ設定を追加
   au FileType eruby call SetErubyMapping2()
-  " phpのときだけ設定を追加
-  au FileType php nmap <buffer><C-/>c :TCommentAs php_surround<CR>
-  au FileType php vmap <buffer><C-/>c :TCommentAs php_surround<CR>
 
   "gitgutter
   let g:gitgutter_diff_args = '-w'
@@ -831,6 +818,25 @@ let g:vimshell_force_overwrite_statusline = 0
   nmap gx <Plug>(openbrowser-smart-search)
   vmap gx <Plug>(openbrowser-smart-search)
 
+  "indentline
+  let g:indentLine_faster=1
+  let g:indentLine_color_term = 239
+  nmap <Leader>i :IndentLinesToggle<CR>
+  let g:indentLine_fileTypeExclude = ['help', 'vimfiler', 'ctrlp', 'unite']
+  let g:indentLine_enabled=0
+
+  " "rspec
+  function! s:load_rspec_settings()
+    nnoremap <Leader>rs   :<C-U>RunSpec<CR>
+    nnoremap <Leader>cr  :<C-U>RunSpecLine<CR>
+    nnoremap <Leader>ar  :<C-U>RunSpecs<CR>
+  endfunction
+
+  augroup RSpecSetting
+    autocmd!
+    autocmd BufEnter *.rb call s:load_rspec_settings()
+  augroup END
+
   "読み込んだプラグインの設定ここまで
 endfunction
 
@@ -857,5 +863,3 @@ function! s:InitNeoBundle()
 endfunction
 
 call s:InitNeoBundle()
-
-

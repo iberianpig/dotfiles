@@ -30,6 +30,7 @@ Interface		|vimfiler-interface|
   Functions		  |vimfiler-functions|
   Variables		  |vimfiler-variables|
     Sources variables	    |vimfiler-sources-variables|
+    Deprecated variables    |vimfiler-deprecated-variables|
   Key mappings		  |vimfiler-key-mappings|
   Options		  |vimfiler-options|
 Columns			|vimfiler-columns|
@@ -179,6 +180,26 @@ vimfiler#get_status_string()			 *vimfiler#get_status_string()*
 		Returns vimfiler status string. It is useful to custom
 		statusline.
 
+						*vimfiler#custom#profile()*
+vimfiler#custom#profile({profile-name}, {option-name}, {value})
+		Set {profile-name} specialized {option-name} to {value}.
+
+		The options below are available:
+
+		context				(Dictionary)
+		Specify default {context} value in vimfiler buffer.
+		You can customize the context in the vimfiler buffer.
+		Note: If you want to change default context, you should use
+		"default" profile name.
+		Valid key context is in |vimfiler-options|.  However, "-" is
+		substituted to "_", and "-" prefix is removed.
+
+		Example:
+>
+		call vimfiler#custom#profile('default', 'context', {
+		\   'explorer' : 1
+		\ })
+
 ------------------------------------------------------------------------------
 VARIABLES 					*vimfiler-variables*
 
@@ -192,7 +213,7 @@ g:vimfiler_as_default_explorer		*g:vimfiler_as_default_explorer*
 g:vimfiler_execute_file_list			*g:vimfiler_execute_file_list*
 		This variable controls vimfiler execute.
 		The key is extension. The value is command name or
-		command name list. If value is "vim", edit file.
+		command name list.
 		If the key is "_", it will be default command name.
 
 g:vimfiler_extensions				*g:vimfiler_extensions*
@@ -203,58 +224,54 @@ g:vimfiler_extensions				*g:vimfiler_extensions*
 		Default value is complicated, please refer to
 		autoload/vimfiler.vim.
 
-g:vimfiler_split_action				*g:vimfiler_split_action*
-		This variable controls vimfiler split action in |unite|.
-		
-		Default value is "right".
-
-g:vimfiler_edit_action				*g:vimfiler_edit_action*
-		This variable controls vimfiler edit action in |unite|.
-		
-		Default value is "open".
-
-g:vimfiler_preview_action			*g:vimfiler_preview_action*
-		This variable controls vimfiler preview action in |unite|.
-		
-		Default value is "preview".
-
-g:vimfiler_sort_type				*g:vimfiler_sort_type*
-		This variable controls default vimfiler sort type.
-		
-		Default value is "filename".
-
-g:vimfiler_directory_display_top	*g:vimfiler_directory_display_top*
-		This variable controls vimfiler sorts directories as top.
-		
-		Default value is 1.
-
-g:vimfiler_split_rule				*g:vimfiler_split_rule*
-		Defines split position rule.
-
-		Default value is "topleft".
-
 g:vimfiler_detect_drives			*g:vimfiler_detect_drives*
 		This variable controls vimfiler uses drives
 		 when |<Plug>(vimfiler_switch_to_drive)|.
 		
 		Default value is refer to plugin/vimfiler.vim.
 
-g:vimfiler_safe_mode_by_default		*g:vimfiler_safe_mode_by_default*
-		This variable controls vimfiler enter safe mode by default. In
-		safe mode, dangerous command is disabled.
+g:vimfiler_data_directory			*g:vimfiler_data_directory*
+		Specifies directories for configurations internally used in
+		vimfiler itself or its sources.  If the directory doesn't
+		exist the directory will be automatically generated.
 		
-		Default value is 1.
+		Default value is $XDG_CACHE_DIR/vimfiler or
+		expand("~/.cache/vimfiler"); the absolute path of it.
 
-g:vimfiler_time_format				*g:vimfiler_time_format*
-		This variable controls displayed time format.
-		The time format option is compatible |strftime()|.
-		
-		Default value is "%y/%m/%d %H:%M".
+					*g:vimfiler_force_overwrite_statusline*
+g:vimfiler_force_overwrite_statusline
+		If this variable is 1, vimfiler will overwrite 'statusline'
+		automatically.
+		Note: If you want to change 'statusline' in vimfiler buffer,
+		you must set it to 0.
 
-g:vimfiler_max_directories_history	*g:vimfiler_max_directories_history*
-		This variable controls max directories history.
-		
-		Default value is 50.
+		The default value is 1.
+
+g:vimfiler_no_default_key_mappings	*g:vimfiler_no_default_key_mappings*
+		If it is non-zero, will disable vimfiler default
+		keymappings(|vimfiler-default-key-mappings|).
+
+		This variable is undefined in default.
+
+g:vimfiler_quick_look_command		*g:vimfiler_quick_look_command*
+		It is quick look command for |<Plug>(vimfiler_quick_look)|.
+		Default value is "", so you must set it to use
+		|<Plug>(vimfiler_quick_look)| after installing quick look
+		command.
+>
+		" Windows.
+		" let g:vimfiler_quick_look_command = 'maComfort.exe -ql'
+		" Linux.
+		" let g:vimfiler_quick_look_command = 'gloobus-preview'
+		" Mac OS X.
+		" let g:vimfiler_quick_look_command = 'qlmanage -p'
+<
+						*g:vimfiler_min_cache_files*
+g:vimfiler_min_cache_files
+		Specify the minimum number of files that vimfiler saves the
+		caches.
+
+		Default value is 100.
 
 g:vimfiler_tree_leaf_icon			*g:vimfiler_tree_leaf_icon*
 		This variable controls vimfiler tree leaf icon.
@@ -294,60 +311,30 @@ g:vimfiler_marked_file_icon		*g:vimfiler_marked_file_icon*
 		
 		Default value is "*"
 
-g:vimfiler_data_directory			*g:vimfiler_data_directory*
-		Specifies directories for configurations internally used in
-		vimfiler itself or its sources.  If the directory doesn't
-		exist the directory will be automatically generated.
+g:vimfiler_max_directories_history	*g:vimfiler_max_directories_history*
+		This variable controls max directories history.
 		
-		Default value is $XDG_CACHE_DIR/vimfiler or
-		expand("~/.cache/vimfiler"); the absolute path of it.
+		Default value is 50.
 
-g:vimfiler_enable_auto_cd			*g:vimfiler_enable_auto_cd*
-		This variable controls whether vimfiler change Vim current
-		directory using |g:unite_kind_openable_lcd_command|
-		automatically.
-		Note: This variable works in file source.
-		
-		Default value is 0
+					*g:vimfiler_restore_alternate_file*
+g:vimfiler_restore_alternate_file
+		Option to restore alternate file after open action. The
+		vimfiler buffer does not become the alternate file by default.
 
-					*g:vimfiler_force_overwrite_statusline*
-g:vimfiler_force_overwrite_statusline
-		If this variable is 1, vimfiler will overwrite 'statusline'
-		automatically.
-		Note: If you want to change 'statusline' in vimfiler buffer,
-		you must set it to 0.
-
-		The default value is 1.
-
-g:vimfiler_no_default_key_mappings	*g:vimfiler_no_default_key_mappings*
-		If it is non-zero, will disable vimfiler default
-		keymappings(|vimfiler-default-key-mappings|).
-
-		This variable is undefined in default.
-
-g:vimfiler_quick_look_command		*g:vimfiler_quick_look_command*
-		It is quick look command for |<Plug>(vimfiler_quick_look)|.
-		Default value is "", so you must set it to use
-		|<Plug>(vimfiler_quick_look)| after installing quick look
-		command.
->
-		" Windows.
-		" let g:vimfiler_quick_look_command = 'maComfort.exe -ql'
-		" Linux.
-		" let g:vimfiler_quick_look_command = 'gloobus-preview'
-		" Mac OS X.
-		" let g:vimfiler_quick_look_command = 'qlmanage -p'
-<
-g:vimfiler_default_columns				*g:vimfiler_default_columns*
-		This variable controls default vimfiler columns.
-		
-		Default value is "type:size:time".
+		Default value is 1.
 
 g:vimfiler_explorer_columns			 *g:vimfiler_explorer_columns*
 		This variable controls default vimfiler columns in explorer
 		mode.
 		
 		Default value is "type".
+
+					*g:vimfiler_expand_jump_to_first_child*
+g:vimfiler_expand_jump_to_first_child			 
+		This variable controls if you jump to the first child when you
+		expand a directory tree.
+		
+		Default value is 1.
 
 g:vimfiler_ignore_pattern			 *g:vimfiler_ignore_pattern*
 		Specify the regexp pattern to ignore candidates of the source.
@@ -361,25 +348,35 @@ g:vimfiler_ignore_pattern			 *g:vimfiler_ignore_pattern*
 <
 		Default value is '^\.' (dot files pattern).
 
-					*g:vimfiler_expand_jump_to_first_child*
-g:vimfiler_expand_jump_to_first_child			 
-		This variable controls if you jump to the first child when you
-		expand a directory tree.
+g:vimfiler_time_format				*g:vimfiler_time_format*
+		This variable controls displayed time format.
+		The time format option is compatible |strftime()|.
 		
-		Default value is 1.
+		Default value is "%y/%m/%d %H:%M".
 
-						*g:vimfiler_min_cache_files*
-g:vimfiler_min_cache_files
-		Specify the minimum number of files that vimfiler saves the
-		caches.
+g:vimfiler_split_action				*g:vimfiler_split_action*
+		This variable controls vimfiler split action in |unite|.
+		
+		Default value is "right".
 
-		Default value is 100.
+g:vimfiler_edit_action				*g:vimfiler_edit_action*
+		This variable controls vimfiler edit action in |unite|.
+		
+		Default value is "open".
 
-					*g:vimfiler_restore_alternate_file*
-g:vimfiler_restore_alternate_file
-		Option to restore alternate file after open action. The
-		vimfiler buffer does not become the alternate file by default.
+g:vimfiler_preview_action			*g:vimfiler_preview_action*
+		This variable controls vimfiler preview action in |unite|.
+		
+		Default value is "preview".
 
+g:vimfiler_sort_type				*g:vimfiler_sort_type*
+		This variable controls default vimfiler sort type.
+		
+		Default value is "filename".
+
+g:vimfiler_directory_display_top	*g:vimfiler_directory_display_top*
+		This variable controls vimfiler sorts directories as top.
+		
 		Default value is 1.
 
 SOURCES VARIABLES 				*vimfiler-sources-variables*
@@ -440,6 +437,31 @@ g:unite_kind_file_use_trashbox
 		|vimproc|.
 		Note: This option is works newest |vimproc| and in Windows
 		only.
+
+DEPRECATED VARIABLES				*vimfiler-deprecated-variables*
+
+g:vimfiler_split_rule				*g:vimfiler_split_rule*
+		Defines split position rule.
+		Note: This variable is deprecated.  Please use
+		|vimfiler#custom#profile()| instead.
+
+g:vimfiler_enable_auto_cd			*g:vimfiler_enable_auto_cd*
+		This variable controls whether vimfiler change Vim current
+		directory using |g:unite_kind_openable_lcd_command|
+		automatically.
+		Note: This variable is deprecated.  Please use
+		|vimfiler#custom#profile()| instead.
+
+g:vimfiler_default_columns			*g:vimfiler_default_columns*
+		This variable controls default vimfiler columns.
+		Note: This variable is deprecated.  Please use
+		|vimfiler#custom#profile()| instead.
+
+g:vimfiler_safe_mode_by_default		*g:vimfiler_safe_mode_by_default*
+		This variable controls vimfiler enter safe mode by default. In
+		safe mode, dangerous command is disabled.
+		Note: This variable is deprecated.  Please use
+		|vimfiler#custom#profile()| instead.
 
 ------------------------------------------------------------------------------
 KEY MAPPINGS 					*vimfiler-key-mappings*
@@ -893,8 +915,7 @@ parameters for an option.  You need to escape spaces with "\".
 
 						*vimfiler-options-direction*
 		-direction={direction}
-		Defines split position rule. The default value is same to
-		|g:vimfiler_split_rule|.
+		Defines split position rule. The default value is "topleft".
 
 						*vimfiler-options-toggle*
 		-toggle
@@ -926,7 +947,6 @@ parameters for an option.  You need to escape spaces with "\".
 						*vimfiler-options-auto-cd*
 		-auto-cd
 		Enable auto cd behavior.
-		If omit it, use |g:vimfiler_enable_auto_cd|.
 		Note: This option works in file source.
 
 						*vimfiler-options-explorer*
@@ -950,7 +970,7 @@ parameters for an option.  You need to escape spaces with "\".
 						*vimfiler-options-columns*
 		-columns={columns1:columns2:...}
 		Specify vimfiler columns. If omit it,
-		|g:vimfiler_default_columns| will be used.
+		"type:size:time" will be used.
 
 						*vimfiler-options-status*
 		-status
@@ -975,6 +995,15 @@ parameters for an option.  You need to escape spaces with "\".
 		-invisible
 		Search inivisible vimfiler buffer.
 
+						*vimfiler-options-safe*
+		-safe
+		Safe mode is default.
+
+						*vimfiler-options-auto-expand*
+		-auto-expand
+		Expand or cd the directories automatically if the directories
+		have only single directory.
+
 ==============================================================================
 COLUMNS						*vimfiler-columns*
 
@@ -990,9 +1019,8 @@ time		File time stamp.
 ==============================================================================
 EXAMPLES					*vimfiler-examples*
 >
-	call vimfiler#set_execute_file('vim', 'vim')
 	call vimfiler#set_execute_file('txt', 'notepad')
-	call vimfiler#set_execute_file('c', ['vim', 'notepad'])
+	call vimfiler#set_execute_file('c', ['gvim', 'notepad'])
 	
 	" Edit file by tabedit.
 	"let g:vimfiler_edit_action = 'tabopen'
@@ -1000,7 +1028,9 @@ EXAMPLES					*vimfiler-examples*
 	let g:vimfiler_as_default_explorer = 1
 	
 	" Enable file operation commands.
-	"let g:vimfiler_safe_mode_by_default = 0
+	"call vimfiler#custom#profile('default', 'context', {
+	"      \ 'safe' : 0,
+	"      \ })
 	
 	" Like Textmate icons.
 	let g:vimfiler_tree_leaf_icon = ' '
