@@ -150,6 +150,9 @@ fi
 #genymotion
 export PATH="/opt/genymotion:$PATH"
 
+#adb-tool
+export PATH="/usr/share/android-studio/data/sdk/platform-tools:$PATH"
+
 if [ $DISPLAY ]; then
   xset r rate 200 15
 fi

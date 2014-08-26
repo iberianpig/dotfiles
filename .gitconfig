@@ -19,5 +19,6 @@
 [core]
 	editor = vim
 	excludesfile = /home/iberianpig/.gitignore
+	autocrlf = input
 [color]
 	ui = true
