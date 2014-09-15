@@ -19,10 +19,12 @@ neosnippet.vim
 octoeditor.vim
 open-browser.vim
 previm
+qiita-vim
+quickfixstatus
 quicklearn
 ref-dicts-en
+shabadou.vim
 switch.vim
-syntastic
 tcomment_vim
 unite-colorscheme
 unite-font
@@ -32,6 +34,7 @@ unite-outline
 unite-quickfix
 unite-rails
 unite.vim
+vim-altercmd
 vim-angularjs
 vim-autoclose
 vim-colors-solarized
@@ -42,12 +45,14 @@ vim-easymotion
 vim-fugitive
 vim-gista
 vim-gitgutter
+vim-hier
 vim-hybrid
 vim-markdown
 vim-matchit
 vim-multiple-cursors
 vim-over
 vim-pyte
+vim-qfstatusline
 vim-quickrun
 vim-rails
 vim-railscasts-theme
@@ -58,6 +63,7 @@ vim-snippets
 vim-submode
 vim-surround
 vim-tomorrow-theme
+vim-watchdogs
 vimfiler
 vimproc
 webapi-vim

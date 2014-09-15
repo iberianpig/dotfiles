@@ -4,13 +4,13 @@ autocmd!
 set number         " 行番号を表示する
 set cursorline     " カーソル行の背景色を変える
 " set cursorcolumn   " カーソル位置のカラムの背景色を変える
-autocmd InsertEnter,InsertLeave * set cursorline!  redraw!
+autocmd InsertEnter,InsertLeave * set cursorline!  "redraw!
 " autocmd InsertEnter,InsertLeave * set cursorcolumn!
 au WinEnter * set cursorline "cursorcolumn
 au WinLeave * set nocursorline "nocursorcolumn
 
 set laststatus=2   " ステータス行を常に表示
-set cmdheight=1    " メッセージ表示欄を2行確保
+set cmdheight=2    " メッセージ表示欄を2行確保
 set showmatch      " 対応する括弧を強調表示
 set helpheight=998 " ヘルプを画面いっぱいに開く
 set list           " 不可視文字を表示
@@ -88,8 +88,8 @@ nnoremap <Down> gj
 vnoremap v $h
 
 " TABにて対応ペアにジャンプ
-nnoremap &lt;Tab&gt; %
-vnoremap &lt;Tab&gt; %
+nnoremap <Tab> %
+vnoremap <Tab> %
 
 "ビープの設定
 "ビープ音すべてを無効にする
@@ -101,7 +101,8 @@ set noerrorbells "エラーメッセージの表示時にビープを鳴らさ�
 set wildmenu wildmode=list:longest,full
 " コマンドラインの履歴を1000件保存する
 set history=1000
-set ttyscroll=20
+" set ttyscroll=20
+set ttyscroll=4
 
 " 動作環境との統合
 " OSのクリップボードをレジスタ指定無しで Yank, Put 出来るようにする
@@ -113,7 +114,7 @@ set clipboard=unnamed,unnamedplus
 " マウスの入力を受け付ける
 " set mouse=a
 " インサートモードから抜けると自動的にIMEをオフにする
-" set iminsert=2
+set iminsert=2
 " ESCでIMEを確実にOFF
 " inoremap <ESC> <ESC>:set iminsert=0<CR>
 " inoremap <ESC> <ESC>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
@@ -144,6 +145,11 @@ set softtabstop=2 "連続した空白に対してタブキーやバックスペ�
 set autoindent "改行時に前の行のインデントを継続する
 set smartindent "改行時に入力された行の末尾に合わせて次の行のインデントを増減する
 
+"折りたたみ
+set foldmethod=syntax
+let perl_fold=1
+set foldlevelstart=100 "Don't autofold anything
+
 " 日本語ヘルプを利用する
 set helplang=ja,en
 
@@ -157,10 +163,10 @@ augroup END
 
 if !has('gui_running') && !(has('win32') || has('win64'))
   " .vimrcの再読込時にも色が変化するようにする
-  autocmd MyAutoCmd BufWritePost $MYVIMRC nested source $MYVIMRC
+  autocmd MyAutoCmd BufWritePost $HOME/dotfiles/.vimrc nested source $HOME/dotfiles/.vimrc
 else
   " .vimrcの再読込時にも色が変化するようにする
-  autocmd MyAutoCmd BufWritePost $MYVIMRC source $MYVIMRC |
+  autocmd MyAutoCmd BufWritePost $HOME/dotfiles/.vimrc source $HOME/dotfiles/.vimrc |
         \if !has('gui_running') | source $MYGVIMRC
   autocmd MyAutoCmd BufWritePost $MYGVIMRC if has('gui_running') | source $MYGVIMRC
 endif
@@ -179,7 +185,6 @@ map <silent> [Tag]c :tablast <bar> tabnew<CR>
 map <silent> [Tag]x :tabclose<CR>
 map <silent> [Tag]h :tabprevious<CR>
 map <silent> [Tag]l :tabnext<CR>
-
 
 " NeoBundle がインストールされていない時、
 " もしくは、プラグインの初期化に失敗した時の処理
@@ -243,9 +248,8 @@ function! s:LoadBundles()
   NeoBundle 'ujihisa/quicklearn'
   NeoBundle 'thinca/vim-ref'
   NeoBundle 'mfumi/ref-dicts-en'
-  " NeoBundle 'tyru/vim-altercmd'
+  NeoBundle 'tyru/vim-altercmd'
   NeoBundle 'ujihisa/neco-look'
-  NeoBundle 'scrooloose/syntastic'
   NeoBundle 'vim-ruby/vim-ruby'
   NeoBundle 'Townk/vim-autoclose' 
   NeoBundle 'ujihisa/unite-font' 
@@ -260,12 +264,17 @@ function! s:LoadBundles()
   " NeoBundle 'tpope/vim-endwise.git'
   NeoBundle 'edsono/vim-matchit'
   NeoBundle 'basyura/unite-rails'
-  NeoBundle 'tpope/vim-dispatch'
   NeoBundle 'aurigadl/vim-angularjs'
   NeoBundle 'mattn/benchvimrc-vim'
   NeoBundle 'Yggdroot/indentLine'
-  NeoBundle 'skwp/vim-rspec'
   NeoBundle 'rking/ag.vim'
+  NeoBundle 'jceb/vim-hier'
+  NeoBundle 'dannyob/quickfixstatus'
+  NeoBundle 'osyo-manga/shabadou.vim'
+  NeoBundle 'osyo-manga/vim-watchdogs'
+  NeoBundle 'KazuakiM/vim-qfstatusline'
+  NeoBundle 'tpope/vim-dispatch'
+  NeoBundle 'thoughtbot/vim-rspec'
 
 
   "colorscheme
@@ -284,15 +293,16 @@ function! s:LoadBundles()
   " 読み込んだプラグインの設定
   " ...
   
-  "set background=light "明るめの背景
-  "set background=dark "暗めの背景
+  " set background=light "明るめの背景
+  " set background=dark "暗めの背景
   colorscheme hybrid "set colorscheme
+  " colorscheme Tomorrow-Night "set colorscheme
 
   let g:lightline = {
         \ 'colorscheme': 'Tomorrow_Night',
         \ 'active': {
         \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
-        \   'right': [ [ 'syntastic', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+        \   'right': [ [ 'qfstatusline', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
         \ },
         \ 'component_function': {
         \   'filename': 'MyFilename',
@@ -304,10 +314,10 @@ function! s:LoadBundles()
         \   'currentworkingdir': 'CurrentWorkingDir',
         \ },
         \ 'component_expand': {
-        \   'syntastic': 'SyntasticStatuslineFlag',
+        \   'qfstatusline': 'qfstatusline#Update',
         \ },
         \ 'component_type': {
-        \   'syntastic': 'error',
+        \   'qfstatusline': 'error',
         \ },
         \ 'separator': { 'left': '⮀', 'right': '⮂' },
         \ 'subseparator': { 'left': '⮁', 'right': '⮃' },
@@ -316,6 +326,13 @@ function! s:LoadBundles()
         \   'right': [ [ 'currentworkingdir' ] ],
         \ },
         \}
+
+
+  let g:Qfstatusline#UpdateCmd = function('lightline#update')
+  let g:quickrun_config = {
+        \    'watchdogs_checker/_' : {
+        \        'hook/qfstatusline_update/enable_exit':   1,
+        \        'hook/qfstatusline_update/priority_exit': 4,},}
 
 
   function! MyModified()
@@ -398,15 +415,6 @@ function! s:LoadBundles()
     return lightline#statusline(0)
   endfunction
 
-  augroup AutoSyntastic
-    autocmd!
-    autocmd BufWritePost *.c,*.cpp call s:syntastic()
-    " autocmd InsertLeave,TextChanged * call s:syntastic() 
-  augroup END
-  function! s:syntastic()
-    SyntasticCheck
-    call lightline#update()
-  endfunction
 
   function! CurrentWorkingDir()
     return fnamemodify(getcwd(),':')
@@ -429,6 +437,7 @@ function! s:LoadBundles()
   autocmd FileType vimfiler 
         \ nnoremap <buffer><silent>/ 
         \ :<C-u>UniteWithBufferDir file<CR>
+
   "" neocomplcache
   " Use neocomplcache.
   let g:neocomplcache_enable_at_startup = 1
@@ -487,7 +496,6 @@ function! s:LoadBundles()
 
   " rspec
   let g:neocomplcache_snippets_dir = $HOME . '/.vim/snippets'
-  nnoremap <Space>se :<C-U>NeoComplCacheEditSnippets<CR>
 
   "" switch
   nnoremap - :Switch<cr>
@@ -690,35 +698,21 @@ function! s:LoadBundles()
   " " Only :w! updates a gist.
   " let g:gist_update_on_write = 2
 
-  " [,]+j+j+j...で下にスクロール、[,]+k+k+k...で上にスクロール
-  nnoremap <A-j> :ChromeScrollDown<CR>
-  nnoremap <A-k> :ChromeScrollUp<CR>
-  call submode#enter_with('cscroll', 'n', '', '<Leader>j', ':ChromeScrollDown<CR>')
-  call submode#enter_with('cscroll', 'n', '', '<Leader>k', ':ChromeScrollUp<CR>')
-  call submode#leave_with('cscroll', 'n', '', 'n')
-  call submode#map('cscroll', 'n', '', 'j', ':ChromeScrollDown<CR>')
-  call submode#map('cscroll', 'n', '', 'k', ':ChromeScrollUp<CR>')
 
-  " 現在のタブを閉じる
-  nnoremap <silent> <Leader>q :ChromeTabClose<CR>
-  " [,]+f+{char}でキーを Google Chrome に送る
-  " nnoremap <buffer> <Leader>f :ChromeKey<Space>
+  "quickrun
 
-    "quickrun
-  " set spelllang+=cjk
-  autocmd BufNewFile,BufReadPost *.md set filetype=markdown
-  let g:quickrun_config = {}
-  " let g:quickrun_config['markdown'] = {
-  "       \   'command': 'PrevimOpen'
-  "       \ }
-  "       " \   'outputter': 'browser'
-  " let g:quickrun_config['mkd'] = {
-  "       \   'command': 'PrevimOpen'
-  "       \ }
-  " let g:quickrun_config['md'] = {
-  "       \   'command': 'PrevimOpen'
-  "       \ }
-  au FileType markdown nmap <Leader>r :PrevimOpen<CR>
+  let g:quickrun_config = {
+        \   "_" : {
+        \       "runner" : "vimproc",
+        \       "runner/vimproc/updatetime" : 60
+        \   },
+        \}
+  " <C-c> で実行を強制終了させる
+  " quickrun.vim が実行していない場合には <C-c> を呼び出す
+  nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
+
+  set spelllang+=cjk
+
 
   " nnoremap <Leader>r :<C-u>Unite quicklearn -immediately<CR>
 
@@ -748,23 +742,9 @@ function! s:LoadBundles()
     return join(split(a:output, "\n")[40 :], "\n")
   endfunction
 
-  " call altercmd#load()
-  " CAlterCommand ej Ref webdict ej
-  " CAlterCommand je Ref webdict je
-
-  "syntasitc[rubocop]
-  " let g:syntastic_ruby_checkers = ['rubocop']
-  " let g:syntastic_enable_signs=1
-  " let g:syntastic_auto_loc_list=2
-  " let g:syntastic_mode_map = {'mode': 'passive'} 
-  " augroup AutoSyntastic
-  "   autocmd!
-  "   autocmd InsertLeave,TextChanged * call s:syntastic() 
-  " augroup END
-  " function! s:syntastic()
-  "   w
-  "   SyntasticCheck
-  " endfunction
+  call altercmd#load()
+  CAlterCommand ej Ref webdict ej
+  CAlterCommand je Ref webdict je
 
   "tcomment_vim 
   " tcommentで使用する形式を追加
@@ -806,6 +786,7 @@ function! s:LoadBundles()
   augroup PrevimSettings
     autocmd!
     autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
+    au FileType markdown nmap <Leader>r :PrevimOpen<CR>
   augroup END
 
   "gista
@@ -826,16 +807,43 @@ function! s:LoadBundles()
   let g:indentLine_enabled=0
 
   " "rspec
+  let g:rspec_command = "Dispatch spring rspec {spec}"
   function! s:load_rspec_settings()
-    nnoremap <Leader>rs   :<C-U>RunSpec<CR>
-    nnoremap <Leader>cr  :<C-U>RunSpecLine<CR>
-    nnoremap <Leader>ar  :<C-U>RunSpecs<CR>
+    nmap <silent><leader>r :call RunCurrentSpecFile()<CR>
+    nmap <silent><leader>n :call RunNearestSpec()<CR>
+    nmap <silent><leader>l :call RunLastSpec()<CR>
+    nmap <silent><leader>a :call RunAllSpecs()<CR>
   endfunction
 
   augroup RSpecSetting
     autocmd!
-    autocmd BufEnter *.rb call s:load_rspec_settings()
+    autocmd  BufEnter *_spec.rb call s:load_rspec_settings()
   augroup END
+
+  " function! s:load_rspec_settings()
+  "   "" rspec.vim {{{
+  "   let g:RspecBin  ="RAILS_ENV=test bundle exec rspec"
+  "   let g:RspecOpts ="--drb -c -fd"
+  "
+  "   " rspec.vim keymap
+  "   " nnoremap <Leader>r :RunSpec<CR>
+  "   " nnoremap <Leader>l :RunSpecLine<CR>
+  "   " nnoremap <Leader>a :RunSpecs<CR>
+  "   "" }}}
+  " endfunction
+  "
+  " augroup RSpecSetting
+  "   autocmd!
+  "   autocmd BufEnter *_spec.rb call s:load_rspec_settings()
+  " augroup END
+
+
+  " 常にprojectのroot Dirに移動する
+  function! ChangeCurrentDirectoryToProjectRoot()
+    let root = unite#util#path2project_directory(expand('%'))
+    execute 'lcd' root
+  endfunction
+  :au BufEnter * :call ChangeCurrentDirectoryToProjectRoot()
 
   "読み込んだプラグインの設定ここまで
 endfunction

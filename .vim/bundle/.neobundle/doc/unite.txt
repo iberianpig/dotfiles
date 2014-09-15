@@ -384,6 +384,26 @@ COMMANDS 					*unite-commands*
 		Note: Closes the last unite buffer you used in current tab if
 		you skip specifying {buffer-name}.
 
+:[count]UniteNext [{buffer-name}]		*:UniteNext*
+		Do the default action with the next candidate in the unite
+		buffer with {buffer-name}.
+		You can use it like |:cnext|.
+
+:[count]UnitePrevious [{buffer-name}]		*:UnitePrevious*
+		Do the default action with the previous candidates in the
+		unite buffer with {buffer-name}.
+		You can use it like |:cprevious|.
+
+:UniteFirst [{buffer-name}]			*:UniteFirst*
+		Do the default action with the first candidate in the unite
+		buffer with {buffer-name}.
+		You can use it like |:cfirst|.
+
+:UniteLast [{buffer-name}]			*:UniteLast*
+		Do the default action with the last candidate in the unite
+		buffer with {buffer-name}.
+		You can use it like |:clast|.
+
 The commands of source				*:unite-sources-commands*
 
 :UniteBookmarkAdd [{file}]			*:UniteBookmarkAdd*
@@ -474,18 +494,12 @@ g:unite_source_rec_min_cache_files
 
 		The default value is 100.
 
-				*g:unite_source_file_rec_min_cache_files*
-		Note: This variable is obsolete.
-
 					*g:unite_source_rec_max_cache_files*
 g:unite_source_rec_max_cache_files
 		Specify the maximum number of files that
 		|unite-source-file_rec| saves the caches.
 
 		The default value is 20000.
-
-				*g:unite_source_file_rec_max_cache_files*
-		Note: This variable is obsolete.
 
 					*g:unite_source_rec_unit*
 g:unite_source_rec_unit
@@ -516,8 +530,6 @@ g:unite_source_rec_async_command
 		The default value is "find" and the args.
 		Because, "find" command is fastest.
 
-					*g:unite_source_file_rec_async_command*
-		Note: This variable is obsolete.
 
 					*g:unite_source_rec_git_command*
 g:unite_source_rec_git_command
@@ -1750,6 +1762,12 @@ the context dictionary.
 		default action immediately.  If the candidate list is
 		empty, it does not open any unite buffer.
 
+					*unite-options-force-immediately*
+		-force-immediately
+		If candidates are exists, it runs the default action
+		immediately.  If the candidate list is empty, it does not open
+		any unite buffer.
+
 						*unite-options-auto-preview*
 		-auto-preview
 		When you select a candidate, it runs the "preview" action
@@ -1968,6 +1986,12 @@ file_rec	Gather files recursive and nominates all directory or file
 		Source arguments:
 		1. the search directory.
 
+		Source custom options:
+		-custom-rec-ignore-directory-pattern: ignore directory pattern
+		-custom-grep-default_opts           : default grep options
+		-custom-grep-recursive_opt          : grep recursive options
+		-custom-grep-search-word-highlight  : search word highlight
+
 						*unite-source-file_rec/async*
 file_rec/async	Similar to |unite-source-file_rec|, but get files asynchronously.
 		Note: Requires vimproc.
@@ -2157,7 +2181,7 @@ grep		Nominates "grep" command output as candidates.
 	  " Use pt in unite grep source.
 	  " https://github.com/monochromegane/the_platinum_searcher
 	  let g:unite_source_grep_command = 'pt'
-	  let g:unite_source_grep_default_opts = '-i --nogroup --nocolor'
+	  let g:unite_source_grep_default_opts = '--nogroup --nocolor'
 	  let g:unite_source_grep_recursive_opt = ''
 	elseif executable('ack-grep')
 	  " Use ack in unite grep source.
