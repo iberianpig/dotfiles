@@ -67,7 +67,7 @@ nnoremap g# g#zz
 
 " "インサートモードで bash 風キーマップ
 inoremap <C-a> <C-o>^
-inoremap <C-e> <C-o>$<Right>
+inoremap <C-e> <C-o>$
 inoremap <C-b> <Left>
 inoremap <C-f> <Right>
 inoremap <C-n> <Down>
@@ -88,8 +88,11 @@ nnoremap <Down> gj
 vnoremap v $h
 
 " TABにて対応ペアにジャンプ
-nnoremap <Tab> %
-vnoremap <Tab> %
+" nnoremap <Tab> %
+" vnoremap <Tab> %
+
+"すべてを選択
+nnoremap <C-a> ggVG
 
 "ビープの設定
 "ビープ音すべてを無効にする
@@ -223,7 +226,6 @@ function! s:LoadBundles()
   NeoBundle 'osyo-manga/unite-quickfix.git'
   NeoBundle 'thinca/vim-quickrun'
   NeoBundle 'rcmdnk/vim-markdown'
-  " NeoBundle 'superbrothers/vim-quickrun-markdown-gfm'
   NeoBundle 'tyru/open-browser.vim'
   NeoBundle 'Shougo/vimfiler'
   " NeoBundle 'thinca/vim-guicolorscheme'
@@ -432,8 +434,8 @@ function! s:LoadBundles()
   "autocmd VimEnter * VimFiler -buffer-name=explorer -split -simple -winwidth=30 -toggle -no-quit
   nnoremap <C-k><C-f> :VimFiler -project<CR>
   inoremap <C-k><C-f> <ESC>:VimFiler -project<CR>
-  nnoremap <C-k><C-k> :VimFiler -buffer-name=explorer -split -simple -project -winwidth=29 -toggle -no-quit<CR>
-  nnoremap <C-k><C-b> :VimFilerBufferDir -buffer-name=explorer -split -simple -winwidth=29 -toggle -no-quit<CR>
+  nnoremap <C-k><C-k> :VimFiler -buffer-name=explorer -direction=topleft -split -simple -project -winwidth=29 -toggle -no-quit<CR>
+  nnoremap <C-k><C-b> :VimFilerBufferDir -buffer-name=explorer -direction=topleft -split -simple -winwidth=29 -toggle -no-quit<CR>
   autocmd FileType vimfiler 
         \ nnoremap <buffer><silent>/ 
         \ :<C-u>UniteWithBufferDir file<CR>
@@ -456,8 +458,8 @@ function! s:LoadBundles()
   " <TAB>: completion.
   inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
   inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
-  inoremap <expr><C-y>  neocomplcache#close_popup()
-  inoremap <expr><C-e>  neocomplcache#cancel_popup()
+  " inoremap <expr><C-y>  neocomplcache#close_popup()
+  " inoremap <expr><C-e>  neocomplcache#cancel_popup()
 
   " "NeoSnippet.vim
   let g:neosnippet#enable_snipmate_compatibility = 1
@@ -785,9 +787,12 @@ function! s:LoadBundles()
   "previm
   augroup PrevimSettings
     autocmd!
-    autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
-    au FileType markdown nmap <Leader>r :PrevimOpen<CR>
+    autocmd  BufEnter *.{md,mdwn,mkd,mkdn,mark*} call s:loadPrevimSetting()
   augroup END
+
+  function! s:loadPrevimSetting()
+    nmap <Leader>r :PrevimOpen<CR>
+  endfunction
 
   "gista
   let g:gista#github_user = 'iberianpig'
@@ -806,8 +811,9 @@ function! s:LoadBundles()
   let g:indentLine_fileTypeExclude = ['help', 'vimfiler', 'ctrlp', 'unite']
   let g:indentLine_enabled=0
 
-  " "rspec
-  let g:rspec_command = "Dispatch spring rspec {spec}"
+  " let g:rspec_command = 'Dispatch RAILS_ENV=test spring rspec --format progress --no-profile {spec}'
+  " let g:rspec_command = 'Dispatch rspec {spec}'
+  let g:rspec_command = "compiler rspec | set makeprg=spring | Make rspec {spec}"
   function! s:load_rspec_settings()
     nmap <silent><leader>r :call RunCurrentSpecFile()<CR>
     nmap <silent><leader>n :call RunNearestSpec()<CR>
@@ -819,6 +825,7 @@ function! s:LoadBundles()
     autocmd!
     autocmd  BufEnter *_spec.rb call s:load_rspec_settings()
   augroup END
+
 
   " function! s:load_rspec_settings()
   "   "" rspec.vim {{{
