@@ -111,13 +111,13 @@ set ttyscroll=4
 " OSのクリップボードをレジスタ指定無しで Yank, Put 出来るようにする
 set clipboard=unnamed,unnamedplus
 "screen利用時設定
- set ttymouse=xterm2
+set ttymouse=xterm2
 "set ttymouse=xterm
 
 " マウスの入力を受け付ける
 " set mouse=a
 " インサートモードから抜けると自動的にIMEをオフにする
-set iminsert=2
+set iminsert=0
 " ESCでIMEを確実にOFF
 " inoremap <ESC> <ESC>:set iminsert=0<CR>
 " inoremap <ESC> <ESC>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
@@ -161,7 +161,7 @@ nnoremap <Space>. :<C-u>tabedit $HOME/dotfiles/.vimrc<CR>
 
 " Set augroup.
 augroup MyAutoCmd
-    autocmd!
+  autocmd!
 augroup END
 
 if !has('gui_running') && !(has('win32') || has('win64'))
@@ -294,7 +294,7 @@ function! s:LoadBundles()
   " ...
   " 読み込んだプラグインの設定
   " ...
-  
+
   " set background=light "明るめの背景
   " set background=dark "暗めの背景
   colorscheme hybrid "set colorscheme
@@ -486,11 +486,11 @@ function! s:LoadBundles()
 
   " neosnippet.vim公式指定をちょっといじる
   imap <expr><TAB> neosnippet#jumpable() ?
-         \ "\<Plug>(neosnippet_expand_or_jump)"
-         \: pumvisible() ? "\<C-n>" : "\<TAB>"
+        \ "\<Plug>(neosnippet_expand_or_jump)"
+        \: pumvisible() ? "\<C-n>" : "\<TAB>"
   smap <expr><TAB> neosnippet#jumpable() ?
-         \ "\<Plug>(neosnippet_expand_or_jump)"
-         \: "\<TAB>"
+        \ "\<Plug>(neosnippet_expand_or_jump)"
+        \: "\<TAB>"
 
   " rails
   autocmd BufEnter * if exists("b:rails_root") | NeoComplCacheSetFileType ruby.rails | endif
@@ -538,13 +538,13 @@ function! s:LoadBundles()
   " file_recのキャッシュ
   " let g:unite_source_rec_max_cache_files = 50000
   " let g:unite_source_rec_min_cache_files = 100
-  
-  
+
+
   "Like ctrlp.vim settings.
   call unite#custom#profile('default', 'context', {
-  \   'start_insert': 1,
-  \   'direction': 'botright',
-  \ })
+        \   'start_insert': 1,
+        \   'direction': 'botright',
+        \ })
 
   call unite#filters#sorter_default#use(['sorter_ftime*'])
   call unite#filters#matcher_default#use(['matcher_fuzzy'])
@@ -552,6 +552,7 @@ function! s:LoadBundles()
   call unite#custom#source('file_rec/async', 'ignore_pattern', '\(png\|gif\|jpeg\|jpg\)$')
   " ファイルはタブで開く
   call unite#custom_default_action('file', 'tabopen')
+  call unite#custom_default_action('directory', 'file')
 
   "prefix keyの設定
   nmap <Space> [unite]
@@ -847,7 +848,7 @@ function! s:LoadBundles()
 
   " 常にprojectのroot Dirに移動する
   function! ChangeCurrentDirectoryToProjectRoot()
-    let root = unite#util#path2project_directory(expand('%'))
+    let root = '"' . unite#util#path2project_directory(expand('%')) . '"'
     execute 'lcd' root
   endfunction
   :au BufEnter * :call ChangeCurrentDirectoryToProjectRoot()
