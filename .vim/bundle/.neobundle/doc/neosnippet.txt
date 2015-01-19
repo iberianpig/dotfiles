@@ -234,7 +234,7 @@ g:neosnippet#data_directory			*g:neosnippet#data_directory*
 		Specifies directory for neosnippet cache.  If the directory
 		doesn't exist the directory will be automatically generated.
 		
-		Default value is "$XDG_CACHE_DIR/neosnippet" or
+		Default value is "$XDG_CACHE_HOME/neosnippet" or
 		expand("~/.cache/neosnippet"); the absolute path of it.
 
 ------------------------------------------------------------------------------
@@ -280,12 +280,6 @@ i_<Plug>(neosnippet_start_unite_snippet)
 					*x_<Plug>(neosnippet_expand_target)*
 x_<Plug>(neosnippet_expand_target)
 		Expand the input trigger by a selected target text.
-
-			*x_<Plug>(neosnippet_start_unite_snippet_target)*
-x_<Plug>(neosnippet_start_unite_snippet_target)
-		Expand the input trigger by a selected target text with the
-		unite interface.
-		Note: The plug-in |unite.vim| is required for that feature.
 
 			*x_<Plug>(neosnippet_register_oneshot_snippet)*
 x_<Plug>(neosnippet_register_oneshot_snippet)
@@ -333,7 +327,6 @@ EXAMPLES					*neosnippet-examples*
 	imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 	smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 	xmap <C-k>     <Plug>(neosnippet_expand_target)
-	xmap <C-l>     <Plug>(neosnippet_start_unite_snippet_target)
 
 	" SuperTab like snippets' behavior.
 	"imap <expr><TAB> neosnippet#expandable_or_jumpable() ?
@@ -453,7 +446,7 @@ available providing different functionality.
 
 The structure of a placeholder can be:
 
-- ${number:placeholder text}
+- ${number:default placeholder text}
 
 	The placeholder starts with a dollar sign "$". The number of a
 	placeholder and the placeholder text are separated by a colon ":".
@@ -472,7 +465,7 @@ The structure of a placeholder can be:
 	   endif
 <
 
-- ${number:#:placeholder text}
+- ${number:#:optional placeholder text}
 
 	In this kind of placeholder the number is followed by the hash
 	character "#".  If you jump over this placeholder and do not insert

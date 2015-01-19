@@ -36,6 +36,7 @@ g:over_enable_auto_nohlsearch	over.jax	/*g:over_enable_auto_nohlsearch*
 g:over_enable_cmd_window	over.jax	/*g:over_enable_cmd_window*
 g:previm_custom_css_path	previm.jax	/*g:previm_custom_css_path*
 g:previm_disable_default_css	previm.jax	/*g:previm_disable_default_css*
+g:previm_enable_realtime	previm.jax	/*g:previm_enable_realtime*
 g:previm_open_cmd	previm.jax	/*g:previm_open_cmd*
 g:quickrun#default_config	quickrun.jax	/*g:quickrun#default_config*
 g:quickrun_config	quickrun.jax	/*g:quickrun_config*

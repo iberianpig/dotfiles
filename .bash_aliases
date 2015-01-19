@@ -1,3 +1,5 @@
 alias be='bundle exec'
 alias r='bundle exec spring rails'
 alias ra='bundle exec spring rake'
+alias upd='sudo apt-get update'
+alias upg='sudo apt-get update && sudo apt-get upgrade'

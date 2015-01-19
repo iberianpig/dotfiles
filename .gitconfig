@@ -22,3 +22,7 @@
 	autocrlf = input
 [color]
 	ui = true
+[github]
+	user = iberianpig
+[credential]
+	helper = cache

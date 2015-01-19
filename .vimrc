@@ -29,6 +29,7 @@ set ffs=unix,dos,mac  " LF, CRLF, CR
 if exists('&ambiwidth')
   set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
 endif
+set spelllang+=cjk
 
 "カーソル移動系
 set backspace=indent,eol,start "Backspaceキーの影響範囲に制限を設けない
@@ -41,13 +42,20 @@ set lazyredraw                 "描画を遅延させる"
 " set redrawtime=4000             "再描画までの時間(デフォルトは2000)
 set ttyfast                    " カーソル移動高速化
 
+if has("autocmd") " 最後のカーソル位置を復元する
+    autocmd BufReadPost *
+    \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+    \   exe "normal! g'\"" |
+    \ endif
+endif
+
 "File処理関連
 set confirm "保存されていないファイルがあるときは終了前に保存確認
 set hidden "保存されていないファイルがあるときでも別のファイルを開くことが出来る
 set autoread "外部でファイルに変更がされた場合は読みなおす
 set nobackup "ファイル保存時にバックアップファイルを作らない
 set noswapfile "ファイル編集中にスワップファイルを作らない
-set updatetime=0 "ファイル編集中にスワップファイルを作らない
+" set updatetime=0 "ファイル編集中にスワップファイルを作らない
 
 "検索関連
 set hlsearch "検索文字列をハイライトする
@@ -78,6 +86,10 @@ inoremap <C-k> <C-o>D<Right>
 inoremap <C-u> <C-o>d^
 inoremap <C-w> <C-o>db
 
+
+set nocompatible "vi 互換モードを解除する"
+"矢印キーが認識されてしまう場合の対応
+
 " " j, k による移動を折り返されたテキストでも自然に振る舞うように変更
 nnoremap j gj
 nnoremap k gk
@@ -92,7 +104,7 @@ vnoremap v $h
 " vnoremap <Tab> %
 
 "すべてを選択
-nnoremap <C-a> ggVG
+nnoremap <Leader><C-A> ggVG
 
 "ビープの設定
 "ビープ音すべてを無効にする
@@ -118,6 +130,7 @@ set ttymouse=xterm2
 " set mouse=a
 " インサートモードから抜けると自動的にIMEをオフにする
 set iminsert=0
+set imsearch=-1
 " ESCでIMEを確実にOFF
 " inoremap <ESC> <ESC>:set iminsert=0<CR>
 " inoremap <ESC> <ESC>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
@@ -126,7 +139,8 @@ inoremap <C-c> <ESC>
 
 if has('unix') && !has('gui_running')
   " ESC後にすぐ反映されない対策
-  map <silent> <ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
+  nmap <silent> <ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
+  " map <silent> <ESC> :nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
 endif
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
@@ -147,6 +161,7 @@ set shiftwidth=2 "自動インデントでずれる幅
 set softtabstop=2 "連続した空白に対してタブキーやバックスペースキーでカーソルが動く幅
 set autoindent "改行時に前の行のインデントを継続する
 set smartindent "改行時に入力された行の末尾に合わせて次の行のインデントを増減する
+set indentkeys=!^F,o,O,0<Bar>,0=where "自動インデントを発動させるタイミングを設定する
 
 "折りたたみ
 set foldmethod=syntax
@@ -182,12 +197,23 @@ nmap  t [Tag]
 for n in range(1, 9)
   execute 'nnoremap <silent> [Tag]'.n  ':<C-u>tabnext'.n.'<CR>'
 endfor
+" tc 新しいタブを右に作る
+map <silent> [Tag]c :tabnew<CR>
 " tn 新しいタブを一番右に作る
-map <silent> [Tag]c :tablast <bar> tabnew<CR>
+map <silent> [Tag]n :tablast <bar> tabnew<CR>
 " " tx タブを閉じる
+map <silent> [Tag]q :tabclose<CR>
 map <silent> [Tag]x :tabclose<CR>
-map <silent> [Tag]h :tabprevious<CR>
-map <silent> [Tag]l :tabnext<CR>
+map <silent> [Tag]b :tabprevious<CR>
+map <silent> [Tag]f :tabnext<CR>
+
+"シンタックスハイライトの追加
+au BufNewFile,BufRead *.json.jbuilder set ft=ruby
+
+" vimにcoffeeファイルタイプを認識させる
+au BufRead,BufNewFile,BufReadPre *.coffee   set filetype=coffee
+" インデントを設定
+autocmd FileType coffee     setlocal sw=2 sts=2 ts=2 et
 
 " NeoBundle がインストールされていない時、
 " もしくは、プラグインの初期化に失敗した時の処理
@@ -214,7 +240,8 @@ function! s:LoadBundles()
         \ 'windows' : 'make -f make_mingw32.mak',
         \ 'cygwin' : 'make -f make_cygwin.mak',
         \ 'mac' : 'make -f make_mac.mak',
-        \ 'unix' : 'make -f make_unix.mak',
+        \     'linux' : 'make',
+        \     'unix' : 'gmake',
         \ },
         \ }
   NeoBundle 'honza/vim-snippets'
@@ -234,10 +261,11 @@ function! s:LoadBundles()
   NeoBundle 'terryma/vim-multiple-cursors'
   NeoBundle 'AndrewRadev/switch.vim'
   NeoBundle 'kana/vim-submode'
-  NeoBundle 'tomtom/tcomment_vim'
+  NeoBundle 'tyru/caw.vim'
   NeoBundle 'mattn/emmet-vim'
   NeoBundle 'osyo-manga/vim-over'
   NeoBundle 'glidenote/octoeditor.vim'
+  NeoBundle 'othree/html5.vim'
   " NeoBundle 'tpope/vim-liquid' 
   " NeoBundle 'mattn/gist-vim'
   NeoBundle 'mattn/webapi-vim'
@@ -249,6 +277,7 @@ function! s:LoadBundles()
   NeoBundle 'sgur/unite-git_grep'
   NeoBundle 'ujihisa/quicklearn'
   NeoBundle 'thinca/vim-ref'
+  NeoBundle 'taka84u9/vim-ref-ri'
   NeoBundle 'mfumi/ref-dicts-en'
   NeoBundle 'tyru/vim-altercmd'
   NeoBundle 'ujihisa/neco-look'
@@ -258,7 +287,8 @@ function! s:LoadBundles()
   NeoBundle 'sgur/vim-gitgutter'
   NeoBundle 'rhysd/migemo-search.vim'
   " NeoBundle 'haya14busa/vim-migemo'
-  NeoBundle 'kien/ctrlp.vim'
+  " NeoBundle 'kien/ctrlp.vim'
+  NeoBundle 'ctrlpvim/ctrlp.vim'
   " NeoBundle 'vim-scripts/fcitx.vim'
   NeoBundle 'Lokaltog/vim-easymotion'
   NeoBundle 'kannokanno/previm'
@@ -267,17 +297,33 @@ function! s:LoadBundles()
   NeoBundle 'edsono/vim-matchit'
   NeoBundle 'basyura/unite-rails'
   NeoBundle 'aurigadl/vim-angularjs'
+  NeoBundle 'burnettk/vim-angular'
   NeoBundle 'mattn/benchvimrc-vim'
   NeoBundle 'Yggdroot/indentLine'
   NeoBundle 'rking/ag.vim'
-  NeoBundle 'jceb/vim-hier'
+  NeoBundle 'cohama/vim-hier'
   NeoBundle 'dannyob/quickfixstatus'
   NeoBundle 'osyo-manga/shabadou.vim'
   NeoBundle 'osyo-manga/vim-watchdogs'
   NeoBundle 'KazuakiM/vim-qfstatusline'
+  NeoBundle 'KazuakiM/vim-qfsigns'
   NeoBundle 'tpope/vim-dispatch'
   NeoBundle 'thoughtbot/vim-rspec'
-
+  NeoBundle 'szw/vim-tags'
+  NeoBundle 'vim-scripts/dbext.vim'
+  " NeoBundle 'severin-lemaignan/vim-minimap'
+  NeoBundle 'tsukkee/unite-tag'
+  NeoBundle 'marijnh/tern_for_vim', {
+    \ 'build': {
+    \   'others': 'npm install'
+    \}}
+  NeoBundle 'pangloss/vim-javascript'
+  NeoBundle 'othree/javascript-libraries-syntax.vim'
+  NeoBundle 'matthewsimo/angular-vim-snippets'
+  NeoBundle 'claco/jasmine.vim'
+  NeoBundle 'vim-scripts/AnsiEsc.vim'
+  NeoBundle 'elzr/vim-json'
+  NeoBundle 'kchmck/vim-coffee-script'
 
   "colorscheme
   NeoBundle 'altercation/vim-colors-solarized'
@@ -296,15 +342,15 @@ function! s:LoadBundles()
   " ...
 
   " set background=light "明るめの背景
-  " set background=dark "暗めの背景
-  colorscheme hybrid "set colorscheme
-  " colorscheme Tomorrow-Night "set colorscheme
+  set background=dark "暗めの背景
+  " colorscheme hybrid "set colorscheme
+  colorscheme Tomorrow-Night "set colorscheme
 
   let g:lightline = {
         \ 'colorscheme': 'Tomorrow_Night',
         \ 'active': {
         \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
-        \   'right': [ [ 'qfstatusline', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+        \   'right': [ [ 'syntaxcheck', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
         \ },
         \ 'component_function': {
         \   'filename': 'MyFilename',
@@ -316,10 +362,10 @@ function! s:LoadBundles()
         \   'currentworkingdir': 'CurrentWorkingDir',
         \ },
         \ 'component_expand': {
-        \   'qfstatusline': 'qfstatusline#Update',
+        \   'syntaxcheck': 'qfstatusline#Update',
         \ },
         \ 'component_type': {
-        \   'qfstatusline': 'error',
+        \   'syntaxcheck': 'error',
         \ },
         \ 'separator': { 'left': '⮀', 'right': '⮂' },
         \ 'subseparator': { 'left': '⮁', 'right': '⮃' },
@@ -328,13 +374,6 @@ function! s:LoadBundles()
         \   'right': [ [ 'currentworkingdir' ] ],
         \ },
         \}
-
-
-  let g:Qfstatusline#UpdateCmd = function('lightline#update')
-  let g:quickrun_config = {
-        \    'watchdogs_checker/_' : {
-        \        'hook/qfstatusline_update/enable_exit':   1,
-        \        'hook/qfstatusline_update/priority_exit': 4,},}
 
 
   function! MyModified()
@@ -422,10 +461,82 @@ function! s:LoadBundles()
     return fnamemodify(getcwd(),':')
   endfunction
 
+  "quickrun
+
+  autocmd FileType quickrun AnsiEsc
+
+  let g:quickrun_config = {
+        \   "_" : {
+        \       "runner" : "vimproc",
+        \       "runner/vimproc/updatetime" : 60
+        \   },
+        \}
+
+  " <C-c> で実行を強制終了させる
+  " quickrun.vim が実行していない場合には <C-c> を呼び出す
+  nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
+
+
+  "watchdogs_checker
+  " let g:quickrun_config = {
+  "       \    'watchdogs_checker/_' : {
+  "       \       'hook/qfstatusline_update/enable_exit':   1,
+  "       \       'hook/unite_quickfix/enable' : 0,
+  "       \       'hook/close_unite_quickfix/enable' : 0,
+  "       \       'hook/close_buffer/enable_exit' : 1,
+  "       \       'hook/close_quickfix/enable_exit' : 1,
+  "       \       'hook/redraw_unite_quickfix/enable_exit' : 0,
+  "       \       'hook/close_unite_quickfix/enable_exit' : 1,
+  "       \       'hook/qfstatusline_update/priority_exit': 4,},}
+
+  " "エラー箇所表示のみ
+  let g:quickrun_config = {
+        \        'watchdogs_checker/_' : {
+        \        'outputter/quickfix/open_cmd' : "",
+        \        'hook/qfstatusline_update/enable_exit':   1,
+        \        'hook/qfstatusline_update/priority_exit': 4}}
+
+
+  " Ruby で rubocop を使用するように設定
+  let g:quickrun_config = {
+        \   "ruby/watchdogs_checker" : {
+        \       "type" : "watchdogs_checker/rubocop"
+        \   }
+        \}
+
+  " coffeeScript で coffeelint を使用するように設定
+  let g:quickrun_config = {
+        \   "coffee/watchdogs_checker" : {
+        \       "type" : "watchdogs_checker/coffeelint"
+        \   }
+        \}
+
+  " シンタックスチェックは<Leader>+wで行う
+  nnoremap <Leader>w :<C-u>WatchdogsRun<CR>
+
+  let g:watchdogs_check_BufWritePost_enables = {
+        \   "javascript" : 1,
+        \   "sh" : 1,
+        \   "sass" : 1,
+        \   "scss" : 1
+        \}
+
+  let g:watchdogs_check_CursorHold_enable = 0
+
+
+  call watchdogs#setup(g:quickrun_config)
+
+  " If syntax error, cursor is moved at line setting sign.
+  let g:qfsigns#AutoJump = 1
+  " If syntax error, view split and cursor is moved at line setting sign.
+  let g:qfsigns#AutoJump = 2
+
+  let g:Qfstatusline#UpdateCmd = function('lightline#update')
+  " watchdogs.vim の設定を追加
+
   let g:unite_force_overwrite_statusline = 1
   let g:vimfiler_force_overwrite_statusline = 1
   " let g:vimshell_force_overwrite_statusline = 0
-
 
   "" vimfiler
   let g:vimfiler_as_default_explorer=1
@@ -436,9 +547,12 @@ function! s:LoadBundles()
   inoremap <C-k><C-f> <ESC>:VimFiler -project<CR>
   nnoremap <C-k><C-k> :VimFiler -buffer-name=explorer -direction=topleft -split -simple -project -winwidth=29 -toggle -no-quit<CR>
   nnoremap <C-k><C-b> :VimFilerBufferDir -buffer-name=explorer -direction=topleft -split -simple -winwidth=29 -toggle -no-quit<CR>
-  autocmd FileType vimfiler 
-        \ nnoremap <buffer><silent>/ 
-        \ :<C-u>UniteWithBufferDir file<CR>
+
+  autocmd FileType vimfiler* call s:vimfiler_my_settings()
+  function! s:vimfiler_my_settings()
+    nnoremap <buffer><silent>/ :<C-u>UniteWithBufferDir file<CR>
+    nnoremap <silent> <buffer> <expr> <C-t> vimfiler#do_action('tabopen')
+  endfunction
 
   "" neocomplcache
   " Use neocomplcache.
@@ -515,10 +629,10 @@ function! s:LoadBundles()
   call submode#map('winsize', 'n', '', 'K', '<C-w>+')
 
   " Shift + 矢印でウィンドウサイズを変更
-  " nnoremap <A-S-Left>  <C-w><<CR>
-  " nnoremap <A-S-Right> <C-w>><CR>
-  " nnoremap <A-S-Up>    <C-w>-<CR>
-  " nnoremap <A-S-Down>  <C-w>+<CR>
+  " map <Left>  <C-w><<CR>
+  " map <Right> <C-w>><CR>
+  " map <Up>    <C-w>-<CR>
+  " map <Down>  <C-w>+<CR>
 
   "" over.vim
   " over.vimの起動
@@ -534,11 +648,10 @@ function! s:LoadBundles()
   " ヒストリー/ヤンク機能を有効化
   let g:unite_source_history_yank_enable =1
   " 最近のファイルの個数制限
-  let g:unite_source_file_mru_limit = 200
+  " let g:unite_source_file_mru_limit = 200
   " file_recのキャッシュ
   " let g:unite_source_rec_max_cache_files = 50000
   " let g:unite_source_rec_min_cache_files = 100
-
 
   "Like ctrlp.vim settings.
   call unite#custom#profile('default', 'context', {
@@ -566,8 +679,8 @@ function! s:LoadBundles()
   "nnoremap <silent> [unite]b :<C-u>Unite<Space>buffer<CR>
   ""スペースキーとrキーでレジストリを表示
   " nnoremap <silent> [unite]r :<C-u>Unite<Space> register<CR>
-  "スペースキーとtキーでタブを表示
-  nnoremap <silent> [unite]t :<C-u>Unite<Space>  tab<CR>
+  "スペースキーとtキーでtagsを検索
+  nnoremap <silent> [unite]t :<C-u>Unite<Space>  tag<CR>
   ""スペースキーとhキーでヒストリ/ヤンクを表示
   nnoremap <silent> [unite]h :<C-u>Unite<Space> history/yank<CR>
   "スペースキーとoキーでoutline
@@ -583,12 +696,17 @@ function! s:LoadBundles()
 
   if executable('ag')
     let g:unite_source_grep_command = 'ag'
-    " let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
+    let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
     let g:unite_source_grep_recursive_opt = ''
-  end
+    let g:unite_source_rec_async_command =
+          \ 'ag --follow --nocolor --nogroup --hidden -g ""'
+  endif
 
   let g:unite_source_git_grep_max_candidates=200
   let g:unite_source_git_grep_required_pattern_length=4
+
+  " ignore files
+  call unite#custom#source('file_rec/async', 'ignore_pattern', '(png\|gif\|jpeg\|jpg)$')
 
   " grep検索結果の再呼出
   nnoremap <silent> [unite]r  :<C-u>UniteResume search-buffer <CR>
@@ -636,7 +754,7 @@ function! s:LoadBundles()
   let g:ctrlp_user_command = 'ag %s -l'
   let g:ctrlp_use_migemo = 1
   let g:ctrlp_clear_cache_on_exit = 0   " 終了時キャッシュをクリアしない
-  let g:ctrlp_mruf_max            = 500 " MRUの最大記録数
+  let g:ctrlp_mruf_max            = 3000 " MRUの最大記録数
   let g:ctrlp_open_new_file       = 1   " 新規ファイル作成時にタブで開く
   let g:ctrlp_prompt_mappings = {
         \ 'PrtBS()':              ['<c-h>', '<bs>', '<c-]>'],
@@ -665,7 +783,7 @@ function! s:LoadBundles()
         \ 'PrtCurEnd()':          ['<c-e>'],
         \ 'PrtCurLeft()':         ['<left>', '<c-^>'],
         \ 'PrtCurRight()':        ['<c-l>', '<right>'],
-        \ 'PrtClearCache()':      ['<F5>'],
+        \ 'PrtClearCache()':      ['<c-R>'],
         \ 'PrtDeleteMRU()':       ['<F7>'],
         \ 'CreateNewFile()':      ['<c-y>'],
         \ 'MarkToOpen()':         ['<c-z>'],
@@ -701,24 +819,6 @@ function! s:LoadBundles()
   " " Only :w! updates a gist.
   " let g:gist_update_on_write = 2
 
-
-  "quickrun
-
-  let g:quickrun_config = {
-        \   "_" : {
-        \       "runner" : "vimproc",
-        \       "runner/vimproc/updatetime" : 60
-        \   },
-        \}
-  " <C-c> で実行を強制終了させる
-  " quickrun.vim が実行していない場合には <C-c> を呼び出す
-  nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
-
-  set spelllang+=cjk
-
-
-  " nnoremap <Leader>r :<C-u>Unite quicklearn -immediately<CR>
-
   " vim-ref のバッファを q で閉じられるようにする
   autocmd FileType ref-* nnoremap <buffer> <silent> q :<C-u>close<CR>
 
@@ -738,42 +838,18 @@ function! s:LoadBundles()
   " 出力に対するフィルタ
   " 最初の数行を削除
   function! g:ref_source_webdict_sites.je.filter(output)
-    return join(split(a:output, "\n")[40 :], "\n")
+    let l:str = substitute(a:output, "       単語帳", "", "g")
+    return join(split(str, "\n")[30 :], "\n")
   endfunction
 
   function! g:ref_source_webdict_sites.ej.filter(output)
-    return join(split(a:output, "\n")[40 :], "\n")
+    let l:str = substitute(a:output, "       単語帳", "", "g")
+    return join(split(str, "\n")[30 :], "\n")
   endfunction
 
   call altercmd#load()
   CAlterCommand ej Ref webdict ej
   CAlterCommand je Ref webdict je
-
-  "tcomment_vim 
-  " tcommentで使用する形式を追加
-  if !exists('g:tcomment_types')
-    let g:tcomment_types = {}
-  endif
-  let g:tcomment_types = {
-        \'php_surround' : "<?php %s ?>",
-        \'eruby_surround' : "<%% %s %%>",
-        \'eruby_surround_minus' : "<%% %s -%%>",
-        \'eruby_surround_equality' : "<%%= %s %%>",
-        \}
-
-  " マッピングを追加
-  function! SetErubyMapping2()
-    nmap <buffer> <C-/>c :TCommentAs eruby_surround<CR>
-    nmap <buffer> <C-/>- :TCommentAs eruby_surround_minus<CR>
-    nmap <buffer> <C-/>= :TCommentAs eruby_surround_equality<CR>
-
-    vmap <buffer> <C-/>c :TCommentAs eruby_surround<CR>
-    vmap <buffer> <C-/>- :TCommentAs eruby_surround_minus<CR>
-    vmap <buffer> <C-/>= :TCommentAs eruby_surround_equality<CR>
-  endfunction
-
-  " erubyのときだけ設定を追加
-  au FileType eruby call SetErubyMapping2()
 
   "gitgutter
   let g:gitgutter_diff_args = '-w'
@@ -809,12 +885,14 @@ function! s:LoadBundles()
   let g:indentLine_faster=1
   let g:indentLine_color_term = 239
   nmap <Leader>i :IndentLinesToggle<CR>
-  let g:indentLine_fileTypeExclude = ['help', 'vimfiler', 'ctrlp', 'unite']
+  let g:indentLine_bufNameExclude = ['help', 'vimfiler', 'ctrlp', 'unite']
   let g:indentLine_enabled=0
+  " nnoremap <Leader>i :<C-u>setlocal cursorcolumn!<CR>
 
   " let g:rspec_command = 'Dispatch RAILS_ENV=test spring rspec --format progress --no-profile {spec}'
   " let g:rspec_command = 'Dispatch rspec {spec}'
-  let g:rspec_command = "compiler rspec | set makeprg=spring | Make rspec {spec}"
+  " let g:rspec_command = "compiler rspec | set makeprg=spring | Make rspec -fd {spec}"
+  let g:rspec_command = "compiler rspec | set makeprg=spring | Make rspec --color --drb --tty {spec}"
   function! s:load_rspec_settings()
     nmap <silent><leader>r :call RunCurrentSpecFile()<CR>
     nmap <silent><leader>n :call RunNearestSpec()<CR>
@@ -826,7 +904,6 @@ function! s:LoadBundles()
     autocmd!
     autocmd  BufEnter *_spec.rb call s:load_rspec_settings()
   augroup END
-
 
   " function! s:load_rspec_settings()
   "   "" rspec.vim {{{
@@ -848,10 +925,22 @@ function! s:LoadBundles()
 
   " 常にprojectのroot Dirに移動する
   function! ChangeCurrentDirectoryToProjectRoot()
-    let root = '"' . unite#util#path2project_directory(expand('%')) . '"'
+    let root = unite#util#path2project_directory(expand('%'))
     execute 'lcd' root
   endfunction
   :au BufEnter * :call ChangeCurrentDirectoryToProjectRoot()
+
+  "" hilight minimap
+  " let g:minimap_highlight='Visual'
+
+  let g:vim_json_syntax_conceal = 0
+
+  " caw.vim
+  nmap <C-_> <Plug>(caw:i:toggle)
+  vmap <C-_> <Plug>(caw:i:toggle)
+
+  " vim-coffee-script
+  autocmd BufWritePost *.coffee silent make!
 
   "読み込んだプラグインの設定ここまで
 endfunction
@@ -865,7 +954,9 @@ function! s:InitNeoBundle()
       set runtimepath+=~/.vim/bundle/neobundle.vim/
     endif
     try
-      call neobundle#rc(expand('~/.vim/bundle/'))
+      call neobundle#begin(expand('~/.vim/bundle/'))
+      NeoBundleFetch 'Shougo/neobundle.vim'
+      call neobundle#end()
       call s:LoadBundles()
     catch
       call s:WithoutBundles()

@@ -1,6 +1,6 @@
 *vimfiler.txt*	Powerful file explorer implemented by Vim script
 
-Version: 4.1
+Version: 4.2
 Author : Shougo <Shougo.Matsu@gmail.com>
 License: MIT license  {{{
     Permission is hereby granted, free of charge, to any person obtaining
@@ -228,14 +228,15 @@ g:vimfiler_detect_drives			*g:vimfiler_detect_drives*
 		This variable controls vimfiler uses drives
 		 when |<Plug>(vimfiler_switch_to_drive)|.
 		
-		Default value is refer to plugin/vimfiler.vim.
+		Default value is refer to
+		autoload/unite/sources/vimfiler_drive.vim.
 
 g:vimfiler_data_directory			*g:vimfiler_data_directory*
 		Specifies directories for configurations internally used in
 		vimfiler itself or its sources.  If the directory doesn't
 		exist the directory will be automatically generated.
 		
-		Default value is $XDG_CACHE_DIR/vimfiler or
+		Default value is $XDG_CACHE_HOME/vimfiler or
 		expand("~/.cache/vimfiler"); the absolute path of it.
 
 					*g:vimfiler_force_overwrite_statusline*
@@ -338,7 +339,7 @@ g:vimfiler_ignore_pattern			 *g:vimfiler_ignore_pattern*
 		|<Plug>(vimfiler_toggle_visible_ignore_files)|, the ignore
 		pattern is disabled.
 >
-		let g:vimfiler_ignore_pattern = '^\%(.git\|.DS_Store\)$'
+		let g:vimfiler_ignore_pattern = '^\%(\.git\|\.DS_Store\)$'
 <
 		Default value is '^\.' (dot files pattern).
 
@@ -579,17 +580,14 @@ Normal mode key mappings.
 		http://www.vim.org/scripts/script.php?script_id=1721
 		Note: This mappings is disabled in vimfiler safe mode.
 
-<Plug>(vimfiler_execute)			*<Plug>(vimfiler_execute)*
-		Executes cursor file with |g:vimfiler_execute_file_list|
-		command.  If cursor file is directory, change directory.
+<Plug>(vimfiler_cd_or_edit)			*<Plug>(vimfiler_cd_or_edit)*
+		Change cursor directory or edit cursor file.
+
+<Plug>(vimfiler_expand_or_edit) 	*<Plug>(vimfiler_expand_or_edit)*
+		Expand cursor directory or edit cursor file.
 
 				*<Plug>(vimfiler_execute_system_associated)*
 <Plug>(vimfiler_execute_system_associated)
-<Plug>(vimfiler_execute_file)		*<Plug>(vimfiler_execute_file)*
-		Executes marked files or cursor file by system associated
-		command.
-		Note: <Plug>(vimfiler_execute_file) is obsolete name.
-
 				*<Plug>(vimfiler_execute_vimfiler_associated)*
 <Plug>(vimfiler_execute_vimfiler_associated)
 		Executes cursor file by vimfiler associated command.
@@ -739,14 +737,13 @@ Normal mode key mappings.
 		Chooses |unite| action in selected files.
 
 <Plug>(vimfiler_smart_h)			*<Plug>(vimfiler_smart_h)*
-		Switches to parent directory or normal! "h".
-		If enabled "explorer" option, it unexpand directory tree or
-		normal! "h".
+		Switches to parent directory.
+		If enabled "explorer" option, it will unexpand directory tree.
 
 <Plug>(vimfiler_smart_l)			*<Plug>(vimfiler_smart_l)*
-		Executes cursor file or normal! "l".
-		If enabled "explorer" option, it expand directory tree or
-		normal! "l".
+		Switches to cursor directory or edit cursor file.
+		If enabled "explorer" option, it will expand directory tree or
+		edit cursor file.
 
 <Plug>(vimfiler_toggle_safe_mode)	*<Plug>(vimfiler_toggle_safe_mode)*
 		Toggles safe mode. In safe mode, dangerous command is
@@ -829,7 +826,8 @@ Cp			<Plug>(vimfiler_clipboard_paste)
 r			<Plug>(vimfiler_rename_file)
 K			<Plug>(vimfiler_make_directory)
 N			<Plug>(vimfiler_new_file)
-<Enter>			<Plug>(vimfiler_execute)
+<Enter>			<Plug>(vimfiler_cd_or_edit)
+o			<Plug>(vimfiler_expand_or_edit)
 l			<Plug>(vimfiler_smart_l)
 x			<Plug>(vimfiler_execute_system_associated)
 h			<Plug>(vimfiler_smart_h)
@@ -850,10 +848,10 @@ ge			<Plug>(vimfiler_execute_external_filer)
 q			<Plug>(vimfiler_hide)
 Q			<Plug>(vimfiler_exit)
 -			<Plug>(vimfiler_close)
-?			<Plug>(vimfiler_help)
+g?			<Plug>(vimfiler_help)
 v			<Plug>(vimfiler_preview_file)
-o			<Plug>(vimfiler_sync_with_current_vimfiler)
-O			<Plug>(vimfiler_open_file_in_another_vimfiler)
+O			<Plug>(vimfiler_sync_with_current_vimfiler)
+go			<Plug>(vimfiler_open_file_in_another_vimfiler)
 <C-g>			<Plug>(vimfiler_print_filename)
 g<C-g>			<Plug>(vimfiler_toggle_maximize_window)
 yy			<Plug>(vimfiler_yank_full_path)
@@ -1302,11 +1300,6 @@ A:
 >
 	:VimFilerExplorer -find
 <
-Q: I cannot open the file not contained ":" if enabled
-g:vimfiler_as_default_explorer.
-
-A: It is feature now.
-
 Q: I set "let g:vimfiler_as_default_explorer = 1", but it opens netrw instead
 of vimfiler.
 https://github.com/Shougo/vimfiler.vim/issues/125
