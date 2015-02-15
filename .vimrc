@@ -91,10 +91,10 @@ set nocompatible "vi 互換モードを解除する"
 "矢印キーが認識されてしまう場合の対応
 
 " " j, k による移動を折り返されたテキストでも自然に振る舞うように変更
-nnoremap j gj
-nnoremap k gk
-nnoremap <Up> gk
-nnoremap <Down> gj
+" nnoremap j gj
+" nnoremap k gk
+" nnoremap <Up> gk
+" nnoremap <Down> gj
 
 " vを二回で行末まで選択
 vnoremap v $h
@@ -145,9 +145,6 @@ endif
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
 cmap w!! w !sudo tee > /dev/null %
-
-" 入力モード中に素早くJJと入力した場合はESCとみなす
-inoremap jj <Esc>
 
 " " ESCを二回押すことでハイライトを消す
 " nmap <silent> <Esc><Esc> :nohlsearch<CR>:redraw!<CR>:redraws!<CR>
@@ -215,6 +212,27 @@ au BufRead,BufNewFile,BufReadPre *.coffee   set filetype=coffee
 " インデントを設定
 autocmd FileType coffee     setlocal sw=2 sts=2 ts=2 et
 
+" Use vsplit mode
+if has("vim_starting") && !has('gui_running') && has('vertsplit')
+  function! g:EnableVsplitMode()
+    " enable origin mode and left/right margins
+    let &t_CS = "y"
+    let &t_ti = &t_ti . "\e[?6;69h"
+    let &t_te = "\e[?6;69l" . &t_te
+    let &t_CV = "\e[%i%p1%d;%p2%ds"
+    call writefile([ "\e[?6h\e[?69h" ], "/dev/tty", "a")
+  endfunction
+
+  " old vim does not ignore CPR
+  map <special> <Esc>[3;9R <Nop>
+
+  " new vim can't handle CPR with direct mapping
+  " map <expr> ^[[3;3R g:EnableVsplitMode()
+  set t_F9=[3;3R
+  map <expr> <t_F9> g:EnableVsplitMode()
+  let &t_RV .= "\e[?6;69h\e[1;3s\e[3;9H\e[6n\e[0;0s\e[?6;69l"
+endif
+
 " NeoBundle がインストールされていない時、
 " もしくは、プラグインの初期化に失敗した時の処理
 function! s:WithoutBundles()
@@ -266,7 +284,7 @@ function! s:LoadBundles()
   NeoBundle 'osyo-manga/vim-over'
   NeoBundle 'glidenote/octoeditor.vim'
   NeoBundle 'othree/html5.vim'
-  " NeoBundle 'tpope/vim-liquid' 
+  " NeoBundle 'tpope/vim-liquid'
   " NeoBundle 'mattn/gist-vim'
   NeoBundle 'mattn/webapi-vim'
   " NeoBundle 'vim-scripts/vim-auto-save'
@@ -282,17 +300,18 @@ function! s:LoadBundles()
   NeoBundle 'tyru/vim-altercmd'
   NeoBundle 'ujihisa/neco-look'
   NeoBundle 'vim-ruby/vim-ruby'
-  NeoBundle 'Townk/vim-autoclose' 
-  NeoBundle 'ujihisa/unite-font' 
+  " NeoBundle 'Townk/vim-autoclose'
+  NeoBundle 'https://github.com/cohama/lexima.vim'
+  NeoBundle 'ujihisa/unite-font'
   NeoBundle 'sgur/vim-gitgutter'
-  NeoBundle 'rhysd/migemo-search.vim'
+  " NeoBundle 'rhysd/migemo-search.vim'
   " NeoBundle 'haya14busa/vim-migemo'
   " NeoBundle 'kien/ctrlp.vim'
   NeoBundle 'ctrlpvim/ctrlp.vim'
   " NeoBundle 'vim-scripts/fcitx.vim'
   NeoBundle 'Lokaltog/vim-easymotion'
   NeoBundle 'kannokanno/previm'
-  NeoBundle 'lambdalisue/vim-gista' 
+  NeoBundle 'lambdalisue/vim-gista'
   " NeoBundle 'tpope/vim-endwise.git'
   NeoBundle 'edsono/vim-matchit'
   NeoBundle 'basyura/unite-rails'
@@ -317,13 +336,25 @@ function! s:LoadBundles()
     \ 'build': {
     \   'others': 'npm install'
     \}}
+  " javascript
   NeoBundle 'pangloss/vim-javascript'
   NeoBundle 'othree/javascript-libraries-syntax.vim'
+  NeoBundle 'maksimr/vim-jsbeautify'
+  NeoBundle 'mattn/jscomplete-vim'
+
+  " css
+  NeoBundle 'hail2u/vim-css3-syntax'
+  NeoBundle 'groenewege/vim-less'
   NeoBundle 'matthewsimo/angular-vim-snippets'
   NeoBundle 'claco/jasmine.vim'
   NeoBundle 'vim-scripts/AnsiEsc.vim'
   NeoBundle 'elzr/vim-json'
   NeoBundle 'kchmck/vim-coffee-script'
+
+  " jade
+  NeoBundle 'digitaltoad/vim-jade'
+
+  NeoBundle 'tpope/vim-unimpaired'
 
   "colorscheme
   NeoBundle 'altercation/vim-colors-solarized'
@@ -335,7 +366,7 @@ function! s:LoadBundles()
   NeoBundle 'jpo/vim-railscasts-theme'
   NeoBundle 'therubymug/vim-pyte'
   NeoBundle 'w0ng/vim-hybrid'
-  NeoBundle 'chriskempson/vim-tomorrow-theme' 
+  NeoBundle 'chriskempson/vim-tomorrow-theme'
 
   " ...
   " 読み込んだプラグインの設定
@@ -344,7 +375,7 @@ function! s:LoadBundles()
   " set background=light "明るめの背景
   set background=dark "暗めの背景
   " colorscheme hybrid "set colorscheme
-  colorscheme Tomorrow-Night "set colorscheme
+  colorscheme hybrid "set colorscheme
 
   let g:lightline = {
         \ 'colorscheme': 'Tomorrow_Night',
@@ -545,8 +576,8 @@ function! s:LoadBundles()
   "autocmd VimEnter * VimFiler -buffer-name=explorer -split -simple -winwidth=30 -toggle -no-quit
   nnoremap <C-k><C-f> :VimFiler -project<CR>
   inoremap <C-k><C-f> <ESC>:VimFiler -project<CR>
-  nnoremap <C-k><C-k> :VimFiler -buffer-name=explorer -direction=topleft -split -simple -project -winwidth=29 -toggle -no-quit<CR>
-  nnoremap <C-k><C-b> :VimFilerBufferDir -buffer-name=explorer -direction=topleft -split -simple -winwidth=29 -toggle -no-quit<CR>
+  nnoremap <C-k><C-k> :VimFiler -buffer-name=explorer -direction=topleft -split -simple -project -winwidth=35 -toggle -no-quit<CR>
+  nnoremap <C-k><C-b> :VimFilerBufferDir -buffer-name=explorer -direction=topleft -split -simple -winwidth=35 -toggle -no-quit<CR>
 
   autocmd FileType vimfiler* call s:vimfiler_my_settings()
   function! s:vimfiler_my_settings()
@@ -560,7 +591,7 @@ function! s:LoadBundles()
   " Use smartcase.
   let g:neocomplcache_enable_smart_case = 1
   " Set minimum syntax keyword length.
-  let g:neocomplcache_min_syntax_length = 3
+  let g:neocomplcache_min_syntax_length = 4
   " Define dictionary.
   let g:neocomplcache_dictionary_filetype_lists = {
         \ 'default' : ''
@@ -585,13 +616,13 @@ function! s:LoadBundles()
   smap <C-Space>     <Plug>(neosnippet_expand_or_jump)
   xmap <C-Space>     <Plug>(neosnippet_expand_target)
   " 補完候補が表示されている場合は確定。そうでない場合は改行
-  inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
-  function! s:my_cr_function()
-    if(pumvisible())
-      return neocomplcache#close_popup()
-    endif
-    return "\<CR>"
-  endfunction
+  " inoremap <silent> <CR> <C-r>=<SID>my_cr_function()<CR>
+  " function! s:my_cr_function()
+  "   if(pumvisible())
+  "     return neocomplcache#close_popup()
+  "   endif
+  "   return "\<CR>"
+  " endfunction
 
   " For snippet_complete marker.
   if has('conceal')
@@ -599,12 +630,12 @@ function! s:LoadBundles()
   endif
 
   " neosnippet.vim公式指定をちょっといじる
-  imap <expr><TAB> neosnippet#jumpable() ?
-        \ "\<Plug>(neosnippet_expand_or_jump)"
-        \: pumvisible() ? "\<C-n>" : "\<TAB>"
-  smap <expr><TAB> neosnippet#jumpable() ?
-        \ "\<Plug>(neosnippet_expand_or_jump)"
-        \: "\<TAB>"
+  " imap <expr><TAB> neosnippet#jumpable() ?
+  "       \ "\<Plug>(neosnippet_expand_or_jump)"
+  "       \: pumvisible() ? "\<C-n>" : "\<TAB>"
+  " smap <expr><TAB> neosnippet#jumpable() ?
+  "       \ "\<Plug>(neosnippet_expand_or_jump)"
+  "       \: "\<TAB>"
 
   " rails
   autocmd BufEnter * if exists("b:rails_root") | NeoComplCacheSetFileType ruby.rails | endif
@@ -699,7 +730,7 @@ function! s:LoadBundles()
     let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
     let g:unite_source_grep_recursive_opt = ''
     let g:unite_source_rec_async_command =
-          \ 'ag --follow --nocolor --nogroup --hidden -g ""'
+          \ 'ag --follow --nocolor --nogroup -g ""'
   endif
 
   let g:unite_source_git_grep_max_candidates=200
@@ -751,8 +782,10 @@ function! s:LoadBundles()
 
   " ctrlp.vim
   let g:ctrlp_map = "[unite]<CR>"
-  let g:ctrlp_user_command = 'ag %s -l'
+  " let g:ctrlp_user_command = 'ag %s -l'
+  let g:ctrlp_user_command = 'ag %s -i --nocolor --column --ignore --nogroup -g ""'
   let g:ctrlp_use_migemo = 1
+  " let g:ctrlp_use_caching = 0
   let g:ctrlp_clear_cache_on_exit = 0   " 終了時キャッシュをクリアしない
   let g:ctrlp_mruf_max            = 3000 " MRUの最大記録数
   let g:ctrlp_open_new_file       = 1   " 新規ファイル作成時にタブで開く
@@ -789,7 +822,7 @@ function! s:LoadBundles()
         \ 'MarkToOpen()':         ['<c-z>'],
         \ 'OpenMulti()':          ['<c-o>'],
         \ 'PrtExit()':            ['<esc>', '<c-c>', '<c-g>'],
-        \ } 
+        \ }
 
   "Octorpess
   let g:octopress_path = '~/octopress'
@@ -857,9 +890,9 @@ function! s:LoadBundles()
   nnoremap <silent> ,gh :<C-u>GitGutterLineHighlightsToggle<CR>
 
   "migemosearch
-  if executable('cmigemo')
-    cnoremap <expr><CR> migemosearch#replace_search_word()."\<CR>"
-  endif
+"  if executable('cmigemo')
+"   cnoremap <expr><CR> migemosearch#replace_search_word()."\<CR>"
+" endif
 
   "previm
   augroup PrevimSettings
@@ -873,6 +906,7 @@ function! s:LoadBundles()
 
   "gista
   let g:gista#github_user = 'iberianpig'
+  let g:gista#post_private = 1
   ""unite
   nnoremap <silent> [unite]gs :<C-u>Unite<Space> gista<CR>
 
@@ -935,12 +969,28 @@ function! s:LoadBundles()
 
   let g:vim_json_syntax_conceal = 0
 
-  " caw.vim
-  nmap <C-_> <Plug>(caw:i:toggle)
-  vmap <C-_> <Plug>(caw:i:toggle)
-
   " vim-coffee-script
   autocmd BufWritePost *.coffee silent make!
+
+  " lexima plugin
+  call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:;]', 'char': '(', 'input': '('})
+  call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:;]', 'char': '{', 'input': '{'})
+  call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:;]', 'char': '[', 'input': '['})
+  call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:;]', 'char': '''', 'input': ''''})
+  call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:;]', 'char': '"', 'input': '"'})
+  call lexima#add_rule({'at': '\%#\n\s*)', 'char': ')', 'input': ')', 'delete': ')'})
+  call lexima#add_rule({'at': '\%#\n\s*}', 'char': '}', 'input': '}', 'delete': '}'})
+  call lexima#add_rule({'at': '\%#\n\s*]', 'char': ']', 'input': ']', 'delete': ']'})
+
+  " easymotion
+  let g:EasyMotion_do_mapping = 0 "Disable default mappings
+  nmap s <Plug>(easymotion-s2)
+  set nohlsearch
+  map  / <Plug>(easymotion-sn)
+  omap / <Plug>(easymotion-tn)
+  map  n <Plug>(easymotion-next)
+  map  N <Plug>(easymotion-prev)
+  let g:EasyMotion_use_migemo = 1
 
   "読み込んだプラグインの設定ここまで
 endfunction
@@ -960,7 +1010,7 @@ function! s:InitNeoBundle()
       call s:LoadBundles()
     catch
       call s:WithoutBundles()
-    endtry 
+    endtry
   else
     call s:WithoutBundles()
   endif

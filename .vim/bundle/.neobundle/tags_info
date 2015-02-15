@@ -13,6 +13,8 @@ indentLine
 jasmine.vim
 javascript-libraries-syntax.vim
 jellybeans.vim
+jscomplete-vim
+lexima.vim
 lightline.vim
 migemo-search.vim
 mrkn256.vim
@@ -44,10 +46,10 @@ unite.vim
 vim-altercmd
 vim-angular
 vim-angularjs
-vim-autoclose
 vim-coffee-script
 vim-colors-solarized
 vim-colors-wombat
+vim-css3-syntax
 vim-dispatch
 vim-easy-align
 vim-easymotion
@@ -56,8 +58,11 @@ vim-gista
 vim-gitgutter
 vim-hier
 vim-hybrid
+vim-jade
 vim-javascript
+vim-jsbeautify
 vim-json
+vim-less
 vim-markdown
 vim-matchit
 vim-multiple-cursors
@@ -77,6 +82,7 @@ vim-submode
 vim-surround
 vim-tags
 vim-tomorrow-theme
+vim-unimpaired
 vim-watchdogs
 vimfiler
 vimproc
