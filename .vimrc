@@ -88,11 +88,12 @@ inoremap <C-w> <C-o>db
 
 
 set nocompatible "vi 互換モードを解除する"
-"矢印キーが認識されてしまう場合の対応
+
+set timeout timeoutlen=1000 "ttimeoutlen=75
 
 " " j, k による移動を折り返されたテキストでも自然に振る舞うように変更
-" nnoremap j gj
-" nnoremap k gk
+nnoremap j gj
+nnoremap k gk
 " nnoremap <Up> gk
 " nnoremap <Down> gj
 
@@ -139,16 +140,12 @@ inoremap <C-c> <ESC>
 
 if has('unix') && !has('gui_running')
   " ESC後にすぐ反映されない対策
-  nmap <silent> <ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
-  " map <silent> <ESC> :nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
+  " nmap <silent> <ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
+  map <silent> <ESC> :nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
 endif
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
 cmap w!! w !sudo tee > /dev/null %
-
-" " ESCを二回押すことでハイライトを消す
-" nmap <silent> <Esc><Esc> :nohlsearch<CR>:redraw!<CR>:redraws!<CR>
-
 
 "tab/indentの設定
 set shellslash
@@ -188,21 +185,21 @@ endif
 
 "タブの設定
 " The prefix key.
-nnoremap [Tag]   <Nop>
-nmap  t [Tag]
+nnoremap [tab]   <Nop>
+nmap  t [tab]
 " Tab jump
 for n in range(1, 9)
-  execute 'nnoremap <silent> [Tag]'.n  ':<C-u>tabnext'.n.'<CR>'
+  execute 'nnoremap <silent> [tab]'.n  ':<C-u>tabnext'.n.'<CR>'
 endfor
 " tc 新しいタブを右に作る
-map <silent> [Tag]c :tabnew<CR>
+map <silent> [tab]c :tabnew<CR>
 " tn 新しいタブを一番右に作る
-map <silent> [Tag]n :tablast <bar> tabnew<CR>
+map <silent> [tab]n :tablast <bar> tabnew<CR>
 " " tx タブを閉じる
-map <silent> [Tag]q :tabclose<CR>
-map <silent> [Tag]x :tabclose<CR>
-map <silent> [Tag]b :tabprevious<CR>
-map <silent> [Tag]f :tabnext<CR>
+map <silent> [tab]q :tabclose<CR>
+map <silent> [tab]x :tabclose<CR>
+map <silent> [tab]b :tabprevious<CR>
+map <silent> [tab]f :tabnext<CR>
 
 "シンタックスハイライトの追加
 au BufNewFile,BufRead *.json.jbuilder set ft=ruby
@@ -267,6 +264,7 @@ function! s:LoadBundles()
   NeoBundle 'tpope/vim-rails'
   NeoBundle 'tpope/vim-fugitive'
   NeoBundle 'Shougo/unite.vim'
+  NeoBundle 'tsukkee/unite-help'
   NeoBundle 'ujihisa/unite-colorscheme'
   NeoBundle 'osyo-manga/unite-quickfix.git'
   NeoBundle 'thinca/vim-quickrun'
@@ -312,7 +310,6 @@ function! s:LoadBundles()
   NeoBundle 'Lokaltog/vim-easymotion'
   NeoBundle 'kannokanno/previm'
   NeoBundle 'lambdalisue/vim-gista'
-  " NeoBundle 'tpope/vim-endwise.git'
   NeoBundle 'edsono/vim-matchit'
   NeoBundle 'basyura/unite-rails'
   NeoBundle 'aurigadl/vim-angularjs'
@@ -330,6 +327,7 @@ function! s:LoadBundles()
   NeoBundle 'thoughtbot/vim-rspec'
   NeoBundle 'szw/vim-tags'
   NeoBundle 'vim-scripts/dbext.vim'
+  NeoBundle 'vim-trailing-whitespace'
   " NeoBundle 'severin-lemaignan/vim-minimap'
   NeoBundle 'tsukkee/unite-tag'
   NeoBundle 'marijnh/tern_for_vim', {
@@ -341,6 +339,8 @@ function! s:LoadBundles()
   NeoBundle 'othree/javascript-libraries-syntax.vim'
   NeoBundle 'maksimr/vim-jsbeautify'
   NeoBundle 'mattn/jscomplete-vim'
+  NeoBundle 'leafgarland/typescript-vim'
+  NeoBundle 'clausreinke/typescript-tools'
 
   " css
   NeoBundle 'hail2u/vim-css3-syntax'
@@ -353,8 +353,6 @@ function! s:LoadBundles()
 
   " jade
   NeoBundle 'digitaltoad/vim-jade'
-
-  NeoBundle 'tpope/vim-unimpaired'
 
   "colorscheme
   NeoBundle 'altercation/vim-colors-solarized'
@@ -542,6 +540,12 @@ function! s:LoadBundles()
         \   }
         \}
 
+  let g:quickrun_config = {
+        \   "jade/watchdogs_checker" : {
+        \       "type" : "watchdogs_checker/jade"
+        \   }
+        \}
+
   " シンタックスチェックは<Leader>+wで行う
   nnoremap <Leader>w :<C-u>WatchdogsRun<CR>
 
@@ -593,13 +597,13 @@ function! s:LoadBundles()
   " Set minimum syntax keyword length.
   let g:neocomplcache_min_syntax_length = 4
   " Define dictionary.
-  let g:neocomplcache_dictionary_filetype_lists = {
-        \ 'default' : ''
-        \ }
+"  let g:neocomplcache_dictionary_filetype_lists = {
+"        \ 'default' : ''
+"        \ }
   let g:neocomplcache_force_overwrite_completefunc=1
   " Plugin key-mappings.
-  inoremap <expr><C-g>     neocomplcache#undo_completion()
-  inoremap <expr><C-l>     neocomplcache#complete_common_string()
+  " inoremap <expr><C-g>     neocomplcache#undo_completion()
+  " inoremap <expr><C-l>     neocomplcache#complete_common_string()
   " <TAB>: completion.
   inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
   inoremap <expr><BS> neocomplcache#smart_close_popup()."\<C-h>"
@@ -690,6 +694,14 @@ function! s:LoadBundles()
         \   'direction': 'botright',
         \ })
 
+  if executable('ag')
+    let g:unite_source_grep_command = 'ag'
+    let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
+    let g:unite_source_grep_recursive_opt = ''
+    let g:unite_source_rec_async_command =
+          \ 'ag --follow --nocolor --nogroup -g ""'
+  endif
+
   call unite#filters#sorter_default#use(['sorter_ftime*'])
   call unite#filters#matcher_default#use(['matcher_fuzzy'])
   " 画像はキャッシュしない
@@ -725,13 +737,6 @@ function! s:LoadBundles()
   " git-grep
   nnoremap <silent> [unite]gg  :<C-u>:Unite vcs_grep/git:. -buffer-name=search-buffer <CR>
 
-  if executable('ag')
-    let g:unite_source_grep_command = 'ag'
-    let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
-    let g:unite_source_grep_recursive_opt = ''
-    let g:unite_source_rec_async_command =
-          \ 'ag --follow --nocolor --nogroup -g ""'
-  endif
 
   let g:unite_source_git_grep_max_candidates=200
   let g:unite_source_git_grep_required_pattern_length=4
@@ -843,7 +848,7 @@ function! s:LoadBundles()
   map [unite]on  :OctopressNew<CR>
   map [unite]ol  :OctopressList<CR>
   map [unite]og  :OctopressGrep<CR>
-  map [unite]oG   :OctopressGenerate<CR>
+  map [unite]oG  :OctopressGenerate<CR>
   map [unite]od  :OctopressDeploy<CR>
 
   " "gist-vim
@@ -982,14 +987,19 @@ function! s:LoadBundles()
   call lexima#add_rule({'at': '\%#\n\s*}', 'char': '}', 'input': '}', 'delete': '}'})
   call lexima#add_rule({'at': '\%#\n\s*]', 'char': ']', 'input': ']', 'delete': ']'})
 
+  "caw
+  "" <C-/> or <C-_> でコメントトグル
+  nmap <C-_> <Plug>(caw:i:toggle)
+  vmap <C-_> <Plug>(caw:i:toggle)
+
   " easymotion
   let g:EasyMotion_do_mapping = 0 "Disable default mappings
   nmap s <Plug>(easymotion-s2)
-  set nohlsearch
-  map  / <Plug>(easymotion-sn)
-  omap / <Plug>(easymotion-tn)
-  map  n <Plug>(easymotion-next)
-  map  N <Plug>(easymotion-prev)
+  " set nohlsearch
+  " map  / <Plug>(easymotion-sn)
+  " omap / <Plug>(easymotion-tn)
+  " map  n <Plug>(easymotion-next)
+  " map  N <Plug>(easymotion-prev)
   let g:EasyMotion_use_migemo = 1
 
   "読み込んだプラグインの設定ここまで

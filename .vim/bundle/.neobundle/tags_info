@@ -16,7 +16,6 @@ jellybeans.vim
 jscomplete-vim
 lexima.vim
 lightline.vim
-migemo-search.vim
 mrkn256.vim
 mustang-vim
 neco-look
@@ -34,9 +33,12 @@ ref-dicts-en
 shabadou.vim
 switch.vim
 tern_for_vim
+typescript-tools
+typescript-vim
 unite-colorscheme
 unite-font
 unite-git_grep
+unite-help
 unite-locate
 unite-outline
 unite-quickfix
@@ -82,7 +84,7 @@ vim-submode
 vim-surround
 vim-tags
 vim-tomorrow-theme
-vim-unimpaired
+vim-trailing-whitespace
 vim-watchdogs
 vimfiler
 vimproc
