@@ -10,6 +10,8 @@
 	di = diff
 	br = branch
 	lo = log --graph --color --decorate
+  lol  = log --graph --decorate --pretty=oneline --abbrev-commit
+  lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
 	sd = stash drop
 	sl = stash list
 	sp = stash pop
@@ -19,10 +21,10 @@
 	remove-deleted-files = !git ls-files --deleted | xargs -I % git rm %
 [core]
 	editor = vim
-	excludesfile = /home/iberianpig/.gitignore
+	excludesfile = /home/iberianpig/.gitignore_global
 	autocrlf = input
 [color]
-	ui = true
+	ui = auto
 [github]
 	user = iberianpig
 [credential]
