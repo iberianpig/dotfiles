@@ -273,8 +273,6 @@ call neobundle#begin(expand('/home/iberianpig/.vim/bundle'))
 NeoBundleFetch 'Shougo/neobundle.vim'
 
 " Add or remove your Bundles here:
-NeoBundle 'Shougo/neosnippet.vim'
-NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'flazz/vim-colorschemes'
 NeoBundle 'Shougo/neocomplete.vim'
 NeoBundle 'Shougo/neomru.vim'
@@ -291,6 +289,8 @@ NeoBundle 'Shougo/vimproc', {
       \     'unix' : 'gmake',
       \ },
       \ }
+NeoBundle 'Shougo/neosnippet.vim'
+NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'honza/vim-snippets'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'tpope/vim-rails'
@@ -487,7 +487,7 @@ function! MyFilename()
         \ &ft == 'unite' ? unite#get_status_string() :
         \ &ft == 'vimshell' ? vimshell#get_status_string() :
         \ ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-        \ ('' != fname ? fname : '[No Name]') .
+        \ ('' != fname ? MyStatusPath() . '/' . fname : '[No Name]') .
         \ ('' != MyModified() ? ' ' . MyModified() : '')
 endfunction
 
@@ -711,7 +711,7 @@ endfunction
 "" }}}
 " neocomplete {{{
 let g:neocomplete#enable_at_startup               = 1
-let g:neocomplete#auto_completion_start_length    = 4
+let g:neocomplete#auto_completion_start_length    = 2
 let g:neocomplete#enable_ignore_case              = 1
 let g:neocomplete#enable_smart_case               = 0
 let g:neocomplete#enable_camel_case               = 1
@@ -1038,6 +1038,7 @@ augroup PrevimSettings
 augroup END
 
 function! s:loadPrevimSetting()
+  let g:previm_enable_realtime = 1
   nmap <Leader>r :PrevimOpen<CR>
 endfunction
 
