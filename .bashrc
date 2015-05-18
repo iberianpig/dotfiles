@@ -137,3 +137,6 @@ if [ $DISPLAY ]; then
   xset r rate 200 15
 fi
 
+
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"

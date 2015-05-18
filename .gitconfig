@@ -1,31 +1,44 @@
 [user]
-	name = iberianpig
-	email = yhkyky@gmail.com
+  name = iberianpig
+  email = yhkyky@gmail.com
 [alias]
-	co = checkout
+  co = checkout
   fe = fetch --prune
-	tr = log --graph --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
-	st = status
-	ci = commit -a
-	di = diff
-	br = branch
-	lo = log --graph --color --decorate
+  tr = log --graph --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
+  st = status
+  ci = commit -a
+  di = diff
+  dic = diff --cached
+  dc = diff --cached
+  b = branch -a
+  br = browse-remote
+  lo = log --graph --color --decorate
   lol  = log --graph --decorate --pretty=oneline --abbrev-commit
   lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
-	sd = stash drop
-	sl = stash list
-	sp = stash pop
-	ss = stash save
-	delete-merged-branches = !git branch --merged | grep -v \\* | xargs -I % git branch -d %
-	rebase-master = rebase master
-	remove-deleted-files = !git ls-files --deleted | xargs -I % git rm %
+  sd = stash drop
+  sl = stash list
+  sp = stash pop
+  ss = stash save
+  delete-merged-branches = !git branch --merged | grep -v \\* | xargs -I % git branch -d %
+  rebase-master = rebase master
+  remove-deleted-files = !git ls-files --deleted | xargs -I % git rm %
 [core]
-	editor = vim
-	excludesfile = /home/iberianpig/.gitignore_global
-	autocrlf = input
+  editor = vim
+  excludesfile = /home/iberianpig/.gitignore_global
+  autocrlf = input
+[push]
+  default = current
+[pull]
+  rebase = true
 [color]
-	ui = auto
+  ui = auto
 [github]
-	user = iberianpig
+  user = iberianpig
 [credential]
-	helper = cache
+  helper = cache
+[browse-remote "github.com"]
+	top = https://{host}/{path}
+	ref = https://{host}/{path}/tree/{short_ref}
+	rev = https://{host}/{path}/commit/{commit}
+	pr = https://{host}/{path}/pull/{short_ref}
+	file = "https://{host}/{path}/{file.directory? and :tree or :blob}/{short_rev}/{file}{lines && \"#L%s\" % lines.join(\"-\")}"
