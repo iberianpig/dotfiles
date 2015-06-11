@@ -24,8 +24,18 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 # ~/.bash_aliases, instead of adding them here directly.
 # See /usr/share/doc/bash-doc/examples in the bash-doc package.
 
+# bunder
 alias be='bundle exec'
 alias r='bundle exec spring rails'
 alias ra='bundle exec spring rake'
-alias upd='sudo apt-get update'
-alias upg='sudo apt-get update && sudo apt-get upgrade'
+
+# apt-get
+alias api='sudo apt-get install'
+alias apd='sudo apt-get update'
+alias apg='sudo apt-get update && sudo apt-get upgrade'
+
+alias ag='ag -S --skip-vcs-ignores'
+alias agh='ag --hidden'
+
+#tw
+alias tw='tw -yes'

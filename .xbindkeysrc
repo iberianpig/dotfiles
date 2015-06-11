@@ -39,7 +39,7 @@
 
 # Examples of commands:
 
-"xbindkeys_show" 
+"xbindkeys_show"
   control+shift + q
 
 # set directly keycode (here control + f with my keyboard)
@@ -70,6 +70,16 @@
 
 "/usr/bin/gnome-system-monitor"
    Control+Shift+Escape
+
+# "/usr/bin/diodon"
+#    Control + semicolon
+
+"sudo /home/iberianpig/Dropbox/tool/linux/script/wifi_restart.sh"
+   XF86WLAN
+
+
+"sudo /home/iberianpig/Dropbox/tool/linux/script/tethering.sh"
+   Mod4 + F2
 
 ##################################
 # End of xbindkeys configuration #

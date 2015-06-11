@@ -4,18 +4,27 @@ autocmd!
 set number         " 行番号を表示する
 set cursorline     " カーソル行の背景色を変える
 " set cursorcolumn   " カーソル位置のカラムの背景色を変える
-" autocmd InsertEnter,InsertLeave * set cursorline!  "redraw!
+autocmd InsertEnter,InsertLeave * set cursorline!  "redraw!
 " autocmd InsertEnter,InsertLeave * set cursorcolumn!
 au WinEnter * set cursorline "cursorcolumn
 " au WinLeave * set nocursorline "nocursorcolumn
 
 if has("autocmd")
+  "Pantheon Terminal
   au InsertEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
   au InsertLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
   au VimLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
   au VimEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-  au WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
+  au WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+  " au WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
   au WinEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+  "Guake Terminal
+  au InsertEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
+  au InsertLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+  au VimLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
+  au VimEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+  au WinLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
+  au WinEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
   " au InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
   " au InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
   " au VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
@@ -31,6 +40,7 @@ set helpheight=998 " ヘルプを画面いっぱいに開く
 set list           " 不可視文字を表示
 set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
+set t_ut=y "背景色をVim指定の色で固定する
 
 " set relativenumber!  "相対行番号表示
 " nnoremap sr :<C-u>setlocal relativenumber!<CR>  "相対行番号表示
@@ -56,6 +66,13 @@ set lazyredraw                 "描画を遅延させる
 " set nolazyredraw                 "描画を遅延させない
 " set redrawtime=4000             "再描画までの時間(デフォルトは2000)
 set ttyfast                    " カーソル移動高速化
+if exists('$TMUX')
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+endif
 
 if has("autocmd") " 最後のカーソル位置を復元する
     autocmd BufReadPost *
@@ -132,8 +149,8 @@ set noerrorbells "エラーメッセージの表示時にビープを鳴らさ�
 set wildmenu wildmode=list:longest,full
 " コマンドラインの履歴を1000件保存する
 set history=1000
-set ttyscroll=20
-" set ttyscroll=4
+" set ttyscroll=20
+set ttyscroll=4
 
 " 動作環境との統合
 " OSのクリップボードをレジスタ指定無しで Yank, Put 出来るようにする
@@ -154,8 +171,8 @@ inoremap <C-c> <ESC>
 
 if has('unix') && !has('gui_running')
   " ESC後にすぐ反映されない対策
-  " nmap <silent> <ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
-  map <silent> <ESC> :nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
+  nmap <silent> <ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
+  " map <silent> <ESC> :nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
 endif
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
@@ -228,6 +245,7 @@ map <silent> [tab]f :tabnext<CR>
 
 "シンタックスハイライトの追加
 au BufNewFile,BufRead *.json.jbuilder set ft=ruby
+au BufRead,BufNewFile *.scss set filetype=sass
 
 " vimにcoffeeファイルタイプを認識させる
 au BufRead,BufNewFile,BufReadPre *.coffee   set filetype=coffee
@@ -356,6 +374,7 @@ NeoBundle 'thoughtbot/vim-rspec'
 NeoBundle 'vim-scripts/dbext.vim'
 NeoBundle 'bronson/vim-trailing-whitespace'
 NeoBundle 'moznion/github-commit-comment.vim'
+NeoBundle 'vim-scripts/diffchar.vim'
 
 " ctags
 " NeoBundle 'szw/vim-tags'
@@ -707,6 +726,7 @@ autocmd FileType vimfiler* call s:vimfiler_my_settings()
 function! s:vimfiler_my_settings()
   nnoremap <buffer><silent>/ :<C-u>UniteWithBufferDir file<CR>
   nnoremap <silent> <buffer> <expr> <C-t> vimfiler#do_action('tabopen')
+  nmap  + <Plug>(vimfiler_expand_tree)
 endfunction
 "" }}}
 " neocomplete {{{
@@ -813,7 +833,7 @@ let g:unite_source_history_yank_enable =1
 " 最近のファイルの個数制限
 " let g:unite_source_file_mru_limit = 200
 " file_recのキャッシュ
-" let g:unite_source_rec_max_cache_files = 50000
+let g:unite_source_rec_max_cache_files = 50000
 " let g:unite_source_rec_min_cache_files = 100
 
 "Like ctrlp.vim settings.
@@ -826,8 +846,7 @@ if executable('ag')
   let g:unite_source_grep_command = 'ag'
   let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
   let g:unite_source_grep_recursive_opt = ''
-  let g:unite_source_rec_async_command =
-        \ 'ag --follow --nocolor --nogroup -g ""'
+  let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup -g ""'
 endif
 
 call unite#filters#sorter_default#use(['sorter_ftime*'])
@@ -856,6 +875,8 @@ nnoremap <silent> [unite]t :<C-u>Unite<Space>  tag<CR>
 nnoremap <silent> [unite]h :<C-u>Unite<Space> history/yank<CR>
 "スペースキーとoキーでoutline
 nnoremap <silent> [unite]o :<C-u>Unite<Space> outline -prompt-direction="top"<CR>
+"unite-quickfixを呼び出し
+nnoremap <silent> [unite]q :<C-u>Unite<Space> quickfix -no-quit<CR>
 ""スペースキーとgキーでgrep
 " vnoremap <silent> [unite]/g :Unite grep::-iHRn:<C-R>=escape(@", '\\.*$^[]')<CR><CR>
 " grep検索
@@ -881,11 +902,19 @@ nnoremap <silent> [unite]r  :<C-u>UniteResume search-buffer <CR>
 
 ""スペースキーとENTERキーでfile_rec:!
 " 速度に難ありのため除外中
-" nnoremap [unite]<CR> :<C-u>execute
-"       \ 'Unite'
-"       \ 'buffer'
-"       \ 'file_rec/async:!:'.fnameescape(expand('%:p:h'))
-"       \ '-default-action=tabopen'<CR>
+nnoremap [unite]<CR> :<C-u>execute
+      \ 'Unite'
+      \ 'buffer'
+      \ 'file_rec/async:!:'.fnameescape(expand('%:p:h'))
+      \ '-default-action=tabopen'<CR>
+
+nnoremap <silent> [unite]p :<C-u>call <SID>unite_project('-start-insert')<CR>
+
+function! s:unite_project(...)
+  let opts = (a:0 ? join(a:000, ' ') : '')
+  execute 'Unite' opts 'file_rec/async:!'
+endfunction
+nnoremap <silent> ,e  :<C-u>Unite file_rec/async:!<CR>
 
 "unite.vimを開いている間のキーマッピング
 autocmd FileType unite* call s:unite_my_settings()
@@ -914,7 +943,7 @@ function! s:unite_my_settings()
 endfunction
 
 " ctrlp.vim
-let g:ctrlp_map = "[unite]<CR>"
+" let g:ctrlp_map = "[unite]<CR>"
 " let g:ctrlp_user_command = 'ag %s -l'
 let g:ctrlp_user_command = 'ag %s -i --nocolor --column --ignore --nogroup -g ""'
 let g:ctrlp_use_migemo = 1
@@ -1146,3 +1175,22 @@ endif
 let g:auto_ctags = 1
 let g:auto_ctags_directory_list = ['.git', '.svn']
 set tags+=.git/tags;
+
+"vim-multiple-cursors
+" Called once right before you start selecting multiple cursors
+function! Multiple_cursors_before()
+  if exists(':NeoCompleteLock')==2
+    exe 'NeoCompleteLock'
+  endif
+endfunction
+
+" Called once only when the multiple selection is canceled
+" (default <Esc>)
+function! Multiple_cursors_after()
+  if exists(':NeoCompleteUnlock')==2
+    exe 'NeoCompleteUnlock'
+  endif
+endfunction
+
+highlight multiple_cursors_cursor term=reverse cterm=reverse gui=reverse
+highlight link multiple_cursors_visual Visual
