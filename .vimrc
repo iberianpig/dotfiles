@@ -256,26 +256,26 @@ au BufRead,BufNewFile,BufReadPre *.coffee   set filetype=coffee
 " インデントを設定
 autocmd FileType coffee     setlocal sw=2 sts=2 ts=2 et
 
-" Use vsplit mode
-if has("vim_starting") && !has('gui_running') && has('vertsplit')
-  function! g:EnableVsplitMode()
-    " enable origin mode and left/right margins
-    let &t_CS = "y"
-    let &t_ti = &t_ti . "\e[?6;69h"
-    let &t_te = "\e[?6;69l" . &t_te
-    let &t_CV = "\e[%i%p1%d;%p2%ds"
-    call writefile([ "\e[?6h\e[?69h" ], "/dev/tty", "a")
-  endfunction
-
-  " old vim does not ignore CPR
-  map <special> <Esc>[3;9R <Nop>
-
-  " new vim can't handle CPR with direct mapping
-  " map <expr> ^[[3;3R g:EnableVsplitMode()
-  set t_F9=[3;3R
-  map <expr> <t_F9> g:EnableVsplitMode()
-  let &t_RV .= "\e[?6;69h\e[1;3s\e[3;9H\e[6n\e[0;0s\e[?6;69l"
-endif
+" " Use vsplit mode
+" if has("vim_starting") && !has('gui_running') && has('vertsplit')
+"   function! g:EnableVsplitMode()
+"     " enable origin mode and left/right margins
+"     let &t_CS = "y"
+"     let &t_ti = &t_ti . "\e[?6;69h"
+"     let &t_te = "\e[?6;69l" . &t_te
+"     let &t_CV = "\e[%i%p1%d;%p2%ds"
+"     call writefile([ "\e[?6h\e[?69h" ], "/dev/tty", "a")
+"   endfunction
+"
+"   " old vim does not ignore CPR
+"   map <special> <Esc>[3;9R <Nop>
+"
+"   " new vim can't handle CPR with direct mapping
+"   " map <expr> ^[[3;3R g:EnableVsplitMode()
+"   set t_F9=[3;3R
+"   map <expr> <t_F9> g:EnableVsplitMode()
+"   let &t_RV .= "\e[?6;69h\e[1;3s\e[3;9H\e[6n\e[0;0s\e[?6;69l"
+" endif
 
 "NeoBundle Scripts-----------------------------
 if has('vim_starting')
@@ -390,6 +390,7 @@ NeoBundleLazy 'supermomonga/neocomplete-rsense.vim', { 'autoload' : {
       \ 'insert' : 1,
       \ 'filetypes': 'ruby',
       \ }}
+NeoBundle 'osyo-manga/vim-monster'
 
 " javascript
 NeoBundle 'pangloss/vim-javascript'
@@ -460,28 +461,28 @@ let g:lightline = {
       \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
       \   'right': [ [ 'syntaxcheck', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
       \ },
-      \ 'component_function': {
-      \   'filename': 'MyFilename',
-      \   'fileformat': 'MyFileformat',
-      \   'filetype': 'MyFiletype',
-      \   'fileencoding': 'MyFileencoding',
-      \   'mode': 'MyMode',
-      \   'ctrlpmark': 'CtrlPMark',
+      \ 'component_function':  {
+      \   'filename':          'MyFilename',
+      \   'fileformat':        'MyFileformat',
+      \   'filetype':          'MyFiletype',
+      \   'fileencoding':      'MyFileencoding',
+      \   'mode':              'MyMode',
+      \   'ctrlpmark':         'CtrlPMark',
       \   'currentworkingdir': 'CurrentWorkingDir',
-      \   'percent': 'MyPercent',
-      \   'lineinfo': 'MyLineInfo',
+      \   'percent':           'MyPercent',
+      \   'lineinfo':          'MyLineInfo',
       \ },
-      \ 'component_expand': {
-      \   'syntaxcheck': 'qfstatusline#Update',
+      \ 'component_expand':    {
+      \   'syntaxcheck':       'qfstatusline#Update',
       \ },
-      \ 'component_type': {
-      \   'syntaxcheck': 'error',
+      \ 'component_type':      {
+      \   'syntaxcheck':       'error',
       \ },
-      \ 'separator': { 'left': '⮀', 'right': '⮂' },
-      \ 'subseparator': { 'left': '⮁', 'right': '⮃' },
-      \ 'tabline': {
-      \   'left': [ [ 'tabs' ] ],
-      \   'right': [ [ 'currentworkingdir' ] ],
+      \ 'separator':           { 'left': '⮀', 'right': '⮂' },
+      \ 'subseparator':        { 'left': '⮁', 'right': '⮃' },
+      \ 'tabline':             {
+      \   'left':              [ [ 'tabs' ] ],
+      \   'right':             [ [ 'currentworkingdir' ] ],
       \ },
       \}
 
@@ -503,15 +504,15 @@ endfunction
 
 function! MyFilename()
   let fname = expand('%:t')
-  return fname == 'ControlP' ? g:lightline.ctrlp_item :
+  return fname  == 'ControlP' ? g:lightline.ctrlp_item :
         \ fname == '__Tagbar__' ? g:lightline.fname :
         \ fname =~ '__Gundo\|NERD_tree' ? '' :
-        \ &ft == 'vimfiler' ? vimfiler#get_status_string() :
-        \ &ft == 'unite' ? unite#get_status_string() :
-        \ &ft == 'vimshell' ? vimshell#get_status_string() :
-        \ ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-        \ ('' != fname ? MyStatusPath() . '/' . fname : '[No Name]') .
-        \ ('' != MyModified() ? ' ' . MyModified() : '')
+        \ &ft   == 'vimfiler' ? vimfiler#get_status_string() :
+        \ &ft   == 'unite' ? unite#get_status_string() :
+        \ &ft   == 'vimshell' ? vimshell#get_status_string() :
+        \ (''   != MyReadonly() ? MyReadonly() . ' ' : '') .
+        \ (''   != fname ? MyStatusPath() . '/' . fname : '[No Name]') .
+        \ (''   != MyModified() ? ' ' . MyModified() : '')
 endfunction
 
 function! MyStatusPath()
@@ -554,14 +555,14 @@ endfunction
 
 function! MyMode()
   let fname = expand('%:t')
-  return fname == '__Tagbar__' ? 'Tagbar' :
+  return fname  == '__Tagbar__' ? 'Tagbar' :
         \ fname == 'ControlP' ? 'CtrlP' :
         \ fname == '__Gundo__' ? 'Gundo' :
         \ fname == '__Gundo_Preview__' ? 'Gundo Preview' :
         \ fname =~ 'NERD_tree' ? 'NERDTree' :
-        \ &ft == 'unite' ? 'Unite' :
-        \ &ft == 'vimfiler' ? 'VimFiler' :
-        \ &ft == 'vimshell' ? 'VimShell' :
+        \ &ft   == 'unite' ? 'Unite' :
+        \ &ft   == 'vimfiler' ? 'VimFiler' :
+        \ &ft   == 'vimshell' ? 'VimShell' :
         \ winwidth(0) > 70 ? lightline#mode() : ''
 endfunction
 
@@ -582,9 +583,9 @@ let g:ctrlp_status_func = {
 
 function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
   let g:lightline.ctrlp_regex = a:regex
-  let g:lightline.ctrlp_prev = a:prev
-  let g:lightline.ctrlp_item = a:item
-  let g:lightline.ctrlp_next = a:next
+  let g:lightline.ctrlp_prev  = a:prev
+  let g:lightline.ctrlp_item  = a:item
+  let g:lightline.ctrlp_next  = a:next
   return lightline#statusline(0)
 endfunction
 
@@ -604,17 +605,21 @@ function! CurrentWorkingDir()
 endfunction
 "}}}
 
-
 "quickrun
 
 autocmd FileType quickrun AnsiEsc
 
-let g:quickrun_config = {
-      \   "_" : {
-      \       "runner" : "vimproc",
-      \       "runner/vimproc/updatetime" : 60
-      \   },
+" シンタックスチェックは<Leader>+wで行う
+nnoremap <Leader>w :<C-u>WatchdogsRun<CR>
+
+let g:watchdogs_check_BufWritePost_enables = {
+      \   "javascript": 1,
+      \   "sh":         1,
+      \   "sass":       1,
+      \   "scss":       1
       \}
+
+let g:watchdogs_check_CursorHold_enable = 0
 
 " <C-c> で実行を強制終了させる
 " quickrun.vim が実行していない場合には <C-c> を呼び出す
@@ -622,75 +627,30 @@ nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() 
 
 "watchdogs_checker
 let g:quickrun_config = {
-      \    'watchdogs_checker/_' : {
-      \       'hook/qfstatusline_update/enable_exit':   1,
-      \       'hook/unite_quickfix/enable' : 0,
-      \       'hook/close_unite_quickfix/enable' : 0,
-      \       'hook/close_buffer/enable_exit' : 1,
-      \       'hook/close_quickfix/enable_exit' : 1,
-      \       'hook/redraw_unite_quickfix/enable_exit' : 0,
-      \       'hook/close_unite_quickfix/enable_exit' : 1,
-      \       'hook/qfstatusline_update/priority_exit': 4,},}
-
-" "エラー箇所表示のみ
-" let g:quickrun_config = {
-"       \        'watchdogs_checker/_' : {
-"       \        'outputter/quickfix/open_cmd' : "",
-"       \        'hook/qfstatusline_update/enable_exit':   1,
-"       \        'hook/qfstatusline_update/priority_exit': 4}}
-
-
-" Ruby で rubocop を使用するように設定
-let g:quickrun_config = {
-      \   "ruby/watchdogs_checker" : {
+      \   "_" : {
+      \       "runner" : "vimproc",
+      \       "runner/vimproc/updatetime" : 60
+      \   },
+      \   "watchdogs_checker/_" : {
+      \      "outputter/quickfix/open_cmd" : "",
+      \      "hook/qfstatusline_update/enable_exit":   1,
+      \      "hook/copen/enable_exist_data" : 1 }}
+let g:quickrun_config["ruby/watchdogs_checker"] = {
       \       "type" : "watchdogs_checker/rubocop"
       \   }
-      \}
-
-" coffeeScript で coffeelint を使用するように設定
-let g:quickrun_config = {
-      \   "coffee/watchdogs_checker" : {
+let g:quickrun_config["coffee/watchdogs_checker"] = {
       \       "type" : "watchdogs_checker/coffeelint"
       \   }
-      \}
-
-let g:quickrun_config = {
-      \   "jade/watchdogs_checker" : {
+let g:quickrun_config["jade/watchdogs_checker"] = {
       \       "type" : "watchdogs_checker/jade"
       \   }
-      \}
-
-let g:quickrun_config = {
-      \   "javascript/watchdogs_checker" : {
-      \       "type" : 'watchdogs_checker/jshint',
-      \       "cmdopt" : '--config .jshintrc'
+let g:quickrun_config["css/watchdogs_checker"] = {
+      \       "type"   : "watchdogs_checker/csslint"
       \   }
-      \}
-" let g:quickrun_config["javascript/watchdogs_checker"] = {
-"       \ "type" : "watchdogs_checker/jshint"
-"       \}
+let g:quickrun_config["javascript/watchdogs_checker"] = {
+      \       "type" : "watchdogs_checker/eslint",
+      \  }
 
-
-let g:quickrun_config = {
-      \   "css/watchdogs_checker" : {
-      \       "type" : 'watchdogs_checker/csslint',
-      \   }
-      \}
-
-" シンタックスチェックは<Leader>+wで行う
-nnoremap <Leader>w :<C-u>WatchdogsRun<CR>
-
-let g:watchdogs_check_BufWritePost_enables = {
-      \   "javascript" : 1,
-      \   "sh" : 1,
-      \   "sass" : 1,
-      \   "scss" : 1
-      \}
-
-let g:watchdogs_check_CursorHold_enable = 0
-
-
-call watchdogs#setup(g:quickrun_config)
 
 " If syntax error, cursor is moved at line setting sign.
 let g:qfsigns#AutoJump = 1
@@ -699,22 +659,23 @@ let g:qfsigns#AutoJump = 2
 
 let g:Qfstatusline#UpdateCmd = function('lightline#update')
 " watchdogs.vim の設定を追加
+call watchdogs#setup(g:quickrun_config)
 
-let g:unite_force_overwrite_statusline = 0
+let g:unite_force_overwrite_statusline    = 0
 let g:vimfiler_force_overwrite_statusline = 0
 let g:vimshell_force_overwrite_statusline = 0
 
 "" {{{vimfiler
-let g:vimfiler_as_default_explorer=1
-let g:vimfiler_safe_mode_by_default = 0
+let g:vimfiler_as_default_explorer                = 1
+let g:vimfiler_safe_mode_by_default               = 0
 " let g:vimfiler_edit_action = 'tabopen'
 " Like Textmate icons.
-let g:vimfiler_tree_leaf_icon = ' '
-let g:vimfiler_tree_opened_icon = '▾'
-let g:vimfiler_tree_closed_icon = '▸'
-let g:vimfiler_file_icon = '-'
-let g:vimfiler_marked_file_icon = '*'
-let g:vimfiler_ignore_pattern='\(^\.\|\~$\|\.pyc$\|\.[oad]$\)'
+let g:vimfiler_tree_leaf_icon                     = ' '
+let g:vimfiler_tree_opened_icon                   = '▾'
+let g:vimfiler_tree_closed_icon                   = '▸'
+let g:vimfiler_file_icon                          = '-'
+let g:vimfiler_marked_file_icon                   = '*'
+let g:vimfiler_ignore_pattern                     = '\(^\.\|\~$\|\.pyc$\|\.[oad]$\)'
 autocmd VimEnter * call s:vimfiler_initialize()
 function! s:vimfiler_initialize() "workaround for cancel whitespace
   VimFiler -split -simple -winwidth=40 -direction=topleft -buffer-name=explorer -split -simple -project -toggle -no-quit<CR>
@@ -744,7 +705,7 @@ let g:neocomplete#sources#buffer#cache_limit_size = 1000000
 let g:neocomplete#sources#tags#cache_limit_size   = 30000000
 let g:neocomplete#enable_fuzzy_completion         = 1
 let g:neocomplete#lock_buffer_name_pattern        = '\*ku\*'
-let g:neocomplete#force_overwrite_completefunc=1
+let g:neocomplete#force_overwrite_completefunc    = 1
 "キャッシュディレクトリの場所
 "RamDiskをキャッシュディレクトリに設定
 if has('macunix')
@@ -762,12 +723,17 @@ inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 " inoremap <expr><C-e>  neocomplete#cancel_popup()
 "for rsense
 "" Set $RSENSE_HOME path.
-let g:neocomplete#sources#rsense#home_directory = '~/.rbenv/shims/rsense'
-let g:rsenseUseOmniFunc = 1
-if !exists('g:neocomplete#force_omni_input_patterns')
-  let g:neocomplete#force_omni_input_patterns = {}
-endif
+" let g:neocomplete#sources#rsense#home_directory = '~/.rbenv/shims/rsense'
+" let g:rsenseUseOmniFunc = 1
+" if !exists('g:neocomplete#force_omni_input_patterns')
+"   let g:neocomplete#force_omni_input_patterns = {}
+" endif
+" let g:neocomplete#force_omni_input_patterns.ruby =  '[^. *\t]\.\w*\|\h\w*::'
+
+"" monster.vim
+let g:neocomplete#force_omni_input_patterns = {}
 let g:neocomplete#force_omni_input_patterns.ruby =  '[^. *\t]\.\w*\|\h\w*::'
+let g:monster#completion#rcodetools#backend = "async_rct_complete"
 " }}}
 "
 "for turn_vim
@@ -810,10 +776,10 @@ call submode#enter_with('winsize', 'n', '', '<C-w>L', '<C-w>>')
 call submode#enter_with('winsize', 'n', '', '<C-w>H', '<C-w><')
 call submode#enter_with('winsize', 'n', '', '<C-w>J', '<C-w>-')
 call submode#enter_with('winsize', 'n', '', '<C-w>K', '<C-w>+')
-call submode#map('winsize', 'n', '', 'L', '<C-w>>')
-call submode#map('winsize', 'n', '', 'H', '<C-w><')
-call submode#map('winsize', 'n', '', 'J', '<C-w>-')
-call submode#map('winsize', 'n', '', 'K', '<C-w>+')
+call submode#map('winsize',        'n', '', 'L', '<C-w>>')
+call submode#map('winsize',        'n', '', 'H', '<C-w><')
+call submode#map('winsize',        'n', '', 'J', '<C-w>-')
+call submode#map('winsize',        'n', '', 'K', '<C-w>+')
 
 " Shift + 矢印でウィンドウサイズを変更
 " map <Left>  <C-w><<CR>
@@ -1175,21 +1141,21 @@ if neobundle#tap('vim-trailing-whitespace')
 endif
 
 "auto_ctags
-" 保存時にtagsファイル作成
+"" 保存時にtagsファイル作成
 let g:auto_ctags = 1
 let g:auto_ctags_directory_list = ['.git', '.svn']
 set tags+=.git/tags;
 
 "vim-multiple-cursors
-" Called once right before you start selecting multiple cursors
+"" Called once right before you start selecting multiple cursors
 function! Multiple_cursors_before()
   if exists(':NeoCompleteLock')==2
     exe 'NeoCompleteLock'
   endif
 endfunction
 
-" Called once only when the multiple selection is canceled
-" (default <Esc>)
+"" Called once only when the multiple selection is canceled
+"" (default <Esc>)
 function! Multiple_cursors_after()
   if exists(':NeoCompleteUnlock')==2
     exe 'NeoCompleteUnlock'
@@ -1198,3 +1164,9 @@ endfunction
 
 highlight multiple_cursors_cursor term=reverse cterm=reverse gui=reverse
 highlight link multiple_cursors_visual Visual
+
+" easy-align
+"" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
+vmap <Enter> <Plug>(EasyAlign)
+"" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)

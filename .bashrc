@@ -107,7 +107,7 @@ eval "$(SHELL=/bin/bash)"
 #  byobu
 #fi
 
-PS1="\[\e[0;1m\]┌─ \u:\[\e[1;32m\]\w$ \[\e[0;1m\n└──┤▶ \[\e[0m\]"
+# PS1="\[\e[0;1m\]┌─ \u:\[\e[1;32m\]\w$ \[\e[0;1m\n└──┤▶ \[\e[0m\]"
 
 #for powerline
 PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'

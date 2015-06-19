@@ -30,9 +30,9 @@ alias r='bundle exec spring rails'
 alias ra='bundle exec spring rake'
 
 # apt-get
-alias api='sudo apt-get install'
-alias apd='sudo apt-get update'
-alias apg='sudo apt-get update && sudo apt-get upgrade'
+alias api='sudo apt-fast install'
+alias apd='sudo apt-fast update'
+alias apg='sudo apt-fast update && sudo apt-fast upgrade'
 
 alias ag='ag -S --skip-vcs-ignores'
 alias agh='ag --hidden'
