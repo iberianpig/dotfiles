@@ -10,21 +10,25 @@ au WinEnter * set cursorline "cursorcolumn
 " au WinLeave * set nocursorline "nocursorcolumn
 
 if has("autocmd")
-  "Pantheon Terminal
-  au InsertEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
-  au InsertLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-  au VimLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
-  au VimEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-  au WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-  " au WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
-  au WinEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+  if executable('pantheon-terminal')
+    "Pantheon Terminal
+    au InsertEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
+    au InsertLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+    au VimLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
+    au VimEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+    au WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+    " au WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
+    au WinEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+  endif
   "Guake Terminal
-  au InsertEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
-  au InsertLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-  au VimLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
-  au VimEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-  au WinLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
-  au WinEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+  if executable('guake')
+    au InsertEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
+    au InsertLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+    au VimLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
+    au VimEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+    au WinLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
+    au WinEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+  endif
   " au InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
   " au InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
   " au VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
@@ -280,11 +284,11 @@ if has('vim_starting')
   endif
 
   " Required:
-  set runtimepath+=/home/iberianpig/.vim/bundle/neobundle.vim/
+  set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
 
 " Required:
-call neobundle#begin(expand('/home/iberianpig/.vim/bundle'))
+call neobundle#begin(expand('~/.vim/bundle'))
 
 " Let NeoBundle manage NeoBundle
 " Required:
