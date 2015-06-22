@@ -44,7 +44,6 @@ set helpheight=998 " ヘルプを画面いっぱいに開く
 set list           " 不可視文字を表示
 set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
-set t_ut=y "背景色をVim指定の色で固定する
 
 " set relativenumber!  "相対行番号表示
 " nnoremap sr :<C-u>setlocal relativenumber!<CR>  "相対行番号表示
@@ -316,7 +315,6 @@ NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'honza/vim-snippets'
 NeoBundle 'tpope/vim-surround'
 NeoBundle 'tpope/vim-rails'
-NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'tsukkee/unite-help'
 NeoBundle 'ujihisa/unite-colorscheme'
@@ -351,7 +349,7 @@ NeoBundle 'mfumi/ref-dicts-en'
 NeoBundle 'tyru/vim-altercmd'
 NeoBundle 'ujihisa/neco-look'
 NeoBundle 'vim-ruby/vim-ruby'
-NeoBundle 'https://github.com/cohama/lexima.vim'
+NeoBundle 'cohama/lexima.vim'
 NeoBundle 'ujihisa/unite-font'
 NeoBundle 'sgur/vim-gitgutter'
 " NeoBundle 'rhysd/migemo-search.vim'
@@ -377,8 +375,12 @@ NeoBundle 'tpope/vim-dispatch'
 NeoBundle 'thoughtbot/vim-rspec'
 NeoBundle 'vim-scripts/dbext.vim'
 NeoBundle 'bronson/vim-trailing-whitespace'
-NeoBundle 'moznion/github-commit-comment.vim'
 NeoBundle 'vim-scripts/diffchar.vim'
+
+" git
+NeoBundle 'cohama/agit.vim'
+NeoBundle 'tpope/vim-fugitive'
+NeoBundle 'moznion/github-commit-comment.vim'
 
 " ctags
 " NeoBundle 'szw/vim-tags'
@@ -391,6 +393,10 @@ NeoBundleLazy 'supermomonga/neocomplete-rsense.vim', { 'autoload' : {
       \ 'filetypes': 'ruby',
       \ }}
 NeoBundle 'osyo-manga/vim-monster'
+
+" perl
+NeoBundle 'hotchpotch/perldoc-vim'
+NeoBundle 'vim-perl/vim-perl'
 
 " javascript
 NeoBundle 'pangloss/vim-javascript'
@@ -447,8 +453,9 @@ NeoBundleCheck
 
 " set background=light "明るめの背景
 set background=dark "暗めの背景
-" colorscheme hybrid "set colorscheme
-colorscheme Tomorrow-Night "set colorscheme
+
+colorscheme hybrid "set colorscheme
+" colorscheme Tomorrow-Night "set colorscheme
 
 " lightline {{{
 let g:lightline = {
@@ -478,13 +485,13 @@ let g:lightline = {
       \ 'component_type':      {
       \   'syntaxcheck':       'error',
       \ },
-      \ 'separator':           { 'left': '⮀', 'right': '⮂' },
-      \ 'subseparator':        { 'left': '⮁', 'right': '⮃' },
       \ 'tabline':             {
       \   'left':              [ [ 'tabs' ] ],
       \   'right':             [ [ 'currentworkingdir' ] ],
       \ },
       \}
+      " \ 'separator':           { 'left': '⮀', 'right': '⮂' },
+      " \ 'subseparator':        { 'left': '⮁', 'right': '⮃' },
 
 function! MyModified()
   return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -971,7 +978,8 @@ let g:octopress_unite = 1
 let g:octopress_unite_option = "-start-insert "
 " use arbitrary unite source (default is 'file')
 let g:octopress_unite_source = "file"
-let g:octopress_qfixgrep = 0
+let g:octopress_qfixgrep = 1
+let g:octopress_vimfiler = 1
 map [unite]on  :OctopressNew<CR>
 map [unite]ol  :OctopressList<CR>
 map [unite]og  :OctopressGrep<CR>
