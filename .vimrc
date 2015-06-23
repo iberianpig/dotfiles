@@ -341,7 +341,7 @@ NeoBundle 'mattn/webapi-vim'
 " NeoBundle 'xolox/vim-session', { 'depends' : 'xolox/vim-misc',}
 NeoBundle 'Shougo/unite-outline'
 NeoBundle 'ujihisa/unite-locate'
-NeoBundle 'sgur/unite-git_grep'
+NeoBundle 'lambdalisue/unite-grep-vcs'
 NeoBundle 'ujihisa/quicklearn'
 NeoBundle 'thinca/vim-ref'
 NeoBundle 'taka84u9/vim-ref-ri'
@@ -375,12 +375,13 @@ NeoBundle 'tpope/vim-dispatch'
 NeoBundle 'thoughtbot/vim-rspec'
 NeoBundle 'vim-scripts/dbext.vim'
 NeoBundle 'bronson/vim-trailing-whitespace'
-NeoBundle 'vim-scripts/diffchar.vim'
 
 " git
 NeoBundle 'cohama/agit.vim'
 NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'moznion/github-commit-comment.vim'
+NeoBundle 'lambdalisue/vim-unified-diff'
+NeoBundle 'vim-scripts/diffchar.vim'
 
 " ctags
 " NeoBundle 'szw/vim-tags'
@@ -861,7 +862,7 @@ nnoremap <silent> [unite]g  :<C-u>Unite grep:. -buffer-name=search-buffer <CR>
 " カーソル位置の単語をgrep検索
 nnoremap <silent> [unite]cg :<C-u>Unite grep:. -buffer-name=search-buffer <CR><C-R><C-W>
 " git-grep
-nnoremap <silent> [unite]gg  :<C-u>:Unite vcs_grep/git:. -buffer-name=search-buffer <CR>
+nnoremap <silent> [unite]gg  :<C-u>:Unite grep/git:. -buffer-name=search-buffer <CR>
 
 
 let g:unite_source_git_grep_max_candidates=200
@@ -1178,3 +1179,14 @@ highlight link multiple_cursors_visual Visual
 vmap <Enter> <Plug>(EasyAlign)
 "" Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
+
+"vim-unified-diff
+set diffexpr=unified_diff#diffexpr()
+
+" vimdiffで起動した際自動的に単語単位の差分(diffchar.vim)を有効にする
+if &diff
+  augroup enable_diffchar
+    autocmd!
+    autocmd VimEnter * execute "%SDChar"
+  augroup END
+endif
