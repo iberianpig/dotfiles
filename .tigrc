@@ -9,6 +9,12 @@ bind diff v !?git revert %(commit)
 bind main V !?git revert %(prompt) %(commit)
 bind diff V !?git revert %(prompt) %(commit)
 
+# main-viewの左端にコミットIDを表示する
+set main-view = id date author commit-title:graph=yes,refs=yes
+
+# ステータスビューで V 押下すると、差分表示モードでコミットログ入力画面を開く
+bind status V !git commit -v
+
 # # Visualization
 # set author-width = 14
 # set filename-width = 16
@@ -64,7 +70,7 @@ bind diff V !?git revert %(prompt) %(commit)
 # color   graph-commit            226     default
 #
 # # status
-# #color  stat-head       81      default
+# color  stat-head       81      default
 #
 # # Diff   colors
 # color   diff_add                10      default
@@ -120,7 +126,7 @@ bind diff V !?git revert %(prompt) %(commit)
 #
 # # tree
 # color   tree.directory         221     default
-#
+
 # LINE(PALETTE_0, "", COLOR_MAGENTA, COLOR_DEFAULT, 0), \
 #   LINE(PALETTE_1, "", COLOR_YELLOW, COLOR_DEFAULT, 0), \
 #   LINE(PALETTE_2, "", COLOR_CYAN, COLOR_DEFAULT, 0), \

@@ -134,9 +134,13 @@ fi
 
 
 if [ $DISPLAY ]; then
-  xset r rate 200 15
+  xset r rate 200 40
 fi
 
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
+
+
+. /usr/share/undistract-me/long-running.bash
+notify_when_long_running_commands_finish_install

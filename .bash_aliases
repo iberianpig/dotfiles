@@ -28,6 +28,7 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 alias be='bundle exec'
 alias r='bundle exec spring rails'
 alias ra='bundle exec spring rake'
+alias bundle_old='bundle _1.7.4_'
 
 # apt-get
 alias api='sudo apt-fast install'
@@ -37,5 +38,8 @@ alias apg='sudo apt-fast update && sudo apt-fast upgrade'
 alias ag='ag -S --skip-vcs-ignores'
 alias agh='ag --hidden'
 
-#tw
+# tw
 alias tw='tw -yes'
+
+# rubocop
+# alias rubocop='~/rubocop.sh'

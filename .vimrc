@@ -1,5 +1,6 @@
 "http://vimblog.hatenablog.com/entry/vimrc_introduction
 " autocmdのリセット
+"
 autocmd!
 set number         " 行番号を表示する
 set cursorline     " カーソル行の背景色を変える
@@ -9,33 +10,43 @@ autocmd InsertEnter,InsertLeave * set cursorline!  "redraw!
 au WinEnter * set cursorline "cursorcolumn
 " au WinLeave * set nocursorline "nocursorcolumn
 
-if has("autocmd")
-  if executable('pantheon-terminal')
-    "Pantheon Terminal
-    au InsertEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
-    au InsertLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-    au VimLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
-    au VimEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-    au WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-    " au WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
-    au WinEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-  endif
-  "Guake Terminal
-  if executable('guake')
-    au InsertEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
-    au InsertLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-    au VimLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
-    au VimEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-    au WinLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
-    au WinEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-  endif
-  " au InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
-  " au InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
-  " au VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
-  " au VimEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
-  " au WinLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
-  " au WinEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
-endif
+function! s:EnableChangeCursorShape()
+  augroup change_corsor_shape
+    autocmd!
+    if executable('pantheon-terminal')
+      "Pantheon Terminal
+      au InsertEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
+      au InsertLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+      au VimLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+      au VimEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+      au WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+      au WinEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+    endif
+    "Guake Terminal
+    if executable('guake')
+      au InsertEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
+      au InsertLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+      au VimLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+      au VimEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+      au WinLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+      au WinEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+    endif
+    " au InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
+    " au InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
+    " au VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
+    " au VimEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
+    " au WinLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
+    " au WinEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
+  augroup END
+endfunction
+
+function! s:DisableChangeCursorShape()
+  augroup change_corsor_shape
+    autocmd!
+  augroup END
+endfunction
+
+call s:EnableChangeCursorShape()
 
 set laststatus=2   " ステータス行を常に表示
 set cmdheight=2    " メッセージ表示欄を2行確保
@@ -44,9 +55,7 @@ set helpheight=998 " ヘルプを画面いっぱいに開く
 set list           " 不可視文字を表示
 set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
-
-" set relativenumber!  "相対行番号表示
-" nnoremap sr :<C-u>setlocal relativenumber!<CR>  "相対行番号表示
+set completeopt=menuone "補完時にpreviewWindowを開かない
 
 " Charset, Line ending -----------------
 scriptencoding utf-8
@@ -54,9 +63,9 @@ set termencoding=utf-8
 set encoding=utf-8
 set fileencodings=utf-8,cp932,euc-jp,iso-2022-jp
 set ffs=unix,dos,mac  " LF, CRLF, CR
-if exists('&ambiwidth')
-  set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
-endif
+" if exists('&ambiwidth')
+"   set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
+" endif
 set spelllang+=cjk
 
 "カーソル移動系
@@ -67,15 +76,9 @@ set sidescrolloff=16           " 左右スクロール時の視界を確保
 set sidescroll=1               " 左右スクロールは一文字づつ行う
 set lazyredraw                 "描画を遅延させる
 " set nolazyredraw                 "描画を遅延させない
-" set redrawtime=4000             "再描画までの時間(デフォルトは2000)
+set redrawtime=4000             "再描画までの時間(デフォルトは2000)
+" set redrawtime=100             "再描画までの時間(デフォルトは2000)
 set ttyfast                    " カーソル移動高速化
-if exists('$TMUX')
-  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
-  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
-else
-  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
-  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
-endif
 
 if has("autocmd") " 最後のカーソル位置を復元する
     autocmd BufReadPost *
@@ -87,10 +90,15 @@ endif
 "File処理関連
 set confirm "保存されていないファイルがあるときは終了前に保存確認
 set hidden "保存されていないファイルがあるときでも別のファイルを開くことが出来る
-set autoread "外部でファイルに変更がされた場合は読みなおす
 set nobackup "ファイル保存時にバックアップファイルを作らない
 set noswapfile "ファイル編集中にスワップファイルを作らない
-" set updatetime=0 "ファイル編集中にスワップファイルを作らない
+set updatetime=0 "ファイル編集中にスワップファイルを作らない
+set autoread "外部でファイルに変更がされた場合は読みなおす
+
+augroup vimrc-checktime "window移動した場合に強制的に読みなおす
+  autocmd!
+  autocmd WinEnter * checktime
+augroup END
 
 "検索関連
 set hlsearch "検索文字列をハイライトする
@@ -121,10 +129,9 @@ inoremap <C-k> <C-o>D<Right>
 inoremap <C-u> <C-o>d^
 inoremap <C-w> <C-o>db
 
-
 set nocompatible "vi 互換モードを解除する"
 
-set timeout timeoutlen=1000 ttimeoutlen=75
+" set timeout timeoutlen=1000 ttimeoutlen=75
 
 " " j, k による移動を折り返されたテキストでも自然に振る舞うように変更
 " nnoremap j gj
@@ -158,23 +165,21 @@ set ttyscroll=4
 " 動作環境との統合
 " OSのクリップボードをレジスタ指定無しで Yank, Put 出来るようにする
 set clipboard=unnamed,unnamedplus
+
 "screen利用時設定
 set ttymouse=xterm2
 
 " マウスの入力を受け付ける
-" set mouse=a
-" インサートモードから抜けると自動的にIMEをオフにする
-set iminsert=0
-set imsearch=-1
-" ESCでIMEを確実にOFF
-" inoremap <ESC> <ESC>:set iminsert=0<CR>
-" inoremap <ESC> <ESC>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
-""Ctrl-Cでインサートモードを抜ける
-inoremap <C-c> <ESC>
+set mouse=a
+" " インサートモードから抜けると自動的にIMEをオフにする
+" set iminsert=0
+" set imsearch=-1
+" ""Ctrl-Cでインサートモードを抜ける
+" inoremap <C-c> <ESC>
 
 if has('unix') && !has('gui_running')
   " ESC後にすぐ反映されない対策
-  nmap <silent> <ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
+  nmap <silent> <ESC><ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
   " map <silent> <ESC> :nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
 endif
 
@@ -190,22 +195,6 @@ set softtabstop=2 "連続した空白に対してタブキーやバックスペ�
 set autoindent "改行時に前の行のインデントを継続する
 set smartindent "改行時に入力された行の末尾に合わせて次の行のインデントを増減する
 set indentkeys=!^F,o,O,0<Bar>,0=where "自動インデントを発動させるタイミングを設定する
-
-"折りたたみ
-" set foldenable
-set foldmethod=syntax
-set foldlevelstart=100 "Don't autofold anything
-
-" set foldlevelstart=2
-
-" autocmd InsertEnter * if !exists('w:last_fdm')
-"       \| let w:last_fdm=&foldmethod
-"       \| setlocal foldmethod=manual
-"       \| endif
-" autocmd InsertLeave,WinLeave * if exists('w:last_fdm')
-"       \| let &l:foldmethod=w:last_fdm
-"       \| unlet w:last_fdm
-"       \| endif
 
 " 日本語ヘルプを利用する
 set helplang=ja,en
@@ -228,6 +217,10 @@ else
   autocmd MyAutoCmd BufWritePost $MYGVIMRC if has('gui_running') | source $MYGVIMRC
 endif
 
+" q: のタイポ抑制
+nnoremap q: :q
+nnoremap ; :
+
 "タブの設定
 " The prefix key.
 nnoremap [tab]   <Nop>
@@ -248,33 +241,34 @@ map <silent> [tab]f :tabnext<CR>
 
 "シンタックスハイライトの追加
 au BufNewFile,BufRead *.json.jbuilder set ft=ruby
-au BufRead,BufNewFile *.scss set filetype=sass
+au BufNewFile,BufRead *.erb set ft=eruby
+au BufRead,BufNewFile *.scss set ft=scss.css
 
 " vimにcoffeeファイルタイプを認識させる
 au BufRead,BufNewFile,BufReadPre *.coffee   set filetype=coffee
 " インデントを設定
 autocmd FileType coffee     setlocal sw=2 sts=2 ts=2 et
 
-" " Use vsplit mode
-" if has("vim_starting") && !has('gui_running') && has('vertsplit')
-"   function! g:EnableVsplitMode()
-"     " enable origin mode and left/right margins
-"     let &t_CS = "y"
-"     let &t_ti = &t_ti . "\e[?6;69h"
-"     let &t_te = "\e[?6;69l" . &t_te
-"     let &t_CV = "\e[%i%p1%d;%p2%ds"
-"     call writefile([ "\e[?6h\e[?69h" ], "/dev/tty", "a")
-"   endfunction
-"
-"   " old vim does not ignore CPR
-"   map <special> <Esc>[3;9R <Nop>
-"
-"   " new vim can't handle CPR with direct mapping
-"   " map <expr> ^[[3;3R g:EnableVsplitMode()
-"   set t_F9=[3;3R
-"   map <expr> <t_F9> g:EnableVsplitMode()
-"   let &t_RV .= "\e[?6;69h\e[1;3s\e[3;9H\e[6n\e[0;0s\e[?6;69l"
-" endif
+" Use vsplit mode
+if has("vim_starting") && !has('gui_running') && has('vertsplit')
+  function! g:EnableVsplitMode()
+    " enable origin mode and left/right margins
+    let &t_CS = "y"
+    let &t_ti = &t_ti . "\e[?6;69h"
+    let &t_te = "\e[?6;69l" . &t_te
+    let &t_CV = "\e[%i%p1%d;%p2%ds"
+    call writefile([ "\e[?6h\e[?69h" ], "/dev/tty", "a")
+  endfunction
+
+  " old vim does not ignore CPR
+  map <special> <Esc>[3;9R <Nop>
+
+  " new vim can't handle CPR with direct mapping
+  map <expr> ^[[3;3R g:EnableVsplitMode()
+  set t_F9=[3;3R
+  map <expr> <t_F9> g:EnableVsplitMode()
+  let &t_RV .= "\e[?6;69h\e[1;3s\e[3;9H\e[6n\e[0;0s\e[?6;69l"
+endif
 
 "NeoBundle Scripts-----------------------------
 if has('vim_starting')
@@ -288,6 +282,7 @@ endif
 
 " Required:
 call neobundle#begin(expand('~/.vim/bundle'))
+call neobundle#load_cache() "キャッシュ書き込み
 
 " Let NeoBundle manage NeoBundle
 " Required:
@@ -314,7 +309,6 @@ NeoBundle 'Shougo/neosnippet.vim'
 NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'honza/vim-snippets'
 NeoBundle 'tpope/vim-surround'
-NeoBundle 'tpope/vim-rails'
 NeoBundle 'Shougo/unite.vim'
 NeoBundle 'tsukkee/unite-help'
 NeoBundle 'ujihisa/unite-colorscheme'
@@ -333,12 +327,10 @@ NeoBundle 'tyru/caw.vim'
 NeoBundle 'mattn/emmet-vim'
 NeoBundle 'osyo-manga/vim-over'
 NeoBundle 'glidenote/octoeditor.vim'
-NeoBundle 'othree/html5.vim'
 " NeoBundle 'tpope/vim-liquid'
 " NeoBundle 'mattn/gist-vim'
 NeoBundle 'mattn/webapi-vim'
 " NeoBundle 'vim-scripts/vim-auto-save'
-" NeoBundle 'xolox/vim-session', { 'depends' : 'xolox/vim-misc',}
 NeoBundle 'Shougo/unite-outline'
 NeoBundle 'ujihisa/unite-locate'
 NeoBundle 'lambdalisue/unite-grep-vcs'
@@ -348,22 +340,16 @@ NeoBundle 'taka84u9/vim-ref-ri'
 NeoBundle 'mfumi/ref-dicts-en'
 NeoBundle 'tyru/vim-altercmd'
 NeoBundle 'ujihisa/neco-look'
-NeoBundle 'vim-ruby/vim-ruby'
+" NeoBundle 'vim-ruby/vim-ruby'
 NeoBundle 'cohama/lexima.vim'
 NeoBundle 'ujihisa/unite-font'
 NeoBundle 'sgur/vim-gitgutter'
 " NeoBundle 'rhysd/migemo-search.vim'
 " NeoBundle 'haya14busa/vim-migemo'
-NeoBundle 'ctrlpvim/ctrlp.vim'
 NeoBundle 'Lokaltog/vim-easymotion'
 NeoBundle 'kannokanno/previm'
-NeoBundle 'lambdalisue/vim-gista'
 NeoBundle 'edsono/vim-matchit'
-NeoBundle 'basyura/unite-rails'
-NeoBundle 'aurigadl/vim-angularjs'
-NeoBundle 'burnettk/vim-angular'
 NeoBundle 'mattn/benchvimrc-vim'
-NeoBundle 'Yggdroot/indentLine'
 NeoBundle 'rking/ag.vim'
 NeoBundle 'cohama/vim-hier'
 NeoBundle 'dannyob/quickfixstatus'
@@ -374,7 +360,14 @@ NeoBundle 'KazuakiM/vim-qfsigns'
 NeoBundle 'tpope/vim-dispatch'
 NeoBundle 'thoughtbot/vim-rspec'
 NeoBundle 'vim-scripts/dbext.vim'
-NeoBundle 'bronson/vim-trailing-whitespace'
+" NeoBundle 'bronson/vim-trailing-whitespace'
+NeoBundle 'nathanaelkane/vim-indent-guides'
+NeoBundle 'Chiel92/vim-autoformat'
+" NeoBundle 'severin-lemaignan/vim-minimap'
+NeoBundle 'itchyny/thumbnail.vim'
+
+"session管理
+NeoBundle 'tpope/vim-obsession'
 
 " git
 NeoBundle 'cohama/agit.vim'
@@ -382,6 +375,7 @@ NeoBundle 'tpope/vim-fugitive'
 NeoBundle 'moznion/github-commit-comment.vim'
 NeoBundle 'lambdalisue/vim-unified-diff'
 NeoBundle 'vim-scripts/diffchar.vim'
+NeoBundle 'lambdalisue/vim-gista'
 
 " ctags
 " NeoBundle 'szw/vim-tags'
@@ -389,15 +383,20 @@ NeoBundle 'tsukkee/unite-tag'
 NeoBundle 'soramugi/auto-ctags.vim'
 
 " ruby
-NeoBundleLazy 'supermomonga/neocomplete-rsense.vim', { 'autoload' : {
-      \ 'insert' : 1,
-      \ 'filetypes': 'ruby',
-      \ }}
 NeoBundle 'osyo-manga/vim-monster'
+NeoBundle 'tpope/vim-bundler'
+
+"rails
+NeoBundle 'basyura/unite-rails'
+NeoBundle 'tpope/vim-rails'
+
 
 " perl
 NeoBundle 'hotchpotch/perldoc-vim'
 NeoBundle 'vim-perl/vim-perl'
+
+" html
+NeoBundle 'othree/html5.vim'
 
 " javascript
 NeoBundle 'pangloss/vim-javascript'
@@ -407,12 +406,18 @@ NeoBundle 'mattn/jscomplete-vim'
 NeoBundle 'leafgarland/typescript-vim'
 NeoBundle 'clausreinke/typescript-tools'
 NeoBundle 'matthewsimo/angular-vim-snippets'
+NeoBundle 'aurigadl/vim-angularjs'
+NeoBundle 'burnettk/vim-angular'
 NeoBundle 'marijnh/tern_for_vim' , {
  \ 'build': {
  \   'others': 'npm install'
   \}}
+NeoBundle 'mxw/vim-jsx'
+NeoBundle 'Quramy/tsuquyomi'
+NeoBundle 'jason0x43/vim-js-indent'
 
 " css
+NeoBundle 'JulesWang/css.vim'
 NeoBundle 'hail2u/vim-css3-syntax'
 NeoBundle 'groenewege/vim-less'
 NeoBundle 'claco/jasmine.vim'
@@ -420,6 +425,9 @@ NeoBundle 'vim-scripts/AnsiEsc.vim'
 NeoBundle 'elzr/vim-json'
 NeoBundle 'kchmck/vim-coffee-script'
 NeoBundle 'lilydjwg/colorizer'
+NeoBundle 'csscomb/vim-csscomb'
+NeoBundle 'cakebaker/scss-syntax.vim'
+NeoBundle 'pasela/unite-webcolorname'
 
 " jade
 NeoBundle 'digitaltoad/vim-jade'
@@ -437,6 +445,7 @@ NeoBundle 'w0ng/vim-hybrid'
 NeoBundle 'chriskempson/vim-tomorrow-theme'
 
 " Required:
+NeoBundleSaveCache
 call neobundle#end()
 
 " Required:
@@ -621,11 +630,12 @@ autocmd FileType quickrun AnsiEsc
 nnoremap <Leader>w :<C-u>WatchdogsRun<CR>
 
 let g:watchdogs_check_BufWritePost_enables = {
-      \   "javascript": 1,
       \   "sh":         1,
       \   "sass":       1,
       \   "scss":       1
       \}
+      " \   "javascript": 1,
+      " \   "ruby": 1,
 
 let g:watchdogs_check_CursorHold_enable = 0
 
@@ -640,28 +650,35 @@ let g:quickrun_config = {
       \       "runner/vimproc/updatetime" : 60
       \   },
       \   "watchdogs_checker/_" : {
-      \      "outputter/quickfix/open_cmd" : "",
-      \      "hook/qfstatusline_update/enable_exit":   1,
-      \      "hook/copen/enable_exist_data" : 1 }}
+      \       "outputter/quickfix/open_cmd" : "",
+      \       "hook/qfstatusline_update/enable_exit" : 1,
+      \               "hook/back_window/enable_exit" : 1,
+      \               "hook/back_window/priority_exit" : 100,
+      \   },
+      \}
 let g:quickrun_config["ruby/watchdogs_checker"] = {
-      \       "type" : "watchdogs_checker/rubocop"
+      \       "type": "watchdogs_checker/rubocop",
+      \       "cmdopt" : "-R -S -a"
       \   }
 let g:quickrun_config["coffee/watchdogs_checker"] = {
-      \       "type" : "watchdogs_checker/coffeelint"
+      \       "type": "watchdogs_checker/coffeelint"
       \   }
 let g:quickrun_config["jade/watchdogs_checker"] = {
-      \       "type" : "watchdogs_checker/jade"
+      \       "type": "watchdogs_checker/jade"
       \   }
 let g:quickrun_config["css/watchdogs_checker"] = {
-      \       "type"   : "watchdogs_checker/csslint"
+      \       "type": "watchdogs_checker/csslint"
       \   }
 let g:quickrun_config["javascript/watchdogs_checker"] = {
-      \       "type" : "watchdogs_checker/eslint",
+      \       "type": "watchdogs_checker/eslint",
+      \  }
+let g:quickrun_config["javascript.jsx/watchdogs_checker"] = {
+      \       "type": "watchdogs_checker/eslint",
       \  }
 
+" " If syntax error, cursor is moved at line setting sign.
+" let g:qfsigns#AutoJump = 1
 
-" If syntax error, cursor is moved at line setting sign.
-let g:qfsigns#AutoJump = 1
 " If syntax error, view split and cursor is moved at line setting sign.
 let g:qfsigns#AutoJump = 2
 
@@ -673,79 +690,30 @@ let g:unite_force_overwrite_statusline    = 0
 let g:vimfiler_force_overwrite_statusline = 0
 let g:vimshell_force_overwrite_statusline = 0
 
-"" {{{vimfiler
-let g:vimfiler_as_default_explorer                = 1
-let g:vimfiler_safe_mode_by_default               = 0
-" let g:vimfiler_edit_action = 'tabopen'
-" Like Textmate icons.
-let g:vimfiler_tree_leaf_icon                     = ' '
-let g:vimfiler_tree_opened_icon                   = '▾'
-let g:vimfiler_tree_closed_icon                   = '▸'
-let g:vimfiler_file_icon                          = '-'
-let g:vimfiler_marked_file_icon                   = '*'
-let g:vimfiler_ignore_pattern                     = '\(^\.\|\~$\|\.pyc$\|\.[oad]$\)'
-autocmd VimEnter * call s:vimfiler_initialize()
-function! s:vimfiler_initialize() "workaround for cancel whitespace
-  VimFiler -split -simple -winwidth=40 -direction=topleft -buffer-name=explorer -split -simple -project -toggle -no-quit<CR>
-  VimFiler -split -simple -winwidth=40 -direction=topleft -buffer-name=explorer -split -simple -project -toggle -no-quit<CR>
-endfunction
-" autocmd BufEnter * if (winnr('$') == 1 && &filetype ==# 'vimfiler') | q | endif
-nnoremap <C-k><C-f> :VimFiler -project<CR>
-inoremap <C-k><C-f> <ESC>:VimFiler -project<CR>
-nnoremap <C-k><C-k> :VimFiler -direction=topleft -buffer-name=explorer -split -simple -project -winwidth=40 -toggle -no-quit<CR>
-nnoremap <C-k><C-c> :VimFilerBufferDir -direction=topleft -buffer-name=explorer -split -simple -winwidth=40 -toggle -no-quit<CR>
-
-autocmd FileType vimfiler* call s:vimfiler_my_settings()
-function! s:vimfiler_my_settings()
-  nnoremap <buffer><silent>/ :<C-u>UniteWithBufferDir file<CR>
-  nnoremap <silent> <buffer> <expr> <C-t> vimfiler#do_action('tabopen')
-  nmap  + <Plug>(vimfiler_expand_tree)
-endfunction
-"" }}}
 " neocomplete {{{
 let g:neocomplete#enable_at_startup               = 1
-let g:neocomplete#auto_completion_start_length    = 4
+let g:neocomplete#auto_completion_start_length    = 2
 let g:neocomplete#enable_ignore_case              = 1
-let g:neocomplete#enable_smart_case               = 0
+" let g:neocomplete#enable_smart_case               = 1
+let g:neocomplete#enable_cursor_hold_i            = 1
 let g:neocomplete#enable_camel_case               = 1
+let g:neocomplete#enable_fuzzy_completion         = 0
 let g:neocomplete#use_vimproc                     = 1
-let g:neocomplete#sources#buffer#cache_limit_size = 1000000
-let g:neocomplete#sources#tags#cache_limit_size   = 30000000
-let g:neocomplete#enable_fuzzy_completion         = 1
 let g:neocomplete#lock_buffer_name_pattern        = '\*ku\*'
-let g:neocomplete#force_overwrite_completefunc    = 1
-"キャッシュディレクトリの場所
-"RamDiskをキャッシュディレクトリに設定
-if has('macunix')
-  let g:neocomplete#data_directory = '/tmp'
-else
-  let g:neocomplete#data_directory = '/tmp/.neocon'
-endif
-" Plugin key-mappings.
-" inoremap <expr><C-g>     neocomplete#undo_completion()
-" inoremap <expr><C-l>     neocomplete#complete_common_string()
-" <TAB>: completion.
-inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-" inoremap <expr><C-y>  neocomplete#close_popup()
-" inoremap <expr><C-e>  neocomplete#cancel_popup()
-"for rsense
-"" Set $RSENSE_HOME path.
-" let g:neocomplete#sources#rsense#home_directory = '~/.rbenv/shims/rsense'
-" let g:rsenseUseOmniFunc = 1
-" if !exists('g:neocomplete#force_omni_input_patterns')
-"   let g:neocomplete#force_omni_input_patterns = {}
-" endif
-" let g:neocomplete#force_omni_input_patterns.ruby =  '[^. *\t]\.\w*\|\h\w*::'
 
-"" monster.vim
-let g:neocomplete#force_omni_input_patterns = {}
-let g:neocomplete#force_omni_input_patterns.ruby =  '[^. *\t]\.\w*\|\h\w*::'
-let g:monster#completion#rcodetools#backend = "async_rct_complete"
-" }}}
-"
+" <TAB>: completion.
+" inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
+" inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+
+" vim-monster
+let g:monster#completion#rcodetools#backend      = "async_rct_complete"
+let g:neocomplete#force_omni_input_patterns      = {}
+let g:neocomplete#sources#omni#input_patterns = {
+      \   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
+      \}
+
 "for turn_vim
-autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+" autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 
 " "NeoSnippet.vim
 let g:neosnippet#enable_snipmate_compatibility = 1
@@ -763,16 +731,18 @@ if has('conceal')
 endif
 
 " neosnippet.vim公式指定をちょっといじる
-imap <expr><TAB> neosnippet#jumpable() ?
-      \ "\<Plug>(neosnippet_expand_or_jump)"
-      \: pumvisible() ? "\<C-n>" : "\<TAB>"
-smap <expr><TAB> neosnippet#jumpable() ?
-      \ "\<Plug>(neosnippet_expand_or_jump)"
-      \: "\<TAB>"
+" imap <expr><TAB> neosnippet#jumpable() ?
+"       \ "\<Plug>(neosnippet_expand_or_jump)"
+"       \: pumvisible() ? "\<C-n>" : "\<TAB>"
+" smap <expr><TAB> neosnippet#jumpable() ?
+"       \ "\<Plug>(neosnippet_expand_or_jump)"
+"       \: "\<TAB>"
 
 " rails
 autocmd BufEnter * if exists("b:rails_root") | NeoCompleteSetFileType ruby.rails | endif
 autocmd BufEnter * if (expand("%") =~ "_spec\.rb$") || (expand("%") =~ "^spec.*\.rb$") | NeoCompleteSetFileType ruby.rspec | endif
+
+"}}}
 
 "" switch
 nnoremap - :Switch<cr>
@@ -789,12 +759,6 @@ call submode#map('winsize',        'n', '', 'H', '<C-w><')
 call submode#map('winsize',        'n', '', 'J', '<C-w>-')
 call submode#map('winsize',        'n', '', 'K', '<C-w>+')
 
-" Shift + 矢印でウィンドウサイズを変更
-" map <Left>  <C-w><<CR>
-" map <Right> <C-w>><CR>
-" map <Up>    <C-w>-<CR>
-" map <Down>  <C-w>+<CR>
-
 "" over.vim
 " over.vimの起動
 nnoremap <silent> ,m :OverCommandLine<CR>%s/
@@ -803,97 +767,124 @@ nnoremap sub :OverCommandLine<CR>%s/<C-r><C-w>//g<Left><Left>
 " コピーした文字列をハイライト付きで置換
 nnoremap subp y:OverCommandLine<CR>%s/<C-r>=substitute(@0, '/', '/', 'g')<CR>//g<Left><Left>
 
-" Unite
+cnoreabb <silent><expr>s getcmdtype()==':' && getcmdline()=~'^s' ? 'OverCommandLine<CR><C-u>%s/<C-r>=get([], getchar(0), '')<CR>' : 's'
+
+
+" " vim-trailing-whitespace'
+" " uniteでスペースが表示されるので、設定でOFFにします。
+" let g:extra_whitespace_ignored_filetypes = ['unite', 'vimfiler', 'explorer', 'md']
+
+
+"" {{{Unite
 " " インサートモードで開始
-" let g:unite_enable_start_insert=1
+let g:unite_enable_start_insert=1
 " ヒストリー/ヤンク機能を有効化
 let g:unite_source_history_yank_enable =1
 " 最近のファイルの個数制限
-" let g:unite_source_file_mru_limit = 200
+let g:unite_source_file_mru_limit = 100
+let g:unite_source_file_mru_filename_format = ''
 " file_recのキャッシュ
 let g:unite_source_rec_max_cache_files = 50000
 " let g:unite_source_rec_min_cache_files = 100
 
 "Like ctrlp.vim settings.
 call unite#custom#profile('default', 'context', {
-      \   'start_insert': 1,
       \   'direction': 'botright',
       \ })
 
 if executable('ag')
   let g:unite_source_grep_command = 'ag'
-  let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
+  " let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
+  let g:unite_source_grep_default_opts =
+        \ '--line-numbers --nocolor --nogroup --hidden --ignore ' .
+        \ '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'' ' .
+        \ '--ignore ''**/*.pyc'''
   let g:unite_source_grep_recursive_opt = ''
-  let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup -g ""'
+  let g:unite_source_rec_async_command = [ 'ag', '--follow', '--nocolor', '--nogroup', '-g']
 endif
 
 call unite#filters#sorter_default#use(['sorter_ftime*'])
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 " 画像はキャッシュしない
-call unite#custom#source('file_rec/async', 'ignore_pattern', '\(png\|gif\|jpeg\|jpg\)$')
+" call unite#custom#source('grep/git', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
+" call unite#custom#source('source/buffer:?', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
+" call unite#custom#source('file_rec/async', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
+
+" set wildignore=*.o,*.obj,*.la,*.lo,*.so,*.pyc,*.pyo,*.jpg,*.jpeg,*.png,*.gif,*vimfiler
+" call unite#custom#source('file_rec/git, grep/git, buffer, file_rec/async', 'ignore_globs',
+"       \ split(&wildignore, ','))
+
 " ファイルはタブで開く
 call unite#custom_default_action('file', 'tabopen')
 call unite#custom_default_action('directory', 'file')
 
+autocmd BufEnter * :call s:unite_keymap()
 "prefix keyの設定
-nmap <Space> [unite]
-""スペースキーとaキーでカレントディレクトリを表示
-nnoremap <silent> [unite]a :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
-"スペースキーとfキーでバッファと最近開いたファイル一覧を表示
-nnoremap <silent> [unite]f :<C-u>Unite<Space> buffer file_mru<CR>
-"スペースキーとdキーで最近開いたディレクトリを表示
-nnoremap <silent> [unite]d :<C-u>Unite<Space> directory_mru<CR>
-"スペースキーとbキーでバッファを表示
-nnoremap <silent> [unite]b :<C-u>Unite<Space>buffer<CR>
-""スペースキーとrキーでレジストリを表示
-" nnoremap <silent> [unite]r :<C-u>Unite<Space> register<CR>
-"スペースキーとtキーでtagsを検索
-nnoremap <silent> [unite]t :<C-u>Unite<Space>  tag<CR>
-""スペースキーとhキーでヒストリ/ヤンクを表示
-nnoremap <silent> [unite]h :<C-u>Unite<Space> history/yank<CR>
-"スペースキーとoキーでoutline
-nnoremap <silent> [unite]o :<C-u>Unite<Space> outline -prompt-direction="top"<CR>
-"unite-quickfixを呼び出し
-nnoremap <silent> [unite]q :<C-u>Unite<Space> quickfix -no-quit<CR>
-""スペースキーとgキーでgrep
-" vnoremap <silent> [unite]/g :Unite grep::-iHRn:<C-R>=escape(@", '\\.*$^[]')<CR><CR>
-" grep検索
-nnoremap <silent> [unite]g  :<C-u>Unite grep:. -buffer-name=search-buffer <CR>
-" カーソル位置の単語をgrep検索
-nnoremap <silent> [unite]cg :<C-u>Unite grep:. -buffer-name=search-buffer <CR><C-R><C-W>
-" git-grep
-nnoremap <silent> [unite]gg  :<C-u>:Unite grep/git:. -buffer-name=search-buffer <CR>
+function! s:unite_keymap()
+  nnoremap [unite] <Nop>
+  vmap <Space> <Nop>
+  vmap <Space> [unite]
+  nmap <Space> [unite]
 
+  nnoremap <silent> [unite]i :<C-u>Unite<Space>
+  ""スペースキーとaキーでカレントディレクトリを表示
+  nnoremap <silent> [unite]a :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+  "スペースキーとfキーでバッファと最近開いたファイル一覧を表示
+  nnoremap <silent> [unite]m :<C-u>Unite<Space>file_mru<CR>
+  "スペースキーとdキーで最近開いたディレクトリを表示
+  nnoremap <silent> [unite]d :<C-u>Unite<Space> directory_mru<CR>
+  "スペースキーとbキーでバッファを表示
+  " nnoremap <silent> [unite]b :<C-u>Unite<Space>buffer<CR>
+  nnoremap <silent> [unite]b :<C-u>Thumbnail<Space>-exclude=vimfiler <CR>
 
-let g:unite_source_git_grep_max_candidates=200
-let g:unite_source_git_grep_required_pattern_length=4
+  ""スペースキーとrキーでレジストリを表示
+  " nnoremap <silent> [unite]r :<C-u>Unite<Space> register<CR>
+  " "スペースキーとtキーでtagsを検索
+  vnoremap <silent> [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W><CR>
+  nnoremap <silent> [unite]] :<C-u>Unite -buffer-name=search-buffer tag:
+  autocmd BufEnter *
+        \   if empty(&buftype)
+        \|      nnoremap <buffer> [unite]t :<C-u>Unite jump<CR>
+        \|  endif
 
-" ignore files
-call unite#custom#source('file_rec/async', 'ignore_pattern', '(png\|gif\|jpeg\|jpg)$')
+  ""スペースキーとyキーでヒストリ/ヤンクを表示
+  nnoremap <silent> [unite]y :<C-u>Unite<Space> history/yank<CR>
+  ""スペースキーとhキーでヒストリ/ヤンクを表示
+  nnoremap <silent> [unite]h :<C-u>Unite<Space> help -buffer-name=search-buffer<CR>
+  "スペースキーとoキーでoutline
+  nnoremap <silent> [unite]o :<C-u>Unite<Space> outline -prompt-direction="top"<CR>
+  "unite-quickfixを呼び出し
+  nnoremap <silent> [unite]q :<C-u>Unite<Space> quickfix -no-quit<CR>
+  ""スペースキーとgキーでgrep
+  " vnoremap <silent> [unite]/g :Unite grep::-iHRn:<C-R>=escape(@", '\\.*$^[]')<CR><CR>
+  " grep検索
+  nnoremap <silent> [unite]g  :<C-u>Unite grep:. -buffer-name=search-buffer <CR>
+  " カーソル位置の単語をgrep検索
+  nnoremap <silent> [unite]cg :<C-u>Unite grep:. -buffer-name=search-buffer <CR><C-R><C-W>
+  " git-grep
+  nnoremap <silent> [unite]gg  :<C-u>:Unite grep/git:. -buffer-name=search-buffer <CR>
 
-" grep検索結果の再呼出
-nnoremap <silent> [unite]r  :<C-u>UniteResume search-buffer <CR>
-" " bookmark
-" nnoremap <silent> [unite]b :<C-u>Unite bookmark <CR>
-" " add to  bookmark
-" nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd <CR>
+  " grep検索結果の再呼出
+  nnoremap <silent> [unite]r  :<C-u>UniteResume search-buffer <CR>
+  " " bookmark
+  " nnoremap <silent> [unite]b :<C-u>Unite bookmark <CR>
+  " " add to  bookmark
+  " nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd <CR>
 
-""スペースキーとENTERキーでfile_rec:!
-" 速度に難ありのため除外中
-nnoremap [unite]<CR> :<C-u>execute
-      \ 'Unite'
-      \ 'buffer'
-      \ 'file_rec/async:!:'.fnameescape(expand('%:p:h'))
-      \ '-default-action=tabopen'<CR>
+  ""スペースキーとENTERキーでfile_rec:!
+  nnoremap <silent> [unite]<CR> :<C-u>execute
+        \ 'Unite'
+        \ 'file_rec/async:!:'.fnameescape(expand('%:p:h'))
+        \ '-default-action=tabopen'<CR>
 
-nnoremap <silent> [unite]p :<C-u>call <SID>unite_project('-start-insert')<CR>
+  " nnoremap <silent> [unite]p :<C-u>call <SID>unite_project()<CR>
+  "
+  " function! s:unite_project(...)
+  "   let opts = (a:0 ? join(a:000, ' ') : '')
+  "   execute 'Unite' opts 'file_rec/async:!' 'buffer'
+  " endfunction
 
-function! s:unite_project(...)
-  let opts = (a:0 ? join(a:000, ' ') : '')
-  execute 'Unite' opts 'file_rec/async:!'
 endfunction
-nnoremap <silent> ,e  :<C-u>Unite file_rec/async:!<CR>
-
 "unite.vimを開いている間のキーマッピング
 autocmd FileType unite* call s:unite_my_settings()
 function! s:unite_my_settings()
@@ -904,6 +895,9 @@ function! s:unite_my_settings()
   " nmap <buffer> <ESC><ESC> <Plug>(unite_exit)
   "入力モードのときjjでノーマルモードに移動
   imap <buffer> jj <Plug>(unite_insert_leave)
+  " normal modeでも基本の挙動は一致させる
+  nmap <buffer> <C-n> j
+  nmap <buffer> <C-p> k
   "入力モードのときctrl+wでバックスラッシュも削除
   imap <buffer> <C-w> <Plug>(unite_delete_backward_path)
   "ctrl+kでauto-previewモードにする
@@ -919,68 +913,74 @@ function! s:unite_my_settings()
   nnoremap <silent> <buffer> <expr> <C-o> unite#do_action('open')
   inoremap <silent> <buffer> <expr> <C-o> unite#do_action('open')
 endfunction
+"" }}}
 
-" ctrlp.vim
-" let g:ctrlp_map = "[unite]<CR>"
-" let g:ctrlp_user_command = 'ag %s -l'
-let g:ctrlp_user_command = 'ag %s -i --nocolor --column --ignore --nogroup -g ""'
-let g:ctrlp_use_migemo = 1
-" let g:ctrlp_use_caching = 0
-let g:ctrlp_clear_cache_on_exit = 0   " 終了時キャッシュをクリアしない
-let g:ctrlp_mruf_max            = 3000 " MRUの最大記録数
-let g:ctrlp_open_new_file       = 1   " 新規ファイル作成時にタブで開く
-let g:ctrlp_prompt_mappings = {
-      \ 'PrtBS()':              ['<c-h>', '<bs>', '<c-]>'],
-      \ 'PrtDelete()':          ['<del>'],
-      \ 'PrtDeleteWord()':      ['<c-w>'],
-      \ 'PrtClear()':           ['<c-u>'],
-      \ 'PrtSelectMove("j")':   ['<c-n>', '<down>'],
-      \ 'PrtSelectMove("k")':   ['<c-p>', '<up>'],
-      \ 'PrtHistory(-1)':       ['<c-k>'],
-      \ 'PrtHistory(1)':        ['<c-j>'],
-      \ 'AcceptSelection("e")': ['<cr>', '<2-LeftMouse>'],
-      \ 'AcceptSelection("h")': ['<c-x>', '<c-cr>', '<c-s>'],
-      \ 'AcceptSelection("t")': ['<c-t>', '<MiddleMouse>'],
-      \ 'AcceptSelection("v")': ['<c-v>', '<RightMouse>'],
-      \ 'ToggleFocus()':        ['<s-tab>'],
-      \ 'ToggleRegex()':        ['<c-r>'],
-      \ 'ToggleByFname()':      ['<c-d>'],
-      \ 'ToggleType(1)':        ['<c-f>', '<c-up>'],
-      \ 'ToggleType(-1)':       ['<c-b>', '<c-down>'],
-      \ 'PrtExpandDir()':       ['<tab>'],
-      \ 'PrtInsert("w")':       ['<F2>', '<insert>'],
-      \ 'PrtInsert("s")':       ['<F3>'],
-      \ 'PrtInsert("v")':       ['<F4>'],
-      \ 'PrtInsert("+")':       ['<F6>'],
-      \ 'PrtCurStart()':        ['<c-a>'],
-      \ 'PrtCurEnd()':          ['<c-e>'],
-      \ 'PrtCurLeft()':         ['<left>', '<c-^>'],
-      \ 'PrtCurRight()':        ['<c-l>', '<right>'],
-      \ 'PrtClearCache()':      ['<c-R>'],
-      \ 'PrtDeleteMRU()':       ['<F7>'],
-      \ 'CreateNewFile()':      ['<c-y>'],
-      \ 'MarkToOpen()':         ['<c-z>'],
-      \ 'OpenMulti()':          ['<c-o>'],
-      \ 'PrtExit()':            ['<esc>', '<c-c>', '<c-g>'],
-      \ }
+"" {{{vimfiler
+let g:vimfiler_as_default_explorer  = 1
+let g:vimfiler_safe_mode_by_default = 0
+" let g:vimfiler_edit_action = 'tabopen'
+" Like Textmate icons.
+let g:vimfiler_tree_leaf_icon       = ' '
+let g:vimfiler_tree_opened_icon     = '▾'
+let g:vimfiler_tree_closed_icon     = '▸'
+let g:vimfiler_file_icon            = '-'
+let g:vimfiler_marked_file_icon     = '*'
+let g:vimfiler_ignore_pattern       = '\(^\.\|\~$\|\.pyc$\|\.[oad]$\)'
+let g:vimfiler_time_format = '%m-%d-%y %H:%M:%S'
+" autocmd VimEnter * call s:vimfiler_initialize()
+" function! s:vimfiler_initialize() "workaround for cancel whitespace
+"   VimFiler -split -simple -winwidth=40 -direction=topleft -buffer-name=explorer -split -simple -project -toggle -no-quit<CR>
+"   VimFiler -split -simple -winwidth=40 -direction=topleft -buffer-name=explorer -split -simple -project -toggle -no-quit<CR>
+" endfunction
+
+autocmd BufEnter * if bufname("") !~ "*vimfiler" | call s:vimfiler_keymap() | endif
+function! s:vimfiler_keymap()
+  nmap <Space> [unite]
+  nnoremap [unite]f :VimFiler -buffer-name=explorer -project -force-hide -split -winwidth=40 -direction=topleft -simple<CR>
+  nnoremap [unite]c :VimFilerBufferDir -direction=topleft -buffer-name=explorer -force-hide -split -winwidth=40 -direction=topleft -simple<CR>
+  " nnoremap <C-k><C-f> :VimFiler -project<CR>
+  " inoremap <C-k><C-f> <ESC>:VimFiler -project<CR>
+  " nnoremap <C-k><C-k> :VimFiler -direction=topleft -buffer-name=explorer -split -simple -project -winwidth=40 -toggle -no-quit<CR>
+  " nnoremap <C-k><C-c> :VimFilerBufferDir -direction=topleft -buffer-name=explorer -split -simple -winwidth=40 -toggle -no-quit<CR>
+endfunction
+
+autocmd FileType vimfiler* call s:vimfiler_my_settings()
+function! s:vimfiler_my_settings()
+  " nnoremap <buffer><silent>/ :<C-u>UniteWithBufferDir file<CR>
+  " nmap <buffer><silent>/ <Plug>(vimfiler_grep)
+  nunmap <buffer><Space>
+  " nunmap g]
+  nmap  <buffer><silent> <expr> <C-t> vimfiler#do_action('tabopen')
+  vmap  <buffer><silent> <expr> <C-t> vimfiler#do_action('tabopen')
+  nmap  <buffer><silent>+ <Plug>(vimfiler_expand_tree)
+  nmap  <buffer><silent>* <Plug>(vimfiler_toggle_mark_current_line)
+  vmap  <buffer><silent>* <Plug>(vimfiler_toggle_mark_current_line)
+  nmap  <buffer><ESC> <Plug>(vimfiler_hide)
+  nmap  <buffer><C-o> <Plug>(vimfiler_edit_file) 
+  " <Plug>(vimfiler_split_edit_file)
+
+  call  s:unite_keymap()
+endfunction
+"" }}}
 
 "Octorpess
 let g:octopress_path = '~/octopress'
-let g:octopress_comments = 0
+let g:octopress_comments = 1
 let g:octopress_published = 0
 let g:octopress_bundle_exec = 1
 let g:octopress_prompt_categories = 1
-let g:octopress_prompt_tags = 1
 let g:octopress_unite = 1
 " let g:octopress_auto_open_results = 1
 " use unite (default 0)
 let g:octopress_unite = 1
 " use arbitrary unite option (default is empty)
-let g:octopress_unite_option = "-start-insert "
+let g:octopress_unite_option = "-start-insert -horizontal -direction=botright -prompt-direction=below"
 " use arbitrary unite source (default is 'file')
 let g:octopress_unite_source = "file"
 let g:octopress_qfixgrep = 1
-let g:octopress_vimfiler = 1
+let g:octopress_post_suffix = "octopress"
+let g:octopress_template_dir_path = "~/.vim/template/"
+
 map [unite]on  :OctopressNew<CR>
 map [unite]ol  :OctopressList<CR>
 map [unite]og  :OctopressGrep<CR>
@@ -1017,12 +1017,12 @@ let g:ref_source_webdict_sites.default = 'ej'
 " 最初の数行を削除
 function! g:ref_source_webdict_sites.je.filter(output)
   let l:str = substitute(a:output, "       単語帳", "", "g")
-  return join(split(str, "\n")[30 :], "\n")
+  return join(split(str, "\n")[28 :], "\n")
 endfunction
 
 function! g:ref_source_webdict_sites.ej.filter(output)
   let l:str = substitute(a:output, "       単語帳", "", "g")
-  return join(split(str, "\n")[30 :], "\n")
+  return join(split(str, "\n")[28 :], "\n")
 endfunction
 
 call altercmd#load()
@@ -1060,19 +1060,28 @@ nnoremap <silent> [unite]gs :<C-u>Unite<Space> gista<CR>
 let g:netrw_nogx = 1 " disable netrw's gx mapping.
 nmap gx <Plug>(openbrowser-smart-search)
 vmap gx <Plug>(openbrowser-smart-search)
+nmap gd :<C-u>OpenBrowserSearch -devdocs 
+vmap gd :<C-u>OpenBrowserSearch -devdocs <C-r><C-w><CR>
 
-"indentline
-let g:indentLine_faster=1
-let g:indentLine_color_term = 239
-nmap <Leader>\| :IndentLinesToggle<CR>
-let g:indentLine_bufNameExclude = ['help', 'vimfiler', 'ctrlp', 'unite']
-let g:indentLine_enabled=0
-" nnoremap <Leader>i :<C-u>setlocal cursorcolumn!<CR>
+" indent guides
+let g:indent_guides_auto_colors = 0
+let g:indent_guides_start_level=2
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=236
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=235
+let g:indent_guides_enable_on_vim_startup=1
+let g:indent_guides_color_change_percent = 30
+let g:indent_guides_guide_size=1
+nmap <silent> <Leader>ig <Plug>IndentGuidesToggle
 
 " let g:rspec_command = 'Dispatch RAILS_ENV=test spring rspec --format progress --no-profile {spec}'
 " let g:rspec_command = 'Dispatch rspec {spec}'
 " let g:rspec_command = "compiler rspec | set makeprg=spring | Make rspec -fd {spec}"
-let g:rspec_command = "compiler rspec | set makeprg=spring | Make rspec --color --drb --tty {spec}"
+let g:rspec_command = "Dispatch rspec --format progress --no-profile {spec}"
+
+if executable('spring')
+  autocmd BufEnter * if exists("b:rails_root") | let g:rspec_command = "compiler rspec | set makeprg=spring | Make rspec --color --drb --tty {spec}" | endif
+endif
+
 function! s:load_rspec_settings()
   nmap <silent><leader>r :call RunCurrentSpecFile()<CR>
   nmap <silent><leader>n :call RunNearestSpec()<CR>
@@ -1101,7 +1110,6 @@ augroup END
 "   autocmd!
 "   autocmd BufEnter *_spec.rb call s:load_rspec_settings()
 " augroup END
-
 
 " 常にprojectのroot Dirに移動する
 function! ChangeCurrentDirectoryToProjectRoot()
@@ -1141,17 +1149,12 @@ nmap s <Plug>(easymotion-s2)
 " omap / <Plug>(easymotion-tn)
 " map  n <Plug>(easymotion-next)
 " map  N <Plug>(easymotion-prev)
-let g:EasyMotion_use_migemo = 1
+" let g:EasyMotion_use_migemo = 1
 
-" vim-trailing-whitespace'
-if neobundle#tap('vim-trailing-whitespace')
-  " uniteでスペースが表示されるので、設定でOFFにします。
-  let g:extra_whitespace_ignored_filetypes = ['unite', 'vimfiler', 'vimfiler:explorer', 'md']
-endif
-
-"auto_ctags
+"auto-ctags
 "" 保存時にtagsファイル作成
 let g:auto_ctags = 1
+let g:auto_ctags_filetype_mode = 1
 let g:auto_ctags_directory_list = ['.git', '.svn']
 set tags+=.git/tags;
 
@@ -1160,6 +1163,7 @@ set tags+=.git/tags;
 function! Multiple_cursors_before()
   if exists(':NeoCompleteLock')==2
     exe 'NeoCompleteLock'
+    call s:DisableChangeCursorShape()
   endif
 endfunction
 
@@ -1168,6 +1172,7 @@ endfunction
 function! Multiple_cursors_after()
   if exists(':NeoCompleteUnlock')==2
     exe 'NeoCompleteUnlock'
+    call s:EnableChangeCursorShape()
   endif
 endfunction
 
@@ -1190,3 +1195,28 @@ if &diff
     autocmd VimEnter * execute "%SDChar"
   augroup END
 endif
+
+"agit.vim
+autocmd FileType agit call s:my_agit_setting()
+function! s:my_agit_setting()
+  nmap <buffer> J     <Plug>(agit-scrolldown-stat)
+  nmap <buffer> K     <Plug>(agit-scrollup-stat)
+  nmap <buffer> <C-n> <Plug>(agit-scrolldown-diff)
+  nmap <buffer> <C-p> <Plug>(agit-scrollup-diff)
+  nmap <buffer> u     <PLug>(agit-reload)
+  nmap <buffer> yh    <Plug>(agit-yank-hash)
+  nmap <buffer> cg    <Plug>(agit-print-commitmsg)
+  nmap <buffer> q     <Plug>(agit-exit)
+  nmap <buffer> C     <Plug>(agit-git-checkout)
+  nmap <buffer> cb    <Plug>(agit-git-checkout-b)
+  nmap <buffer> D     <Plug>(agit-git-branch-d)
+  nmap <buffer> rs    <Plug>(agit-git-reset-soft)
+  nmap <buffer> rm    <Plug>(agit-git-reset)
+  nmap <buffer> rh    <Plug>(agit-git-reset-hard)
+  nmap <buffer> rb    <Plug>(agit-git-rebase)
+  nmap <buffer> ri    <Plug>(agit-git-rebase-i)
+  nmap <buffer> di    <Plug>(agit-diff)
+  "add
+  nmap <buffer> ch    <Plug>(agit-git-cherry-pick)
+  nmap <buffer> Rv    <Plug>(agit-git-revert)
+endfunction

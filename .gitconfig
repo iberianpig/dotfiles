@@ -2,6 +2,7 @@
   name = iberianpig
   email = yhkyky@gmail.com
 [alias]
+  addw = !"git diff -w --no-color | git apply --cached" # http://qiita.com/quattro_4/items/b75de424038d616868db
   co = checkout
   fe = fetch --prune
   tr = log --graph --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
@@ -13,8 +14,8 @@
   b = branch -a
   br = browse-remote
   lo = log --graph --color --decorate
-  lol  = log --graph --decorate --pretty=oneline --abbrev-commit
-  lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
+  lol  = log --graph --color --decorate --pretty=oneline --abbrev-commit
+  lola = log --graph --color --decorate --pretty=oneline --abbrev-commit --all
   sd = stash drop
   sl = stash list
   sp = stash pop
@@ -36,6 +37,14 @@
   user = iberianpig
 [credential]
   helper = cache
+[web]
+	# browser = google-chrome-beta
+  browser = luakit
+[browser "google-chrome-beta"]
+  cmd = /usr/bin/google-chrome-beta
+[browser "luakit"]
+  cmd = /usr/bin/luakit
+
 [browse-remote "github.com"]
 	top = https://{host}/{path}
 	ref = https://{host}/{path}/tree/{short_ref}

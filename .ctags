@@ -10,11 +10,16 @@
 --exclude=jquery-*.js
 --languages=-html
 --extra=+q+f
---fields=+i+a+S+n
+---sort=yes
+--input-encoding=utf-8
+--input-encoding-c=sjis
+--input-encoding-vim=utf-8
+--input-encoding-go=utf-8-fields=+i+a+S+n
 
 --regex-ruby=/(^|;)[ \t]*(class|module)[ \t]+([A-Z][[:alnum:]_]+(::[A-Z][[:alnum:]_]+)+)/\3/c,class,constant/
 --regex-ruby=/(^|[:;])[ \t]*([A-Z][[:alnum:]_]+) *=/\2/c,class,constant/
 --regex-ruby=/(^|;)[ \t]*(has_many|belongs_to|has_one|has_and_belongs_to_many)\(? *:([[:alnum:]_]+)/\3/f,function,association/
+--regex-ruby=/^[[:space:]]*attr_(reader|writer|accessor)[[:space:]]+:([a-z0-9_?]+)/\2/
 --regex-ruby=/(^|;)[ \t]*(named_)?scope\(? *:([[:alnum:]_]+)/\3/f,function,named_scope/
 --regex-ruby=/(^|;)[ \t]*expose\(? *:([[:alnum:]_]+)/\2/f,function,exposure/
 --regex-ruby=/(^|;)[ \t]*event\(? *:([[:alnum:]_]+)/\2/f,function,aasm_event/
@@ -67,3 +72,18 @@
 --regex-golang=/func([ \t]+\([^)]+\))?[ \t]+([a-zA-Z0-9_]+)/\2/d,func/
 --regex-golang=/var[ \t]+([a-zA-Z_][a-zA-Z0-9_]+)/\1/d,var/
 --regex-golang=/type[ \t]+([a-zA-Z_][a-zA-Z0-9_]+)/\1/d,type/
+
+--langdef=css
+--langmap=css:.css
+--regex-css=/^[ \t]*\.([A-Za-z0-9_-]+)/.\1/c,class,classes/
+--regex-css=/^[ \t]*#([A-Za-z0-9_-]+)/#\1/i,id,ids/
+--regex-css=/^[ \t]*(([A-Za-z0-9_-]+[ \t\n,]+)+)\{/\1/t,tag,tags/
+--regex-css=/^[ \t]*@media\s+([A-Za-z0-9_-]+)/\1/m,media,medias/
+
+--langdef=scss
+--langmap=scss:.scss
+--regex-scss=/^[ \t]*\.([A-Za-z0-9_-]+)/.\1/c,class,classes/
+--regex-scss=/^[ \t]*#([A-Za-z0-9_-]+)/#\1/i,id,ids/
+--regex-scss=/^[ \t]*(([A-Za-z0-9_-]+[ \t\n,]+)+)\{/\1/t,tag,tags/
+--regex-scss=/^[ \t]*@media\s+([A-Za-z0-9_-]+)/\1/m,media,medias/
+--regex-scss=/^[ \t]*\$([A-Za-z0-9_-]+)/\$\1/v,var,variables/
