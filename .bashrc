@@ -24,7 +24,7 @@ function share_history {  # 以下の内容を関数として定義
 }
 PROMPT_COMMAND='share_history'  # 上記関数をプロンプト毎に自動実施
 shopt -u histappend   # .bash_history追記モードは不要なのでOFFに
-export HISTSIZE=9999  # 履歴のMAX保存数を指定
+export HISTSIZE=99999  # 履歴のMAX保存数を指定
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -132,15 +132,10 @@ if [ -f ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.s
     source ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
 fi
 
-
 if [ $DISPLAY ]; then
   xset r rate 200 40
 fi
 
-
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
-
-
+# notify when long running commands
 . /usr/share/undistract-me/long-running.bash
 notify_when_long_running_commands_finish_install

@@ -38,8 +38,9 @@
 [credential]
   helper = cache
 [web]
-	# browser = google-chrome-beta
-  browser = luakit
+	browser = google-chrome-beta
+  # browser = luakit
+  # browser = firefox
 [browser "google-chrome-beta"]
   cmd = /usr/bin/google-chrome-beta
 [browser "luakit"]

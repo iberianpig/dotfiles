@@ -43,3 +43,6 @@ alias tw='tw -yes'
 
 # rubocop
 # alias rubocop='~/rubocop.sh'
+
+alias mozc-config="/usr/lib/mozc/mozc_tool -mode=config_dialog"
+alias mozc-dict="/usr/lib/mozc/mozc_tool --mode=dictionary_tool"

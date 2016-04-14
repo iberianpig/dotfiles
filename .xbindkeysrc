@@ -65,7 +65,7 @@
 #"rxvt"
 #  Control + b:2 + Release
 #
-"sh /home/iberianpig/Dropbox/tool/linux/script/xrandr_hdmi_above.sh"
+"sh /home/iberianpig/Dropbox/tool/linux/script/xrandr_dp_above.sh"
    Alt+Mod4 + u
 
 "/usr/bin/gnome-system-monitor"
