@@ -16,13 +16,12 @@ set main-view = id date author commit-title:graph=yes,refs=yes
 bind status V !git commit -v
 
 # # Visualization
-set id-width = 14
+set id-width = 8
 set blame-options = -C -C -C
 set line-graphics = ascii
 set horizontal-scroll = 33%
 set show-notes = yes
 set show-changes = yes
-# set vertical-split = yes
 set split-view-height = 80%
 set status-untracked-dirs = yes
 set tab-size = 2
