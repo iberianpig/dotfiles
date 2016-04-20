@@ -18,7 +18,6 @@ bind status V !git commit -v
 # # Visualization
 set id-width = 8
 set blame-options = -C -C -C
-set line-graphics = ascii
 set horizontal-scroll = 33%
 set show-notes = yes
 set show-changes = yes
@@ -28,8 +27,8 @@ set tab-size = 2
 set diff-context = 1
 set ignore-space = some
 set commit-order = topo
-set ignore-case = no
-set wrap-lines = no
+set ignore-case = yes
+set wrap-lines = yes
 set focus-child = yes
 
 # Bind Settings
