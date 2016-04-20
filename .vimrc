@@ -12,8 +12,6 @@ augroup set_cursorline
   " autocmd InsertEnter,InsertLeave * set cursorcolumn!
   autocmd WinEnter * set cursorline "cursorcolumn
   " autocmd WinLeave * set nocursorline "nocursorcolumn
-  "
-  "
 augroup END
 
 function! s:EnableChangeCursorShape()
@@ -29,14 +27,14 @@ function! s:EnableChangeCursorShape()
       autocmd WinEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
     endif
     "Guake Terminal
-    " if executable('guake')
-    "   autocmd InsertEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
-    "   autocmd InsertLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-    "   autocmd VimLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-    "   autocmd VimEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-    "   autocmd WinLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-    "   autocmd WinEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-    " endif
+    if executable('guake')
+      autocmd InsertEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
+      autocmd InsertLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+      autocmd VimLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+      autocmd VimEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+      autocmd WinLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+      autocmd WinEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
+    endif
     " autocmd InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
     " autocmd InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
     " autocmd VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
@@ -86,7 +84,7 @@ set scrolloff=4                " 上下8行の視界を確保
 set sidescrolloff=16           " 左右スクロール時の視界を確保
 set sidescroll=1               " 左右スクロールは一文字づつ行う
 set lazyredraw                 " 描画を遅延させる
-set redrawtime=4000             "再描画までの時間(デフォルトは2000)
+set redrawtime=400             "再描画までの時間(デフォルトは2000)
 set ttyfast                    " カーソル移動高速化
 
 augroup restore_cursor_position
@@ -110,23 +108,9 @@ set autoread "外部でファイルに変更がされた場合は読みなおす
 " endif
 augroup vimrc-checktime "window移動/一定時間カーソルが停止した場合に強制的に読みなおす
   autocmd!
+  set updatetime=500
   autocmd WinEnter * checktime
   autocmd CursorHold * checktime
-
-  " see: http://qiita.com/babie/items/fa1154e2979c45fa77af
-  " 自動保存の設定
-  set autowrite
-  set updatetime=500
-
-  function s:AutoWriteIfPossible()
-    if &modified && !&readonly && bufname('%') !=# '' && &buftype ==# '' && expand("%") !=# ''
-      write
-    endif
-  endfunction
-
-  autocmd CursorHold * call s:AutoWriteIfPossible()
-  autocmd CursorHoldI * call s:AutoWriteIfPossible()
-
 augroup END
 
 
@@ -232,23 +216,27 @@ set helplang=ja,en
 ".vimrcの編集用
 nnoremap <Space>. :<C-u>tabedit $HOME/dotfiles/.vimrc<CR>
 
-" Set augroup.
-augroup MyAutoCmd
-  autocmd!
-  " if !has('gui_running') && !(has('win32') || has('win64'))
-    " .vimrcの再読込時にも色が変化するようにする
-    autocmd BufWritePost $HOME/dotfiles/.vimrc nested source $HOME/dotfiles/.vimrc
-  " else
-    " .vimrcの再読込時にも色が変化するようにする
-    " autocmd BufWritePost $HOME/dotfiles/.vimrc source $HOME/dotfiles/.vimrc |
-          " \if !has('gui_running') | source $MYGVIMRC
-    " autocmd BufWritePost $MYGVIMRC if has('gui_running') | source $MYGVIMRC
-  " endif
-augroup END
+" " Set augroup.
+" augroup MyAutoCmd
+"   autocmd!
+"   " if !has('gui_running') && !(has('win32') || has('win64'))
+"     " .vimrcの再読込時にも色が変化するようにする
+"     autocmd BufWritePost $HOME/dotfiles/.vimrc nested source $HOME/dotfiles/.vimrc
+"   " else
+"     " .vimrcの再読込時にも色が変化するようにする
+"     " autocmd BufWritePost $HOME/dotfiles/.vimrc source $HOME/dotfiles/.vimrc |
+"           " \if !has('gui_running') | source $MYGVIMRC
+"     " autocmd BufWritePost $MYGVIMRC if has('gui_running') | source $MYGVIMRC
+"   " endif
+" augroup END
 
 " q: のタイポ抑制
 nnoremap q: :q
 nnoremap ; :
+" remap record macro key from q to Q
+nnoremap Q q
+nnoremap q <Nop>
+
 
 "タブの設定
 " The prefix key.
@@ -271,11 +259,11 @@ nnoremap <silent> gf :tabnext<CR>
 augroup add_syntax_hilight
   autocmd!
   "シンタックスハイライトの追加
-  autocmd BufNewFile,BufRead,BufReadPre *.json.jbuilder set ft=ruby
-  autocmd BufNewFile,BufRead,BufReadPre *.erb           set ft=eruby
-  autocmd BufNewFile,BufRead,BufReadPre *.scss          set ft=scss.css
-  autocmd BufNewFile,BufRead,BufReadPre *.coffee        set ft=coffee
-  autocmd BufNewFile,BufRead,BufReadPre *.md            set ft=markdown
+  autocmd BufNewFile,BufRead,BufReadPre *.json.jbuilder            set ft=ruby
+  autocmd BufNewFile,BufRead,BufReadPre *.erb                      set ft=eruby
+  autocmd BufNewFile,BufRead,BufReadPre *.scss                     set ft=scss.css
+  autocmd BufNewFile,BufRead,BufReadPre *.coffee                   set ft=coffee
+  autocmd BufNewFile,BufRead,BufReadPre *.{md,mdwn,mkd,mkdn,mark*} set ft=markdown
 augroup END
 
 let g:ruby_path = system('echo $HOME/.rbenv/shims')
@@ -292,10 +280,10 @@ let g:loaded_vimball           = 1
 let g:loaded_vimballPlugin     = 1
 let g:loaded_getscript         = 1
 let g:loaded_getscriptPlugin   = 1
-let g:loaded_netrw             = 1
-let g:loaded_netrwPlugin       = 1
-let g:loaded_netrwSettings     = 1
-let g:loaded_netrwFileHandlers = 1
+" let g:loaded_netrw             = 1
+" let g:loaded_netrwPlugin       = 1
+" let g:loaded_netrwSettings     = 1
+" let g:loaded_netrwFileHandlers = 1
 
 
 "NeoBundle Scripts-----------------------------
@@ -354,12 +342,12 @@ NeoBundleLazy "tyru/open-browser.vim", {
 \       'mappings'  : "<Plug>(openbrowser-smart-search)"
 \   },
 \}
-NeoBundleLazy 'Shougo/vimfiler', {
-\   'depends' : ["Shougo/unite.vim"],
-\   'autoload' : {
-\       'commands' : [ "VimFilerTab", "VimFiler", "VimFilerExplorer" ]
-\   }
-\}
+" NeoBundleLazy 'Shougo/vimfiler', {
+" \   'depends' : ["Shougo/unite.vim"],
+" \   'autoload' : {
+" \       'commands' : [ "VimFilerTab", "VimFiler", "VimFilerExplorer" ]
+" \   }
+" \}
 NeoBundle 'ryanoasis/vim-devicons'
 " NeoBundle 'thinca/vim-guicolorscheme'
 NeoBundle 'itchyny/lightline.vim'
@@ -404,7 +392,6 @@ NeoBundle 'KazuakiM/vim-qfsigns'
 NeoBundle 'tpope/vim-dispatch'
 NeoBundle 'thoughtbot/vim-rspec'
 NeoBundle 'vim-scripts/dbext.vim'
-" NeoBundle 'bronson/vim-trailing-whitespace'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'Chiel92/vim-autoformat'
 " NeoBundle 'severin-lemaignan/vim-minimap'
@@ -414,6 +401,8 @@ NeoBundle 'Mizuchi/vim-ranger'
 NeoBundle 'LeafCage/yankround.vim'
 NeoBundle 'Shougo/neco-syntax'
 NeoBundle 'textobj-user'
+NeoBundle 'vim-scripts/vim-auto-save'
+NeoBundle 'rhysd/clever-f.vim'
 
 "session管理
 NeoBundle 'tpope/vim-obsession'
@@ -425,6 +414,7 @@ NeoBundle 'moznion/github-commit-comment.vim'
 NeoBundle 'lambdalisue/vim-unified-diff'
 NeoBundle 'vim-scripts/diffchar.vim'
 NeoBundle 'lambdalisue/vim-gista'
+NeoBundle 'lambdalisue/vim-gista-unite'
 NeoBundle 'Kocha/vim-unite-tig'
 
 " Markdown syntax
@@ -444,7 +434,7 @@ NeoBundleLazy 'tpope/vim-bundler', { "autoload" : { "filetypes" : ["ruby"] }  }
 NeoBundleLazy 'todesking/ruby_hl_lvar.vim', { "autoload" : { "filetypes" : ["ruby"] }  }
 
 "rails
-" NeoBundle 'basyura/unite-rails'
+NeoBundle 'basyura/unite-rails'
 NeoBundle 'tpope/vim-rails'
 
 " perl
@@ -515,7 +505,6 @@ NeoBundle 'basyura/TweetVim'
 NeoBundle 'mattn/webapi-vim'
 NeoBundle 'basyura/twibill.vim'
 NeoBundle 'tyru/open-browser.vim'
-NeoBundle 'h1mesuke/unite-outline'
 NeoBundle 'basyura/bitly.vim'
 NeoBundle 'Shougo/unite.vim'
 
@@ -928,8 +917,6 @@ cnoreabb <silent><expr>s getcmdtype()==':' && getcmdline()=~'^s' ? 'OverCommandL
 "" {{{Unite
 " " インサートモードで開始
 let g:unite_enable_start_insert=1
-" ヒストリー/ヤンク機能を有効化
-" let g:unite_source_history_yank_enable =1
 " 最近のファイルの個数制限
 let g:unite_source_file_mru_limit = 1000
 let g:unite_source_file_mru_filename_format = ''
@@ -937,7 +924,7 @@ let g:unite_source_file_mru_filename_format = ''
 let g:unite_source_rec_max_cache_files = 50000
 " let g:unite_source_rec_min_cache_files = 100
 
-let g:webdevicons_enable_unite = 0
+let g:webdevicons_enable_unite = 1
 let g:WebDevIconsUnicodeGlyphDoubleWidth = 1
 
 "Like ctrlp.vim settings.
@@ -948,7 +935,6 @@ call unite#custom#profile('default', 'context', {
 
 if executable('ag')
   let g:unite_source_grep_command = 'ag'
-  " let g:unite_source_grep_default_opts = '--nogroup --nocolor --column'
   let g:unite_source_grep_default_opts =
         \ '--line-numbers --nocolor --nogroup --hidden --ignore ' .
         \ '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'' ' .
@@ -956,7 +942,6 @@ if executable('ag')
   let g:unite_source_grep_recursive_opt = ''
   let g:unite_source_rec_async_command = [ 'ag', '--follow', '--nocolor', '--nogroup', '-g']
 endif
-" call unite#filters#sorter_default#use(['sorter_ftime*'])
 call unite#filters#sorter_default#use(['sorter_ftime*'])
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#custom#source('file_rec, file_rec/git, grep/git, buffer, file', 'sorters', 'sorter_selecta')
@@ -970,7 +955,7 @@ call unite#custom#source('file_rec/git, grep/git, buffer, file_rec/async', 'igno
       \ split(&wildignore, ','))
 
 " ファイルはタブで開く
-call unite#custom_default_action('file', 'tabopen')
+" call unite#custom_default_action('file', 'tabopen')
 call unite#custom_default_action('directory', 'file')
 
 augroup unite_global_keymap
@@ -987,8 +972,10 @@ function! s:unite_keymap()
   nnoremap <silent> [unite]i :<C-u>Unite<Space>
   ""スペースキーとaキーでカレントディレクトリを表示
   nnoremap <silent> [unite]a :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
-  "スペースキーとfキーでバッファと最近開いたファイル一覧を表示
-  nnoremap <silent> [unite]m :<C-u>Unite<Space>file_mru<CR>
+  "スペースキーとmキーでプロジェクト内で最近開いたファイル一覧を表示
+  nnoremap <silent> [unite]m :<C-u>UniteWithProjectDir<Space>file_mru<CR>
+  "スペースキーとMキーで最近開いたファイル一覧を表示
+  nnoremap <silent> [unite]M :<C-u>Unite<Space>file_mru<CR>
   "スペースキーとdキーで最近開いたディレクトリを表示
   nnoremap <silent> [unite]d :<C-u>Unite<Space> directory_mru<CR>
   "スペースキーとbキーでバッファを表示
@@ -1002,6 +989,8 @@ function! s:unite_keymap()
         \   if empty(&buftype)
         \|      nnoremap <buffer> [unite]t :<C-u>Unite jump<CR>
         \|  endif
+
+  ""tweet vimのアカウントを切り替え
   nnoremap <silent> [unite]s :<C-u>Unite<space> tweetvim/account<CR>
 
   ""スペースキーとyキーでヒストリ/ヤンクを表示
@@ -1019,9 +1008,9 @@ function! s:unite_keymap()
   ""スペースキーとgキーでgrep
   " vnoremap <silent> [unite]/g :Unite grep::-iHRn:<C-R>=escape(@", '\\.*$^[]')<CR><CR>
   " grep検索
-  nnoremap <silent> [unite]g  :<C-u>Unite grep:. -buffer-name=search-buffer <CR>
+  nnoremap <silent> [unite]g  :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR>
   " カーソル位置の単語をgrep検索
-  nnoremap <silent> [unite]cg :<C-u>Unite grep:. -buffer-name=search-buffer <CR><C-R><C-W>
+  nnoremap <silent> [unite]cg :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R><C-W>
   " git-grep
   nnoremap <silent> [unite]gg  :<C-u>:Unite grep/git:. -buffer-name=search-buffer <CR>
 
@@ -1040,12 +1029,18 @@ function! s:unite_keymap()
 
   nnoremap <silent> [unite]<CR> :<C-u>Unite file_rec/git -buffer-name=search-buffer <CR>
 
-  " nnoremap <silent> [unite]p :<C-u>call <SID>unite_project()<CR>
-  "
-  " function! s:unite_project(...)
-  "   let opts = (a:0 ? join(a:000, ' ') : '')
-  "   execute 'Unite' opts 'file_rec/async:!' 'buffer'
-  " endfunction
+  ""unite-rails
+  noremap <silent> [unite]ec :<C-u>Unite rails/controller<CR>
+  noremap <silent> [unite]em :<C-u>Unite rails/model<CR>
+  noremap <silent> [unite]ev :<C-u>Unite rails/view<CR>
+  noremap <silent> [unite]eh :<C-u>Unite rails/helper<CR>
+  noremap <silent> [unite]es :<C-u>Unite rails/stylesheet<CR>
+  noremap <silent> [unite]ej :<C-u>Unite rails/javascript<CR>
+  noremap <silent> [unite]er :<C-u>Unite rails/route<CR>
+  noremap <silent> [unite]eg :<C-u>Unite rails/gemfile<CR>
+  noremap <silent> [unite]et :<C-u>Unite rails/spec<CR>
+  noremap <silent> [unite]el :<C-u>Unite rails/log<CR>
+  noremap <silent> [unite]ed :<C-u>Unite rails/db<CR>
 endfunction
 "unite.vimを開いている間のキーマッピング
 augroup unite_local_keymap
@@ -1081,56 +1076,60 @@ endfunction
 "" }}}
 
 "" {{{vimfiler
-let g:vimfiler_as_default_explorer  = 1
-let g:webdevicons_enable_vimfiler   = 1
-let g:WebDevIconsUnicodeGlyphDoubleWidth = 1
-" set guifont=M+\ 1m\ regular\ Nerd\ Font\ Complete\ 10
-let g:vimfiler_safe_mode_by_default = 0
-" let g:vimfiler_edit_action = 'tabopen'
-" Like Textmate icons.
-let g:vimfiler_tree_leaf_icon       = ' '
-let g:vimfiler_tree_opened_icon     = '▾'
-let g:vimfiler_tree_closed_icon     = '▸'
-let g:vimfiler_file_icon            = '-'
-let g:vimfiler_marked_file_icon     = '*'
-let g:vimfiler_ignore_pattern       = '\(^\.\|\~$\|\.pyc$\|\.[oad]$\)'
-let g:vimfiler_time_format = '%m-%d-%y %H:%M:%S'
+" let g:vimfiler_as_default_explorer  = 1
+" let g:webdevicons_enable_vimfiler   = 1
+" let g:WebDevIconsUnicodeGlyphDoubleWidth = 1
+" " set guifont=M+\ 1m\ regular\ Nerd\ Font\ Complete\ 10
+" let g:vimfiler_safe_mode_by_default = 0
+" " let g:vimfiler_edit_action = 'tabopen'
+" " Like Textmate icons.
+" let g:vimfiler_tree_leaf_icon       = ' '
+" let g:vimfiler_tree_opened_icon     = '▾'
+" let g:vimfiler_tree_closed_icon     = '▸'
+" let g:vimfiler_file_icon            = '-'
+" let g:vimfiler_marked_file_icon     = '*'
+" let g:vimfiler_ignore_pattern       = '\(^\.\|\~$\|\.pyc$\|\.[oad]$\)'
+" let g:vimfiler_time_format = '%m-%d-%y %H:%M:%S'
 " autocmd VimEnter * call s:vimfiler_initialize()
 " function! s:vimfiler_initialize() "workaround for cancel whitespace
 "   VimFiler -split -simple -winwidth=40 -direction=topleft -buffer-name=explorer -split -simple -project -toggle -no-quit<CR>
 "   VimFiler -split -simple -winwidth=40 -direction=topleft -buffer-name=explorer -split -simple -project -toggle -no-quit<CR>
 " endfunction
-
-autocmd BufEnter * if bufname("") !~ "*vimfiler" | call s:vimfiler_keymap() | endif
-function! s:vimfiler_keymap()
-  nmap <Space> [unite]
-  nnoremap [unite]f :VimFiler -buffer-name=explorer -project -force-hide -split -winwidth=40 -direction=topleft -simple -toggle<CR>
-  nnoremap [unite]c :VimFilerBufferDir -direction=topleft -buffer-name=explorer -force-hide -split -winwidth=40 -direction=topleft -simple -toggle<CR>
-  " nnoremap <C-k><C-f> :VimFiler -project<CR>
-  " inoremap <C-k><C-f> <ESC>:VimFiler -project<CR>
-  " nnoremap <C-k><C-k> :VimFiler -direction=topleft -buffer-name=explorer -split -simple -project -winwidth=40 -toggle -no-quit<CR>
-  " nnoremap <C-k><C-c> :VimFilerBufferDir -direction=topleft -buffer-name=explorer -split -simple -winwidth=40 -toggle -no-quit<CR>
-endfunction
-
-augroup local_vimfiler_keymap
-  autocmd FileType vimfiler* call s:vimfiler_my_settings()
-augroup END
-function! s:vimfiler_my_settings()
-  " nnoremap <buffer><silent>/ :<C-u>UniteWithBufferDir file<CR>
-  " nmap <buffer><silent>/ <Plug>(vimfiler_grep)
-  nunmap <buffer><Space>
-  " nunmap g]
-  nmap  <buffer><silent> <expr> <C-t> vimfiler#do_action('tabopen')
-  vmap  <buffer><silent> <expr> <C-t> vimfiler#do_action('tabopen')
-  nmap  <buffer><silent>+ <Plug>(vimfiler_expand_tree)
-  nmap  <buffer><silent>* <Plug>(vimfiler_toggle_mark_current_line)
-  vmap  <buffer><silent>* <Plug>(vimfiler_toggle_mark_current_line)
-  nmap  <buffer><ESC> <Plug>(vimfiler_hide)
-  nmap  <buffer><C-o> <Plug>(vimfiler_edit_file) 
-  nmap  <buffer><CR> <Plug>(vimfiler_split_edit_file)
-  call  s:unite_keymap()
-endfunction
+"
+" autocmd BufEnter * if bufname("") !~ "*vimfiler" | call s:vimfiler_keymap() | endif
+" function! s:vimfiler_keymap()
+"   nmap <Space> [unite]
+"   nnoremap [unite]f :VimFiler -buffer-name=explorer -project -force-hide -split -winwidth=40 -direction=topleft -simple -toggle<CR>
+"   nnoremap [unite]c :VimFilerBufferDir -direction=topleft -buffer-name=explorer -force-hide -split -winwidth=40 -direction=topleft -simple -toggle<CR>
+"   " nnoremap <C-k><C-f> :VimFiler -project<CR>
+"   " inoremap <C-k><C-f> <ESC>:VimFiler -project<CR>
+"   " nnoremap <C-k><C-k> :VimFiler -direction=topleft -buffer-name=explorer -split -simple -project -winwidth=40 -toggle -no-quit<CR>
+"   " nnoremap <C-k><C-c> :VimFilerBufferDir -direction=topleft -buffer-name=explorer -split -simple -winwidth=40 -toggle -no-quit<CR>
+" endfunction
+"
+" augroup local_vimfiler_keymap
+"   autocmd FileType vimfiler* call s:vimfiler_my_settings()
+" augroup END
+" function! s:vimfiler_my_settings()
+"   " nnoremap <buffer><silent>/ :<C-u>UniteWithBufferDir file<CR>
+"   " nmap <buffer><silent>/ <Plug>(vimfiler_grep)
+"   nunmap <buffer><Space>
+"   " nunmap g]
+"   nmap  <buffer><silent> <expr> <C-t> vimfiler#do_action('tabopen')
+"   vmap  <buffer><silent> <expr> <C-t> vimfiler#do_action('tabopen')
+"   nmap  <buffer><silent>+ <Plug>(vimfiler_expand_tree)
+"   nmap  <buffer><silent>* <Plug>(vimfiler_toggle_mark_current_line)
+"   vmap  <buffer><silent>* <Plug>(vimfiler_toggle_mark_current_line)
+"   nmap  <buffer><ESC> <Plug>(vimfiler_hide)
+"   nmap  <buffer><C-o> <Plug>(vimfiler_edit_file)
+"   nmap  <buffer><CR> <Plug>(vimfiler_split_edit_file)
+"   call  s:unite_keymap()
+" endfunction
 "" }}}
+
+let g:vim_markdown_folding_disabled=1
+
+let g:vim_markdown_frontmatter=1
 
 "Octorpess
 let g:octopress_path = '~/octopress'
@@ -1144,6 +1143,7 @@ let g:octopress_unite = 1
 " use arbitrary unite option (default is empty)
 let g:octopress_unite_option = "-start-insert -horizontal -direction=botright -prompt-direction=below"
 " use arbitrary unite source (default is 'file')
+" let g:octopress_unite_source = "file"
 let g:octopress_unite_source = "file"
 let g:octopress_qfixgrep = 1
 let g:octopress_post_suffix = "markdown"
@@ -1154,12 +1154,6 @@ nnoremap [unite]ol  :OctopressList<CR>
 nnoremap [unite]og  :OctopressGrep<CR>
 nnoremap [unite]oG  :OctopressGenerate<CR>
 nnoremap [unite]od  :OctopressDeploy<CR>
-
-" "gist-vim
-" let g:gist_detect_filetype = 1
-" let g:github_user  = 'iberianpig'
-" " Only :w! updates a gist.
-" let g:gist_update_on_write = 2
 
 " "vim-ref
 " vim-ref のバッファを q で閉じられるようにする
@@ -1205,11 +1199,6 @@ let g:gitgutter_diff_args = '-w'
 nnoremap <silent> ,gg :<C-u>GitGutterToggle<CR>
 nnoremap <silent> ,gh :<C-u>GitGutterLineHighlightsToggle<CR>
 
-"migemosearch
-"  if executable('cmigemo')
-"   cnoremap <expr><CR> migemosearch#replace_search_word()."\<CR>"
-" endif
-
 "previm
 augroup PrevimSettings
   autocmd!
@@ -1230,7 +1219,7 @@ nnoremap <silent> [unite]gs :<C-u>Unite<Space> gista<CR>
 " for open-browser plugin
 nmap gx <Plug>(openbrowser-smart-search)
 vmap gx <Plug>(openbrowser-smart-search)
-nmap gd :<C-u>OpenBrowserSearch -devdocs 
+nmap gd :<C-u>OpenBrowserSearch -devdocs
 vmap gd :<C-u>OpenBrowserSearch -devdocs <C-r><C-w><CR>
 
 let g:openbrowser_browser_commands = [
@@ -1257,9 +1246,6 @@ augroup indent_guides_color
   autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=235
 augroup END
 
-" let g:rspec_command = 'Dispatch RAILS_ENV=test spring rspec --format progress --no-profile {spec}'
-" let g:rspec_command = 'Dispatch rspec {spec}'
-" let g:rspec_command = "compiler rspec | set makeprg=spring | Make rspec -fd {spec}"
 let g:rspec_command = "Dispatch rspec --format progress --no-profile {spec}"
 
 if executable('spring')
@@ -1280,23 +1266,6 @@ augroup RSpecSetting
   autocmd!
   autocmd  BufEnter *_spec.rb call s:load_rspec_settings()
 augroup END
-
-" function! s:load_rspec_settings()
-"   "" rspec.vim {{{
-"   let g:RspecBin  ="RAILS_ENV=test bundle exec rspec"
-"   let g:RspecOpts ="--drb -c -fd"
-"
-"   " rspec.vim keymap
-"   " nnoremap <Leader>r :RunSpec<CR>
-"   " nnoremap <Leader>l :RunSpecLine<CR>
-"   " nnoremap <Leader>a :RunSpecs<CR>
-"   "" }}}
-" endfunction
-"
-" augroup RSpecSetting
-"   autocmd!
-"   autocmd BufEnter *_spec.rb call s:load_rspec_settings()
-" augroup END
 
 " 常にprojectのroot Dirに移動する
 function! ChangeCurrentDirectoryToProjectRoot()
@@ -1329,11 +1298,8 @@ call lexima#add_rule({'at': '\%#\n\s*]', 'char': ']', 'input': ']', 'delete': ']
 
 "caw
 " <C-/> or <C-_> でコメントトグル
-
-nmap <C-_> <Plug>(caw:i:toggle)
-vmap <C-_> <Plug>(caw:i:toggle)
-" nmap // <Plug>(caw:i:toggle)
-" vmap // <Plug>(caw:i:toggle)
+nmap <C-_> <Plug>(caw:hatpos:toggle)
+vmap <C-_> <Plug>(caw:hatpos:toggle)
 
 " easymotion
 " let g:EasyMotion_do_mapping = 0 "Disable default mappings
@@ -1431,24 +1397,26 @@ function! s:my_agit_setting()
   nmap <buffer> Rv    <Plug>(agit-git-revert)
 endfunction
 
-" if has('unix') && !has('gui_running')
-"   function! RangerExplorer()
-"     exec "silent !ranger --choosefile=/tmp/vim_ranger_current_file " . expand("%:p:h")
-"     if filereadable('/tmp/vim_ranger_current_file')
-"       exec 'edit ' . system('cat /tmp/vim_ranger_current_file')
-"       call system('rm /tmp/vim_ranger_current_file')
-"     endif
-"     redraw!
-"   endfun
-"   map [unite]f :call RangerExplorer()<CR>
-" endif
+" vim-ranger
+" open current dir
+nnoremap <silent>[unite]c :e %:p:h<cr>
+" open project root dir
+nnoremap <silent>[unite]f :call RangerOpenProjectRootDir()<CR>
+
+function! RangerOpenProjectRootDir()
+  let root = unite#util#path2project_directory(expand('%'))
+  :execute "edit " . root
+endfunction
 
 "TweetVim
 let g:tweetvim_display_icon=1
 let g:tweetvim_async_post=1
 let g:tweetvim_display_username=1
-let g:tweetvim_tweet_per_page=40
+let g:tweetvim_tweet_per_page=20
 nnoremap <leader>t :<C-u>TweetVimSay<CR>
 
-"browser reload
-" nnoremap <silent> <C-e> :w<Bar>VimProcBang ~/Dropbox/tool/linux/script/browser_reload.sh<CR>
+" vim-auto-save
+let g:auto_save = 1 " 自動保存
+let g:auto_save_silent = 1  " do not display the auto-save notification
+let g:auto_save_in_insert_mode = 0  " do not save while in insert mode
+let g:auto_save_no_updatetime = 1  " do not change the 'updatetime' option

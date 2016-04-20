@@ -86,6 +86,9 @@
 "xdotool set_desktop $(expr $(xdotool get_desktop) + 1)"
    Control+Shift + l
 
+"/home/iberianpig/Dropbox/tool/linux/script/toggle_browser_terminal.sh"
+   Control+Shift + m
+
 # "/home/iberianpig/Dropbox/tool/linux/script/send_keys.sh 'Control+Tab' 'Control+l'"
 #    m:0x4 + c:46
 #
