@@ -325,7 +325,7 @@ NeoBundle 'Shougo/vimproc', {
 NeoBundle 'Shougo/neosnippet.vim'
 NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'honza/vim-snippets'
-NeoBundle 'tpope/vim-surround'
+" NeoBundle 'tpope/vim-surround'
 NeoBundle 'tpope/vim-repeat'
 NeoBundleLazy "Shougo/unite.vim", {
 \   'autoload' : {
@@ -378,7 +378,6 @@ NeoBundle 'ujihisa/unite-font'
 NeoBundle 'sgur/vim-gitgutter'
 " NeoBundle 'rhysd/migemo-search.vim'
 NeoBundle 'haya14busa/vim-migemo'
-NeoBundle 'Lokaltog/vim-easymotion'
 NeoBundle 'justinmk/vim-sneak'
 NeoBundle 'kannokanno/previm'
 NeoBundle 'edsono/vim-matchit'
@@ -405,6 +404,8 @@ NeoBundle 'textobj-user'
 NeoBundle 'vim-scripts/vim-auto-save'
 NeoBundle 'rhysd/clever-f.vim'
 NeoBundleLazy 'deton/jasentence.vim', {  "autoload" : {"filetypes" : ["markdown"]} }
+NeoBundle 'kana/vim-operator-user'
+NeoBundle 'rhysd/vim-operator-surround'
 
 "session管理
 NeoBundle 'tpope/vim-obsession'
@@ -1303,29 +1304,6 @@ call lexima#add_rule({'at': '\%#\n\s*]', 'char': ']', 'input': ']', 'delete': ']
 nmap <C-_> <Plug>(caw:hatpos:toggle)
 vmap <C-_> <Plug>(caw:hatpos:toggle)
 
-" easymotion
-" let g:EasyMotion_do_mapping = 0 "Disable default mappings
-nmap s <Plug>(easymotion-s2)
-xmap s <Plug>(easymotion-s2)
-" Turn on case sensitive feature
-let g:EasyMotion_smartcase = 1
-
-" =======================================
-" Line Motions
-" =======================================
-" `JK` Motions: Extend line motions
-map <Leader>j <Plug>(easymotion-j)
-map <Leader>k <Plug>(easymotion-k)
-" keep cursor column with `JK` motions
-let g:EasyMotion_startofline = 0
-
-" set nohlsearch
-" map  / <Plug>(easymotion-sn)
-" omap / <Plug>(easymotion-tn)
-" map  n <Plug>(easymotion-next)
-" map  N <Plug>(easymotion-prev)
-let g:EasyMotion_use_migemo = 1
-
 "auto-ctags
 "" 保存時にtagsファイル作成
 let g:auto_ctags = 1
@@ -1422,3 +1400,21 @@ let g:auto_save = 1 " 自動保存
 let g:auto_save_silent = 1  " do not display the auto-save notification
 let g:auto_save_in_insert_mode = 0  " do not save while in insert mode
 let g:auto_save_no_updatetime = 1  " do not change the 'updatetime' option
+
+"operator-surround
+map s <Plug>(operator-surround-append)
+map S <Plug>(operator-surround-append)
+nmap ds <Plug>(operator-surround-delete)a
+nmap cs <Plug>(operator-surround-replace)a
+vmap cs <Plug>(operator-surround-replace)
+
+let g:operator#surround#blocks =
+      \ {
+      \ '-': [
+      \   { 'block' : ['```', '```'], 'motionwise' : ['line','block'], 'keys' : ['`'] },
+      \   { 'block' : ['(', ')'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['p'] },
+      \   { 'block' : ['（', '）'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['P'] },
+      \   { 'block' : ['「', '」'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['B'] },
+      \   { 'block' : ['『', '』'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['D'] }
+      \ ]
+      \}
