@@ -1,6 +1,6 @@
 "http://vimblog.hatenablog.com/entry/vimrc_introduction
 " autocmdのリセット
-"
+
 autocmd!
 set number         " 行番号を表示する
 set cursorline     " カーソル行の背景色を変える
@@ -55,6 +55,7 @@ call s:EnableChangeCursorShape()
 set laststatus=2   " ステータス行を常に表示
 set cmdheight=2    " メッセージ表示欄を2行確保
 set showmatch      " 対応する括弧を強調表示
+set matchpairs+=「:」,『:』,（:）,【:】,《:》,〈:〉,［:］,‘:’,“:”
 set helpheight=998 " ヘルプを画面いっぱいに開く
 set list           " 不可視文字を表示
 set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮,nbsp:%,trail:_ " 不可視文字の表示記号指定
@@ -403,6 +404,7 @@ NeoBundle 'Shougo/neco-syntax'
 NeoBundle 'textobj-user'
 NeoBundle 'vim-scripts/vim-auto-save'
 NeoBundle 'rhysd/clever-f.vim'
+NeoBundleLazy 'deton/jasentence.vim', {  "autoload" : {"filetypes" : ["markdown"]} }
 
 "session管理
 NeoBundle 'tpope/vim-obsession'
