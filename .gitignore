@@ -1,3 +1,4 @@
 /.vim/.netrwhist
 /.vim/bundle/*
-/.byobu/.ssh-agent
+*.ssh-agent
+
