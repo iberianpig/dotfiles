@@ -76,7 +76,7 @@ set ffs=unix,dos,mac  " LF, CRLF, CR
 if exists('&ambiwidth')
   set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
 endif
-set spelllang+=cjk
+set spelllang=en,cjk
 
 " カーソル移動系
 set backspace=indent,eol,start " Backspaceキーの影響範囲に制限を設けない
@@ -192,6 +192,9 @@ set imsearch=-1
 ""Ctrl-Cでインサートモードを抜ける
 inoremap <C-c> <ESC>
 
+""jjでインサートモードを抜ける
+inoremap <silent> jj <ESC>
+
 if has('unix') && !has('gui_running')
   " ESC後にすぐ反映されない対策
   nmap <silent> <ESC><ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
@@ -306,7 +309,6 @@ call neobundle#load_cache() "キャッシュ書き込み
 NeoBundleFetch 'Shougo/neobundle.vim'
 
 " Add or remove your Bundles here:
-NeoBundle 'flazz/vim-colorschemes'
 NeoBundle 'Shougo/neocomplete.vim'
 NeoBundle 'Shougo/neomru.vim'
 NeoBundle 'Shougo/vimshell.git'
@@ -350,7 +352,7 @@ NeoBundleLazy "tyru/open-browser.vim", {
 " \   }
 " \}
 NeoBundle 'ryanoasis/vim-devicons'
-" NeoBundle 'thinca/vim-guicolorscheme'
+NeoBundle 'thinca/vim-guicolorscheme'
 NeoBundle 'itchyny/lightline.vim'
 NeoBundle 'junegunn/vim-easy-align'
 NeoBundle 'terryma/vim-multiple-cursors'
@@ -363,7 +365,6 @@ NeoBundle 'glidenote/octoeditor.vim'
 " NeoBundle 'tpope/vim-liquid'
 " NeoBundle 'mattn/gist-vim'
 NeoBundle 'mattn/webapi-vim'
-" NeoBundle 'vim-scripts/vim-auto-save'
 NeoBundle 'Shougo/unite-outline'
 NeoBundle 'ujihisa/unite-locate'
 NeoBundle 'lambdalisue/unite-grep-vcs'
@@ -500,8 +501,13 @@ NeoBundle 'vim-scripts/Zenburn'
 NeoBundle 'mrkn/mrkn256.vim'
 NeoBundle 'jpo/vim-railscasts-theme'
 NeoBundle 'therubymug/vim-pyte'
-NeoBundle 'w0ng/vim-hybrid'
+" NeoBundle 'w0ng/vim-hybrid'
+NeoBundle 'scwood/vim-hybrid'
 NeoBundle 'chriskempson/vim-tomorrow-theme'
+NeoBundle 'morhetz/gruvbox'
+NeoBundle '29decibel/codeschool-vim-theme'
+NeoBundle 'tomasr/molokai'
+NeoBundle 'vim-scripts/twilight'
 
 " TweetVim
 NeoBundle 'basyura/TweetVim'
@@ -531,14 +537,7 @@ NeoBundleCheck
 " set background=light "明るめの背景
 set background=dark "暗めの背景
 
-" colorscheme hybrid "set colorscheme
-" colorscheme Tomorrow-Night "set colorscheme
-
-if ($ft=='ruby')
-  colorscheme Tomorrow-Night
-else
-  colorscheme hybrid
-endif
+colorscheme hybrid
 
 " アンダーラインを引く(color terminal)
 " highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
@@ -548,7 +547,6 @@ let g:lightline = {
       \ 'colorscheme': 'Tomorrow_Night',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
-      \   'right': [ [ 'syntaxcheck', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
       \ },
       \ 'inactive': {
       \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
@@ -576,8 +574,6 @@ let g:lightline = {
       \   'right':             [ [ 'currentworkingdir' ] ],
       \ },
       \}
-      " \ 'separator':           { 'left': '⮀', 'right': '⮂' },
-      " \ 'subseparator':        { 'left': '⮁', 'right': '⮃' },
 
 function! MyModified()
   return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -796,10 +792,6 @@ let g:neocomplete#enable_fuzzy_completion         = 0
 let g:neocomplete#use_vimproc                     = 1
 let g:neocomplete#lock_buffer_name_pattern        = '\*ku\*'
 
-" <TAB>: completion.
-" inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
-" inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-
 " vim-monster
 let g:monster#completion#rcodetools#backend = "async_rct_complete"
 let g:neocomplete#force_omni_input_patterns      = {}
@@ -846,8 +838,6 @@ endif
 "       \: "\<TAB>"
 
 " rails
-
-" augroup rails_au
 "   autocmd!
 "   autocmd BufEnter * if exists("b:rails_root") | NeoCompleteSetFileType ruby.rails | endif
 "   autocmd BufEnter * if (expand("%") =~ "_spec\.rb$") || (expand("%") =~ "^spec.*\.rb$") | NeoCompleteSetFileType ruby.rspec | endif
@@ -1402,11 +1392,10 @@ let g:auto_save_in_insert_mode = 0  " do not save while in insert mode
 let g:auto_save_no_updatetime = 1  " do not change the 'updatetime' option
 
 "operator-surround
-map s <Plug>(operator-surround-append)
-map S <Plug>(operator-surround-append)
-nmap ds <Plug>(operator-surround-delete)a
-nmap cs <Plug>(operator-surround-replace)a
-vmap cs <Plug>(operator-surround-replace)
+map  sa <Plug>(operator-surround-append)
+map  sd <Plug>(operator-surround-delete)
+nmap sc <Plug>(operator-surround-replace)
+vmap sc <Plug>(operator-surround-replace)
 
 let g:operator#surround#blocks =
       \ {
