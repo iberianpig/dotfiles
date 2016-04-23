@@ -327,7 +327,6 @@ NeoBundle 'Shougo/vimproc', {
 NeoBundle 'Shougo/neosnippet.vim'
 NeoBundle 'Shougo/neosnippet-snippets'
 NeoBundle 'honza/vim-snippets'
-" NeoBundle 'tpope/vim-surround'
 NeoBundle 'tpope/vim-repeat'
 NeoBundleLazy "Shougo/unite.vim", {
 \   'autoload' : {
@@ -395,10 +394,8 @@ NeoBundle 'thoughtbot/vim-rspec'
 NeoBundle 'vim-scripts/dbext.vim'
 NeoBundle 'nathanaelkane/vim-indent-guides'
 NeoBundle 'Chiel92/vim-autoformat'
-" NeoBundle 'severin-lemaignan/vim-minimap'
 NeoBundle 'itchyny/thumbnail.vim'
 NeoBundle 'wakatime/vim-wakatime'
-NeoBundle 'Mizuchi/vim-ranger'
 NeoBundle 'LeafCage/yankround.vim'
 NeoBundle 'Shougo/neco-syntax'
 NeoBundle 'textobj-user'
@@ -1229,10 +1226,11 @@ let g:openbrowser_browser_commands = [
 " indent guides
 let g:indent_guides_auto_colors = 0
 let g:indent_guides_start_level=2
-let g:indent_guides_enable_on_vim_startup=1
+let g:indent_guides_enable_on_vim_startup=0
 let g:indent_guides_color_change_percent = 30
 let g:indent_guides_guide_size=1
-nmap <silent> <Leader>ig <Plug>IndentGuidesToggle
+let g:indent_guides_exclude_filetypes = ['help', 'vimfiler', 'tagbar', 'unite']
+nmap <silent> <Leader>i <Plug>IndentGuidesToggle
 augroup indent_guides_color
   autocmd!
   autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=236
@@ -1367,16 +1365,31 @@ function! s:my_agit_setting()
   nmap <buffer> Rv    <Plug>(agit-git-revert)
 endfunction
 
-" vim-ranger
-" open current dir
-nnoremap <silent>[unite]c :e %:p:h<cr>
-" open project root dir
-nnoremap <silent>[unite]f :call RangerOpenProjectRootDir()<CR>
+function! RangerExplorer(path)
+  let path = a:path
+  if !path
+    path = unite#util#path2project_directory(expand('%'))
+  endif
+    exec "silent !ranger --choosefile=/tmp/vim_ranger_current_file " . path
+    if filereadable('/tmp/vim_ranger_current_file')
+        exec 'edit ' . system('cat /tmp/vim_ranger_current_file')
+        call system('rm /tmp/vim_ranger_current_file')
+    endif
+    redraw!
+endfun
 
 function! RangerOpenProjectRootDir()
-  let root = unite#util#path2project_directory(expand('%'))
-  :execute "edit " . root
+  let root_path = unite#util#path2project_directory(expand('%'))
+  :call RangerExplorer(root_path)
 endfunction
+
+function! RangerOpenCurrentDir() abort
+  let current_path = '%p:h'
+  :call RangerExplorer(urrent_path)
+endfunction
+
+nnoremap <silent>[unite]c :call RangerExplorer('%:p:h')<cr>
+nnoremap <silent>[unite]f :call RangerOpenProjectRootDir()<cr>
 
 "TweetVim
 let g:tweetvim_display_icon=1
