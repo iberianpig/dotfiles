@@ -64,8 +64,25 @@ set completeopt=menuone "補完時にpreviewWindowを開かない
 " Don't screw up folds when inserting text that might affect them, until
 " leaving insert mode. Foldmethod is local to the window. Protect against
 " screwing up folding when switching between windows.
-autocmd InsertEnter * if !exists('w:last_fdm') | let w:last_fdm=&foldmethod | setlocal foldmethod=manual | endif
-autocmd InsertLeave,WinLeave * if exists('w:last_fdm') | let &l:foldmethod=w:last_fdm | unlet w:last_fdm | endif
+augroup switch_folding_method
+  autocmd!
+  autocmd InsertEnter *
+        \ if !exists('w:last_fdm') |
+        \   let w:last_fdm=&foldmethod |
+        \   setlocal foldmethod=manual |
+        \ endif
+  autocmd InsertLeave,WinLeave *
+        \ if exists('w:last_fdm') |
+        \   let &l:foldmethod=w:last_fdm |
+        \   unlet w:last_fdm |
+        \ endif
+augroup END
+  autocmd!
+  autocmd BufReadPost * " 最後のカーソル位置を復元する
+        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+        \   exe "normal! g'\"" |
+        \ endif
+
 
 " Charset, Line ending -----------------
 scriptencoding utf-8
@@ -144,8 +161,6 @@ inoremap <C-k> <C-o>D<Right>
 inoremap <C-u> <C-o>d^
 inoremap <C-w> <C-o>db
 
-set nocompatible "vi 互換モードを解除する"
-
 " set timeout timeoutlen=1000 ttimeoutlen=75
 
 " " j, k による移動を折り返されたテキストでも自然に振る舞うように変更
@@ -173,9 +188,11 @@ set noerrorbells "エラーメッセージの表示時にビープを鳴らさ�
 " コマンドラインモードでTABキーによるファイル名補完を有効にする
 set wildmenu wildmode=list:longest,full
 " コマンドラインの履歴を1000件保存する
-set history=100
-" set ttyscroll=2521
-" set ttyscroll=4
+set history=1000
+
+"履歴に保存する各種設定
+set viminfo='100,/50,%,<1000,f50,s100,:100,c,h,!
+
 
 " 動作環境との統合
 " OSのクリップボードをレジスタ指定無しで Yank, Put 出来るようにする
@@ -292,11 +309,6 @@ let g:loaded_getscriptPlugin   = 1
 
 "NeoBundle Scripts-----------------------------
 if has('vim_starting')
-  if &compatible
-    set nocompatible               " Be iMproved
-  endif
-
-  " Required:
   set runtimepath+=~/.vim/bundle/neobundle.vim/
 endif
 
@@ -404,6 +416,7 @@ NeoBundle 'rhysd/clever-f.vim'
 NeoBundleLazy 'deton/jasentence.vim', {  "autoload" : {"filetypes" : ["markdown"]} }
 NeoBundle 'kana/vim-operator-user'
 NeoBundle 'rhysd/vim-operator-surround'
+NeoBundle 'glidenote/memolist.vim'
 
 "session管理
 NeoBundle 'tpope/vim-obsession'
@@ -468,8 +481,6 @@ NeoBundleLazy 'marijnh/tern_for_vim' , {
       \}}
 NeoBundleLazy 'mxw/vim-jsx', { "autoload" : { "filetypes" : ["javascript"] } }
 NeoBundleLazy 'Quramy/tsuquyomi', { "autoload" : { "filetypes" : ["javascript"] } }
-" NeoBundle 'jason0x43/vim-js-indent'
-NeoBundleLazy 'jelera/vim-javascript-syntax', {'autoload':{'filetypes':['javascript']}}
 NeoBundleLazy 'jiangmiao/simple-javascript-indenter', {'autoload':{'filetypes':['javascript']}}
 NeoBundleLazy 'claco/jasmine.vim', {'autoload':{'filetypes':['javascript']}}
 
@@ -540,6 +551,10 @@ colorscheme hybrid
 " highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
 
 " lightline {{{
+" available colorscheme:
+" wombat, solarized, powerline, jellybeans, Tomorrow,
+" Tomorrow_Night, Tomorrow_Night_Blue, Tomorrow_Night_Eighties,
+" PaperColor, seoul256, landscape and 16color
 let g:lightline = {
       \ 'colorscheme': 'Tomorrow_Night',
       \ 'active': {
@@ -581,7 +596,7 @@ function! MyPercent()
 endfunction
 
 function! MyLineInfo()
-  return &ft =~? 'vimfiler\|unite' ? '' : printf("%3d:%-2d", line('.'), col('.'))
+  return &ft =~? 'vimfiler\|unite' ? '' : printf('%3d:%-2d', line('.'), col('.'))
 endfunction
 
 function! MyReadonly()
@@ -605,7 +620,7 @@ function! MyStatusPath()
   if exists('b:my_status_path')
     return b:my_status_path
   endif
-  let path  = expand("%:p:h")
+  let path  = expand('%:p:h')
   let gpath = finddir('.git', path . ';.;')
 
   if gpath == ''
@@ -693,18 +708,21 @@ endfunction
 
 "quickrun
 
-autocmd FileType quickrun AnsiEsc
+augroup ansiesc
+  autocmd!
+  autocmd FileType quickrun AnsiEsc
+augroup END
 
 " シンタックスチェックは<Leader>+wで行う
 nnoremap <Leader>w :<C-u>WatchdogsRun<CR>
 
-let g:watchdogs_check_BufWritePost_enables = {
-      \   "sh":         1,
-      \   "sass":       1,
-      \   "scss":       1
-      \}
-      " \   "javascript": 1,
-      " \   "ruby": 1,
+" let g:watchdogs_check_BufWritePost_enables = {
+"       \   'sh':         1,
+"       \   'sass':       1,
+"       \   'scss':       1
+"       \}
+"       " \   "javascript": 1,
+"       " \   "ruby": 1,
 
 let g:watchdogs_check_CursorHold_enable = 0
 let g:watchdogs_check_BufWritePost_enable = 0
@@ -715,55 +733,65 @@ nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() 
 
 "watchdogs_checker
 let g:quickrun_config = {
-      \   "_" : {
-      \       "hook/close_quickfix/enable_exit" : 1,
-      \       "hook/close_buffer/enable_failure" : 1,
-      \       "hook/close_buffer/enable_empty_data" : 1,
-      \       "outputter" : "multi:buffer:quickfix",
-      \       "outputter/buffer/split" : ":botright 8sp",
-      \       "runner" : "vimproc",
-      \       "runner/vimproc/updatetime" : 40,
+      \   '_' : {
+      \       'hook/close_quickfix/enable_exit' : 1,
+      \       'hook/close_buffer/enable_failure' : 1,
+      \       'hook/close_buffer/enable_empty_data' : 1,
+      \       'outputter' : 'multi:buffer:quickfix',
+      \       'outputter/buffer/split' : ':botright 8sp',
+      \       'runner' : 'vimproc',
+      \       'runner/vimproc/updatetime' : 40,
       \   },
-      \   "watchdogs_checker/_" : {
-      \       "outputter/quickfix/open_cmd" : "",
-      \       "hook/qfsigns_update/enable_exit" : 1,
-      \       "hook/back_window/enable_exit" : 1,
-      \       "hook/back_window/priority_exit" : 100,
+      \   'watchdogs_checker/_' : {
+      \       'outputter/quickfix/open_cmd' : '',
+      \       'hook/qfsigns_update/enable_exit' : 1,
+      \       'hook/back_window/enable_exit' : 1,
+      \       'hook/back_window/priority_exit' : 100,
       \   },
       \}
-let g:quickrun_config["ruby/watchdogs_checker"] = {
-      \       "type": "watchdogs_checker/rubocop",
-      \       "cmdopt" : "-S -a -D"
+let g:quickrun_config['ruby/watchdogs_checker'] = {
+      \       'type': 'watchdogs_checker/rubocop',
+      \       'cmdopt' : '-S -a -D'
       \   }
-let g:quickrun_config["ruby.rails/watchdogs_checker"] = {
-      \       "type": "watchdogs_checker/rubocop",
+let g:quickrun_config['ruby.rails/watchdogs_checker'] = {
+      \       'type': 'watchdogs_checker/rubocop',
+      \       'cmdopt' : '-R -S -a -D'
+      \   }
+let g:quickrun_config['ruby.rspec/watchdogs_checker'] = {
+      \       'type': 'watchdogs_checker/rubocop',
       \       "cmdopt" : "-R -S -a -D"
       \   }
-let g:quickrun_config["ruby.rspec/watchdogs_checker"] = {
-      \       "type": "watchdogs_checker/rubocop",
-      \       "cmdopt" : "-R -S -a -D"
+let g:quickrun_config['coffee/watchdogs_checker'] = {
+      \       'type': 'watchdogs_checker/coffeelint'
       \   }
-let g:quickrun_config["coffee/watchdogs_checker"] = {
-      \       "type": "watchdogs_checker/coffeelint"
+let g:quickrun_config['jade/watchdogs_checker'] = {
+      \       'type': 'watchdogs_checker/jade'
       \   }
-let g:quickrun_config["jade/watchdogs_checker"] = {
-      \       "type": "watchdogs_checker/jade"
+let g:quickrun_config['css/watchdogs_checker'] = {
+      \       'type': "watchdogs_checker/csslint"
       \   }
-let g:quickrun_config["css/watchdogs_checker"] = {
-      \       "type": "watchdogs_checker/csslint"
-      \   }
-let g:quickrun_config["javascript/watchdogs_checker"] = {
-      \       "type": "watchdogs_checker/eslint",
-      \       "cmdopt" : "--fix"
+let g:quickrun_config['javascript/watchdogs_checker'] = {
+      \       'type': 'watchdogs_checker/eslint',
+      \       'cmdopt' : "--fix"
       \  }
-let g:quickrun_config["javascript.jsx/watchdogs_checker"] = {
-      \       "type": "watchdogs_checker/eslint",
-      \       "cmdopt" : "--fix"
+let g:quickrun_config['javascript.jsx/watchdogs_checker'] = {
+      \       'type': 'watchdogs_checker/eslint',
+      \       'cmdopt' : '--fix'
       \  }
-let g:quickrun_config["markdown/watchdogs_checker"] = {
-      \       "type": "watchdogs_checker/textlint",
+let g:quickrun_config['markdown/watchdogs_checker'] = {
+      \       'type': 'watchdogs_checker/textlint',
+      \  }
+let g:quickrun_config['sh/watchdogs_checker'] = {
+      \       'command' : 'shellcheck', 'cmdopt' : '-f gcc',
+      \       'type': 'watchdogs_checker/shellcheck'
       \  }
 
+" vintコマンドが存在するときだけチェックを行うようにします
+let g:quickrun_config['vim/watchdogs_checker'] = {
+      \     'type': executable('vint') ? 'watchdogs_checker/vint' : '',
+      \     'command'   : 'vint',
+      \     'exec'      : '%c %o %s:p' ,
+      \   }
 " " If syntax error, cursor is moved at line setting sign.
 "let g:qfsigns#AutoJump = 1
 
@@ -1367,10 +1395,7 @@ endfunction
 
 function! RangerExplorer(path)
   let path = a:path
-  if !path
-    path = unite#util#path2project_directory(expand('%'))
-  endif
-    exec "silent !ranger --choosefile=/tmp/vim_ranger_current_file " . path
+    exec 'silent !ranger --choosefile=/tmp/vim_ranger_current_file ' . path
     if filereadable('/tmp/vim_ranger_current_file')
         exec 'edit ' . system('cat /tmp/vim_ranger_current_file')
         call system('rm /tmp/vim_ranger_current_file')
@@ -1385,7 +1410,7 @@ endfunction
 
 function! RangerOpenCurrentDir() abort
   let current_path = '%p:h'
-  :call RangerExplorer(urrent_path)
+  :call RangerExplorer(current_path)
 endfunction
 
 nnoremap <silent>[unite]c :call RangerExplorer('%:p:h')<cr>
@@ -1396,6 +1421,7 @@ let g:tweetvim_display_icon=1
 let g:tweetvim_async_post=1
 let g:tweetvim_display_username=1
 let g:tweetvim_tweet_per_page=20
+let g:tweetvim_say_insert_account=1
 nnoremap <leader>t :<C-u>TweetVimSay<CR>
 
 " vim-auto-save
@@ -1405,6 +1431,7 @@ let g:auto_save_in_insert_mode = 0  " do not save while in insert mode
 let g:auto_save_no_updatetime = 1  " do not change the 'updatetime' option
 
 "operator-surround
+map  s  <Nop>
 map  sa <Plug>(operator-surround-append)
 map  sd <Plug>(operator-surround-delete)
 nmap sc <Plug>(operator-surround-replace)
@@ -1415,8 +1442,21 @@ let g:operator#surround#blocks =
       \ '-': [
       \   { 'block' : ['```', '```'], 'motionwise' : ['line','block'], 'keys' : ['`'] },
       \   { 'block' : ['(', ')'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['p'] },
+      \   { 'block' : ['(', ')'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['('] },
+      \   { 'block' : ['{', '}'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['{'] },
       \   { 'block' : ['（', '）'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['P'] },
       \   { 'block' : ['「', '」'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['B'] },
       \   { 'block' : ['『', '』'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['D'] }
       \ ]
       \}
+
+
+" vim-hier関連 {{{
+" 波線で表示する場合は、以下の設定を行う
+" エラーを赤字の波線で
+execute "highlight qf_error_ucurl cterm=undercurl ctermfg=Red gui=undercurl guisp=Red"
+let g:hier_highlight_group_qf  = "qf_error_ucurl"
+" 警告を青字の波線で
+execute "highlight qf_warning_ucurl cterm=undercurl ctermfg=Blue gui=undercurl guisp=Blue"
+let g:hier_highlight_group_qfw = "qf_warning_ucurl"
+"}}}'

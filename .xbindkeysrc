@@ -89,6 +89,10 @@
 "/home/iberianpig/Dropbox/tool/linux/script/toggle_browser_terminal.sh"
    Control+Shift + m
 
+"/home/iberianpig/work/relocate_window/relocate_window.sh"
+  Mod4 + F1
+
+
 # "/home/iberianpig/Dropbox/tool/linux/script/send_keys.sh 'Control+Tab' 'Control+l'"
 #    m:0x4 + c:46
 #
