@@ -77,12 +77,6 @@ augroup switch_folding_method
         \   unlet w:last_fdm |
         \ endif
 augroup END
-  autocmd!
-  autocmd BufReadPost * " 最後のカーソル位置を復元する
-        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-        \   exe "normal! g'\"" |
-        \ endif
-
 
 " Charset, Line ending -----------------
 scriptencoding utf-8
@@ -373,8 +367,6 @@ NeoBundle 'tyru/caw.vim'
 NeoBundle 'mattn/emmet-vim'
 NeoBundle 'osyo-manga/vim-over'
 NeoBundle 'glidenote/octoeditor.vim'
-" NeoBundle 'tpope/vim-liquid'
-" NeoBundle 'mattn/gist-vim'
 NeoBundle 'mattn/webapi-vim'
 NeoBundle 'Shougo/unite-outline'
 NeoBundle 'ujihisa/unite-locate'
@@ -388,14 +380,11 @@ NeoBundle 'ujihisa/neco-look'
 NeoBundle 'cohama/lexima.vim'
 NeoBundle 'ujihisa/unite-font'
 NeoBundle 'sgur/vim-gitgutter'
-" NeoBundle 'rhysd/migemo-search.vim'
-NeoBundle 'haya14busa/vim-migemo'
-NeoBundle 'justinmk/vim-sneak'
 NeoBundle 'kannokanno/previm'
 NeoBundle 'edsono/vim-matchit'
 NeoBundle 'mattn/benchvimrc-vim'
 NeoBundle 'rking/ag.vim'
-NeoBundle 'cohama/vim-hier'
+NeoBundle 'pocke/vim-hier'
 NeoBundle 'dannyob/quickfixstatus'
 NeoBundle 'osyo-manga/shabadou.vim'
 NeoBundle 'osyo-manga/vim-watchdogs'
@@ -460,7 +449,7 @@ NeoBundleLazy 'vim-perl/vim-perl', { "autoload" : { "filetypes" : ["perl"] } }
 NeoBundleLazy 'vim-scripts/php.vim-html-enhanced', { "autoload" : { "filetypes" : ["php"] } }
 
 " html
-NeoBundle 'othree/html5.vim', { "autoload" : { "filetypes" : ["html"] } }
+NeoBundleLazy 'othree/html5.vim', { "autoload" : { "filetypes" : ["html"] } }
 
 
 " javascript
@@ -495,7 +484,7 @@ NeoBundleLazy 'cakebaker/scss-syntax.vim', {'autoload':{'filetypes':['scss']}}
 NeoBundleLazy 'pasela/unite-webcolorname', {'autoload':{'filetypes':['scss', 'css', 'html']}}
 
 " jade
-NeoBundle 'digitaltoad/vim-jade', {'autoload':{'filetypes':['jade']}}
+NeoBundleLazy 'digitaltoad/vim-jade', {'autoload':{'filetypes':['jade']}}
 
 " log
 NeoBundle 'vim-scripts/AnsiEsc.vim'
@@ -549,6 +538,17 @@ colorscheme hybrid
 
 " アンダーラインを引く(color terminal)
 " highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
+
+
+execute 'highlight qf_error_ucurl ctermfg=167 ctermbg=52 gui=undercurl guifg=#cc6666 guibg=#5f0000 guisp=Red'
+let g:hier_highlight_group_qf  = "qf_error_ucurl"
+execute "highlight qf_warning_ucurl ctermbg=Blue gui=undercurl guisp=Blue"
+let g:hier_highlight_group_qfw = "qf_warning_ucurl"
+
+" エラー箇所の行番号左にSignを表示
+" 行全体のハイライトはなし、SignのみErrorMsg（赤色）にする
+let g:qfsigns#Config = {'id': '5051', 'name': 'QFSign'}
+sign define QFSign linehl=NONE texthl=ErrorMsg text=>>
 
 " lightline {{{
 " available colorscheme:
@@ -785,8 +785,6 @@ let g:quickrun_config['sh/watchdogs_checker'] = {
       \       'command' : 'shellcheck', 'cmdopt' : '-f gcc',
       \       'type': 'watchdogs_checker/shellcheck'
       \  }
-
-" vintコマンドが存在するときだけチェックを行うようにします
 let g:quickrun_config['vim/watchdogs_checker'] = {
       \     'type': executable('vint') ? 'watchdogs_checker/vint' : '',
       \     'command'   : 'vint',
@@ -1003,10 +1001,13 @@ function! s:unite_keymap()
   " "スペースキーとtキーでtagsを検索
   vnoremap <silent> [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W><CR>
   nnoremap <silent> [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W><CR>
-  autocmd BufEnter *
-        \   if empty(&buftype)
-        \|      nnoremap <buffer> [unite]t :<C-u>Unite jump<CR>
-        \|  endif
+  augroup unite_jump
+    autocmd!
+    autocmd BufEnter *
+          \   if empty(&buftype)
+          \|      nnoremap <buffer> [unite]t :<C-u>Unite jump<CR>
+          \|  endif
+  augroup END
 
   ""tweet vimのアカウントを切り替え
   nnoremap <silent> [unite]s :<C-u>Unite<space> tweetvim/account<CR>
@@ -1449,14 +1450,3 @@ let g:operator#surround#blocks =
       \   { 'block' : ['『', '』'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['D'] }
       \ ]
       \}
-
-
-" vim-hier関連 {{{
-" 波線で表示する場合は、以下の設定を行う
-" エラーを赤字の波線で
-execute "highlight qf_error_ucurl cterm=undercurl ctermfg=Red gui=undercurl guisp=Red"
-let g:hier_highlight_group_qf  = "qf_error_ucurl"
-" 警告を青字の波線で
-execute "highlight qf_warning_ucurl cterm=undercurl ctermfg=Blue gui=undercurl guisp=Blue"
-let g:hier_highlight_group_qfw = "qf_warning_ucurl"
-"}}}'
