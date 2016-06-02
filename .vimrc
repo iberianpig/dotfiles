@@ -10,7 +10,7 @@ augroup set_cursorline
   autocmd!
   autocmd InsertEnter,InsertLeave * set cursorline!  "redraw!
   " autocmd InsertEnter,InsertLeave * set cursorcolumn!
-  autocmd WinEnter * set cursorline "cursorcolumn
+  " autocmd WinEnter * set cursorline "cursorcolumn
   " autocmd WinLeave * set nocursorline "nocursorcolumn
 augroup END
 
@@ -57,6 +57,7 @@ set cmdheight=2    " メッセージ表示欄を2行確保
 set showmatch      " 対応する括弧を強調表示
 set matchpairs+=「:」,『:』,（:）,【:】,《:》,〈:〉,［:］,‘:’,“:”
 set helpheight=998 " ヘルプを画面いっぱいに開く
+set synmaxcol=300   " 長い行の場合、syntaxをoffにする
 set list           " 不可視文字を表示
 set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
@@ -79,15 +80,16 @@ augroup switch_folding_method
 augroup END
 
 " Charset, Line ending -----------------
+set encoding=utf-8
 scriptencoding utf-8
-set termencoding=utf-8
-" set encoding=utf-8
-set fileencodings=utf-8,cp932,euc-jp,iso-2022-jp
+" set termencoding=utf-8
+" set fileencodings=utf-8,cp932,euc-jp,iso-2022-jp
 set ffs=unix,dos,mac  " LF, CRLF, CR
 if exists('&ambiwidth')
   set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
 endif
-set spelllang=en,cjk
+" set spelllang=en,cjk
+set nospell
 
 " カーソル移動系
 set backspace=indent,eol,start " Backspaceキーの影響範囲に制限を設けない
@@ -96,7 +98,7 @@ set scrolloff=4                " 上下8行の視界を確保
 set sidescrolloff=16           " 左右スクロール時の視界を確保
 set sidescroll=1               " 左右スクロールは一文字づつ行う
 set lazyredraw                 " 描画を遅延させる
-set redrawtime=400             "再描画までの時間(デフォルトは2000)
+" set redrawtime=400             "再描画までの時間(デフォルトは2000)
 set ttyfast                    " カーソル移動高速化
 
 augroup restore_cursor_position
@@ -120,7 +122,7 @@ set autoread "外部でファイルに変更がされた場合は読みなおす
 " endif
 augroup vimrc-checktime "window移動/一定時間カーソルが停止した場合に強制的に読みなおす
   autocmd!
-  set updatetime=500
+  set updatetime=400
   autocmd WinEnter * checktime
   autocmd CursorHold * checktime
 augroup END
@@ -203,13 +205,10 @@ set imsearch=-1
 ""Ctrl-Cでインサートモードを抜ける
 inoremap <C-c> <ESC>
 
-""jjでインサートモードを抜ける
-inoremap <silent> jj <ESC>
-
 if has('unix') && !has('gui_running')
   " ESC後にすぐ反映されない対策
-  nmap <silent> <ESC><ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
- " map <silent> <ESC> :nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
+  " nmap <silent> <ESC><ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
+ map <silent> <ESC> :nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
 endif
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
@@ -274,14 +273,15 @@ nnoremap <silent> gf :tabnext<CR>
 augroup add_syntax_hilight
   autocmd!
   "シンタックスハイライトの追加
-  autocmd BufNewFile,BufRead,BufReadPre *.json.jbuilder            set ft=ruby
-  autocmd BufNewFile,BufRead,BufReadPre *.erb                      set ft=eruby
-  autocmd BufNewFile,BufRead,BufReadPre *.scss                     set ft=scss.css
-  autocmd BufNewFile,BufRead,BufReadPre *.coffee                   set ft=coffee
-  autocmd BufNewFile,BufRead,BufReadPre *.{md,mdwn,mkd,mkdn,mark*} set ft=markdown
+  autocmd BufNewFile,BufRead *.json.jbuilder            set ft=ruby
+  autocmd BufNewFile,BufRead *.erb                      set ft=eruby
+  autocmd BufNewFile,BufRead *.scss                     set ft=scss.css
+  autocmd BufNewFile,BufRead *.coffee                   set ft=coffee
+  autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set ft=markdown
 augroup END
 
 let g:ruby_path = system('echo $HOME/.rbenv/shims')
+" let g:ruby_path = ''
 
 " 不要なデフォルトプラグインの停止
 let g:loaded_gzip              = 1
@@ -296,7 +296,7 @@ let g:loaded_vimballPlugin     = 1
 let g:loaded_getscript         = 1
 let g:loaded_getscriptPlugin   = 1
 " let g:loaded_netrw             = 1
-" let g:loaded_netrwPlugin       = 1
+let g:loaded_netrwPlugin       = 1
 " let g:loaded_netrwSettings     = 1
 " let g:loaded_netrwFileHandlers = 1
 
@@ -315,114 +315,112 @@ call neobundle#load_cache() "キャッシュ書き込み
 NeoBundleFetch 'Shougo/neobundle.vim'
 
 " Add or remove your Bundles here:
-NeoBundle 'Shougo/neocomplete.vim'
-NeoBundle 'Shougo/neomru.vim'
-NeoBundle 'Shougo/vimshell.git'
+NeoBundle     'Shougo/neocomplete.vim'
+NeoBundle     'Shougo/neomru.vim'
+NeoBundle     'Shougo/vimshell.git'
 " NeoBundle 'Shougo/vimshell', { 'rev' : '3787e5' }
 " vimprocのインストールとbuild
 " " 自動でインストールしてビルド(make)してくれる
-NeoBundle 'Shougo/vimproc', {
-      \ 'build' : {
-      \ 'windows' : 'make -f make_mingw32.mak',
-      \ 'cygwin' : 'make -f make_cygwin.mak',
-      \ 'mac' : 'make -f make_mac.mak',
-      \     'linux' : 'make',
-      \     'unix' : 'gmake',
-      \ },
-      \ }
-NeoBundle 'Shougo/neosnippet.vim'
-NeoBundle 'Shougo/neosnippet-snippets'
-NeoBundle 'honza/vim-snippets'
-NeoBundle 'tpope/vim-repeat'
-NeoBundleLazy "Shougo/unite.vim", {
-\   'autoload' : {
-\       'commands' : [ "Unite" ]
-\   }
-\}
-NeoBundle 'tsukkee/unite-help'
-NeoBundle 'ujihisa/unite-colorscheme'
-NeoBundle 'osyo-manga/unite-quickfix.git'
-NeoBundle 'thinca/vim-quickrun'
+NeoBundle     'Shougo/vimproc', {
+      \       'build' : {
+      \       'windows' : 'make -f make_mingw32.mak',
+      \       'cygwin' : 'make -f make_cygwin.mak',
+      \       'mac' : 'make -f make_mac.mak',
+      \       'linux' : 'make',
+      \       'unix' : 'gmake',
+      \       },
+      \       }
+NeoBundle     'Shougo/neosnippet.vim'
+NeoBundle     'Shougo/neosnippet-snippets'
+NeoBundle     'honza/vim-snippets'
+NeoBundleLazy 'tpope/vim-repeat', {'autoload': {'mappings': [['n', '<Plug>(Repeat']]}}
+NeoBundle     'Shougo/unite.vim'
+NeoBundle     'tsukkee/unite-help'
+NeoBundleLazy 'ujihisa/unite-colorscheme', {'autoload': {'unite_sources': ['colorscheme']}}
+NeoBundle     'osyo-manga/unite-quickfix.git'
+NeoBundle     'thinca/vim-quickrun'
 NeoBundleLazy "tyru/open-browser.vim", {
-\   'autoload' : {
-\       'functions' : "OpenBrowser",
-\       'commands'  : ["OpenBrowser", "OpenBrowserSearch"],
-\       'mappings'  : "<Plug>(openbrowser-smart-search)"
-\   },
+\             'autoload' : {
+\             'functions' : "OpenBrowser",
+\             'commands'  : ["OpenBrowser", "OpenBrowserSearch"],
+\             'mappings'  : "<Plug>(openbrowser-smart-search)"
+\             },
 \}
-" NeoBundleLazy 'Shougo/vimfiler', {
-" \   'depends' : ["Shougo/unite.vim"],
-" \   'autoload' : {
-" \       'commands' : [ "VimFilerTab", "VimFiler", "VimFilerExplorer" ]
-" \   }
-" \}
-NeoBundle 'ryanoasis/vim-devicons'
-NeoBundle 'thinca/vim-guicolorscheme'
-NeoBundle 'itchyny/lightline.vim'
-NeoBundle 'junegunn/vim-easy-align'
-NeoBundle 'terryma/vim-multiple-cursors'
-NeoBundle 'AndrewRadev/switch.vim'
-NeoBundle 'kana/vim-submode'
-NeoBundle 'tyru/caw.vim'
-NeoBundle 'mattn/emmet-vim'
-NeoBundle 'osyo-manga/vim-over'
-NeoBundle 'glidenote/octoeditor.vim'
-NeoBundle 'mattn/webapi-vim'
-NeoBundle 'Shougo/unite-outline'
-NeoBundle 'ujihisa/unite-locate'
-NeoBundle 'lambdalisue/unite-grep-vcs'
-NeoBundle 'ujihisa/quicklearn'
-NeoBundle 'thinca/vim-ref'
-NeoBundle 'taka84u9/vim-ref-ri'
-NeoBundle 'mfumi/ref-dicts-en'
-NeoBundle 'tyru/vim-altercmd'
-NeoBundle 'ujihisa/neco-look'
-NeoBundle 'cohama/lexima.vim'
-NeoBundle 'ujihisa/unite-font'
-NeoBundle 'sgur/vim-gitgutter'
-NeoBundle 'kannokanno/previm'
-NeoBundle 'edsono/vim-matchit'
-NeoBundle 'mattn/benchvimrc-vim'
-NeoBundle 'rking/ag.vim'
-NeoBundle 'pocke/vim-hier'
-NeoBundle 'dannyob/quickfixstatus'
-NeoBundle 'osyo-manga/shabadou.vim'
-NeoBundle 'osyo-manga/vim-watchdogs'
-NeoBundle 'KazuakiM/vim-qfstatusline'
-NeoBundle 'KazuakiM/vim-qfsigns'
-NeoBundle 'tpope/vim-dispatch'
-NeoBundle 'thoughtbot/vim-rspec'
-NeoBundle 'vim-scripts/dbext.vim'
-NeoBundle 'nathanaelkane/vim-indent-guides'
-NeoBundle 'Chiel92/vim-autoformat'
-NeoBundle 'itchyny/thumbnail.vim'
-NeoBundle 'wakatime/vim-wakatime'
-NeoBundle 'LeafCage/yankround.vim'
-NeoBundle 'Shougo/neco-syntax'
-NeoBundle 'textobj-user'
-NeoBundle 'vim-scripts/vim-auto-save'
-NeoBundle 'rhysd/clever-f.vim'
+NeoBundleLazy 'sgur/vim-operator-openbrowser', {'autoload': {'mappings': [['nx', '<Plug>(operator-openbrowser']]}}
+NeoBundleLazy 'thinca/vim-guicolorscheme', {'autoload': {'commands': [{'complete': 'customlist,s:Colorscheme_Complete', 'name': 'GuiColorScheme'}]}}
+NeoBundle     'itchyny/lightline.vim'
+NeoBundleLazy 'junegunn/vim-easy-align', {'autoload': {'mappings': ['<Plug>(EasyAlignOperator)', ['sxn', '<Plug>(EasyAlign)'], ['sxn', '<Plug>(LiveEasyAlign)'], ['sxn', '<Plug>(EasyAlignRepeat)']], 'commands': ['EasyAlign', 'LiveEasyAlign']}}
+NeoBundleLazy 'terryma/vim-multiple-cursors', {'autoload': {'mappings': [['xin', '<Plug>(multiple-cursors-']], 'commands': ['MultipleCursorsFind']}}
+NeoBundleLazy 'AndrewRadev/switch.vim', {'autoload': {'commands': ['Switch', 'SwitchReverse']}}
+NeoBundle     'kana/vim-submode'
+NeoBundle     'tyru/caw.vim'
+NeoBundle     'mattn/emmet-vim'
+NeoBundleLazy 'osyo-manga/vim-over', {'autoload': {'mappings': [['n', '<Plug>(over-restore-']], 'commands': ['OverCommandLineNoremap', 'OverCommandLineMap', 'OverCommandLine', 'OverCommandLineUnmap']}}
+NeoBundleLazy 'glidenote/octoeditor.vim', {'autoload': {'commands': ['OctopressGrep', 'OctopressDeploy', 'OctopressNew', 'OctopressFileUp', 'OctopressGenerate', 'OctopressList']}}
+NeoBundle     'mattn/webapi-vim'
+NeoBundle     'Shougo/unite-outline'
+NeoBundleLazy 'ujihisa/unite-locate', {'autoload': {'unite_sources': ['locate']}}
+NeoBundleLazy 'lambdalisue/unite-grep-vcs', {'autoload': {'unite_sources': ['grep_git', 'grep_hg']}}
+NeoBundleLazy 'ujihisa/quicklearn', {'autoload': {'unite_sources': ['quicklearn']}}
+NeoBundleLazy 'thinca/vim-ref', {'autoload': {'unite_sources': ['ref'], 'mappings': [['sxn', '<Plug>(ref-keyword)']], 'commands': [{'complete': 'customlist,ref#complete', 'name': 'Ref'}, 'RefHistory']}}
+NeoBundleLazy 'taka84u9/vim-ref-ri', {'autoload': {'commands': ['HtmlHiLink']}}
+NeoBundle     'mfumi/ref-dicts-en'
+NeoBundle     'tyru/vim-altercmd'
+NeoBundleLazy 'tyru/vim-altercmd', {'autoload': {'commands': [{'complete': 'command', 'name': 'VAlterCommand'}, {'complete': 'command', 'name': 'XAlterCommand'}, {'complete': 'command', 'name': 'IAlterCommand'}, {'complete': 'command', 'name': 'CAlterCommand'}, {'complete': 'command', 'name': 'LAlterCommand'}, {'complete': 'command', 'name': 'NAlterCommand'}, {'complete': 'command', 'name': 'OAlterCommand'}, {'complete': 'command', 'name': 'AlterCommand'}, {'complete': 'command', 'name': 'SAlterCommand'}]}}
+NeoBundle     'ujihisa/neco-look'
+NeoBundle     'cohama/lexima.vim'
+NeoBundleLazy 'ujihisa/unite-font', {'autoload': {'unite_sources': ['font']}}
+NeoBundleLazy 'sgur/vim-gitgutter', {'autoload': {'mappings': [['n', '<Plug>GitGutter']], 'commands': ['GitGutterToggle', 'GitGutterPrevHunk', 'GitGutter', 'GitGutterLineHighlightsToggle', 'GitGutterRevertHunk', 'GitGutterPreviewHunk', 'GitGutterSignsEnable', 'GitGutterNextHunk', 'GitGutterDisable', 'GitGutterStageHunk', 'GitGutterEnable', 'GitGutterSignsToggle', 'GitGutterAll', 'GitGutterLineHighlightsEnable', 'GitGutterLineHighlightsDisable', 'GitGutterDebug', 'GitGutterSignsDisable']}}
+NeoBundle     'edsono/vim-matchit'
+NeoBundleLazy 'mattn/benchvimrc-vim', {'autoload': {'commands': [{'complete': 'file', 'name': 'BenchVimrc'}]}}
+NeoBundleLazy 'rking/ag.vim', {'autoload': {'commands': [{'complete': 'file', 'name': 'AgFromSearch'}, {'complete': 'file', 'name': 'LAgBuffer'}, {'complete': 'file', 'name': 'LAgAdd'}, {'complete': 'file', 'name': 'LAg'}, {'complete': 'help', 'name': 'LAgHelp'}, {'complete': 'file', 'name': 'AgBuffer'}, {'complete': 'file', 'name': 'AgFile'}, {'complete': 'file', 'name': 'AgAdd'}, {'complete': 'file', 'name': 'Ag'}, {'complete': 'help', 'name': 'AgHelp'}]}}
+NeoBundleLazy 'pocke/vim-hier', {'autoload': {'commands': ['HierStart', 'HierUpdate', 'HierClear', 'HierStop']}}
+NeoBundleLazy 'dannyob/quickfixstatus', {'autoload': {'commands': ['QuickfixStatusDisable', 'QuickfixStatusEnable']}}
+NeoBundle     'osyo-manga/shabadou.vim'
+NeoBundle     'osyo-manga/vim-watchdogs'
+NeoBundleLazy 'KazuakiM/vim-qfstatusline', {'autoload': {'commands': ['QfstatuslineUpdate']}}
+NeoBundleLazy 'KazuakiM/vim-qfsigns', {'autoload': {'commands': ['QfsignsClear', 'QfsignsJunmp', 'QfsignsUpdate']}}
+NeoBundleLazy 'tpope/vim-dispatch', {'autoload': {'commands': [{'complete': 'customlist,dispatch#make_complete', 'name': 'Make'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Dispatch'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'FocusDispatch'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Spawn'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Start'}, 'Copen']}}
+NeoBundle     'vim-scripts/dbext.vim'
+NeoBundleLazy 'nathanaelkane/vim-indent-guides', {'augroup': 'indent_guides', 'autoload': {'mappings': [['n', '<Plug>IndentGuides']], 'commands': ['IndentGuidesEnable', 'IndentGuidesToggle', 'IndentGuidesDisable']}}
+NeoBundleLazy 'Chiel92/vim-autoformat', {'autoload': {'commands': ['CurrentFormatter', 'RemoveTrailingSpaces', {'complete': 'filetype', 'name': 'Autoformat'}, 'NextFormatter', 'PreviousFormatter']}}
+NeoBundleLazy 'itchyny/thumbnail.vim', {'autoload': {'mappings': [['sxn', '<Plug>(thumbnail)']], 'commands': [{'complete': 'customlist,thumbnail#complete', 'name': 'Thumbnail'}]}}
+NeoBundle     'wakatime/vim-wakatime'
+NeoBundle     'LeafCage/yankround.vim'
+NeoBundle     'Shougo/neco-syntax'
+NeoBundle     'textobj-user'
+NeoBundle     'vim-scripts/vim-auto-save'
+NeoBundle     'rhysd/clever-f.vim'
 NeoBundleLazy 'deton/jasentence.vim', {  "autoload" : {"filetypes" : ["markdown"]} }
-NeoBundle 'kana/vim-operator-user'
-NeoBundle 'rhysd/vim-operator-surround'
-NeoBundle 'glidenote/memolist.vim'
+NeoBundleLazy 'kannokanno/previm', {  "autoload" : {"filetypes" : ["markdown"]} }
+NeoBundle     'kana/vim-operator-user'
+NeoBundleLazy 'rhysd/vim-operator-surround', {'autoload': {'mappings': [['nx', '<Plug>(operator-surround'], ['n', '<Plug>(operator-surround-repeat)']]}}
+NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {'commands': ['MemoNewCopyingMeta', 'MemoList', 'MemoGrep', 'MemoNew', 'MemoNewWithMeta']}}
+NeoBundleLazy 'upamune/esa.vim', {'autoload': {'commands': [{'complete': 'customlist,s:CompleteArgs', 'name': 'Esa'}]}}
+NeoBundleLazy 'sjl/gundo.vim', {'autoload': {'commands': ['GundoHide', 'GundoShow', 'GundoRenderGraph', 'GundoToggle']}}
+NeoBundleLazy 'LeafCage/nebula.vim', {'autoload': {'commands': ['NebulaPutLazy', 'NebulaPutFromClipboard', 'NebulaYankOptions', 'NebulaYankConfig', 'NebulaPutConfig', 'NebulaYankTap']}}
+NeoBundleLazy 'renamer.vim', {'augroup': 'Renamer', 'autoload': {'commands': [{'complete': 'dir', 'name': 'Renamer'}]}}
+NeoBundleLazy 'editorconfig/editorconfig-vim', {'autoload': {'commands': ['EditorConfigReload']}}
+NeoBundle 'thinca/vim-prettyprint'
 
 "session管理
-NeoBundle 'tpope/vim-obsession'
+NeoBundleLazy 'tpope/vim-obsession', {'autoload': {'commands': [{'complete': 'file', 'name': 'Obsession'}]}}
 
 " git
-NeoBundle 'cohama/agit.vim'
-NeoBundle 'tpope/vim-fugitive'
-NeoBundle 'moznion/github-commit-comment.vim'
-NeoBundle 'lambdalisue/vim-unified-diff'
-NeoBundle 'vim-scripts/diffchar.vim'
-NeoBundle 'lambdalisue/vim-gista'
-NeoBundle 'lambdalisue/vim-gista-unite'
-NeoBundle 'Kocha/vim-unite-tig'
+NeoBundleLazy 'cohama/agit.vim', {'autoload': {'mappings': [['n', '<Plug>(agit-']], 'commands': ['AgitDiff', {'complete': 'custom,agit#agit_git_compl', 'name': 'AgitGit'}, {'complete': 'custom,agit#agit_git_compl', 'name': 'AgitGitConfirm'}, {'complete': 'customlist,agit#complete_command', 'name': 'Agit'}, {'complete': 'customlist,agit#complete_command', 'name': 'AgitFile'}]}}
+NeoBundle     'tpope/vim-fugitive'
+NeoBundleLazy 'moznion/github-commit-comment.vim', {'autoload': {'commands': ['GitHubFetchCommitComment', 'GitHubLineComment', 'GitHubFileComment', 'GitHubCommitComment']}}
+NeoBundleLazy 'lambdalisue/vim-unified-diff', {}
+NeoBundleLazy 'vim-scripts/diffchar.vim', {'autoload': {'mappings': ['<Plug>ToggleDiffCharAllLines', '<Plug>JumpDiffCharNextStart', '<Plug>JumpDiffCharPrevEnd', '<Plug>ToggleDiffCharCurrentLine', '<Plug>JumpDiffCharPrevStart', '<Plug>JumpDiffCharNextEnd'], 'commands': ['RDChar', 'SDChar']}}
+NeoBundleLazy 'lambdalisue/vim-gista', {'autoload': {'commands': [{'complete': 'customlist,gista#command#complete', 'name': 'Gista'}]}}
+NeoBundle     'lambdalisue/vim-gista-unite'
+NeoBundle     'Kocha/vim-unite-tig'
 
 " Markdown syntax
-NeoBundleLazy "godlygeek/tabular", {  "autoload" : {"filetypes" : ["markdown"]} }
-NeoBundleLazy "rcmdnk/vim-markdown", {  "autoload" : {"filetypes" : ["markdown"]} }
+NeoBundleLazy "rcmdnk/vim-markdown",           {  "autoload" : {"filetypes" : ["markdown"]} }
+NeoBundleLazy 'godlygeek/tabular',             {'autoload': {'commands': ['AddTabularPipeline', {'complete': 'customlist,<SID>CompleteTabularizeCommand', 'name': 'Tabularize'}, {'complete': 'customlist,<SID>CompleteTabularizeCommand', 'name': 'GTabularize'}, 'AddTabularPattern']}}
+NeoBundleLazy 'pekepeke/vim-operator-tabular', {'autoload': {'commands': ['TabularDebugLog']}}
+NeoBundle     'pekepeke/vim-csvutil'
 
 " ctags
 " NeoBundle 'szw/vim-tags'
@@ -434,6 +432,7 @@ NeoBundleLazy 'vim-ruby/vim-ruby', {  "autoload" : {"filetypes" : ["ruby"]} }
 NeoBundleLazy 'pocke/dicts', { "autoload" : { "filetypes" : ["ruby"] }  }
 NeoBundleLazy 'osyo-manga/vim-monster', { "autoload" : { "filetypes" : ["ruby"] }  }
 NeoBundleLazy 'tpope/vim-bundler', { "autoload" : { "filetypes" : ["ruby"] }  }
+NeoBundleLazy 'thoughtbot/vim-rspec', { "autoload" : { "filetypes" : ["ruby"] }  }
 NeoBundleLazy 'todesking/ruby_hl_lvar.vim', { "autoload" : { "filetypes" : ["ruby"] }  }
 
 "rails
@@ -476,8 +475,8 @@ NeoBundleLazy 'claco/jasmine.vim', {'autoload':{'filetypes':['javascript']}}
 NeoBundleLazy 'kchmck/vim-coffee-script', {'autoload':{'filetypes':['coffee']}}
 
 " css
-NeoBundle 'lilydjwg/colorizer'
-NeoBundleLazy 'JulesWang/css.vim', {'autoload':{'filetypes':['css']}}
+NeoBundle     'lilydjwg/colorizer'
+NeoBundleLazy 'JulesWang/css.vim', {'autoload':{'filetypes':['scss','css']}}
 NeoBundleLazy 'hail2u/vim-css3-syntax', {'autoload':{'filetypes':['scss','css']}}
 NeoBundleLazy 'csscomb/vim-csscomb', {'autoload':{'filetypes':['scss', 'css']}}
 NeoBundleLazy 'cakebaker/scss-syntax.vim', {'autoload':{'filetypes':['scss']}}
@@ -487,32 +486,15 @@ NeoBundleLazy 'pasela/unite-webcolorname', {'autoload':{'filetypes':['scss', 'cs
 NeoBundleLazy 'digitaltoad/vim-jade', {'autoload':{'filetypes':['jade']}}
 
 " log
-NeoBundle 'vim-scripts/AnsiEsc.vim'
+NeoBundleLazy 'vim-scripts/AnsiEsc.vim', {'autoload': {'mappings': ['<Plug>SaveWinPosn', '<Plug>RestoreWinPosn'], 'commands': ['DM', 'RWP', 'AnsiEsc', 'RM', 'SM', 'WLR', 'SWP']}}
 
 "colorscheme
-NeoBundle 'altercation/vim-colors-solarized'
-NeoBundle 'croaker/mustang-vim'
-NeoBundle 'jeffreyiacono/vim-colors-wombat'
-NeoBundle 'nanotech/jellybeans.vim'
-NeoBundle 'vim-scripts/Zenburn'
-NeoBundle 'mrkn/mrkn256.vim'
-NeoBundle 'jpo/vim-railscasts-theme'
-NeoBundle 'therubymug/vim-pyte'
-" NeoBundle 'w0ng/vim-hybrid'
 NeoBundle 'scwood/vim-hybrid'
-NeoBundle 'chriskempson/vim-tomorrow-theme'
-NeoBundle 'morhetz/gruvbox'
-NeoBundle '29decibel/codeschool-vim-theme'
-NeoBundle 'tomasr/molokai'
-NeoBundle 'vim-scripts/twilight'
 
 " TweetVim
 NeoBundle 'basyura/TweetVim'
-NeoBundle 'mattn/webapi-vim'
 NeoBundle 'basyura/twibill.vim'
-NeoBundle 'tyru/open-browser.vim'
 NeoBundle 'basyura/bitly.vim'
-NeoBundle 'Shougo/unite.vim'
 
 " Required:
 NeoBundleSaveCache
@@ -536,14 +518,14 @@ set background=dark "暗めの背景
 
 colorscheme hybrid
 
-" アンダーラインを引く(color terminal)
+" カーソル行にアンダーラインを引く(color terminal)
 " highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
 
-
+" エラー箇所のハイライト
 execute 'highlight qf_error_ucurl ctermfg=167 ctermbg=52 gui=undercurl guifg=#cc6666 guibg=#5f0000 guisp=Red'
-let g:hier_highlight_group_qf  = "qf_error_ucurl"
-execute "highlight qf_warning_ucurl ctermbg=Blue gui=undercurl guisp=Blue"
-let g:hier_highlight_group_qfw = "qf_warning_ucurl"
+let g:hier_highlight_group_qf  = 'qf_error_ucurl'
+execute 'highlight qf_warning_ucurl ctermfg=109 ctermbg=24 gui=underline guifg=#8abeb7 guibg=#005f5f guisp=Cyan'
+let g:hier_highlight_group_qfw = 'qf_warning_ucurl'
 
 " エラー箇所の行番号左にSignを表示
 " 行全体のハイライトはなし、SignのみErrorMsg（赤色）にする
@@ -643,11 +625,11 @@ function! MyStatusPath()
 endfunction
 
 function! MyFileformat()
-  return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
+  return winwidth(0) > 70 ? (&fileformat) : ''
 endfunction
 
 function! MyFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
+  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
 endfunction
 
 function! MyFileencoding()
@@ -759,7 +741,7 @@ let g:quickrun_config['ruby.rails/watchdogs_checker'] = {
       \   }
 let g:quickrun_config['ruby.rspec/watchdogs_checker'] = {
       \       'type': 'watchdogs_checker/rubocop',
-      \       "cmdopt" : "-R -S -a -D"
+      \       'cmdopt' : '-R -S -a -D'
       \   }
 let g:quickrun_config['coffee/watchdogs_checker'] = {
       \       'type': 'watchdogs_checker/coffeelint'
@@ -768,11 +750,11 @@ let g:quickrun_config['jade/watchdogs_checker'] = {
       \       'type': 'watchdogs_checker/jade'
       \   }
 let g:quickrun_config['css/watchdogs_checker'] = {
-      \       'type': "watchdogs_checker/csslint"
+      \       'type': 'watchdogs_checker/csslint'
       \   }
 let g:quickrun_config['javascript/watchdogs_checker'] = {
       \       'type': 'watchdogs_checker/eslint',
-      \       'cmdopt' : "--fix"
+      \       'cmdopt' : '--fix'
       \  }
 let g:quickrun_config['javascript.jsx/watchdogs_checker'] = {
       \       'type': 'watchdogs_checker/eslint',
@@ -816,16 +798,16 @@ let g:neocomplete#use_vimproc                     = 1
 let g:neocomplete#lock_buffer_name_pattern        = '\*ku\*'
 
 " vim-monster
-let g:monster#completion#rcodetools#backend = "async_rct_complete"
+let g:monster#completion#rcodetools#backend = 'async_rct_complete'
 let g:neocomplete#force_omni_input_patterns      = {}
 let g:neocomplete#sources#omni#input_patterns = {
-      \   "ruby" : '[^. *\t]\.\w*\|\h\w*::',
-      \   "rails" : '[^. *\t]\.\w*\|\h\w*::',
-      \   "rspec" : '[^. *\t]\.\w*\|\h\w*::',
-      \   "eruby" : '[^. *\t]\.\w*\|\h\w*::',
-      \   "ruby.rails" : '[^. *\t]\.\w*\|\h\w*::',
-      \   "ruby.rspec" : '[^. *\t]\.\w*\|\h\w*::',
-      \   "eruby.html" : '[^. *\t]\.\w*\|\h\w*::'
+      \   'ruby' : '[^. *\t]\.\w*\|\h\w*::',
+      \   'rails' : '[^. *\t]\.\w*\|\h\w*::',
+      \   'rspec' : '[^. *\t]\.\w*\|\h\w*::',
+      \   'eruby' : '[^. *\t]\.\w*\|\h\w*::',
+      \   'ruby.rails' : '[^. *\t]\.\w*\|\h\w*::',
+      \   'ruby.rspec' : '[^. *\t]\.\w*\|\h\w*::',
+      \   'eruby.html' : '[^. *\t]\.\w*\|\h\w*::'
       \}
 
 let g:neocomplete#sources#dictionary#dictionaries = {
@@ -869,13 +851,13 @@ let g:neosnippet#snippets_directory = $HOME . '/.vim/snippets'
 
 " enable ruby & rails snippet only rails file
 function! s:RailsSnippet()
-  if exists("b:rails_root") && (&filetype == "ruby")
+  if exists('b:rails_root') && (&filetype == 'ruby')
     set ft=ruby.rails
   endif
 endfunction
 
 function! s:RSpecSnippet()
-  if (expand("%") =~ "_spec\.rb$") || (expand("%") =~ "^spec.*\.rb$")
+  if (expand('%') =~ "_spec\.rb$") || (expand('%') =~ "^spec.*\.rb$")
     set ft=ruby.rspec
   endif
 endfunction
@@ -940,9 +922,6 @@ let g:unite_source_file_mru_filename_format = ''
 let g:unite_source_rec_max_cache_files = 50000
 " let g:unite_source_rec_min_cache_files = 100
 
-let g:webdevicons_enable_unite = 1
-let g:WebDevIconsUnicodeGlyphDoubleWidth = 1
-
 "Like ctrlp.vim settings.
 call unite#custom#profile('default', 'context', {
       \   'direction': 'botright',
@@ -962,11 +941,12 @@ call unite#filters#sorter_default#use(['sorter_ftime*'])
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#custom#source('file_rec, file_rec/git, grep/git, buffer, file', 'sorters', 'sorter_selecta')
 " 画像はキャッシュしない
-" call unite#custom#source('grep/git', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
-" call unite#custom#source('source/buffer:?', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
-" call unite#custom#source('file_rec/async', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
+call unite#custom#source('grep/git', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
+call unite#custom#source('source/buffer:?', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
+call unite#custom#source('file_rec/async', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
 
 set wildignore=*.o,*.obj,*.la,*.lo,*.so,*.pyc,*.pyo,*.jpg,*.jpeg,*.png,*.gif,*vimfiler
+
 call unite#custom#source('file_rec/git, grep/git, buffer, file_rec/async', 'ignore_globs',
       \ split(&wildignore, ','))
 
@@ -996,7 +976,6 @@ function! s:unite_keymap()
   nnoremap <silent> [unite]d :<C-u>Unite<Space> directory_mru<CR>
   "スペースキーとbキーでバッファを表示
   nnoremap <silent> [unite]b :<C-u>Unite<Space>buffer<CR>
-  " nnoremap <silent> [unite]b :<C-u>Thumbnail<Space>-exclude=vimfiler <CR>
 
   " "スペースキーとtキーでtagsを検索
   vnoremap <silent> [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W><CR>
@@ -1036,15 +1015,7 @@ function! s:unite_keymap()
   " grep検索結果の再呼出
   nnoremap <silent> [unite]r  :<C-u>UniteResume search-buffer <CR>
   " " bookmark
-  nnoremap <silent> [unite]B :<C-u>Unite bookmark -default-action=vimfiler <CR>
-  " add to  bookmark
-  " nnoremap <silent> [unite]ba :<C-u>UniteBookmarkAdd <CR>
-
-  ""スペースキーとENTERキーでfile_rec:!
-  " nnoremap <silent> [unite]<CR> :<C-u>execute
-  "       \ 'Unite'
-  "       \ 'file_rec/async:!:'.fnameescape(expand('%:p:h'))
-  "       \ '-default-action=tabopen'<CR>
+  nnoremap <silent> [unite]B :<C-u>Unite bookmark<CR>
 
   nnoremap <silent> [unite]<CR> :<C-u>Unite file_rec/git -buffer-name=search-buffer <CR>
 
@@ -1094,58 +1065,6 @@ function! s:unite_my_settings()
 endfunction
 "" }}}
 
-"" {{{vimfiler
-" let g:vimfiler_as_default_explorer  = 1
-" let g:webdevicons_enable_vimfiler   = 1
-" let g:WebDevIconsUnicodeGlyphDoubleWidth = 1
-" " set guifont=M+\ 1m\ regular\ Nerd\ Font\ Complete\ 10
-" let g:vimfiler_safe_mode_by_default = 0
-" " let g:vimfiler_edit_action = 'tabopen'
-" " Like Textmate icons.
-" let g:vimfiler_tree_leaf_icon       = ' '
-" let g:vimfiler_tree_opened_icon     = '▾'
-" let g:vimfiler_tree_closed_icon     = '▸'
-" let g:vimfiler_file_icon            = '-'
-" let g:vimfiler_marked_file_icon     = '*'
-" let g:vimfiler_ignore_pattern       = '\(^\.\|\~$\|\.pyc$\|\.[oad]$\)'
-" let g:vimfiler_time_format = '%m-%d-%y %H:%M:%S'
-" autocmd VimEnter * call s:vimfiler_initialize()
-" function! s:vimfiler_initialize() "workaround for cancel whitespace
-"   VimFiler -split -simple -winwidth=40 -direction=topleft -buffer-name=explorer -split -simple -project -toggle -no-quit<CR>
-"   VimFiler -split -simple -winwidth=40 -direction=topleft -buffer-name=explorer -split -simple -project -toggle -no-quit<CR>
-" endfunction
-"
-" autocmd BufEnter * if bufname("") !~ "*vimfiler" | call s:vimfiler_keymap() | endif
-" function! s:vimfiler_keymap()
-"   nmap <Space> [unite]
-"   nnoremap [unite]f :VimFiler -buffer-name=explorer -project -force-hide -split -winwidth=40 -direction=topleft -simple -toggle<CR>
-"   nnoremap [unite]c :VimFilerBufferDir -direction=topleft -buffer-name=explorer -force-hide -split -winwidth=40 -direction=topleft -simple -toggle<CR>
-"   " nnoremap <C-k><C-f> :VimFiler -project<CR>
-"   " inoremap <C-k><C-f> <ESC>:VimFiler -project<CR>
-"   " nnoremap <C-k><C-k> :VimFiler -direction=topleft -buffer-name=explorer -split -simple -project -winwidth=40 -toggle -no-quit<CR>
-"   " nnoremap <C-k><C-c> :VimFilerBufferDir -direction=topleft -buffer-name=explorer -split -simple -winwidth=40 -toggle -no-quit<CR>
-" endfunction
-"
-" augroup local_vimfiler_keymap
-"   autocmd FileType vimfiler* call s:vimfiler_my_settings()
-" augroup END
-" function! s:vimfiler_my_settings()
-"   " nnoremap <buffer><silent>/ :<C-u>UniteWithBufferDir file<CR>
-"   " nmap <buffer><silent>/ <Plug>(vimfiler_grep)
-"   nunmap <buffer><Space>
-"   " nunmap g]
-"   nmap  <buffer><silent> <expr> <C-t> vimfiler#do_action('tabopen')
-"   vmap  <buffer><silent> <expr> <C-t> vimfiler#do_action('tabopen')
-"   nmap  <buffer><silent>+ <Plug>(vimfiler_expand_tree)
-"   nmap  <buffer><silent>* <Plug>(vimfiler_toggle_mark_current_line)
-"   vmap  <buffer><silent>* <Plug>(vimfiler_toggle_mark_current_line)
-"   nmap  <buffer><ESC> <Plug>(vimfiler_hide)
-"   nmap  <buffer><C-o> <Plug>(vimfiler_edit_file)
-"   nmap  <buffer><CR> <Plug>(vimfiler_split_edit_file)
-"   call  s:unite_keymap()
-" endfunction
-"" }}}
-
 let g:vim_markdown_folding_disabled=1
 
 let g:vim_markdown_frontmatter=1
@@ -1160,13 +1079,13 @@ let g:octopress_unite = 1
 " let g:octopress_auto_open_results = 1
 " use unite (default 0)
 " use arbitrary unite option (default is empty)
-let g:octopress_unite_option = "-start-insert -horizontal -direction=botright -prompt-direction=below"
+let g:octopress_unite_option = '-start-insert -horizontal -direction=botright -prompt-direction=below'
 " use arbitrary unite source (default is 'file')
 " let g:octopress_unite_source = "file"
-let g:octopress_unite_source = "file"
+let g:octopress_unite_source = 'file'
 let g:octopress_qfixgrep = 1
-let g:octopress_post_suffix = "markdown"
-let g:octopress_template_dir_path = "~/.vim/template/"
+let g:octopress_post_suffix = 'markdown'
+let g:octopress_template_dir_path = '~/.vim/template/'
 
 nnoremap [unite]on  :OctopressNew<CR>
 nnoremap [unite]ol  :OctopressList<CR>
@@ -1200,12 +1119,12 @@ let g:ref_source_webdict_sites.default = 'ej'
 " 出力に対するフィルタ
 " 最初の数行邪魔なので削除
 function! g:ref_source_webdict_sites.je.filter(output)
-  let l:str = substitute(a:output, "       単語帳", "", "g")
+  let l:str = substitute(a:output, '       単語帳', '', 'g')
   return join(split(str, "\n")[28 :], "\n")
 endfunction
 
 function! g:ref_source_webdict_sites.ej.filter(output)
-  let l:str = substitute(a:output, "       単語帳", "", "g")
+  let l:str = substitute(a:output, '       単語帳',' ', 'g')
   return join(split(str, "\n")[28 :], "\n")
 endfunction
 
@@ -1238,18 +1157,18 @@ nnoremap <silent> [unite]gs :<C-u>Unite<Space> gista<CR>
 " for open-browser plugin
 nmap gx <Plug>(openbrowser-smart-search)
 vmap gx <Plug>(openbrowser-smart-search)
-nmap gd :<C-u>OpenBrowserSearch -devdocs
-vmap gd :<C-u>OpenBrowserSearch -devdocs <C-r><C-w><CR>
+nmap gd :<C-u>OpenBrowserSearch -devdocs <C-r><C-w><CR>
+vmap gd :<C-u>OpenBrowserSearch -devdocs
 
 let g:openbrowser_browser_commands = [
-      \ {"name": "xdg-open",
-      \  "args": ["{browser}", "{uri}"]},
-      \ {"name": "x-www-browser",
-      \  "args": ["{browser}", "{uri}"]},
-      \ {"name": "firefox",
-      \  "args": ["{browser}", "{uri}"]},
-      \ {"name": "luakit",
-      \  "args": ["{browser}", "{uri}"]},
+      \ {'name': 'xdg-open',
+      \  'args': ['{browser}', '{uri}']},
+      \ {'name': 'x-www-browser',
+      \  'args': ['{browser}', '{uri}']},
+      \ {'name': 'firefox',
+      \  'args': ['{browser}', '{uri}']},
+      \ {'name': 'luakit',
+      \  'args': ['{browser}', '{uri}']},
       \]
 
 " indent guides
@@ -1266,7 +1185,7 @@ augroup indent_guides_color
   autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=235
 augroup END
 
-let g:rspec_command = "Dispatch rspec --format progress --no-profile {spec}"
+let g:rspec_command = 'Dispatch rspec --format progress --no-profile {spec}'
 
 if executable('spring')
   augroup spring
@@ -1394,28 +1313,43 @@ function! s:my_agit_setting()
   nmap <buffer> Rv    <Plug>(agit-git-revert)
 endfunction
 
+" integrate vim with ranger
 function! RangerExplorer(path)
-  let path = a:path
-    exec 'silent !ranger --choosefile=/tmp/vim_ranger_current_file ' . path
-    if filereadable('/tmp/vim_ranger_current_file')
-        exec 'edit ' . system('cat /tmp/vim_ranger_current_file')
-        call system('rm /tmp/vim_ranger_current_file')
-    endif
-    redraw!
-endfun
+  exec 'silent !ranger --choosefile=/tmp/vim_ranger_current_file ' . a:path
+  if filereadable('/tmp/vim_ranger_current_file')
+    exec 'edit ' . system('cat /tmp/vim_ranger_current_file')
+    call system('rm /tmp/vim_ranger_current_file')
+  endif
+  redraw!
+endfunction
 
 function! RangerOpenProjectRootDir()
-  let root_path = unite#util#path2project_directory(expand('%'))
-  :call RangerExplorer(root_path)
+  let root_dir = unite#util#path2project_directory(expand('%'))
+  :call RangerExplorer(root_dir)
 endfunction
 
 function! RangerOpenCurrentDir() abort
-  let current_path = '%p:h'
-  :call RangerExplorer(current_path)
+  let current_dir = expand('%:p:h')
+  :call RangerExplorer(current_dir)
 endfunction
 
-nnoremap <silent>[unite]c :call RangerExplorer('%:p:h')<cr>
+function! RangerOpenWithEdit(path) abort
+  if !isdirectory(a:path)
+    return
+  endif
+  bw!
+  :call RangerExplorer(a:path)
+  :filetype detect
+endfunction
+
+nnoremap <silent>[unite]c :call RangerOpenCurrentDir()<cr>
 nnoremap <silent>[unite]f :call RangerOpenProjectRootDir()<cr>
+
+augroup open_with_ranger
+  autocmd!
+  let g:loaded_netrwPlugin = 'disable'
+  autocmd BufEnter * silent call RangerOpenWithEdit(expand("<amatch>"))
+augroup END
 
 "TweetVim
 let g:tweetvim_display_icon=1
@@ -1426,10 +1360,22 @@ let g:tweetvim_say_insert_account=1
 nnoremap <leader>t :<C-u>TweetVimSay<CR>
 
 " vim-auto-save
-let g:auto_save = 1 " 自動保存
 let g:auto_save_silent = 1  " do not display the auto-save notification
 let g:auto_save_in_insert_mode = 0  " do not save while in insert mode
 let g:auto_save_no_updatetime = 1  " do not change the 'updatetime' option
+
+function! s:auto_save_detect() abort
+  if &readonly
+    let g:auto_save = 0 " 自動保存しない
+  else
+    let g:auto_save = 1 " 自動保存
+  end
+endfunction
+
+augroup switch_auto_save
+  autocmd!
+  au BufEnter * call s:auto_save_detect()
+augroup END
 
 "operator-surround
 map  s  <Nop>
@@ -1450,3 +1396,6 @@ let g:operator#surround#blocks =
       \   { 'block' : ['『', '』'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['D'] }
       \ ]
       \}
+
+"esa.io
+let g:esa_team = 'staruptechnology'
