@@ -1,9 +1,6 @@
 # main-viewの左端にコミットIDを表示する
 set main-view = id date author commit-title:graph=yes,refs=yes
 
-# ステータスビューで V 押下すると、差分表示モードでコミットログ入力画面を開く
-bind status V !git commit -v
-
 # # Visualization
 set id-width = 8
 set blame-options = -C -C -C
@@ -45,4 +42,11 @@ bind branch H !git-browse-remote %(branch)
 bind generic M none
 bind branch M none
 bind branch M !git merge %(branch)
+
+bind status C !git commit -v
+bind status u none
+bind status - status-update
+
+bind stage u none
+bind stage - status-update
 
