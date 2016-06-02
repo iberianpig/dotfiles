@@ -1,9 +1,14 @@
 snippet     pry
 abbr        binding.pry
   <% binding.pry %>
+
 snippet     end
 abbr        end
   <% end %>
+
+snippet     else
+abbr        else
+  <% else %>
 
 snippet     pe
 abbr        <%= %>
@@ -13,7 +18,18 @@ snippet     pp
 abbr        <% %>
   <% ${0} %>
 
-
 snippet     pc
 abbr        <%# %>
   <%# ${0} %>
+
+snippet     todo
+abbr        <%# TODO: %>
+  <%# TODO: ${0} %>
+
+snippet     fixme
+abbr        <%# FIXME: %>
+  <%# FIXME: ${0} %>
+
+snippet     note
+abbr        <%# NOTE: %>
+  <%# NOTE: ${0} %>
