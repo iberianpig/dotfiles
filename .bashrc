@@ -128,10 +128,15 @@ if [ -f ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.s
     source ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
 fi
 
-if [ $DISPLAY ]; then
+if [ "$DISPLAY" ]; then
   xset r rate 200 40
 fi
 
 # notify when long running commands
 . /usr/share/undistract-me/long-running.bash
 notify_when_long_running_commands_finish_install
+
+# peco
+function pcd {
+    cd "$( ls -1d ./*/ | peco )"
+}

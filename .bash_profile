@@ -1,9 +1,15 @@
 #/usr/sbin
 export PATH="/usr/sbin:$PATH"
 
-#rbenv
+# rbenv
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
+
+# golang
+export GOROOT=/usr/local/go
+export PATH=$PATH:$GOROOT/bin
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOPATH/bin
 
 # #genymotion
 # export PATH="/opt/genymotion:$PATH"
@@ -13,11 +19,14 @@ eval "$(rbenv init -)"
 # export PATH="/usr/share/android-studio/data/sdk/platform-tools:$PATH"
 # export PATH="/usr/share/android-studio/data/sdk/tools:$PATH"
 
-#hub command
+# hub command
 eval "$(hub alias -s)"
 
 #zenkaku
 export VTE_CJK_WIDTH=1
+
+# editor
+export EDITOR="/usr/bin/vim"
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
