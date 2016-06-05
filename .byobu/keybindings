@@ -1,2 +1,3 @@
-source $BYOBU_PREFIX/share/byobu/keybindings/common
-escape ^Aa
+#source $BYOBU_PREFIX/share/byobu/keybindings/common
+#escape ^Aa
+#hardstatus lastline 'iberianpig@kyamada'

@@ -2,17 +2,14 @@
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
     alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
     alias grep='grep --color=auto'
     alias fgrep='fgrep --color=auto'
     alias egrep='egrep --color=auto'
 fi
 
 # some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
+alias ll='ls -alhF'
+alias la='ls -hA'
 alias l='ls -CF'
 
 # Add an "alert" alias for long running commands.  Use like so:
@@ -26,9 +23,6 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 
 # bunder
 alias be='bundle exec'
-alias r='bundle exec spring rails'
-alias ra='bundle exec spring rake'
-alias bundle_old='bundle _1.7.4_'
 
 # apt-get
 alias api='sudo apt-fast install'
@@ -41,5 +35,13 @@ alias agh='ag --hidden'
 # tw
 alias tw='tw -yes'
 
+# mozc
 alias mozc-config="/usr/lib/mozc/mozc_tool -mode=config_dialog"
 alias mozc-dict="/usr/lib/mozc/mozc_tool --mode=dictionary_tool"
+
+# search markdown and open with vim
+alias 'md'='vim ./*.md'
+
+dic () {
+  w3m "http://ejje.weblio.jp/content/$1" | grep "用例"
+}

@@ -521,7 +521,7 @@ colorscheme hybrid
 " カーソル行にアンダーラインを引く(color terminal)
 " highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
 
-" エラー箇所のハイライト
+" Watchdogsのエラー箇所のハイライトをいい感じにする
 execute 'highlight qf_error_ucurl ctermfg=167 ctermbg=52 gui=undercurl guifg=#cc6666 guibg=#5f0000 guisp=Red'
 let g:hier_highlight_group_qf  = 'qf_error_ucurl'
 execute 'highlight qf_warning_ucurl ctermfg=109 ctermbg=24 gui=underline guifg=#8abeb7 guibg=#005f5f guisp=Cyan'
@@ -772,6 +772,10 @@ let g:quickrun_config['vim/watchdogs_checker'] = {
       \     'command'   : 'vint',
       \     'exec'      : '%c %o %s:p' ,
       \   }
+let g:quickrun_config['json/watchdogs_checker'] = {
+      \       'type': 'watchdogs_checker/jsonlint',
+      \       'cmdopt' : '-i'
+      \  }
 " " If syntax error, cursor is moved at line setting sign.
 "let g:qfsigns#AutoJump = 1
 
@@ -950,9 +954,21 @@ set wildignore=*.o,*.obj,*.la,*.lo,*.so,*.pyc,*.pyo,*.jpg,*.jpeg,*.png,*.gif,*vi
 call unite#custom#source('file_rec/git, grep/git, buffer, file_rec/async', 'ignore_globs',
       \ split(&wildignore, ','))
 
-" ファイルはタブで開く
-" call unite#custom_default_action('file', 'tabopen')
-call unite#custom_default_action('directory', 'file')
+
+" タブが存在しているときはタブ移動
+let action = {
+\   'description' : 'tab drop',
+\   'is_selectable' : 1,
+\ }
+function! action.func(candidates) "{{{
+    for l:candidate in a:candidates
+        call unite#util#smart_execute_command('tab drop', l:candidate.action__path)
+    endfor
+endfunction "}}}
+call unite#custom_action('openable', 'tabdrop', action)
+unlet action
+
+call unite#custom_default_action('file', 'tabdrop')
 
 augroup unite_global_keymap
   autocmd!
@@ -977,9 +993,9 @@ function! s:unite_keymap()
   "スペースキーとbキーでバッファを表示
   nnoremap <silent> [unite]b :<C-u>Unite<Space>buffer<CR>
 
-  " "スペースキーとtキーでtagsを検索
-  vnoremap <silent> [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W><CR>
-  nnoremap <silent> [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W><CR>
+  " "スペースキーと]キーでtagsを検索
+  vnoremap <silent> [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W> <CR>
+  nnoremap <silent> [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W> <CR>
   augroup unite_jump
     autocmd!
     autocmd BufEnter *
@@ -1006,11 +1022,12 @@ function! s:unite_keymap()
   ""スペースキーとgキーでgrep
   " vnoremap <silent> [unite]/g :Unite grep::-iHRn:<C-R>=escape(@", '\\.*$^[]')<CR><CR>
   " grep検索
-  nnoremap <silent> [unite]g  :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR>
+  nnoremap <silent> [unite]G  :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR>
   " カーソル位置の単語をgrep検索
-  nnoremap <silent> [unite]cg :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R><C-W>
+  nnoremap <silent> [unite]cG :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR> <C-R><C-W>
   " git-grep
-  nnoremap <silent> [unite]gg  :<C-u>:Unite grep/git:. -buffer-name=search-buffer <CR>
+  nnoremap <silent> [unite]g  :<C-u>Unite grep/git:. -buffer-name=search-buffer <CR>
+  nnoremap <silent> [unite]cg :<C-u>Unite grep/git:. -buffer-name=search-buffer <CR> <C-r><C-W>
 
   " grep検索結果の再呼出
   nnoremap <silent> [unite]r  :<C-u>UniteResume search-buffer <CR>
@@ -1157,8 +1174,8 @@ nnoremap <silent> [unite]gs :<C-u>Unite<Space> gista<CR>
 " for open-browser plugin
 nmap gx <Plug>(openbrowser-smart-search)
 vmap gx <Plug>(openbrowser-smart-search)
-nmap gd :<C-u>OpenBrowserSearch -devdocs <C-r><C-w><CR>
-vmap gd :<C-u>OpenBrowserSearch -devdocs
+nmap gd :<C-u>OpenBrowserSearch -devdocs <C-r><C-w> <CR>
+vmap gd :<C-u>OpenBrowserSearch -devdocs 
 
 let g:openbrowser_browser_commands = [
       \ {'name': 'xdg-open',
