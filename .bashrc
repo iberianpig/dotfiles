@@ -6,9 +6,6 @@
 [ -z "$PS1" ] && return
 
 
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
 
 # append to the history file, don't overwrite it
 shopt -s histappend
@@ -20,7 +17,15 @@ function share_history {  # 以下の内容を関数として定義
 }
 PROMPT_COMMAND='share_history'  # 上記関数をプロンプト毎に自動実施
 shopt -u histappend   # .bash_history追記モードは不要なのでOFFに
-export HISTSIZE=99999  # 履歴のMAX保存数を指定
+
+# 重複履歴を無視
+export HISTCONTROL=ignoredups 
+
+# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
+export HISTSIZE=9999
+export HISTFILESIZE=20000
+
+
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -98,10 +103,10 @@ eval "$(EDITOR=/usr/bin/vim)"
 eval "$(SHELL=/bin/bash)"
 
 
-##byobu
-#if [ $SHLVL = 1 ]; then
+# #byobu
+# if [ $SHLVL = 1 ]; then
 #  byobu
-#fi
+# fi
 
 # PS1="\[\e[0;1m\]┌─ \u:\[\e[1;32m\]\w$ \[\e[0;1m\n└──┤▶ \[\e[0m\]"
 
@@ -140,3 +145,9 @@ notify_when_long_running_commands_finish_install
 function pcd {
     cd "$( ls -1d ./*/ | peco )"
 }
+
+# rbenv
+# NOTE: should be placed on ~/.bashrc
+export PATH="$HOME/.rbenv/bin:$PATH"
+eval "$(rbenv init -)"
+

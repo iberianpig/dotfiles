@@ -61,7 +61,8 @@ set synmaxcol=300   " 長い行の場合、syntaxをoffにする
 set list           " 不可視文字を表示
 set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
-set completeopt=menuone "補完時にpreviewWindowを開かない
+" set completeopt=menuone "補完時にpreviewWindowを開かない
+
 " Don't screw up folds when inserting text that might affect them, until
 " leaving insert mode. Foldmethod is local to the window. Protect against
 " screwing up folding when switching between windows.
@@ -136,6 +137,9 @@ set smartcase "大文字と小文字が混在した言葉で検索を行った�
 set wrapscan "最後尾まで検索を終えたら次の検索で先頭に移る
 set gdefault "置換の時 g オプションをデフォルトで有効にする
 
+"選択済テキストで検索
+vnoremap // y/<C-R>"<CR> 
+
 " 検索後にジャンプした際に検索単語を画面中央に持ってくる
 nnoremap n nzz
 nnoremap N Nzz
@@ -167,10 +171,6 @@ nnoremap <Down> gj
 
 " vを二回で行末まで選択
 vnoremap v $h
-
-" TABにて対応ペアにジャンプ
-" nnoremap <Tab> %
-" vnoremap <Tab> %
 
 "すべてを選択
 nnoremap <Leader><C-A> ggVG
@@ -208,7 +208,7 @@ inoremap <C-c> <ESC>
 if has('unix') && !has('gui_running')
   " ESC後にすぐ反映されない対策
   " nmap <silent> <ESC><ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
- map <silent> <ESC> :nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
+ nnoremap <silent> <ESC> :nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
 endif
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
@@ -336,7 +336,7 @@ NeoBundle     'honza/vim-snippets'
 NeoBundleLazy 'tpope/vim-repeat', {'autoload': {'mappings': [['n', '<Plug>(Repeat']]}}
 NeoBundle     'Shougo/unite.vim'
 NeoBundle     'tsukkee/unite-help'
-NeoBundleLazy 'ujihisa/unite-colorscheme', {'autoload': {'unite_sources': ['colorscheme']}}
+NeoBundleLazy 'ujihisa/unite-colorscheme'
 NeoBundle     'osyo-manga/unite-quickfix.git'
 NeoBundle     'thinca/vim-quickrun'
 NeoBundleLazy "tyru/open-browser.vim", {
@@ -356,7 +356,6 @@ NeoBundle     'kana/vim-submode'
 NeoBundle     'tyru/caw.vim'
 NeoBundle     'mattn/emmet-vim'
 NeoBundleLazy 'osyo-manga/vim-over', {'autoload': {'mappings': [['n', '<Plug>(over-restore-']], 'commands': ['OverCommandLineNoremap', 'OverCommandLineMap', 'OverCommandLine', 'OverCommandLineUnmap']}}
-NeoBundleLazy 'glidenote/octoeditor.vim', {'autoload': {'commands': ['OctopressGrep', 'OctopressDeploy', 'OctopressNew', 'OctopressFileUp', 'OctopressGenerate', 'OctopressList']}}
 NeoBundle     'mattn/webapi-vim'
 NeoBundle     'Shougo/unite-outline'
 NeoBundleLazy 'ujihisa/unite-locate', {'autoload': {'unite_sources': ['locate']}}
@@ -425,15 +424,15 @@ NeoBundle     'pekepeke/vim-csvutil'
 " ctags
 " NeoBundle 'szw/vim-tags'
 NeoBundle 'tsukkee/unite-tag'
-NeoBundle 'soramugi/auto-ctags.vim'
+" NeoBundle 'soramugi/auto-ctags.vim'
 
 " rubyでのみvim-rubyを読み込む
 NeoBundleLazy 'vim-ruby/vim-ruby', {  "autoload" : {"filetypes" : ["ruby"]} }
 NeoBundleLazy 'pocke/dicts', { "autoload" : { "filetypes" : ["ruby"] }  }
-NeoBundleLazy 'osyo-manga/vim-monster', { "autoload" : { "filetypes" : ["ruby"] }  }
 NeoBundleLazy 'tpope/vim-bundler', { "autoload" : { "filetypes" : ["ruby"] }  }
 NeoBundleLazy 'thoughtbot/vim-rspec', { "autoload" : { "filetypes" : ["ruby"] }  }
 NeoBundleLazy 'todesking/ruby_hl_lvar.vim', { "autoload" : { "filetypes" : ["ruby"] }  }
+NeoBundleLazy 'marcus/rsense', { "autoload" : { "filetypes" : ["ruby"] }  }
 
 "rails
 NeoBundle 'basyura/unite-rails'
@@ -490,6 +489,7 @@ NeoBundleLazy 'vim-scripts/AnsiEsc.vim', {'autoload': {'mappings': ['<Plug>SaveW
 
 "colorscheme
 NeoBundle 'scwood/vim-hybrid'
+NeoBundle 'miyakogi/seiya.vim'
 
 " TweetVim
 NeoBundle 'basyura/TweetVim'
@@ -517,9 +517,10 @@ NeoBundleCheck
 set background=dark "暗めの背景
 
 colorscheme hybrid
+let g:seiya_auto_enable=1
 
 " カーソル行にアンダーラインを引く(color terminal)
-" highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
+highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
 
 " Watchdogsのエラー箇所のハイライトをいい感じにする
 execute 'highlight qf_error_ucurl ctermfg=167 ctermbg=52 gui=undercurl guifg=#cc6666 guibg=#5f0000 guisp=Red'
@@ -744,7 +745,7 @@ let g:quickrun_config['ruby.rspec/watchdogs_checker'] = {
       \       'cmdopt' : '-R -S -a -D'
       \   }
 let g:quickrun_config['coffee/watchdogs_checker'] = {
-      \       'type': 'watchdogs_checker/coffeelint'
+      \       'type': 'watchdogs_checker/coffeelint',
       \   }
 let g:quickrun_config['jade/watchdogs_checker'] = {
       \       'type': 'watchdogs_checker/jade'
@@ -761,7 +762,7 @@ let g:quickrun_config['javascript.jsx/watchdogs_checker'] = {
       \       'cmdopt' : '--fix'
       \  }
 let g:quickrun_config['markdown/watchdogs_checker'] = {
-      \       'type': 'watchdogs_checker/textlint',
+      \       'type': 'watchdogs_checker/textlint'
       \  }
 let g:quickrun_config['sh/watchdogs_checker'] = {
       \       'command' : 'shellcheck', 'cmdopt' : '-f gcc',
@@ -776,6 +777,10 @@ let g:quickrun_config['json/watchdogs_checker'] = {
       \       'type': 'watchdogs_checker/jsonlint',
       \       'cmdopt' : '-i'
       \  }
+
+" execute
+let g:quickrun_config['html'] = { 'command' : 'open', 'exec' : '%c %s', 'outputter': 'browser' }
+
 " " If syntax error, cursor is moved at line setting sign.
 "let g:qfsigns#AutoJump = 1
 
@@ -792,27 +797,28 @@ let g:vimshell_force_overwrite_statusline = 0
 
 " neocomplete {{{
 let g:neocomplete#enable_at_startup               = 1
-let g:neocomplete#auto_completion_start_length    = 2
+"let g:neocomplete#auto_completion_start_length    = 2
 let g:neocomplete#enable_ignore_case              = 1
 " let g:neocomplete#enable_smart_case               = 1
 let g:neocomplete#enable_cursor_hold_i            = 1
-let g:neocomplete#enable_camel_case               = 1
-let g:neocomplete#enable_fuzzy_completion         = 0
+" let g:neocomplete#enable_camel_case               = 1
+" let g:neocomplete#enable_fuzzy_completion         = 1
 let g:neocomplete#use_vimproc                     = 1
 let g:neocomplete#lock_buffer_name_pattern        = '\*ku\*'
 
-" vim-monster
-let g:monster#completion#rcodetools#backend = 'async_rct_complete'
+" rsense
 let g:neocomplete#force_omni_input_patterns      = {}
-let g:neocomplete#sources#omni#input_patterns = {
-      \   'ruby' : '[^. *\t]\.\w*\|\h\w*::',
-      \   'rails' : '[^. *\t]\.\w*\|\h\w*::',
-      \   'rspec' : '[^. *\t]\.\w*\|\h\w*::',
-      \   'eruby' : '[^. *\t]\.\w*\|\h\w*::',
-      \   'ruby.rails' : '[^. *\t]\.\w*\|\h\w*::',
-      \   'ruby.rspec' : '[^. *\t]\.\w*\|\h\w*::',
-      \   'eruby.html' : '[^. *\t]\.\w*\|\h\w*::'
+let g:neocomplete#force_omni_input_patterns = {
+      \   'ruby' : '[^. *\t]\.\|\h\w*::',
+      \   'rails' : '[^. *\t]\.\|\h\w*::',
+      \   'rspec' : '[^. *\t]\.\|\h\w*::',
+      \   'eruby' : '[^. *\t]\.\|\h\w*::',
+      \   'ruby.rails' : '[^. *\t]\.\|\h\w*::',
+      \   'ruby.rspec' : '[^. *\t]\.\|\h\w*::',
+      \   'eruby.html' : '[^. *\t]\.\|\h\w*::'
       \}
+
+let g:rsenseUseOmniFunc = 1
 
 let g:neocomplete#sources#dictionary#dictionaries = {
 \   'ruby': $HOME . '/.vim/bundle/dicts/ruby.dict',
@@ -824,7 +830,7 @@ let g:neocomplete#sources#dictionary#dictionaries = {
 " "NeoSnippet.vim
 let g:neosnippet#enable_snipmate_compatibility = 1
 " remove ${x} marker when switching normal mode
-let g:neosnippet#enable_auto_clear_markers = 0
+let g:neosnippet#enable_auto_clear_markers = 1
 " Tell Neosnippet about the other snippets
 let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets, ~/.vim/snippets'
 " Plugin key-mappings.
@@ -837,14 +843,6 @@ xmap <C-Space>     <Plug>(neosnippet_expand_target)
 if has('conceal')
   set conceallevel=2 concealcursor=i
 endif
-
-" neosnippet.vim公式指定をちょっといじる
-" imap <expr><TAB> neosnippet#jumpable() ?
-"       \ "\<Plug>(neosnippet_expand_or_jump)"
-"       \: pumvisible() ? "\<C-n>" : "\<TAB>"
-" smap <expr><TAB> neosnippet#jumpable() ?
-"       \ "\<Plug>(neosnippet_expand_or_jump)"
-"       \: "\<TAB>"
 
 " rails
 "   autocmd!
@@ -866,7 +864,7 @@ function! s:RSpecSnippet()
   endif
 endfunction
 
-augroup rails_snnipet
+augroup rails_snippet
   autocmd!
   au BufEnter * call s:RailsSnippet()
   au BufEnter * call s:RSpecSnippet()
@@ -907,12 +905,12 @@ call submode#map('winsize',        'n', '', 'K', '<C-w>+')
 
 "" over.vim
 " over.vimの起動
-nnoremap <silent> <C-s> :OverCommandLine<CR>%s/
-vnoremap <silent> <C-s> :OverCommandLine<CR>%s/<C-r><C-w>/
+nnoremap <silent> <C-s> :OverCommandLine<CR>%s/<C-r><C-w>//<Left>
+vnoremap <silent> <C-s> y:OverCommandLine<CR>%s/<C-r>"//<Left>
 " カーソル下の単語をハイライト付きで置換
-nnoremap sub :OverCommandLine<CR>%s/<C-r><C-w>//<Left>
+nnoremap sb :overcommandline<CR>%s/<C-r><C-w>//<Left>
 " コピーした文字列をハイライト付きで置換
-nnoremap subp y:OverCommandLine<CR>%s/<C-r>=substitute(@0, '/', '/', 'g')<CR>//<Left>
+nnoremap sbp y:OverCommandLine<CR>%s/<C-r>=substitute(@0, '/', '/', 'g')<CR>//<Left>
 
 cnoreabb <silent><expr>s getcmdtype()==':' && getcmdline()=~'^s' ? 'OverCommandLine<CR><C-u>%s/<C-r>=get([], getchar(0), '')<CR>' : 's'
 
@@ -920,7 +918,7 @@ cnoreabb <silent><expr>s getcmdtype()==':' && getcmdline()=~'^s' ? 'OverCommandL
 " " インサートモードで開始
 let g:unite_enable_start_insert=1
 " 最近のファイルの個数制限
-let g:unite_source_file_mru_limit = 1000
+let g:unite_source_file_mru_limit           = 1000
 let g:unite_source_file_mru_filename_format = ''
 " file_recのキャッシュ
 let g:unite_source_rec_max_cache_files = 50000
@@ -945,9 +943,9 @@ call unite#filters#sorter_default#use(['sorter_ftime*'])
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#custom#source('file_rec, file_rec/git, grep/git, buffer, file', 'sorters', 'sorter_selecta')
 " 画像はキャッシュしない
-call unite#custom#source('grep/git', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
+call unite#custom#source('grep/git',        'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
 call unite#custom#source('source/buffer:?', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
-call unite#custom#source('file_rec/async', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
+call unite#custom#source('file_rec/async',  'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
 
 set wildignore=*.o,*.obj,*.la,*.lo,*.so,*.pyc,*.pyo,*.jpg,*.jpeg,*.png,*.gif,*vimfiler
 
@@ -1049,6 +1047,7 @@ function! s:unite_keymap()
   noremap <silent> [unite]el :<C-u>Unite rails/log<CR>
   noremap <silent> [unite]ed :<C-u>Unite rails/db<CR>
 endfunction
+
 "unite.vimを開いている間のキーマッピング
 augroup unite_local_keymap
   autocmd!
@@ -1060,8 +1059,6 @@ function! s:unite_my_settings()
   "ESCでuniteを終了
   nmap <buffer> <ESC> <Plug>(unite_exit)
   imap <buffer> <ESC><ESC> <Plug>(unite_exit)
-  "入力モードのときjjでノーマルモードに移動
-  " imap <buffer> jj <Plug>(unite_insert_leave)
   " normal modeでも基本の挙動は一致させる
   nmap <buffer> <C-n> j
   nmap <buffer> <C-p> k
@@ -1079,6 +1076,9 @@ function! s:unite_my_settings()
   "ctrl+oでその場所に開く
   nnoremap <silent> <buffer> <expr> <C-o> unite#do_action('open')
   inoremap <silent> <buffer> <expr> <C-o> unite#do_action('open')
+  "ctrl+oでタブで開く
+  nnoremap <silent> <buffer> <expr> <C-t> unite#do_action('tabopen')
+  inoremap <silent> <buffer> <expr> <C-t> unite#do_action('tabopen')
 endfunction
 "" }}}
 
@@ -1168,14 +1168,12 @@ endfunction
 "gista
 let g:gista#github_user = 'iberianpig'
 let g:gista#post_private = 1
-""unite
-nnoremap <silent> [unite]gs :<C-u>Unite<Space> gista<CR>
 
 " for open-browser plugin
 nmap gx <Plug>(openbrowser-smart-search)
 vmap gx <Plug>(openbrowser-smart-search)
 nmap gd :<C-u>OpenBrowserSearch -devdocs <C-r><C-w> <CR>
-vmap gd :<C-u>OpenBrowserSearch -devdocs 
+vmap gd y:<C-u>OpenBrowserSearch -devdocs <C-R>"<CR> 
 
 let g:openbrowser_browser_commands = [
       \ {'name': 'xdg-open',
@@ -1263,24 +1261,6 @@ let g:auto_ctags = 1
 let g:auto_ctags_filetype_mode = 1
 let g:auto_ctags_directory_list = ['.git', '.svn']
 set tags+=.git/tags;
-
-"vim-multiple-cursors
-"" Called once right before you start selecting multiple cursors
-function! Multiple_cursors_before()
-  if exists(':NeoCompleteLock')==2
-    exe 'NeoCompleteLock'
-    call s:DisableChangeCursorShape()
-  endif
-endfunction
-
-"" Called once only when the multiple selection is canceled
-"" (default <Esc>)
-function! Multiple_cursors_after()
-  if exists(':NeoCompleteUnlock')==2
-    exe 'NeoCompleteUnlock'
-    call s:EnableChangeCursorShape()
-  endif
-endfunction
 
 highlight multiple_cursors_cursor term=reverse cterm=reverse gui=reverse
 highlight link multiple_cursors_visual Visual
@@ -1381,6 +1361,7 @@ let g:auto_save_silent = 1  " do not display the auto-save notification
 let g:auto_save_in_insert_mode = 0  " do not save while in insert mode
 let g:auto_save_no_updatetime = 1  " do not change the 'updatetime' option
 
+" read onlyの場合は自動保存しない
 function! s:auto_save_detect() abort
   if &readonly
     let g:auto_save = 0 " 自動保存しない

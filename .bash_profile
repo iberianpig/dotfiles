@@ -1,15 +1,15 @@
 #/usr/sbin
 export PATH="/usr/sbin:$PATH"
 
-# rbenv
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
-
 # golang
 export GOROOT=/usr/local/go
 export PATH=$PATH:$GOROOT/bin
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
+
+# npm
+export PATH=~/.npm-global/bin:$PATH
+
 
 # #genymotion
 # export PATH="/opt/genymotion:$PATH"
