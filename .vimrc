@@ -1,17 +1,11 @@
-"http://vimblog.hatenablog.com/entry/vimrc_introduction
 " autocmdのリセット
-
-autocmd!
-set number         " 行番号を表示する
-set cursorline     " カーソル行の背景色を変える
-" set cursorcolumn   " カーソル位置のカラムの背景色を変える
+autocmd! 
+set number     " 行番号を表示する
+set cursorline " カーソル行の背景色を変える
 
 augroup set_cursorline
   autocmd!
   autocmd InsertEnter,InsertLeave * set cursorline!  "redraw!
-  " autocmd InsertEnter,InsertLeave * set cursorcolumn!
-  " autocmd WinEnter * set cursorline "cursorcolumn
-  " autocmd WinLeave * set nocursorline "nocursorcolumn
 augroup END
 
 function! s:EnableChangeCursorShape()
@@ -61,7 +55,6 @@ set synmaxcol=300   " 長い行の場合、syntaxをoffにする
 set list           " 不可視文字を表示
 set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
-" set completeopt=menuone "補完時にpreviewWindowを開かない
 
 " Don't screw up folds when inserting text that might affect them, until
 " leaving insert mode. Foldmethod is local to the window. Protect against
@@ -83,13 +76,12 @@ augroup END
 " Charset, Line ending -----------------
 set encoding=utf-8
 scriptencoding utf-8
-" set termencoding=utf-8
-" set fileencodings=utf-8,cp932,euc-jp,iso-2022-jp
+
 set ffs=unix,dos,mac  " LF, CRLF, CR
 if exists('&ambiwidth')
   set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
 endif
-" set spelllang=en,cjk
+
 set nospell
 
 " カーソル移動系
@@ -99,7 +91,6 @@ set scrolloff=4                " 上下8行の視界を確保
 set sidescrolloff=16           " 左右スクロール時の視界を確保
 set sidescroll=1               " 左右スクロールは一文字づつ行う
 set lazyredraw                 " 描画を遅延させる
-" set redrawtime=400             "再描画までの時間(デフォルトは2000)
 set ttyfast                    " カーソル移動高速化
 
 augroup restore_cursor_position
@@ -116,11 +107,7 @@ set hidden "保存されていないファイルがあるときでも別のフ�
 set nobackup "ファイル保存時にバックアップファイルを作らない
 set noswapfile "ファイル編集中にスワップファイルを作らない
 set autoread "外部でファイルに変更がされた場合は読みなおす
-" File System synchronize
-" if has('unix')
-" 	set nofsync
-" 	set swapsync=
-" endif
+
 augroup vimrc-checktime "window移動/一定時間カーソルが停止した場合に強制的に読みなおす
   autocmd!
   set updatetime=400
@@ -161,11 +148,7 @@ inoremap <C-k> <C-o>D<Right>
 inoremap <C-u> <C-o>d^
 inoremap <C-w> <C-o>db
 
-" set timeout timeoutlen=1000 ttimeoutlen=75
-
 " " j, k による移動を折り返されたテキストでも自然に振る舞うように変更
-" nnoremap j gj
-" nnoremap k gk
 nnoremap <Up> gk
 nnoremap <Down> gj
 
@@ -183,22 +166,20 @@ set noerrorbells "エラーメッセージの表示時にビープを鳴らさ�
 "コマンドライン設定
 " コマンドラインモードでTABキーによるファイル名補完を有効にする
 set wildmenu wildmode=list:longest,full
+
 " コマンドラインの履歴を1000件保存する
 set history=1000
 
 "履歴に保存する各種設定
 set viminfo='100,/50,%,<1000,f50,s100,:100,c,h,!
 
+set viminfo+=n~/.viminfo
+
 
 " 動作環境との統合
 " OSのクリップボードをレジスタ指定無しで Yank, Put 出来るようにする
 set clipboard=unnamed,unnamedplus
 
-"screen利用時設定
-" set ttymouse=xterm2
-
-" マウスの入力を受け付ける
-" set mouse=a
 " インサートモードから抜けると自動的にIMEをオフにする
 set iminsert=0
 set imsearch=-1
@@ -207,8 +188,8 @@ inoremap <C-c> <ESC>
 
 if has('unix') && !has('gui_running')
   " ESC後にすぐ反映されない対策
-  " nmap <silent> <ESC><ESC> <ESC>:nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
- nnoremap <silent> <ESC> :nohlsearch<CR>:set iminsert=0<CR>:redraw!<CR>:redraws!<CR>
+ nnoremap <silent> <ESC> :nohlsearch<CR>:set iminsert=0 <CR>
+ " :redraw!<CR>:redraws!<CR>
 endif
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
@@ -230,20 +211,6 @@ set helplang=ja,en
 ".vimrcの編集用
 nnoremap <Space>. :<C-u>tabedit $HOME/dotfiles/.vimrc<CR>
 
-" " Set augroup.
-" augroup MyAutoCmd
-"   autocmd!
-"   " if !has('gui_running') && !(has('win32') || has('win64'))
-"     " .vimrcの再読込時にも色が変化するようにする
-"     autocmd BufWritePost $HOME/dotfiles/.vimrc nested source $HOME/dotfiles/.vimrc
-"   " else
-"     " .vimrcの再読込時にも色が変化するようにする
-"     " autocmd BufWritePost $HOME/dotfiles/.vimrc source $HOME/dotfiles/.vimrc |
-"           " \if !has('gui_running') | source $MYGVIMRC
-"     " autocmd BufWritePost $MYGVIMRC if has('gui_running') | source $MYGVIMRC
-"   " endif
-" augroup END
-
 " q: のタイポ抑制
 nnoremap q: :q
 nnoremap ; :
@@ -253,9 +220,6 @@ nnoremap q <Nop>
 
 
 "タブの設定
-" The prefix key.
-" nnoremap [tab]   <Nop>
-" nmap  t [tab]
 " Tab jump
 for n in range(1, 9)
   execute 'nnoremap <silent> g'.n  ':<C-u>tabnext'.n.'<CR>'
@@ -281,7 +245,6 @@ augroup add_syntax_hilight
 augroup END
 
 let g:ruby_path = system('echo $HOME/.rbenv/shims')
-" let g:ruby_path = ''
 
 " 不要なデフォルトプラグインの停止
 let g:loaded_gzip              = 1
@@ -296,7 +259,7 @@ let g:loaded_vimballPlugin     = 1
 let g:loaded_getscript         = 1
 let g:loaded_getscriptPlugin   = 1
 " let g:loaded_netrw             = 1
-let g:loaded_netrwPlugin       = 1
+" let g:loaded_netrwPlugin       = 1
 " let g:loaded_netrwSettings     = 1
 " let g:loaded_netrwFileHandlers = 1
 
@@ -365,7 +328,6 @@ NeoBundleLazy 'thinca/vim-ref', {'autoload': {'unite_sources': ['ref'], 'mapping
 NeoBundleLazy 'taka84u9/vim-ref-ri', {'autoload': {'commands': ['HtmlHiLink']}}
 NeoBundle     'mfumi/ref-dicts-en'
 NeoBundle     'tyru/vim-altercmd'
-NeoBundleLazy 'tyru/vim-altercmd', {'autoload': {'commands': [{'complete': 'command', 'name': 'VAlterCommand'}, {'complete': 'command', 'name': 'XAlterCommand'}, {'complete': 'command', 'name': 'IAlterCommand'}, {'complete': 'command', 'name': 'CAlterCommand'}, {'complete': 'command', 'name': 'LAlterCommand'}, {'complete': 'command', 'name': 'NAlterCommand'}, {'complete': 'command', 'name': 'OAlterCommand'}, {'complete': 'command', 'name': 'AlterCommand'}, {'complete': 'command', 'name': 'SAlterCommand'}]}}
 NeoBundle     'ujihisa/neco-look'
 NeoBundle     'cohama/lexima.vim'
 NeoBundleLazy 'ujihisa/unite-font', {'autoload': {'unite_sources': ['font']}}
@@ -409,7 +371,7 @@ NeoBundleLazy 'tpope/vim-obsession', {'autoload': {'commands': [{'complete': 'fi
 NeoBundleLazy 'cohama/agit.vim', {'autoload': {'mappings': [['n', '<Plug>(agit-']], 'commands': ['AgitDiff', {'complete': 'custom,agit#agit_git_compl', 'name': 'AgitGit'}, {'complete': 'custom,agit#agit_git_compl', 'name': 'AgitGitConfirm'}, {'complete': 'customlist,agit#complete_command', 'name': 'Agit'}, {'complete': 'customlist,agit#complete_command', 'name': 'AgitFile'}]}}
 NeoBundle     'tpope/vim-fugitive'
 NeoBundleLazy 'moznion/github-commit-comment.vim', {'autoload': {'commands': ['GitHubFetchCommitComment', 'GitHubLineComment', 'GitHubFileComment', 'GitHubCommitComment']}}
-NeoBundleLazy 'lambdalisue/vim-unified-diff', {}
+NeoBundle     'lambdalisue/vim-unified-diff'
 NeoBundleLazy 'vim-scripts/diffchar.vim', {'autoload': {'mappings': ['<Plug>ToggleDiffCharAllLines', '<Plug>JumpDiffCharNextStart', '<Plug>JumpDiffCharPrevEnd', '<Plug>ToggleDiffCharCurrentLine', '<Plug>JumpDiffCharPrevStart', '<Plug>JumpDiffCharNextEnd'], 'commands': ['RDChar', 'SDChar']}}
 NeoBundleLazy 'lambdalisue/vim-gista', {'autoload': {'commands': [{'complete': 'customlist,gista#command#complete', 'name': 'Gista'}]}}
 NeoBundle     'lambdalisue/vim-gista-unite'
@@ -422,9 +384,7 @@ NeoBundleLazy 'pekepeke/vim-operator-tabular', {'autoload': {'commands': ['Tabul
 NeoBundle     'pekepeke/vim-csvutil'
 
 " ctags
-" NeoBundle 'szw/vim-tags'
 NeoBundle 'tsukkee/unite-tag'
-" NeoBundle 'soramugi/auto-ctags.vim'
 
 " rubyでのみvim-rubyを読み込む
 NeoBundleLazy 'vim-ruby/vim-ruby', {  "autoload" : {"filetypes" : ["ruby"]} }
@@ -1082,33 +1042,9 @@ function! s:unite_my_settings()
 endfunction
 "" }}}
 
+" markdownの設定
 let g:vim_markdown_folding_disabled=1
-
 let g:vim_markdown_frontmatter=1
-
-"Octorpess
-let g:octopress_path = '~/octopress'
-let g:octopress_comments = 1
-let g:octopress_published = 0
-let g:octopress_bundle_exec = 1
-let g:octopress_prompt_categories = 1
-let g:octopress_unite = 1
-" let g:octopress_auto_open_results = 1
-" use unite (default 0)
-" use arbitrary unite option (default is empty)
-let g:octopress_unite_option = '-start-insert -horizontal -direction=botright -prompt-direction=below'
-" use arbitrary unite source (default is 'file')
-" let g:octopress_unite_source = "file"
-let g:octopress_unite_source = 'file'
-let g:octopress_qfixgrep = 1
-let g:octopress_post_suffix = 'markdown'
-let g:octopress_template_dir_path = '~/.vim/template/'
-
-nnoremap [unite]on  :OctopressNew<CR>
-nnoremap [unite]ol  :OctopressList<CR>
-nnoremap [unite]og  :OctopressGrep<CR>
-nnoremap [unite]oG  :OctopressGenerate<CR>
-nnoremap [unite]od  :OctopressDeploy<CR>
 
 " "vim-ref
 " vim-ref のバッファを q で閉じられるようにする
@@ -1254,13 +1190,6 @@ call lexima#add_rule({'at': '\%#\n\s*]', 'char': ']', 'input': ']', 'delete': ']
 " <C-/> or <C-_> でコメントトグル
 nmap <C-_> <Plug>(caw:hatpos:toggle)
 vmap <C-_> <Plug>(caw:hatpos:toggle)
-
-"auto-ctags
-"" 保存時にtagsファイル作成
-let g:auto_ctags = 1
-let g:auto_ctags_filetype_mode = 1
-let g:auto_ctags_directory_list = ['.git', '.svn']
-set tags+=.git/tags;
 
 highlight multiple_cursors_cursor term=reverse cterm=reverse gui=reverse
 highlight link multiple_cursors_visual Visual
