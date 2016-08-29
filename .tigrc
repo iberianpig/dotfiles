@@ -46,6 +46,7 @@ bind branch M none
 bind branch M !git merge %(branch)
 
 bind status C !git commit -v
+bind status V !git commit -vn
 
 # `-` でステージ・アンステージをスイッチ
 bind status u none
