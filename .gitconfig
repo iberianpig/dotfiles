@@ -38,11 +38,11 @@
 [credential]
   helper = cache
 [web]
-	browser = google-chrome-beta
+	browser = google-chrome
   # browser = luakit
   # browser = firefox
-[browser "google-chrome-beta"]
-  cmd = /usr/bin/google-chrome-beta
+[browser "google-chrome"]
+  cmd = /usr/bin/google-chrome
 [browser "luakit"]
   cmd = /usr/bin/luakit
 
@@ -53,5 +53,7 @@
 	pr = https://{host}/{path}/pull/{short_ref}
 	file = "https://{host}/{path}/{file.directory? and :tree or :blob}/{short_rev}/{file}{lines && \"#L%s\" % lines.join(\"-\")}"
 [merge]
-  tool = vimdiff
+	tool = vimdiff
   algorithm = histogram
+[diff]
+	tool = vimdiff
