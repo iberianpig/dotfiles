@@ -22,10 +22,8 @@ shopt -u histappend   # .bash_history追記モードは不要なのでOFFに
 export HISTCONTROL=ignoredups 
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-export HISTSIZE=9999
-export HISTFILESIZE=20000
-
-
+export HISTSIZE=20000
+export HISTFILESIZE=200000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
