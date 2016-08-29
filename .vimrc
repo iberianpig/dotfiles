@@ -102,11 +102,11 @@ augroup restore_cursor_position
 augroup END
 
 "File処理関連
-set confirm "保存されていないファイルがあるときは終了前に保存確認
-set hidden "保存されていないファイルがあるときでも別のファイルを開くことが出来る
-set nobackup "ファイル保存時にバックアップファイルを作らない
-set noswapfile "ファイル編集中にスワップファイルを作らない
-set autoread "外部でファイルに変更がされた場合は読みなおす
+set confirm    " 保存されていないファイルがあるときは終了前に保存確認
+set hidden     " 保存されていないファイルがあるときでも別のファイルを開くことが出来る
+set nobackup   " ファイル保存時にバックアップファイルを作らない
+set noswapfile " ファイル編集中にスワップファイルを作らない
+set autoread   " 外部でファイルに変更がされた場合は読みなおす
 
 augroup vimrc-checktime "window移動/一定時間カーソルが停止した場合に強制的に読みなおす
   autocmd!
@@ -117,12 +117,12 @@ augroup END
 
 
 "検索関連
-set hlsearch "検索文字列をハイライトする
-set incsearch "インクリメンタルサーチを行う
-set ignorecase "大文字と小文字を区別しない
-set smartcase "大文字と小文字が混在した言葉で検索を行った場合に限り、大文字と小文字を区別する
-set wrapscan "最後尾まで検索を終えたら次の検索で先頭に移る
-set gdefault "置換の時 g オプションをデフォルトで有効にする
+set hlsearch   " 検索文字列をハイライトする
+set incsearch  " インクリメンタルサーチを行う
+set ignorecase " 大文字と小文字を区別しない
+set smartcase  " 大文字と小文字が混在した言葉で検索を行った場合に限り、大文字と小文字を区別する
+set wrapscan   " 最後尾まで検索を終えたら次の検索で先頭に移る
+set gdefault   " 置換の時 g オプションをデフォルトで有効にする
 
 "選択済テキストで検索
 vnoremap // y/<C-R>"<CR> 
@@ -148,7 +148,7 @@ inoremap <C-k> <C-o>D<Right>
 inoremap <C-u> <C-o>d^
 inoremap <C-w> <C-o>db
 
-" " j, k による移動を折り返されたテキストでも自然に振る舞うように変更
+" "カーソルキーによる移動を折り返されたテキストでも自然に振る舞うようにする
 nnoremap <Up> gk
 nnoremap <Down> gj
 
@@ -197,13 +197,13 @@ cmap w!! w !sudo tee > /dev/null %
 
 "tab/indentの設定
 set shellslash
-set expandtab "タブ入力を複数の空白入力に置き換える
-set tabstop=2 "画面上でタブ文字が占める幅
-set shiftwidth=2 "自動インデントでずれる幅
-set softtabstop=2 "連続した空白に対してタブキーやバックスペースキーでカーソルが動く幅
-set autoindent "改行時に前の行のインデントを継続する
-set smartindent "改行時に入力された行の末尾に合わせて次の行のインデントを増減する
-set indentkeys=!^F,o,O,0<Bar>,0=where "自動インデントを発動させるタイミングを設定する
+set expandtab                         " タブ入力を複数の空白入力に置き換える
+set tabstop=2                         " 画面上でタブ文字が占める幅
+set shiftwidth=2                      " 自動インデントでずれる幅
+set softtabstop=2                     " 連続した空白に対してタブキーやバックスペースキーでカーソルが動く幅
+set autoindent                        " 改行時に前の行のインデントを継続する
+set smartindent                       " 改行時に入力された行の末尾に合わせて次の行のインデントを増減する
+set indentkeys=!^F,o,O,0<Bar>,0=where " 自動インデントを発動させるタイミングを設定する
 
 " 日本語ヘルプを利用する
 set helplang=ja,en
@@ -245,6 +245,9 @@ augroup add_syntax_hilight
 augroup END
 
 let g:ruby_path = system('echo $HOME/.rbenv/shims')
+
+" 正規表現エンジン
+set re=1
 
 " 不要なデフォルトプラグインの停止
 let g:loaded_gzip              = 1
@@ -299,7 +302,7 @@ NeoBundle     'honza/vim-snippets'
 NeoBundleLazy 'tpope/vim-repeat', {'autoload': {'mappings': [['n', '<Plug>(Repeat']]}}
 NeoBundle     'Shougo/unite.vim'
 NeoBundle     'tsukkee/unite-help'
-NeoBundleLazy 'ujihisa/unite-colorscheme'
+NeoBundle     'ujihisa/unite-colorscheme'
 NeoBundle     'osyo-manga/unite-quickfix.git'
 NeoBundle     'thinca/vim-quickrun'
 NeoBundleLazy "tyru/open-browser.vim", {
@@ -313,7 +316,6 @@ NeoBundleLazy 'sgur/vim-operator-openbrowser', {'autoload': {'mappings': [['nx',
 NeoBundleLazy 'thinca/vim-guicolorscheme', {'autoload': {'commands': [{'complete': 'customlist,s:Colorscheme_Complete', 'name': 'GuiColorScheme'}]}}
 NeoBundle     'itchyny/lightline.vim'
 NeoBundleLazy 'junegunn/vim-easy-align', {'autoload': {'mappings': ['<Plug>(EasyAlignOperator)', ['sxn', '<Plug>(EasyAlign)'], ['sxn', '<Plug>(LiveEasyAlign)'], ['sxn', '<Plug>(EasyAlignRepeat)']], 'commands': ['EasyAlign', 'LiveEasyAlign']}}
-NeoBundleLazy 'terryma/vim-multiple-cursors', {'autoload': {'mappings': [['xin', '<Plug>(multiple-cursors-']], 'commands': ['MultipleCursorsFind']}}
 NeoBundleLazy 'AndrewRadev/switch.vim', {'autoload': {'commands': ['Switch', 'SwitchReverse']}}
 NeoBundle     'kana/vim-submode'
 NeoBundle     'tyru/caw.vim'
@@ -322,7 +324,6 @@ NeoBundleLazy 'osyo-manga/vim-over', {'autoload': {'mappings': [['n', '<Plug>(ov
 NeoBundle     'mattn/webapi-vim'
 NeoBundle     'Shougo/unite-outline'
 NeoBundleLazy 'ujihisa/unite-locate', {'autoload': {'unite_sources': ['locate']}}
-NeoBundleLazy 'lambdalisue/unite-grep-vcs', {'autoload': {'unite_sources': ['grep_git', 'grep_hg']}}
 NeoBundleLazy 'ujihisa/quicklearn', {'autoload': {'unite_sources': ['quicklearn']}}
 NeoBundleLazy 'thinca/vim-ref', {'autoload': {'unite_sources': ['ref'], 'mappings': [['sxn', '<Plug>(ref-keyword)']], 'commands': [{'complete': 'customlist,ref#complete', 'name': 'Ref'}, 'RefHistory']}}
 NeoBundleLazy 'taka84u9/vim-ref-ri', {'autoload': {'commands': ['HtmlHiLink']}}
@@ -330,7 +331,6 @@ NeoBundle     'mfumi/ref-dicts-en'
 NeoBundle     'tyru/vim-altercmd'
 NeoBundle     'ujihisa/neco-look'
 NeoBundle     'cohama/lexima.vim'
-NeoBundleLazy 'ujihisa/unite-font', {'autoload': {'unite_sources': ['font']}}
 NeoBundleLazy 'sgur/vim-gitgutter', {'autoload': {'mappings': [['n', '<Plug>GitGutter']], 'commands': ['GitGutterToggle', 'GitGutterPrevHunk', 'GitGutter', 'GitGutterLineHighlightsToggle', 'GitGutterRevertHunk', 'GitGutterPreviewHunk', 'GitGutterSignsEnable', 'GitGutterNextHunk', 'GitGutterDisable', 'GitGutterStageHunk', 'GitGutterEnable', 'GitGutterSignsToggle', 'GitGutterAll', 'GitGutterLineHighlightsEnable', 'GitGutterLineHighlightsDisable', 'GitGutterDebug', 'GitGutterSignsDisable']}}
 NeoBundle     'edsono/vim-matchit'
 NeoBundleLazy 'mattn/benchvimrc-vim', {'autoload': {'commands': [{'complete': 'file', 'name': 'BenchVimrc'}]}}
@@ -353,7 +353,7 @@ NeoBundle     'textobj-user'
 NeoBundle     'vim-scripts/vim-auto-save'
 NeoBundle     'rhysd/clever-f.vim'
 NeoBundleLazy 'deton/jasentence.vim', {  "autoload" : {"filetypes" : ["markdown"]} }
-NeoBundleLazy 'kannokanno/previm', {  "autoload" : {"filetypes" : ["markdown"]} }
+NeoBundleLazy 'kannokanno/previm', {  "autoload" : {'commands': ['PrevimOpen'] }}
 NeoBundle     'kana/vim-operator-user'
 NeoBundleLazy 'rhysd/vim-operator-surround', {'autoload': {'mappings': [['nx', '<Plug>(operator-surround'], ['n', '<Plug>(operator-surround-repeat)']]}}
 NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {'commands': ['MemoNewCopyingMeta', 'MemoList', 'MemoGrep', 'MemoNew', 'MemoNewWithMeta']}}
@@ -362,17 +362,15 @@ NeoBundleLazy 'sjl/gundo.vim', {'autoload': {'commands': ['GundoHide', 'GundoSho
 NeoBundleLazy 'LeafCage/nebula.vim', {'autoload': {'commands': ['NebulaPutLazy', 'NebulaPutFromClipboard', 'NebulaYankOptions', 'NebulaYankConfig', 'NebulaPutConfig', 'NebulaYankTap']}}
 NeoBundleLazy 'renamer.vim', {'augroup': 'Renamer', 'autoload': {'commands': [{'complete': 'dir', 'name': 'Renamer'}]}}
 NeoBundleLazy 'editorconfig/editorconfig-vim', {'autoload': {'commands': ['EditorConfigReload']}}
-NeoBundle 'thinca/vim-prettyprint'
+NeoBundle     'thinca/vim-prettyprint'
 
 "session管理
 NeoBundleLazy 'tpope/vim-obsession', {'autoload': {'commands': [{'complete': 'file', 'name': 'Obsession'}]}}
 
 " git
-NeoBundleLazy 'cohama/agit.vim', {'autoload': {'mappings': [['n', '<Plug>(agit-']], 'commands': ['AgitDiff', {'complete': 'custom,agit#agit_git_compl', 'name': 'AgitGit'}, {'complete': 'custom,agit#agit_git_compl', 'name': 'AgitGitConfirm'}, {'complete': 'customlist,agit#complete_command', 'name': 'Agit'}, {'complete': 'customlist,agit#complete_command', 'name': 'AgitFile'}]}}
 NeoBundle     'tpope/vim-fugitive'
 NeoBundleLazy 'moznion/github-commit-comment.vim', {'autoload': {'commands': ['GitHubFetchCommitComment', 'GitHubLineComment', 'GitHubFileComment', 'GitHubCommitComment']}}
 NeoBundle     'lambdalisue/vim-unified-diff'
-NeoBundleLazy 'vim-scripts/diffchar.vim', {'autoload': {'mappings': ['<Plug>ToggleDiffCharAllLines', '<Plug>JumpDiffCharNextStart', '<Plug>JumpDiffCharPrevEnd', '<Plug>ToggleDiffCharCurrentLine', '<Plug>JumpDiffCharPrevStart', '<Plug>JumpDiffCharNextEnd'], 'commands': ['RDChar', 'SDChar']}}
 NeoBundleLazy 'lambdalisue/vim-gista', {'autoload': {'commands': [{'complete': 'customlist,gista#command#complete', 'name': 'Gista'}]}}
 NeoBundle     'lambdalisue/vim-gista-unite'
 NeoBundle     'Kocha/vim-unite-tig'
@@ -409,18 +407,13 @@ NeoBundleLazy 'vim-scripts/php.vim-html-enhanced', { "autoload" : { "filetypes" 
 " html
 NeoBundleLazy 'othree/html5.vim', { "autoload" : { "filetypes" : ["html"] } }
 
-
 " javascript
 NeoBundle     'elzr/vim-json'
 NeoBundleLazy 'pangloss/vim-javascript', { "autoload" : { "filetypes" : ["javascript"] } }
 NeoBundleLazy 'othree/javascript-libraries-syntax.vim', { "autoload" : { "filetypes" : ["javascript"] } }
 NeoBundleLazy 'maksimr/vim-jsbeautify', { "autoload" : { "filetypes" : ["javascript"] } }
 NeoBundleLazy 'mattn/jscomplete-vim', { "autoload" : { "filetypes" : ["javascript"] } }
-NeoBundleLazy 'leafgarland/typescript-vim', { "autoload" : { "filetypes" : ["javascript"] } }
-NeoBundleLazy 'clausreinke/typescript-tools', { "autoload" : { "filetypes" : ["javascript"] } }
 NeoBundleLazy 'matthewsimo/angular-vim-snippets', { "autoload" : { "filetypes" : ["javascript"] } }
-NeoBundleLazy 'aurigadl/vim-angularjs', { "autoload" : { "filetypes" : ["javascript"] } }
-NeoBundleLazy 'burnettk/vim-angular', { "autoload" : { "filetypes" : ["javascript"] } }
 NeoBundleLazy 'marijnh/tern_for_vim' , {
       \       "autoload": { "filetypes" : ["javascript"] },
       \       'build':    {
@@ -767,7 +760,6 @@ let g:neocomplete#use_vimproc                     = 1
 let g:neocomplete#lock_buffer_name_pattern        = '\*ku\*'
 
 " rsense
-let g:neocomplete#force_omni_input_patterns      = {}
 let g:neocomplete#force_omni_input_patterns = {
       \   'ruby' : '[^. *\t]\.\|\h\w*::',
       \   'rails' : '[^. *\t]\.\|\h\w*::',
@@ -809,7 +801,6 @@ endif
 "   autocmd BufEnter * if exists("b:rails_root") | NeoCompleteSetFileType ruby.rails | endif
 "   autocmd BufEnter * if (expand("%") =~ "_spec\.rb$") || (expand("%") =~ "^spec.*\.rb$") | NeoCompleteSetFileType ruby.rspec | endif
 " augroup END
-let g:neosnippet#snippets_directory = $HOME . '/.vim/snippets'
 
 " enable ruby & rails snippet only rails file
 function! s:RailsSnippet()
@@ -874,6 +865,9 @@ nnoremap sbp y:OverCommandLine<CR>%s/<C-r>=substitute(@0, '/', '/', 'g')<CR>//<L
 
 cnoreabb <silent><expr>s getcmdtype()==':' && getcmdline()=~'^s' ? 'OverCommandLine<CR><C-u>%s/<C-r>=get([], getchar(0), '')<CR>' : 's'
 
+" <C-v> 時に特殊文字を挿入
+OverCommandLineMap <C-v> <C-q>
+
 "" {{{Unite
 " " インサートモードで開始
 let g:unite_enable_start_insert=1
@@ -897,21 +891,20 @@ if executable('ag')
         \ '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'' ' .
         \ '--ignore ''**/*.pyc'''
   let g:unite_source_grep_recursive_opt = ''
-  let g:unite_source_rec_async_command = [ 'ag', '--follow', '--nocolor', '--nogroup', '-g']
+  let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup --hidden -g ""'
 endif
 call unite#filters#sorter_default#use(['sorter_ftime*'])
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
 call unite#custom#source('file_rec, file_rec/git, grep/git, buffer, file', 'sorters', 'sorter_selecta')
+
 " 画像はキャッシュしない
 call unite#custom#source('grep/git',        'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
 call unite#custom#source('source/buffer:?', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
 call unite#custom#source('file_rec/async',  'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
 
-set wildignore=*.o,*.obj,*.la,*.lo,*.so,*.pyc,*.pyo,*.jpg,*.jpeg,*.png,*.gif,*vimfiler
+set wildignore=*.o,*.obj,*.la,*.lo,*.so,*.pyc,*.pyo,*.jpg,*.jpeg,*.png,*.gif
 
-call unite#custom#source('file_rec/git, grep/git, buffer, file_rec/async', 'ignore_globs',
-      \ split(&wildignore, ','))
-
+call unite#custom#source('file_rec/git, grep/git, buffer, file_rec/async', 'ignore_globs', split(&wildignore, ','))
 
 " タブが存在しているときはタブ移動
 let action = {
@@ -965,8 +958,8 @@ function! s:unite_keymap()
   ""tweet vimのアカウントを切り替え
   nnoremap <silent> [unite]s :<C-u>Unite<space> tweetvim/account<CR>
 
-  ""スペースキーとyキーでヒストリ/ヤンクを表示
-  nnoremap <silent> [unite]y :<C-u>Unite<Space> yankround<CR>
+  ""スペースキーとpキーでヒストリ/ヤンクを表示
+  nnoremap <silent> [unite]p :<C-u>Unite<Space> yankround<CR>
   ""スペースキーとhキーで:helpを検索
   nnoremap <silent> [unite]h :<C-u>Unite<Space> help -buffer-name=search-buffer<CR>
   "スペースキーとoキーでoutline
@@ -977,15 +970,13 @@ function! s:unite_keymap()
   call unite#custom_source('quickfix', 'converters', 'converter_quickfix_highlight')
   call unite#custom_source('location_list', 'converters', 'converter_quickfix_highlight')
   nnoremap <silent> [unite]q :<C-u>Unite<Space> -no-quit -wrap quickfix<CR>
-  ""スペースキーとgキーでgrep
-  " vnoremap <silent> [unite]/g :Unite grep::-iHRn:<C-R>=escape(@", '\\.*$^[]')<CR><CR>
   " grep検索
   nnoremap <silent> [unite]G  :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR>
   " カーソル位置の単語をgrep検索
   nnoremap <silent> [unite]cG :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR> <C-R><C-W>
   " git-grep
-  nnoremap <silent> [unite]g  :<C-u>Unite grep/git:. -buffer-name=search-buffer <CR>
-  nnoremap <silent> [unite]cg :<C-u>Unite grep/git:. -buffer-name=search-buffer <CR> <C-r><C-W>
+  nnoremap <silent> [unite]g  :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR>
+  nnoremap <silent> [unite]cg :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR> <C-r><C-W>
 
   " grep検索結果の再呼出
   nnoremap <silent> [unite]r  :<C-u>UniteResume search-buffer <CR>
@@ -1002,7 +993,7 @@ function! s:unite_keymap()
   noremap <silent> [unite]es :<C-u>Unite rails/stylesheet<CR>
   noremap <silent> [unite]ej :<C-u>Unite rails/javascript<CR>
   noremap <silent> [unite]er :<C-u>Unite rails/route<CR>
-  noremap <silent> [unite]eg :<C-u>Unite rails/gemfile<CR>
+  noremap <silent> [unite]eg :<C-u>Unite rails/bundled_gem<CR>
   noremap <silent> [unite]et :<C-u>Unite rails/spec<CR>
   noremap <silent> [unite]el :<C-u>Unite rails/log<CR>
   noremap <silent> [unite]ed :<C-u>Unite rails/db<CR>
@@ -1093,7 +1084,7 @@ nnoremap <silent> ,gh :<C-u>GitGutterLineHighlightsToggle<CR>
 "previm
 augroup PrevimSettings
   autocmd!
-  autocmd  BufEnter *.{md,mdwn,mkd,mkdn,mark*} call s:loadPrevimSetting()
+  autocmd  FileType markdown call s:loadPrevimSetting()
 augroup END
 
 function! s:loadPrevimSetting()
@@ -1107,7 +1098,7 @@ let g:gista#post_private = 1
 
 " for open-browser plugin
 nmap gx <Plug>(openbrowser-smart-search)
-vmap gx <Plug>(openbrowser-smart-search)
+vmap gx :<C-u>OpenBrowserSearch <C-r><C-w> <CR>
 nmap gd :<C-u>OpenBrowserSearch -devdocs <C-r><C-w> <CR>
 vmap gd y:<C-u>OpenBrowserSearch -devdocs <C-R>"<CR> 
 
@@ -1203,42 +1194,6 @@ nmap ga <Plug>(EasyAlign)
 "vim-unified-diff
 set diffexpr=unified_diff#diffexpr()
 
-" vimdiffで起動した際自動的に単語単位の差分(diffchar.vim)を有効にする
-if &diff
-  augroup enable_diffchar
-    autocmd!
-    autocmd VimEnter * execute "%SDChar"
-  augroup END
-endif
-
-"agit.vim
-augroup agit_local_keymap
-  autocmd!
-  autocmd FileType agit call s:my_agit_setting()
-augroup END
-function! s:my_agit_setting()
-  nmap <buffer> J     <Plug>(agit-scrolldown-stat)
-  nmap <buffer> K     <Plug>(agit-scrollup-stat)
-  nmap <buffer> <C-n> <Plug>(agit-scrolldown-diff)
-  nmap <buffer> <C-p> <Plug>(agit-scrollup-diff)
-  nmap <buffer> u     <PLug>(agit-reload)
-  nmap <buffer> yh    <Plug>(agit-yank-hash)
-  nmap <buffer> cg    <Plug>(agit-print-commitmsg)
-  nmap <buffer> q     <Plug>(agit-exit)
-  nmap <buffer> C     <Plug>(agit-git-checkout)
-  nmap <buffer> cb    <Plug>(agit-git-checkout-b)
-  nmap <buffer> D     <Plug>(agit-git-branch-d)
-  nmap <buffer> rs    <Plug>(agit-git-reset-soft)
-  nmap <buffer> rm    <Plug>(agit-git-reset)
-  nmap <buffer> rh    <Plug>(agit-git-reset-hard)
-  nmap <buffer> rb    <Plug>(agit-git-rebase)
-  nmap <buffer> ri    <Plug>(agit-git-rebase-i)
-  nmap <buffer> di    <Plug>(agit-diff)
-  "add
-  nmap <buffer> ch    <Plug>(agit-git-cherry-pick)
-  nmap <buffer> Rv    <Plug>(agit-git-revert)
-endfunction
-
 " integrate vim with ranger
 function! RangerExplorer(path)
   exec 'silent !ranger --choosefile=/tmp/vim_ranger_current_file ' . a:path
@@ -1323,6 +1278,3 @@ let g:operator#surround#blocks =
       \   { 'block' : ['『', '』'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['D'] }
       \ ]
       \}
-
-"esa.io
-let g:esa_team = 'staruptechnology'
