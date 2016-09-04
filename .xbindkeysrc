@@ -92,14 +92,6 @@
 "/home/iberianpig/work/relocate_window/relocate_window.sh"
   Mod4 + F1
 
-
-# "/home/iberianpig/Dropbox/tool/linux/script/send_keys.sh 'Control+Tab' 'Control+l'"
-#    m:0x4 + c:46
-#
-# # "/home/iberianpig/Dropbox/tool/linux/script/send_keys.sh 'keydown Control key Shift+Tab keyup Control'"
-# "/home/iberianpig/Dropbox/tool/linux/script/send_keys.sh 'Control+Shift+Tab' 'Control+h'"
-#    Control + h
-
 ##################################
 # End of xbindkeys configuration #
 ##################################

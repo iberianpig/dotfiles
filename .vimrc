@@ -188,8 +188,7 @@ inoremap <C-c> <ESC>
 
 if has('unix') && !has('gui_running')
   " ESC後にすぐ反映されない対策
- nnoremap <silent> <ESC> :nohlsearch<CR>:set iminsert=0 <CR>
- " :redraw!<CR>:redraws!<CR>
+ nnoremap <silent> <ESC> :nohlsearch<CR>
 endif
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
@@ -323,8 +322,6 @@ NeoBundle     'mattn/emmet-vim'
 NeoBundleLazy 'osyo-manga/vim-over', {'autoload': {'mappings': [['n', '<Plug>(over-restore-']], 'commands': ['OverCommandLineNoremap', 'OverCommandLineMap', 'OverCommandLine', 'OverCommandLineUnmap']}}
 NeoBundle     'mattn/webapi-vim'
 NeoBundle     'Shougo/unite-outline'
-NeoBundleLazy 'ujihisa/unite-locate', {'autoload': {'unite_sources': ['locate']}}
-NeoBundleLazy 'ujihisa/quicklearn', {'autoload': {'unite_sources': ['quicklearn']}}
 NeoBundleLazy 'thinca/vim-ref', {'autoload': {'unite_sources': ['ref'], 'mappings': [['sxn', '<Plug>(ref-keyword)']], 'commands': [{'complete': 'customlist,ref#complete', 'name': 'Ref'}, 'RefHistory']}}
 NeoBundleLazy 'taka84u9/vim-ref-ri', {'autoload': {'commands': ['HtmlHiLink']}}
 NeoBundle     'mfumi/ref-dicts-en'
@@ -352,24 +349,16 @@ NeoBundle     'Shougo/neco-syntax'
 NeoBundle     'textobj-user'
 NeoBundle     'vim-scripts/vim-auto-save'
 NeoBundle     'rhysd/clever-f.vim'
-NeoBundleLazy 'deton/jasentence.vim', {  "autoload" : {"filetypes" : ["markdown"]} }
-NeoBundleLazy 'kannokanno/previm', {  "autoload" : {'commands': ['PrevimOpen'] }}
+NeoBundleLazy 'kannokanno/previm', { "autoload" : {'commands': ['PrevimOpen'] }}
 NeoBundle     'kana/vim-operator-user'
 NeoBundleLazy 'rhysd/vim-operator-surround', {'autoload': {'mappings': [['nx', '<Plug>(operator-surround'], ['n', '<Plug>(operator-surround-repeat)']]}}
-NeoBundleLazy 'glidenote/memolist.vim', {'autoload': {'commands': ['MemoNewCopyingMeta', 'MemoList', 'MemoGrep', 'MemoNew', 'MemoNewWithMeta']}}
-NeoBundleLazy 'upamune/esa.vim', {'autoload': {'commands': [{'complete': 'customlist,s:CompleteArgs', 'name': 'Esa'}]}}
-NeoBundleLazy 'sjl/gundo.vim', {'autoload': {'commands': ['GundoHide', 'GundoShow', 'GundoRenderGraph', 'GundoToggle']}}
 NeoBundleLazy 'LeafCage/nebula.vim', {'autoload': {'commands': ['NebulaPutLazy', 'NebulaPutFromClipboard', 'NebulaYankOptions', 'NebulaYankConfig', 'NebulaPutConfig', 'NebulaYankTap']}}
 NeoBundleLazy 'renamer.vim', {'augroup': 'Renamer', 'autoload': {'commands': [{'complete': 'dir', 'name': 'Renamer'}]}}
 NeoBundleLazy 'editorconfig/editorconfig-vim', {'autoload': {'commands': ['EditorConfigReload']}}
 NeoBundle     'thinca/vim-prettyprint'
 
-"session管理
-NeoBundleLazy 'tpope/vim-obsession', {'autoload': {'commands': [{'complete': 'file', 'name': 'Obsession'}]}}
-
 " git
 NeoBundle     'tpope/vim-fugitive'
-NeoBundleLazy 'moznion/github-commit-comment.vim', {'autoload': {'commands': ['GitHubFetchCommitComment', 'GitHubLineComment', 'GitHubFileComment', 'GitHubCommitComment']}}
 NeoBundle     'lambdalisue/vim-unified-diff'
 NeoBundleLazy 'lambdalisue/vim-gista', {'autoload': {'commands': [{'complete': 'customlist,gista#command#complete', 'name': 'Gista'}]}}
 NeoBundle     'lambdalisue/vim-gista-unite'
@@ -379,6 +368,7 @@ NeoBundle     'Kocha/vim-unite-tig'
 NeoBundleLazy "rcmdnk/vim-markdown",           {  "autoload" : {"filetypes" : ["markdown"]} }
 NeoBundleLazy 'godlygeek/tabular',             {'autoload': {'commands': ['AddTabularPipeline', {'complete': 'customlist,<SID>CompleteTabularizeCommand', 'name': 'Tabularize'}, {'complete': 'customlist,<SID>CompleteTabularizeCommand', 'name': 'GTabularize'}, 'AddTabularPattern']}}
 NeoBundleLazy 'pekepeke/vim-operator-tabular', {'autoload': {'commands': ['TabularDebugLog']}}
+NeoBundleLazy 'deton/jasentence.vim', { "autoload" : {"filetypes" : ["markdown"]} }
 NeoBundle     'pekepeke/vim-csvutil'
 
 " ctags
@@ -1159,13 +1149,7 @@ augroup project_root
   autocmd BufEnter * :call ChangeCurrentDirectoryToProjectRoot()
 augroup END
 
-"" hilight minimap
-" let g:minimap_highlight='Visual'
-
 let g:vim_json_syntax_conceal = 0
-
-" vim-coffee-script
-" autocmd BufWritePost *.coffee silent make!
 
 " lexima plugin
 call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:;]', 'char': '(', 'input': '('})
@@ -1238,7 +1222,6 @@ let g:tweetvim_async_post=1
 let g:tweetvim_display_username=1
 let g:tweetvim_tweet_per_page=20
 let g:tweetvim_say_insert_account=1
-nnoremap <leader>t :<C-u>TweetVimSay<CR>
 
 " vim-auto-save
 let g:auto_save_silent = 1  " do not display the auto-save notification
