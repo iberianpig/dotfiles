@@ -87,7 +87,7 @@ set nospell
 " カーソル移動系
 set backspace=indent,eol,start " Backspaceキーの影響範囲に制限を設けない
 set whichwrap=b,s,h,l,<,>,[,]  " 行頭行末の左右移動で行をまたぐ
-set scrolloff=4                " 上下8行の視界を確保
+set scrolloff=8                " 上下8行の視界を確保
 set sidescrolloff=16           " 左右スクロール時の視界を確保
 set sidescroll=1               " 左右スクロールは一文字づつ行う
 set lazyredraw                 " 描画を遅延させる
@@ -147,10 +147,6 @@ inoremap <C-d> <Del>
 inoremap <C-k> <C-o>D<Right>
 inoremap <C-u> <C-o>d^
 inoremap <C-w> <C-o>db
-
-" "カーソルキーによる移動を折り返されたテキストでも自然に振る舞うようにする
-nnoremap <Up> gk
-nnoremap <Down> gj
 
 " vを二回で行末まで選択
 vnoremap v $h
@@ -217,6 +213,15 @@ nnoremap ; :
 nnoremap Q q
 nnoremap q <Nop>
 
+" マウスのミドルクリックによる貼付けをやめる
+map <MiddleMouse>   <Nop>
+map <2-MiddleMouse> <Nop>
+map <3-MiddleMouse> <Nop>
+map <4-MiddleMouse> <Nop>
+imap <MiddleMouse>   <Nop>
+imap <2-MiddleMouse> <Nop>
+imap <3-MiddleMouse> <Nop>
+imap <4-MiddleMouse> <Nop>
 
 "タブの設定
 " Tab jump
@@ -243,10 +248,15 @@ augroup add_syntax_hilight
   autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set ft=markdown
 augroup END
 
-let g:ruby_path = system('echo $HOME/.rbenv/shims')
-
-" 正規表現エンジン
 set re=1
+"" 古い正規表現エンジンを利用する
+"augroup use_old_syntax_highlight
+"  autocmd!
+"  autocmd Filetype ruby set re=1
+"  autocmd Filetype !ruby set re=0
+"augroup END
+
+let g:ruby_path = system('echo $HOME/.rbenv/shims')
 
 " 不要なデフォルトプラグインの停止
 let g:loaded_gzip              = 1
@@ -264,7 +274,6 @@ let g:loaded_getscriptPlugin   = 1
 " let g:loaded_netrwPlugin       = 1
 " let g:loaded_netrwSettings     = 1
 " let g:loaded_netrwFileHandlers = 1
-
 
 "NeoBundle Scripts-----------------------------
 if has('vim_starting')
@@ -373,13 +382,16 @@ NeoBundle     'pekepeke/vim-csvutil'
 
 " ctags
 NeoBundle 'tsukkee/unite-tag'
+NeoBundle 'majutsushi/tagbar'
 
 " rubyでのみvim-rubyを読み込む
 NeoBundleLazy 'vim-ruby/vim-ruby', {  "autoload" : {"filetypes" : ["ruby"]} }
 NeoBundleLazy 'pocke/dicts', { "autoload" : { "filetypes" : ["ruby"] }  }
 NeoBundleLazy 'tpope/vim-bundler', { "autoload" : { "filetypes" : ["ruby"] }  }
 NeoBundleLazy 'thoughtbot/vim-rspec', { "autoload" : { "filetypes" : ["ruby"] }  }
-NeoBundleLazy 'todesking/ruby_hl_lvar.vim', { "autoload" : { "filetypes" : ["ruby"] }  }
+
+" ruby_hl_lvar.vimがエラーが出る
+" NeoBundleLazy 'todesking/ruby_hl_lvar.vim', { "autoload" : { "filetypes" : ["ruby"] }  }
 NeoBundleLazy 'marcus/rsense', { "autoload" : { "filetypes" : ["ruby"] }  }
 
 "rails
@@ -1228,9 +1240,11 @@ let g:auto_save_silent = 1  " do not display the auto-save notification
 let g:auto_save_in_insert_mode = 0  " do not save while in insert mode
 let g:auto_save_no_updatetime = 1  " do not change the 'updatetime' option
 
-" read onlyの場合は自動保存しない
+" 自動保存の有効・無効の設定
 function! s:auto_save_detect() abort
-  if &readonly
+  " read onlyの場合は自動保存しない"
+  " filenameがResultの場合は自動保存しない(dbext.vimで作られる一時ファイル)
+  if &readonly || expand('%:t') == 'Result'
     let g:auto_save = 0 " 自動保存しない
   else
     let g:auto_save = 1 " 自動保存
@@ -1261,3 +1275,5 @@ let g:operator#surround#blocks =
       \   { 'block' : ['『', '』'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['D'] }
       \ ]
       \}
+
+nmap [unite]l :TagbarToggle<CR>
