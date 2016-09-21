@@ -132,7 +132,7 @@ if [ -f ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.s
 fi
 
 if [ "$DISPLAY" ]; then
-  xset r rate 180 40
+  xset r rate 160 40
 fi
 
 # notify when long running commands

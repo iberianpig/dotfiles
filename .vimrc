@@ -348,7 +348,7 @@ NeoBundle     'osyo-manga/vim-watchdogs'
 NeoBundleLazy 'KazuakiM/vim-qfstatusline', {'autoload': {'commands': ['QfstatuslineUpdate']}}
 NeoBundleLazy 'KazuakiM/vim-qfsigns', {'autoload': {'commands': ['QfsignsClear', 'QfsignsJunmp', 'QfsignsUpdate']}}
 NeoBundleLazy 'tpope/vim-dispatch', {'autoload': {'commands': [{'complete': 'customlist,dispatch#make_complete', 'name': 'Make'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Dispatch'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'FocusDispatch'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Spawn'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Start'}, 'Copen']}}
-NeoBundle     'vim-scripts/dbext.vim'
+" NeoBundle     'vim-scripts/dbext.vim'
 NeoBundleLazy 'nathanaelkane/vim-indent-guides', {'augroup': 'indent_guides', 'autoload': {'mappings': [['n', '<Plug>IndentGuides']], 'commands': ['IndentGuidesEnable', 'IndentGuidesToggle', 'IndentGuidesDisable']}}
 NeoBundleLazy 'Chiel92/vim-autoformat', {'autoload': {'commands': ['CurrentFormatter', 'RemoveTrailingSpaces', {'complete': 'filetype', 'name': 'Autoformat'}, 'NextFormatter', 'PreviousFormatter']}}
 NeoBundleLazy 'itchyny/thumbnail.vim', {'autoload': {'mappings': [['sxn', '<Plug>(thumbnail)']], 'commands': [{'complete': 'customlist,thumbnail#complete', 'name': 'Thumbnail'}]}}
@@ -892,6 +892,7 @@ if executable('ag')
         \ '--line-numbers --nocolor --nogroup --hidden --ignore ' .
         \ '''.hg'' --ignore ''.svn'' --ignore ''.git'' --ignore ''.bzr'' ' .
         \ '--ignore ''**/*.pyc'''
+  let g:unite_source_grep_max_candidates = 200
   let g:unite_source_grep_recursive_opt = ''
   let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup --hidden -g ""'
 endif
@@ -930,6 +931,7 @@ augroup END
 "prefix keyの設定
 function! s:unite_keymap()
   nnoremap [unite] <Nop>
+  vnoremap [unite] <Nop>
   vmap <Space> <Nop>
   vmap <Space> [unite]
   nmap <Space> [unite]
@@ -947,8 +949,8 @@ function! s:unite_keymap()
   nnoremap <silent> [unite]b :<C-u>Unite<Space>buffer<CR>
 
   " "スペースキーと]キーでtagsを検索
-  vnoremap <silent> [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W> <CR>
-  nnoremap <silent> [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W> <CR>
+  vnoremap <silent> [unite]] y:<C-u>UniteWithCursorWord -immediately tag:<C-r>"<CR>
+  nnoremap <silent> [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W><CR>
   augroup unite_jump
     autocmd!
     autocmd BufEnter *
@@ -973,12 +975,13 @@ function! s:unite_keymap()
   call unite#custom_source('location_list', 'converters', 'converter_quickfix_highlight')
   nnoremap <silent> [unite]q :<C-u>Unite<Space> -no-quit -wrap quickfix<CR>
   " grep検索
-  nnoremap <silent> [unite]G  :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR>
-  " カーソル位置の単語をgrep検索
-  nnoremap <silent> [unite]cG :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR> <C-R><C-W>
+  nnoremap <silent> [unite]G :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR>
+  vnoremap <silent> [unite]G y:<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R>"
+  nnoremap <silent> [unite]cG :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R><C-W>
   " git-grep
-  nnoremap <silent> [unite]g  :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR>
-  nnoremap <silent> [unite]cg :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR> <C-r><C-W>
+  nnoremap <silent> [unite]g :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR>
+  vnoremap <silent> [unite]g y:<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR><C-R>"<CR>
+  nnoremap <silent> [unite]cg :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR><C-r><C-W><CR>
 
   " grep検索結果の再呼出
   nnoremap <silent> [unite]r  :<C-u>UniteResume search-buffer <CR>
@@ -1100,7 +1103,7 @@ let g:gista#post_private = 1
 
 " for open-browser plugin
 nmap gx <Plug>(openbrowser-smart-search)
-vmap gx :<C-u>OpenBrowserSearch <C-r><C-w> <CR>
+vmap gx y:<C-u>OpenBrowserSearch <C-R>"<CR>
 nmap gd :<C-u>OpenBrowserSearch -devdocs <C-r><C-w> <CR>
 vmap gd y:<C-u>OpenBrowserSearch -devdocs <C-R>"<CR> 
 
@@ -1276,4 +1279,4 @@ let g:operator#surround#blocks =
       \ ]
       \}
 
-nmap [unite]l :TagbarToggle<CR>
+nmap [unite][ :TagbarToggle<CR>
