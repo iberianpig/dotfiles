@@ -11,15 +11,15 @@ augroup END
 function! s:EnableChangeCursorShape()
   augroup change_corsor_shape
     autocmd!
-    if executable('pantheon-terminal')
-      "Pantheon Terminal
-      autocmd InsertEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
-      autocmd InsertLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-      autocmd VimLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-      autocmd VimEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-      autocmd WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-      autocmd WinEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-    endif
+    " if executable('pantheon-terminal')
+    "   "Pantheon Terminal
+    "   autocmd InsertEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
+    "   autocmd InsertLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+    "   autocmd VimLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+    "   autocmd VimEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+    "   autocmd WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+    "   autocmd WinEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+    " endif
     "Guake Terminal
     if executable('guake')
       autocmd InsertEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
@@ -29,12 +29,14 @@ function! s:EnableChangeCursorShape()
       autocmd WinLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
       autocmd WinEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
     endif
-    " autocmd InsertEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
-    " autocmd InsertLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
-    " autocmd VimLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
-    " autocmd VimEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
-    " autocmd WinLeave * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape ibeam"
-    " autocmd WinEnter * silent execute "!gconftool-2 --type string --set /apps/gnome-terminal/profiles/Default/cursor_shape block"
+    if executable('gnome-terminal')
+      autocmd InsertEnter * silent execute '!dconf write /org/gnome/terminal/legacy/profiles:/:a40311ba-987a-46d6-9b51-0eeaf9e48cde/cursor-shape \"ibeam\"'
+      autocmd InsertLeave * silent execute '!dconf write /org/gnome/terminal/legacy/profiles:/:a40311ba-987a-46d6-9b51-0eeaf9e48cde/cursor-shape \"block\"'
+      autocmd VimEnter * silent execute '!dconf write /org/gnome/terminal/legacy/profiles:/:a40311ba-987a-46d6-9b51-0eeaf9e48cde/cursor-shape \"block\"'
+      autocmd VimLeave * silent execute '!dconf write /org/gnome/terminal/legacy/profiles:/:a40311ba-987a-46d6-9b51-0eeaf9e48cde/cursor-shape \"block\"'
+      autocmd WinEnter * silent execute '!dconf write /org/gnome/terminal/legacy/profiles:/:a40311ba-987a-46d6-9b51-0eeaf9e48cde/cursor-shape \"block\"'
+      autocmd WinLeave * silent execute '!dconf write /org/gnome/terminal/legacy/profiles:/:a40311ba-987a-46d6-9b51-0eeaf9e48cde/cursor-shape \"block\"'
+    endif
   augroup END
 endfunction
 
@@ -311,7 +313,6 @@ NeoBundleLazy 'tpope/vim-repeat', {'autoload': {'mappings': [['n', '<Plug>(Repea
 NeoBundle     'Shougo/unite.vim'
 NeoBundle     'tsukkee/unite-help'
 NeoBundle     'ujihisa/unite-colorscheme'
-NeoBundle     'osyo-manga/unite-quickfix.git'
 NeoBundle     'thinca/vim-quickrun'
 NeoBundleLazy "tyru/open-browser.vim", {
 \             'autoload' : {
@@ -351,7 +352,6 @@ NeoBundleLazy 'tpope/vim-dispatch', {'autoload': {'commands': [{'complete': 'cus
 " NeoBundle     'vim-scripts/dbext.vim'
 NeoBundleLazy 'nathanaelkane/vim-indent-guides', {'augroup': 'indent_guides', 'autoload': {'mappings': [['n', '<Plug>IndentGuides']], 'commands': ['IndentGuidesEnable', 'IndentGuidesToggle', 'IndentGuidesDisable']}}
 NeoBundleLazy 'Chiel92/vim-autoformat', {'autoload': {'commands': ['CurrentFormatter', 'RemoveTrailingSpaces', {'complete': 'filetype', 'name': 'Autoformat'}, 'NextFormatter', 'PreviousFormatter']}}
-NeoBundleLazy 'itchyny/thumbnail.vim', {'autoload': {'mappings': [['sxn', '<Plug>(thumbnail)']], 'commands': [{'complete': 'customlist,thumbnail#complete', 'name': 'Thumbnail'}]}}
 NeoBundle     'wakatime/vim-wakatime'
 NeoBundle     'LeafCage/yankround.vim'
 NeoBundle     'Shougo/neco-syntax'
@@ -368,17 +368,13 @@ NeoBundle     'thinca/vim-prettyprint'
 
 " git
 NeoBundle     'tpope/vim-fugitive'
-NeoBundle     'lambdalisue/vim-unified-diff'
 NeoBundleLazy 'lambdalisue/vim-gista', {'autoload': {'commands': [{'complete': 'customlist,gista#command#complete', 'name': 'Gista'}]}}
-NeoBundle     'lambdalisue/vim-gista-unite'
-NeoBundle     'Kocha/vim-unite-tig'
 
 " Markdown syntax
 NeoBundleLazy "rcmdnk/vim-markdown",           {  "autoload" : {"filetypes" : ["markdown"]} }
 NeoBundleLazy 'godlygeek/tabular',             {'autoload': {'commands': ['AddTabularPipeline', {'complete': 'customlist,<SID>CompleteTabularizeCommand', 'name': 'Tabularize'}, {'complete': 'customlist,<SID>CompleteTabularizeCommand', 'name': 'GTabularize'}, 'AddTabularPattern']}}
 NeoBundleLazy 'pekepeke/vim-operator-tabular', {'autoload': {'commands': ['TabularDebugLog']}}
 NeoBundleLazy 'deton/jasentence.vim', { "autoload" : {"filetypes" : ["markdown"]} }
-NeoBundle     'pekepeke/vim-csvutil'
 
 " ctags
 NeoBundle 'tsukkee/unite-tag'
@@ -387,7 +383,6 @@ NeoBundle 'majutsushi/tagbar'
 " rubyでのみvim-rubyを読み込む
 NeoBundleLazy 'vim-ruby/vim-ruby', {  "autoload" : {"filetypes" : ["ruby"]} }
 NeoBundleLazy 'pocke/dicts', { "autoload" : { "filetypes" : ["ruby"] }  }
-NeoBundleLazy 'tpope/vim-bundler', { "autoload" : { "filetypes" : ["ruby"] }  }
 NeoBundleLazy 'thoughtbot/vim-rspec', { "autoload" : { "filetypes" : ["ruby"] }  }
 
 " ruby_hl_lvar.vimがエラーが出る
@@ -445,11 +440,6 @@ NeoBundleLazy 'vim-scripts/AnsiEsc.vim', {'autoload': {'mappings': ['<Plug>SaveW
 "colorscheme
 NeoBundle 'scwood/vim-hybrid'
 NeoBundle 'miyakogi/seiya.vim'
-
-" TweetVim
-NeoBundle 'basyura/TweetVim'
-NeoBundle 'basyura/twibill.vim'
-NeoBundle 'basyura/bitly.vim'
 
 " Required:
 NeoBundleSaveCache
@@ -894,7 +884,7 @@ if executable('ag')
         \ '--ignore ''**/*.pyc'''
   let g:unite_source_grep_max_candidates = 200
   let g:unite_source_grep_recursive_opt = ''
-  let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup --hidden -g ""'
+  let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup --hidden -g '
 endif
 call unite#filters#sorter_default#use(['sorter_ftime*'])
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
@@ -959,21 +949,12 @@ function! s:unite_keymap()
           \|  endif
   augroup END
 
-  ""tweet vimのアカウントを切り替え
-  nnoremap <silent> [unite]s :<C-u>Unite<space> tweetvim/account<CR>
-
   ""スペースキーとpキーでヒストリ/ヤンクを表示
   nnoremap <silent> [unite]p :<C-u>Unite<Space> yankround<CR>
   ""スペースキーとhキーで:helpを検索
   nnoremap <silent> [unite]h :<C-u>Unite<Space> help -buffer-name=search-buffer<CR>
   "スペースキーとoキーでoutline
   nnoremap <silent> [unite]o :<C-u>Unite<Space> outline -prompt-direction="top"<CR>
-  "unite-quickfixを呼び出し
-  " multi-line を切る
-  let g:unite_quickfix_is_multiline=0
-  call unite#custom_source('quickfix', 'converters', 'converter_quickfix_highlight')
-  call unite#custom_source('location_list', 'converters', 'converter_quickfix_highlight')
-  nnoremap <silent> [unite]q :<C-u>Unite<Space> -no-quit -wrap quickfix<CR>
   " grep検索
   nnoremap <silent> [unite]G :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR>
   vnoremap <silent> [unite]G y:<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R>"
@@ -1190,9 +1171,6 @@ vmap <Enter> <Plug>(EasyAlign)
 "" Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
-"vim-unified-diff
-set diffexpr=unified_diff#diffexpr()
-
 " integrate vim with ranger
 function! RangerExplorer(path)
   exec 'silent !ranger --choosefile=/tmp/vim_ranger_current_file ' . a:path
@@ -1230,13 +1208,6 @@ augroup open_with_ranger
   let g:loaded_netrwPlugin = 'disable'
   autocmd BufEnter * silent call RangerOpenWithEdit(expand("<amatch>"))
 augroup END
-
-"TweetVim
-let g:tweetvim_display_icon=1
-let g:tweetvim_async_post=1
-let g:tweetvim_display_username=1
-let g:tweetvim_tweet_per_page=20
-let g:tweetvim_say_insert_account=1
 
 " vim-auto-save
 let g:auto_save_silent = 1  " do not display the auto-save notification

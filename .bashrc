@@ -135,14 +135,12 @@ if [ "$DISPLAY" ]; then
   xset r rate 160 40
 fi
 
-# notify when long running commands
-. /usr/share/undistract-me/long-running.bash
-notify_when_long_running_commands_finish_install
-
 # peco
-function pcd {
-    cd "$( ls -1d ./*/ | peco )"
+change-repo() {
+  cd $(ghq list -p | peco)
 }
+alias cr=change-repo
+
 
 # Ctrl+rでhistoryをpecoで絞り込む
 peco-select-history() {

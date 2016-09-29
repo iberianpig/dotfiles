@@ -6,7 +6,7 @@
 #
 #    Copyright (C) 2009-2011 Canonical Ltd.
 #
-#    Authors: Dustin Kirkland <kirkland@ubuntu.com>
+#    Authors: Dustin Kirkland <kirkland@byobu.org>
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -25,11 +25,11 @@
 
 # This should be auto-detected for most distro, but setting it here will save
 # some call to lsb_release and the like.
-# DISTRO=Ubuntu
+#DISTRO=Ubuntu
 
 # Default: depends on the distro (which is either auto-detected, either set
 # via $DISTRO)
-# LOGO="\o/"
+#LOGO="\o/"
 
 # Abbreviate the release to N characters
 # By default, this is disabled.  But if you set RELEASE_ABBREVIATED=1
@@ -73,8 +73,6 @@
 # Default: 0
 #USERS_DISTINCT=0
 
-# If we're not in EC2 (ie, no metadata service, and no known instance type), the
-# ec2_cost status is disabled by default.  To override, and get an esitmate, set
-# this to '1'.
-# Default: 0
-#EC2_ESTIMATE=0
+# Set this to zero to hide seconds int the time display
+# Default 1
+#TIME_SECONDS=0

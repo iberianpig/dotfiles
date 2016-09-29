@@ -66,28 +66,29 @@
 #  Control + b:2 + Release
 #
 "sh /home/iberianpig/Dropbox/tool/linux/script/xrandr_dp_above.sh"
-   Alt+Mod4 + u
+  Alt+Mod4 + u
 
 "/usr/bin/gnome-system-monitor"
-   Control+Shift+Escape
+  Control+Shift+Escape
 
 # "/usr/bin/diodon"
 #    Control + semicolon
 
+#  restart wifi (XF86WLAN)
 "sudo /home/iberianpig/Dropbox/tool/linux/script/wifi_restart.sh"
-   XF86WLAN
+   m:0x0 + c:248
 
 "sudo /home/iberianpig/Dropbox/tool/linux/script/tethering.sh"
-   Mod4 + F2
+  Mod4 + F2
 
 "xdotool set_desktop $(expr $(xdotool get_desktop) - 1)"
-   Control+Shift + h
+  Control+Shift + h
 
 "xdotool set_desktop $(expr $(xdotool get_desktop) + 1)"
-   Control+Shift + l
+  Control+Shift + l
 
 "/home/iberianpig/Dropbox/tool/linux/script/toggle_browser_terminal.sh"
-   Control+Shift + m
+  Control+Shift + m
 
 "/home/iberianpig/work/relocate_window/relocate_window.sh"
   Mod4 + F1

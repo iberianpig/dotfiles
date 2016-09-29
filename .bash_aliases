@@ -25,9 +25,9 @@ alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo
 alias be='bundle exec'
 
 # apt-get
-alias api='sudo apt-fast install'
-alias apd='sudo apt-fast update'
-alias apg='sudo apt-fast update && sudo apt-fast upgrade'
+alias api='sudo apt-get install'
+alias apd='sudo apt-get update'
+alias apg='sudo apt-get update && sudo apt-get upgrade'
 
 alias ag='ag -S --skip-vcs-ignores'
 alias agh='ag --hidden'
