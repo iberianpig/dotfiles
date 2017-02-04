@@ -76,13 +76,11 @@ augroup switch_folding_method
 augroup END
 
 " Charset, Line ending -----------------
-set encoding=utf-8
-scriptencoding utf-8
+" set encoding=utf-8
+" scriptencoding utf-8
 
 set ffs=unix,dos,mac  " LF, CRLF, CR
-if exists('&ambiwidth')
-  set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
-endif
+set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
 
 set nospell
 
@@ -233,12 +231,12 @@ endfor
 " tc 新しいタブを右に作る
 nnoremap <silent> gc :tabnew<CR>
 " tn 新しいタブを一番右に作る
-nnoremap <silent> gn :tablast <bar> tabnew<CR>
+" nnoremap <silent> gn :tablast <bar> tabnew<CR>
 " " tx タブを閉じる
 nnoremap <silent> gq :tabclose<CR>
 nnoremap <silent> gx :tabclose<CR>
-nnoremap <silent> gb :tabprevious<CR>
-nnoremap <silent> gf :tabnext<CR>
+nnoremap <silent> gp :tabprevious<CR>
+nnoremap <silent> gn :tabnext<CR>
 
 augroup add_syntax_hilight
   autocmd!
@@ -250,13 +248,7 @@ augroup add_syntax_hilight
   autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set ft=markdown
 augroup END
 
-set re=1
-"" 古い正規表現エンジンを利用する
-"augroup use_old_syntax_highlight
-"  autocmd!
-"  autocmd Filetype ruby set re=1
-"  autocmd Filetype !ruby set re=0
-"augroup END
+" set re=1
 
 let g:ruby_path = system('echo $HOME/.rbenv/shims')
 
@@ -322,7 +314,6 @@ NeoBundleLazy "tyru/open-browser.vim", {
 \             },
 \}
 NeoBundleLazy 'sgur/vim-operator-openbrowser', {'autoload': {'mappings': [['nx', '<Plug>(operator-openbrowser']]}}
-NeoBundleLazy 'thinca/vim-guicolorscheme', {'autoload': {'commands': [{'complete': 'customlist,s:Colorscheme_Complete', 'name': 'GuiColorScheme'}]}}
 NeoBundle     'itchyny/lightline.vim'
 NeoBundleLazy 'junegunn/vim-easy-align', {'autoload': {'mappings': ['<Plug>(EasyAlignOperator)', ['sxn', '<Plug>(EasyAlign)'], ['sxn', '<Plug>(LiveEasyAlign)'], ['sxn', '<Plug>(EasyAlignRepeat)']], 'commands': ['EasyAlign', 'LiveEasyAlign']}}
 NeoBundleLazy 'AndrewRadev/switch.vim', {'autoload': {'commands': ['Switch', 'SwitchReverse']}}
@@ -338,8 +329,8 @@ NeoBundle     'mfumi/ref-dicts-en'
 NeoBundle     'tyru/vim-altercmd'
 NeoBundle     'ujihisa/neco-look'
 NeoBundle     'cohama/lexima.vim'
-NeoBundleLazy 'sgur/vim-gitgutter', {'autoload': {'mappings': [['n', '<Plug>GitGutter']], 'commands': ['GitGutterToggle', 'GitGutterPrevHunk', 'GitGutter', 'GitGutterLineHighlightsToggle', 'GitGutterRevertHunk', 'GitGutterPreviewHunk', 'GitGutterSignsEnable', 'GitGutterNextHunk', 'GitGutterDisable', 'GitGutterStageHunk', 'GitGutterEnable', 'GitGutterSignsToggle', 'GitGutterAll', 'GitGutterLineHighlightsEnable', 'GitGutterLineHighlightsDisable', 'GitGutterDebug', 'GitGutterSignsDisable']}}
-NeoBundle     'edsono/vim-matchit'
+NeoBundle     'sgur/vim-gitgutter'
+NeoBundle     'tmhedberg/matchit'
 NeoBundleLazy 'mattn/benchvimrc-vim', {'autoload': {'commands': [{'complete': 'file', 'name': 'BenchVimrc'}]}}
 NeoBundleLazy 'rking/ag.vim', {'autoload': {'commands': [{'complete': 'file', 'name': 'AgFromSearch'}, {'complete': 'file', 'name': 'LAgBuffer'}, {'complete': 'file', 'name': 'LAgAdd'}, {'complete': 'file', 'name': 'LAg'}, {'complete': 'help', 'name': 'LAgHelp'}, {'complete': 'file', 'name': 'AgBuffer'}, {'complete': 'file', 'name': 'AgFile'}, {'complete': 'file', 'name': 'AgAdd'}, {'complete': 'file', 'name': 'Ag'}, {'complete': 'help', 'name': 'AgHelp'}]}}
 NeoBundleLazy 'pocke/vim-hier', {'autoload': {'commands': ['HierStart', 'HierUpdate', 'HierClear', 'HierStop']}}
@@ -355,16 +346,14 @@ NeoBundleLazy 'Chiel92/vim-autoformat', {'autoload': {'commands': ['CurrentForma
 NeoBundle     'wakatime/vim-wakatime'
 NeoBundle     'LeafCage/yankround.vim'
 NeoBundle     'Shougo/neco-syntax'
-NeoBundle     'textobj-user'
+" NeoBundle     'textobj-user'
 NeoBundle     'vim-scripts/vim-auto-save'
 NeoBundle     'rhysd/clever-f.vim'
 NeoBundleLazy 'kannokanno/previm', { "autoload" : {'commands': ['PrevimOpen'] }}
-NeoBundle     'kana/vim-operator-user'
-NeoBundleLazy 'rhysd/vim-operator-surround', {'autoload': {'mappings': [['nx', '<Plug>(operator-surround'], ['n', '<Plug>(operator-surround-repeat)']]}}
+NeoBundle     'tpope/vim-surround'
 NeoBundleLazy 'LeafCage/nebula.vim', {'autoload': {'commands': ['NebulaPutLazy', 'NebulaPutFromClipboard', 'NebulaYankOptions', 'NebulaYankConfig', 'NebulaPutConfig', 'NebulaYankTap']}}
 NeoBundleLazy 'renamer.vim', {'augroup': 'Renamer', 'autoload': {'commands': [{'complete': 'dir', 'name': 'Renamer'}]}}
 NeoBundleLazy 'editorconfig/editorconfig-vim', {'autoload': {'commands': ['EditorConfigReload']}}
-NeoBundle     'thinca/vim-prettyprint'
 
 " git
 NeoBundle     'tpope/vim-fugitive'
@@ -379,15 +368,13 @@ NeoBundleLazy 'deton/jasentence.vim', { "autoload" : {"filetypes" : ["markdown"]
 " ctags
 NeoBundle 'tsukkee/unite-tag'
 NeoBundle 'majutsushi/tagbar'
+NeoBundle 'szw/vim-tags'
 
 " rubyでのみvim-rubyを読み込む
-NeoBundleLazy 'vim-ruby/vim-ruby', {  "autoload" : {"filetypes" : ["ruby"]} }
+" NeoBundleLazy 'vim-ruby/vim-ruby', {  "autoload" : {"filetypes" : ["ruby"]} }
 NeoBundleLazy 'pocke/dicts', { "autoload" : { "filetypes" : ["ruby"] }  }
 NeoBundleLazy 'thoughtbot/vim-rspec', { "autoload" : { "filetypes" : ["ruby"] }  }
-
-" ruby_hl_lvar.vimがエラーが出る
-" NeoBundleLazy 'todesking/ruby_hl_lvar.vim', { "autoload" : { "filetypes" : ["ruby"] }  }
-NeoBundleLazy 'marcus/rsense', { "autoload" : { "filetypes" : ["ruby"] }  }
+NeoBundleLazy 'todesking/ruby_hl_lvar.vim', { "autoload" : { "filetypes" : ["ruby"] }  }
 
 "rails
 NeoBundle 'basyura/unite-rails'
@@ -406,20 +393,17 @@ NeoBundleLazy 'othree/html5.vim', { "autoload" : { "filetypes" : ["html"] } }
 
 " javascript
 NeoBundle     'elzr/vim-json'
-NeoBundleLazy 'pangloss/vim-javascript', { "autoload" : { "filetypes" : ["javascript"] } }
-NeoBundleLazy 'othree/javascript-libraries-syntax.vim', { "autoload" : { "filetypes" : ["javascript"] } }
-NeoBundleLazy 'maksimr/vim-jsbeautify', { "autoload" : { "filetypes" : ["javascript"] } }
-NeoBundleLazy 'mattn/jscomplete-vim', { "autoload" : { "filetypes" : ["javascript"] } }
+NeoBundleLazy 'othree/yajs.vim', {'autoload':{'filetypes':['javascript']}}
+" NeoBundleLazy 'othree/javascript-libraries-syntax.vim', { "autoload" : { "filetypes" : ["javascript"] } }
 NeoBundleLazy 'matthewsimo/angular-vim-snippets', { "autoload" : { "filetypes" : ["javascript"] } }
-NeoBundleLazy 'marijnh/tern_for_vim' , {
-      \       "autoload": { "filetypes" : ["javascript"] },
-      \       'build':    {
-      \       'others': 'npm install'
-      \}}
-NeoBundleLazy 'mxw/vim-jsx', { "autoload" : { "filetypes" : ["javascript"] } }
-NeoBundleLazy 'Quramy/tsuquyomi', { "autoload" : { "filetypes" : ["javascript"] } }
-NeoBundleLazy 'jiangmiao/simple-javascript-indenter', {'autoload':{'filetypes':['javascript']}}
-NeoBundleLazy 'claco/jasmine.vim', {'autoload':{'filetypes':['javascript']}}
+" NeoBundleLazy 'marijnh/tern_for_vim' , {
+"       \       "autoload": { "filetypes" : ["javascript"] },
+"       \       'build':    {
+"       \       'others': 'npm install'
+"       \}}
+NeoBundleLazy 'vim-scripts/JavaScript-Indent', { "autoload": { "filetypes" : ["javascript"] }}
+" NeoBundleLazy 'mxw/vim-jsx', { "autoload" : { "filetypes" : ["javascript"] } }
+" NeoBundleLazy 'claco/jasmine.vim', {'autoload':{'filetypes':['javascript']}}
 
 NeoBundleLazy 'kchmck/vim-coffee-script', {'autoload':{'filetypes':['coffee']}}
 
@@ -438,8 +422,16 @@ NeoBundleLazy 'digitaltoad/vim-jade', {'autoload':{'filetypes':['jade']}}
 NeoBundleLazy 'vim-scripts/AnsiEsc.vim', {'autoload': {'mappings': ['<Plug>SaveWinPosn', '<Plug>RestoreWinPosn'], 'commands': ['DM', 'RWP', 'AnsiEsc', 'RM', 'SM', 'WLR', 'SWP']}}
 
 "colorscheme
-NeoBundle 'scwood/vim-hybrid'
+" NeoBundle 'scwood/vim-hybrid'
+NeoBundle 'w0ng/vim-hybrid'
 NeoBundle 'miyakogi/seiya.vim'
+
+"help
+NeoBundle 'vim-jp/vimdoc-ja'
+NeoBundle 'KabbAmine/zeavim.vim'
+
+"readline lik keybindings
+NeoBundle 'tpope/vim-rsi'
 
 " Required:
 NeoBundleSaveCache
@@ -742,7 +734,7 @@ let g:vimshell_force_overwrite_statusline = 0
 
 " neocomplete {{{
 let g:neocomplete#enable_at_startup               = 1
-"let g:neocomplete#auto_completion_start_length    = 2
+" let g:neocomplete#auto_completion_start_length    = 2
 let g:neocomplete#enable_ignore_case              = 1
 " let g:neocomplete#enable_smart_case               = 1
 let g:neocomplete#enable_cursor_hold_i            = 1
@@ -751,26 +743,15 @@ let g:neocomplete#enable_cursor_hold_i            = 1
 let g:neocomplete#use_vimproc                     = 1
 let g:neocomplete#lock_buffer_name_pattern        = '\*ku\*'
 
-" rsense
-let g:neocomplete#force_omni_input_patterns = {
-      \   'ruby' : '[^. *\t]\.\|\h\w*::',
-      \   'rails' : '[^. *\t]\.\|\h\w*::',
-      \   'rspec' : '[^. *\t]\.\|\h\w*::',
-      \   'eruby' : '[^. *\t]\.\|\h\w*::',
-      \   'ruby.rails' : '[^. *\t]\.\|\h\w*::',
-      \   'ruby.rspec' : '[^. *\t]\.\|\h\w*::',
-      \   'eruby.html' : '[^. *\t]\.\|\h\w*::'
-      \}
-
-let g:rsenseUseOmniFunc = 1
+" docstringは表示しない
+set completeopt-=preview
 
 let g:neocomplete#sources#dictionary#dictionaries = {
 \   'ruby': $HOME . '/.vim/bundle/dicts/ruby.dict',
 \ }
 
-"for turn_vim
+" for turn_vim
 " autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-
 " "NeoSnippet.vim
 let g:neosnippet#enable_snipmate_compatibility = 1
 " remove ${x} marker when switching normal mode
@@ -787,12 +768,6 @@ xmap <C-Space>     <Plug>(neosnippet_expand_target)
 if has('conceal')
   set conceallevel=2 concealcursor=i
 endif
-
-" rails
-"   autocmd!
-"   autocmd BufEnter * if exists("b:rails_root") | NeoCompleteSetFileType ruby.rails | endif
-"   autocmd BufEnter * if (expand("%") =~ "_spec\.rb$") || (expand("%") =~ "^spec.*\.rb$") | NeoCompleteSetFileType ruby.rspec | endif
-" augroup END
 
 " enable ruby & rails snippet only rails file
 function! s:RailsSnippet()
@@ -828,6 +803,19 @@ let g:neocomplete#text_mode_filetypes = {
             \ 'help': 1,
             \ 'tex': 1,
             \ }
+
+" filetype=javascript で include 補完を無効にする
+call neocomplete#custom#source('include',
+      \ 'disabled_filetypes', {'javascript' : 1})
+
+" filetype=javascript で tag 補完を無効にする
+call neocomplete#custom#source('tag',
+      \ 'disabled_filetypes', {'javascript' : 1})
+
+" すべての filetype で member 補完を無効にする
+call neocomplete#custom#source('tag',
+      \ 'disabled_filetypes', {'_' : 1})
+
 
 "}}}
 
@@ -867,8 +855,8 @@ let g:unite_enable_start_insert=1
 let g:unite_source_file_mru_limit           = 1000
 let g:unite_source_file_mru_filename_format = ''
 " file_recのキャッシュ
-let g:unite_source_rec_max_cache_files = 50000
-" let g:unite_source_rec_min_cache_files = 100
+let g:unite_source_rec_max_cache_files = 5000
+let g:unite_source_rec_min_cache_files = 100
 
 "Like ctrlp.vim settings.
 call unite#custom#profile('default', 'context', {
@@ -894,10 +882,6 @@ call unite#custom#source('file_rec, file_rec/git, grep/git, buffer, file', 'sort
 call unite#custom#source('grep/git',        'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
 call unite#custom#source('source/buffer:?', 'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
 call unite#custom#source('file_rec/async',  'ignore_pattern', '\.png\|.gif\|.jpeg\|.jpg\')
-
-set wildignore=*.o,*.obj,*.la,*.lo,*.so,*.pyc,*.pyo,*.jpg,*.jpeg,*.png,*.gif
-
-call unite#custom#source('file_rec/git, grep/git, buffer, file_rec/async', 'ignore_globs', split(&wildignore, ','))
 
 " タブが存在しているときはタブ移動
 let action = {
@@ -939,8 +923,8 @@ function! s:unite_keymap()
   nnoremap <silent> [unite]b :<C-u>Unite<Space>buffer<CR>
 
   " "スペースキーと]キーでtagsを検索
-  vnoremap <silent> [unite]] y:<C-u>UniteWithCursorWord -immediately tag:<C-r>"<CR>
-  nnoremap <silent> [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W><CR>
+  vnoremap [unite]] y:<C-u>UniteWithCursorWord -immediately tag:<C-r>"<CR>
+  nnoremap [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W><CR>
   augroup unite_jump
     autocmd!
     autocmd BufEnter *
@@ -956,20 +940,29 @@ function! s:unite_keymap()
   "スペースキーとoキーでoutline
   nnoremap <silent> [unite]o :<C-u>Unite<Space> outline -prompt-direction="top"<CR>
   " grep検索
-  nnoremap <silent> [unite]G :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR>
-  vnoremap <silent> [unite]G y:<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R>"
-  nnoremap <silent> [unite]cG :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R><C-W>
+  nnoremap [unite]G :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR>
+  vnoremap [unite]G y:<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R>"<CR>
+  nnoremap [unite]cG :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R><C-W>
   " git-grep
-  nnoremap <silent> [unite]g :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR>
-  vnoremap <silent> [unite]g y:<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR><C-R>"<CR>
-  nnoremap <silent> [unite]cg :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR><C-r><C-W><CR>
+  nnoremap [unite]g :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR>
+  vnoremap [unite]g y:<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR><C-R>"<CR>
+  nnoremap [unite]cg :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR><C-r><C-W><CR>
 
   " grep検索結果の再呼出
   nnoremap <silent> [unite]r  :<C-u>UniteResume search-buffer <CR>
   " " bookmark
   nnoremap <silent> [unite]B :<C-u>Unite bookmark<CR>
 
-  nnoremap <silent> [unite]<CR> :<C-u>Unite file_rec/git -buffer-name=search-buffer <CR>
+
+  function! DispatchUniteFileRecAsyncOrGit()
+    if isdirectory(getcwd()."/.git")
+      Unite file_rec/git:--cached:--others:--exclude-standard -buffer-name=search-buffer
+    else
+      Unite file_rec/async -buffer-name=search-buffer
+    endif
+  endfunction
+
+  nnoremap <silent> [unite]<CR> :<C-u>call DispatchUniteFileRecAsyncOrGit()<CR>
 
   ""unite-rails
   noremap <silent> [unite]ec :<C-u>Unite rails/controller<CR>
@@ -1200,8 +1193,8 @@ function! RangerOpenWithEdit(path) abort
   :filetype detect
 endfunction
 
-nnoremap <silent>[unite]c :call RangerOpenCurrentDir()<cr>
-nnoremap <silent>[unite]f :call RangerOpenProjectRootDir()<cr>
+nnoremap <silent><Leader>c :call RangerOpenCurrentDir()<cr>
+nnoremap <silent><Leader>f :call RangerOpenProjectRootDir()<cr>
 
 augroup open_with_ranger
   autocmd!
@@ -1230,24 +1223,4 @@ augroup switch_auto_save
   au BufEnter * call s:auto_save_detect()
 augroup END
 
-"operator-surround
-map  s  <Nop>
-map  sa <Plug>(operator-surround-append)
-map  sd <Plug>(operator-surround-delete)
-nmap sc <Plug>(operator-surround-replace)
-vmap sc <Plug>(operator-surround-replace)
-
-let g:operator#surround#blocks =
-      \ {
-      \ '-': [
-      \   { 'block' : ['```', '```'], 'motionwise' : ['line','block'], 'keys' : ['`'] },
-      \   { 'block' : ['(', ')'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['p'] },
-      \   { 'block' : ['(', ')'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['('] },
-      \   { 'block' : ['{', '}'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['{'] },
-      \   { 'block' : ['（', '）'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['P'] },
-      \   { 'block' : ['「', '」'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['B'] },
-      \   { 'block' : ['『', '』'], 'motionwise' : ['char', 'line', 'block'], 'keys' : ['D'] }
-      \ ]
-      \}
-
-nmap [unite][ :TagbarToggle<CR>
+nmap <Leader><C-}> :TagbarToggle<CR>

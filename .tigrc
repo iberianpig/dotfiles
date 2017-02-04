@@ -15,7 +15,6 @@ set diff-options = -m --first-parent
 set ignore-space = all
 set commit-order = topo
 set ignore-case = yes
-set wrap-lines = yes
 set focus-child = yes
 
 # Bind Settings
@@ -45,7 +44,9 @@ bind generic M none
 bind branch M none
 bind branch M !git merge %(branch)
 
+# 差分表示してコミットメッセージ編集
 bind status C !git commit -v
+# hookのキャンセルオプション付きコミット
 bind status V !git commit -vn
 
 # `-` でステージ・アンステージをスイッチ

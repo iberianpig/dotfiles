@@ -5,11 +5,6 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-
 function share_history {  # 以下の内容を関数として定義
     history -a  # .bash_historyに前回コマンドを1行追記
     history -c  # 端末ローカルの履歴を一旦消去
@@ -22,8 +17,8 @@ shopt -u histappend   # .bash_history追記モードは不要なのでOFFに
 export HISTCONTROL=ignoredups 
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-export HISTSIZE=20000
-export HISTFILESIZE=200000
+export HISTSIZE=200000
+# export HISTFILESIZE=200000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -62,21 +57,7 @@ if [ -n "$force_color_prompt" ]; then
     fi
 fi
 
-# if [ "$color_prompt" = yes ]; then
-#     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-# else
-#     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-# fi
 unset color_prompt force_color_prompt
-
-# If this is an xterm set the title to user@host:dir
-# case "$TERM" in
-# xterm*|rxvt*)
-#     PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-#     ;;
-# *)
-#     ;;
-# esac
 
 if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
@@ -100,14 +81,6 @@ fi
 eval "$(EDITOR=/usr/bin/vim)"
 eval "$(SHELL=/bin/bash)"
 
-
-# #byobu
-# if [ $SHLVL = 1 ]; then
-#  byobu
-# fi
-
-# PS1="\[\e[0;1m\]┌─ \u:\[\e[1;32m\]\w$ \[\e[0;1m\n└──┤▶ \[\e[0m\]"
-
 #for powerline
 PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
 
@@ -127,19 +100,15 @@ man() {
 # reverse search, going forward(ctrl+s)
 stty -ixon
 
-if [ -f ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh ]; then
-    source ~/.local/lib/python2.7/site-packages/powerline/bindings/bash/powerline.sh
-fi
-
 if [ "$DISPLAY" ]; then
-  xset r rate 160 40
+  xset r rate 180 45
 fi
 
 # peco
-change-repo() {
+peco-change-repo() {
   cd $(ghq list -p | peco)
 }
-alias cr=change-repo
+alias cr=peco-change-repo
 
 
 # Ctrl+rでhistoryをpecoで絞り込む

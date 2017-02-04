@@ -34,3 +34,4 @@ cscope.po.out
 
 # ruby
 .pryrc
+Gemfile.local*
