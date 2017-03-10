@@ -53,7 +53,7 @@ set cmdheight=2    " メッセージ表示欄を2行確保
 set showmatch      " 対応する括弧を強調表示
 set matchpairs+=「:」,『:』,（:）,【:】,《:》,〈:〉,［:］,‘:’,“:”
 set helpheight=998 " ヘルプを画面いっぱいに開く
-set synmaxcol=300   " 長い行の場合、syntaxをoffにする
+set synmaxcol=300  " 長い行の場合、syntaxをoffにする
 set list           " 不可視文字を表示
 set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
@@ -413,10 +413,6 @@ NeoBundleLazy 'JulesWang/css.vim', {'autoload':{'filetypes':['scss','css']}}
 NeoBundleLazy 'hail2u/vim-css3-syntax', {'autoload':{'filetypes':['scss','css']}}
 NeoBundleLazy 'csscomb/vim-csscomb', {'autoload':{'filetypes':['scss', 'css']}}
 NeoBundleLazy 'cakebaker/scss-syntax.vim', {'autoload':{'filetypes':['scss']}}
-NeoBundleLazy 'pasela/unite-webcolorname', {'autoload':{'filetypes':['scss', 'css', 'html']}}
-
-" jade
-NeoBundleLazy 'digitaltoad/vim-jade', {'autoload':{'filetypes':['jade']}}
 
 " log
 NeoBundleLazy 'vim-scripts/AnsiEsc.vim', {'autoload': {'mappings': ['<Plug>SaveWinPosn', '<Plug>RestoreWinPosn'], 'commands': ['DM', 'RWP', 'AnsiEsc', 'RM', 'SM', 'WLR', 'SWP']}}
@@ -684,9 +680,6 @@ let g:quickrun_config['ruby.rspec/watchdogs_checker'] = {
 let g:quickrun_config['coffee/watchdogs_checker'] = {
       \       'type': 'watchdogs_checker/coffeelint',
       \   }
-let g:quickrun_config['jade/watchdogs_checker'] = {
-      \       'type': 'watchdogs_checker/jade'
-      \   }
 let g:quickrun_config['css/watchdogs_checker'] = {
       \       'type': 'watchdogs_checker/csslint'
       \   }
@@ -940,13 +933,13 @@ function! s:unite_keymap()
   "スペースキーとoキーでoutline
   nnoremap <silent> [unite]o :<C-u>Unite<Space> outline -prompt-direction="top"<CR>
   " grep検索
-  nnoremap [unite]G :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR>
-  vnoremap [unite]G y:<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R>"<CR>
-  nnoremap [unite]cG :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R><C-W>
+  nnoremap [unite]g :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR>
+  vnoremap [unite]g y:<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R>"<CR>
+  nnoremap [unite]cg :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R><C-W>
   " git-grep
-  nnoremap [unite]g :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR>
-  vnoremap [unite]g y:<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR><C-R>"<CR>
-  nnoremap [unite]cg :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR><C-r><C-W><CR>
+  nnoremap [unite]G :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR>
+  vnoremap [unite]G y:<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR><C-R>"<CR>
+  nnoremap [unite]cG :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR><C-r><C-W><CR>
 
   " grep検索結果の再呼出
   nnoremap <silent> [unite]r  :<C-u>UniteResume search-buffer <CR>
@@ -1006,7 +999,7 @@ function! s:unite_my_settings()
   "ctrl+oでその場所に開く
   nnoremap <silent> <buffer> <expr> <C-o> unite#do_action('open')
   inoremap <silent> <buffer> <expr> <C-o> unite#do_action('open')
-  "ctrl+oでタブで開く
+  "ctrl+tでタブで開く
   nnoremap <silent> <buffer> <expr> <C-t> unite#do_action('tabopen')
   inoremap <silent> <buffer> <expr> <C-t> unite#do_action('tabopen')
 endfunction
@@ -1201,6 +1194,29 @@ augroup open_with_ranger
   let g:loaded_netrwPlugin = 'disable'
   autocmd BufEnter * silent call RangerOpenWithEdit(expand("<amatch>"))
 augroup END
+
+" integrate vim with tig
+function! TigExplorer(path)
+  exec 'silent !GIT_EDITOR=/home/iberianpig/work/tmp/tig_vim.sh tig ' . a:path
+  if filereadable('/tmp/vim_tig_current_file')
+    exec 'edit ' . system('cat /tmp/vim_tig_current_file')
+    call system('rm /tmp/vim_tig_current_file')
+  endif
+  redraw!
+endfunction
+
+function! TigOpenCurrentDir() abort
+  let current_path = expand('%:p:h')
+  :call TigExplorer(current_path)
+endfunction
+
+function! TigOpenProjectRootDir() abort
+  let root_dir = unite#util#path2project_directory(expand('%'))
+  :call TigExplorer(root_dir)
+endfunction
+
+nnoremap <silent><Leader>t :call TigOpenCurrentDir()<cr>
+nnoremap <silent><Leader>T :call TigOpenProjectRootDir()<cr>
 
 " vim-auto-save
 let g:auto_save_silent = 1  " do not display the auto-save notification

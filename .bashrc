@@ -5,20 +5,13 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-function share_history {  # 以下の内容を関数として定義
-    history -a  # .bash_historyに前回コマンドを1行追記
-    history -c  # 端末ローカルの履歴を一旦消去
-    history -r  # .bash_historyから履歴を読み込み直す
-}
-PROMPT_COMMAND='share_history'  # 上記関数をプロンプト毎に自動実施
-shopt -u histappend   # .bash_history追記モードは不要なのでOFFに
+export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+export HISTSIZE=100000                   # big big history
+export HISTFILESIZE=100000               # big big history
+shopt -s histappend                      # append to history, don't overwrite it
 
-# 重複履歴を無視
-export HISTCONTROL=ignoredups 
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-export HISTSIZE=200000
-# export HISTFILESIZE=200000
+# Save and reload the history after each command finishes
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -124,3 +117,5 @@ bind -x '"\C-r": peco-select-history'
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
 
+# direnv
+eval "$(direnv hook bash)"
