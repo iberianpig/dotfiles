@@ -71,7 +71,7 @@ if [ -f ~/.bash_profile ]; then
     . ~/.bash_profile
 fi
 
-eval "$(EDITOR=/usr/bin/vim)"
+# eval "$(EDITOR=/usr/bin/vim)"
 eval "$(SHELL=/bin/bash)"
 
 #for powerline

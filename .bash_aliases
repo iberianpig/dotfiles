@@ -47,3 +47,5 @@ dic () {
 }
 
 alias vi='vim'
+
+alias open='gnome-open'

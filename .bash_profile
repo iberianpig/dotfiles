@@ -24,7 +24,7 @@ export PATH=~/.npm-global/bin:$PATH
 export VTE_CJK_WIDTH=1
 
 # editor
-export EDITOR="/usr/bin/vim"
+export EDITOR="vim"
 
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"

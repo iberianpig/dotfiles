@@ -302,9 +302,11 @@ NeoBundle     'Shougo/neosnippet.vim'
 NeoBundle     'Shougo/neosnippet-snippets'
 NeoBundle     'honza/vim-snippets'
 NeoBundleLazy 'tpope/vim-repeat', {'autoload': {'mappings': [['n', '<Plug>(Repeat']]}}
+NeoBundle     'Shougo/denite.nvim'
 NeoBundle     'Shougo/unite.vim'
 NeoBundle     'tsukkee/unite-help'
 NeoBundle     'ujihisa/unite-colorscheme'
+NeoBundle     'ctrlpvim/ctrlp.vim/'
 NeoBundle     'thinca/vim-quickrun'
 NeoBundleLazy "tyru/open-browser.vim", {
 \             'autoload' : {
@@ -332,7 +334,7 @@ NeoBundle     'cohama/lexima.vim'
 NeoBundle     'sgur/vim-gitgutter'
 NeoBundle     'tmhedberg/matchit'
 NeoBundleLazy 'mattn/benchvimrc-vim', {'autoload': {'commands': [{'complete': 'file', 'name': 'BenchVimrc'}]}}
-NeoBundleLazy 'rking/ag.vim', {'autoload': {'commands': [{'complete': 'file', 'name': 'AgFromSearch'}, {'complete': 'file', 'name': 'LAgBuffer'}, {'complete': 'file', 'name': 'LAgAdd'}, {'complete': 'file', 'name': 'LAg'}, {'complete': 'help', 'name': 'LAgHelp'}, {'complete': 'file', 'name': 'AgBuffer'}, {'complete': 'file', 'name': 'AgFile'}, {'complete': 'file', 'name': 'AgAdd'}, {'complete': 'file', 'name': 'Ag'}, {'complete': 'help', 'name': 'AgHelp'}]}}
+NeoBundle     'rking/ag.vim'
 NeoBundleLazy 'pocke/vim-hier', {'autoload': {'commands': ['HierStart', 'HierUpdate', 'HierClear', 'HierStop']}}
 NeoBundleLazy 'dannyob/quickfixstatus', {'autoload': {'commands': ['QuickfixStatusDisable', 'QuickfixStatusEnable']}}
 NeoBundle     'osyo-manga/shabadou.vim'
@@ -354,6 +356,7 @@ NeoBundle     'tpope/vim-surround'
 NeoBundleLazy 'LeafCage/nebula.vim', {'autoload': {'commands': ['NebulaPutLazy', 'NebulaPutFromClipboard', 'NebulaYankOptions', 'NebulaYankConfig', 'NebulaPutConfig', 'NebulaYankTap']}}
 NeoBundleLazy 'renamer.vim', {'augroup': 'Renamer', 'autoload': {'commands': [{'complete': 'dir', 'name': 'Renamer'}]}}
 NeoBundleLazy 'editorconfig/editorconfig-vim', {'autoload': {'commands': ['EditorConfigReload']}}
+NeoBundle     'airblade/vim-rooter'
 
 " git
 NeoBundle     'tpope/vim-fugitive'
@@ -393,32 +396,22 @@ NeoBundleLazy 'othree/html5.vim', { "autoload" : { "filetypes" : ["html"] } }
 
 " javascript
 NeoBundle     'elzr/vim-json'
-NeoBundleLazy 'othree/yajs.vim', {'autoload':{'filetypes':['javascript']}}
-" NeoBundleLazy 'othree/javascript-libraries-syntax.vim', { "autoload" : { "filetypes" : ["javascript"] } }
+NeoBundleLazy 'othree/yajs.vim',                  {'autoload':{'filetypes':['javascript']}}
 NeoBundleLazy 'matthewsimo/angular-vim-snippets', { "autoload" : { "filetypes" : ["javascript"] } }
-" NeoBundleLazy 'marijnh/tern_for_vim' , {
-"       \       "autoload": { "filetypes" : ["javascript"] },
-"       \       'build':    {
-"       \       'others': 'npm install'
-"       \}}
-NeoBundleLazy 'vim-scripts/JavaScript-Indent', { "autoload": { "filetypes" : ["javascript"] }}
-" NeoBundleLazy 'mxw/vim-jsx', { "autoload" : { "filetypes" : ["javascript"] } }
-" NeoBundleLazy 'claco/jasmine.vim', {'autoload':{'filetypes':['javascript']}}
-
-NeoBundleLazy 'kchmck/vim-coffee-script', {'autoload':{'filetypes':['coffee']}}
+NeoBundleLazy 'vim-scripts/JavaScript-Indent',    { "autoload": { "filetypes" : ["javascript"] }}
+NeoBundleLazy 'kchmck/vim-coffee-script',         {'autoload':{'filetypes':['coffee']}}
 
 " css
 NeoBundle     'lilydjwg/colorizer'
-NeoBundleLazy 'JulesWang/css.vim', {'autoload':{'filetypes':['scss','css']}}
-NeoBundleLazy 'hail2u/vim-css3-syntax', {'autoload':{'filetypes':['scss','css']}}
-NeoBundleLazy 'csscomb/vim-csscomb', {'autoload':{'filetypes':['scss', 'css']}}
+NeoBundleLazy 'JulesWang/css.vim',         {'autoload':{'filetypes':['scss','css']}}
+NeoBundleLazy 'hail2u/vim-css3-syntax',    {'autoload':{'filetypes':['scss','css']}}
+NeoBundleLazy 'csscomb/vim-csscomb',       {'autoload':{'filetypes':['scss', 'css']}}
 NeoBundleLazy 'cakebaker/scss-syntax.vim', {'autoload':{'filetypes':['scss']}}
 
 " log
 NeoBundleLazy 'vim-scripts/AnsiEsc.vim', {'autoload': {'mappings': ['<Plug>SaveWinPosn', '<Plug>RestoreWinPosn'], 'commands': ['DM', 'RWP', 'AnsiEsc', 'RM', 'SM', 'WLR', 'SWP']}}
 
 "colorscheme
-" NeoBundle 'scwood/vim-hybrid'
 NeoBundle 'w0ng/vim-hybrid'
 NeoBundle 'miyakogi/seiya.vim'
 
@@ -428,6 +421,15 @@ NeoBundle 'KabbAmine/zeavim.vim'
 
 "readline lik keybindings
 NeoBundle 'tpope/vim-rsi'
+
+"create vim plugin's skeleton
+NeoBundleLazy 'mopp/layoutplugin.vim', { 'autoload' : { 'commands' : 'LayoutPlugin'} }
+
+NeoBundle 'iberianpig/tig-explorer.vim'
+
+
+"ローカルディレクトリからプラグインを読み込む
+call neobundle#local(expand('~/.vim/plugin'))
 
 " Required:
 NeoBundleSaveCache
@@ -865,7 +867,7 @@ if executable('ag')
         \ '--ignore ''**/*.pyc'''
   let g:unite_source_grep_max_candidates = 200
   let g:unite_source_grep_recursive_opt = ''
-  let g:unite_source_rec_async_command = 'ag --follow --nocolor --nogroup --hidden -g '
+  let g:unite_source_rec_async_command = ['ag', '--follow', '--nogroup', '--nocolor', '--hidden', '-g', '']
 endif
 call unite#filters#sorter_default#use(['sorter_ftime*'])
 call unite#filters#matcher_default#use(['matcher_fuzzy'])
@@ -1120,17 +1122,6 @@ augroup RSpecSetting
   autocmd  BufEnter *_spec.rb call s:load_rspec_settings()
 augroup END
 
-" 常にprojectのroot Dirに移動する
-function! ChangeCurrentDirectoryToProjectRoot()
-  let root = unite#util#path2project_directory(expand('%'))
-  execute 'lcd' root
-endfunction
-
-augroup project_root
-  autocmd!
-  autocmd BufEnter * :call ChangeCurrentDirectoryToProjectRoot()
-augroup END
-
 let g:vim_json_syntax_conceal = 0
 
 " lexima plugin
@@ -1157,6 +1148,15 @@ vmap <Enter> <Plug>(EasyAlign)
 "" Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
+function! ProjectRootDirectory()
+  let root_dir = finddir('.git', '.;')
+  if !isdirectory(root_dir)
+    let current_dir = expand('%:p:h')
+    return current_dir
+  endif
+  return fnamemodify(root_dir, ':h')
+endfunction
+
 " integrate vim with ranger
 function! RangerExplorer(path)
   exec 'silent !ranger --choosefile=/tmp/vim_ranger_current_file ' . a:path
@@ -1168,7 +1168,7 @@ function! RangerExplorer(path)
 endfunction
 
 function! RangerOpenProjectRootDir()
-  let root_dir = unite#util#path2project_directory(expand('%'))
+  let root_dir = ProjectRootDirectory()
   :call RangerExplorer(root_dir)
 endfunction
 
@@ -1195,28 +1195,8 @@ augroup open_with_ranger
   autocmd BufEnter * silent call RangerOpenWithEdit(expand("<amatch>"))
 augroup END
 
-" integrate vim with tig
-function! TigExplorer(path)
-  exec 'silent !GIT_EDITOR=/home/iberianpig/work/tmp/tig_vim.sh tig ' . a:path
-  if filereadable('/tmp/vim_tig_current_file')
-    exec 'edit ' . system('cat /tmp/vim_tig_current_file')
-    call system('rm /tmp/vim_tig_current_file')
-  endif
-  redraw!
-endfunction
-
-function! TigOpenCurrentDir() abort
-  let current_path = expand('%:p:h')
-  :call TigExplorer(current_path)
-endfunction
-
-function! TigOpenProjectRootDir() abort
-  let root_dir = unite#util#path2project_directory(expand('%'))
-  :call TigExplorer(root_dir)
-endfunction
-
-nnoremap <silent><Leader>t :call TigOpenCurrentDir()<cr>
-nnoremap <silent><Leader>T :call TigOpenProjectRootDir()<cr>
+nnoremap <silent><Leader>t :TigOpenCurrentFile<CR>
+nnoremap <silent><Leader>T :TigOpenProjectRootDir<CR>
 
 " vim-auto-save
 let g:auto_save_silent = 1  " do not display the auto-save notification
