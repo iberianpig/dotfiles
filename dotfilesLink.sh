@@ -10,3 +10,5 @@ ln -fns ~/dotfiles/.byobu ~/.byobu
 ln -fns ~/dotfiles/.xbindkeysrc ~/.xbindkeysrc
 ln -fns ~/dotfiles/.ctags ~/.ctags
 ln -fns ~/dotfiles/.tigrc ~/.tigrc
+ln -fns ~/dotfiles/.config/fusuma ~/.config/fusuma
+ln -fns ~/dotfiles/.config/xremap ~/.config/xremap
