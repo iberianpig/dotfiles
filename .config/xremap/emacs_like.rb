@@ -85,10 +85,10 @@ end
 
 
 window class_only: 'keepassx' do
-  remap 'Alt-space', to: 'Ctrl-f'
-  remap 'Alt-n',     to: 'Ctrl-n'
-  remap 'Alt-b',     to: 'Ctrl-b'
-  remap 'C-q',       to: 'Ctrl-w'
+  remap 'Alt-space', to: 'C-f'
+  remap 'Alt-n',     to: 'C-n'
+  remap 'Alt-b',     to: 'C-b'
+  remap 'C-q',       to: 'C-w'
 end
 
 # window class_only: 'libreoffice' do

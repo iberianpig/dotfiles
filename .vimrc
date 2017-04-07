@@ -11,15 +11,15 @@ augroup END
 function! s:EnableChangeCursorShape()
   augroup change_corsor_shape
     autocmd!
-    " if executable('pantheon-terminal')
-    "   "Pantheon Terminal
-    "   autocmd InsertEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
-    "   autocmd InsertLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-    "   autocmd VimLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-    "   autocmd VimEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-    "   autocmd WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-    "   autocmd WinEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-    " endif
+    if executable('pantheon-terminal')
+      "Pantheon Terminal
+      autocmd InsertEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
+      autocmd InsertLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+      autocmd VimLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+      autocmd VimEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+      autocmd WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+      autocmd WinEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
+    endif
     "Guake Terminal
     if executable('guake')
       autocmd InsertEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
