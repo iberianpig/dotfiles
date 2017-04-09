@@ -20,6 +20,7 @@ function! s:EnableChangeCursorShape()
       autocmd WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
       autocmd WinEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
     endif
+
     "Guake Terminal
     if executable('guake')
       autocmd InsertEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
@@ -306,7 +307,6 @@ NeoBundle     'Shougo/denite.nvim'
 NeoBundle     'Shougo/unite.vim'
 NeoBundle     'tsukkee/unite-help'
 NeoBundle     'ujihisa/unite-colorscheme'
-NeoBundle     'ctrlpvim/ctrlp.vim/'
 NeoBundle     'thinca/vim-quickrun'
 NeoBundleLazy "tyru/open-browser.vim", {
 \             'autoload' : {
@@ -426,7 +426,7 @@ NeoBundle 'tpope/vim-rsi'
 NeoBundleLazy 'mopp/layoutplugin.vim', { 'autoload' : { 'commands' : 'LayoutPlugin'} }
 
 NeoBundle 'iberianpig/tig-explorer.vim'
-
+NeoBundle 'iberianpig/ranger-explorer.vim'
 
 "ローカルディレクトリからプラグインを読み込む
 call neobundle#local(expand('~/.vim/plugin'))
@@ -1148,55 +1148,15 @@ vmap <Enter> <Plug>(EasyAlign)
 "" Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
-function! ProjectRootDirectory()
-  let root_dir = finddir('.git', '.;')
-  if !isdirectory(root_dir)
-    let current_dir = expand('%:p:h')
-    return current_dir
-  endif
-  return fnamemodify(root_dir, ':h')
-endfunction
 
-" integrate vim with ranger
-function! RangerExplorer(path)
-  exec 'silent !ranger --choosefile=/tmp/vim_ranger_current_file ' . a:path
-  if filereadable('/tmp/vim_ranger_current_file')
-    exec 'edit ' . system('cat /tmp/vim_ranger_current_file')
-    call system('rm /tmp/vim_ranger_current_file')
-  endif
-  redraw!
-endfunction
-
-function! RangerOpenProjectRootDir()
-  let root_dir = ProjectRootDirectory()
-  :call RangerExplorer(root_dir)
-endfunction
-
-function! RangerOpenCurrentDir() abort
-  let current_dir = expand('%:p:h')
-  :call RangerExplorer(current_dir)
-endfunction
-
-function! RangerOpenWithEdit(path) abort
-  if !isdirectory(a:path)
-    return
-  endif
-  bw!
-  :call RangerExplorer(a:path)
-  :filetype detect
-endfunction
-
-nnoremap <silent><Leader>c :call RangerOpenCurrentDir()<cr>
-nnoremap <silent><Leader>f :call RangerOpenProjectRootDir()<cr>
-
-augroup open_with_ranger
-  autocmd!
-  let g:loaded_netrwPlugin = 'disable'
-  autocmd BufEnter * silent call RangerOpenWithEdit(expand("<amatch>"))
-augroup END
-
+" tig-explorer
 nnoremap <silent><Leader>t :TigOpenCurrentFile<CR>
 nnoremap <silent><Leader>T :TigOpenProjectRootDir<CR>
+
+" ranger-explorer
+nnoremap <silent><Leader>c :<C-u>RangerOpenCurrentDir<CR>
+nnoremap <silent><Leader>f :<C-u>RangerOpenProjectRootDir<CR>
+
 
 " vim-auto-save
 let g:auto_save_silent = 1  " do not display the auto-save notification
@@ -1218,5 +1178,3 @@ augroup switch_auto_save
   autocmd!
   au BufEnter * call s:auto_save_detect()
 augroup END
-
-nmap <Leader><C-}> :TagbarToggle<CR>

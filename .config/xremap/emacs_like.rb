@@ -11,7 +11,7 @@ window class_only: ['google-chrome',
                     'crx_mjcnijlhddpbdemagnpefmlkjdagkogk', # pocket
                     'crx_ojcflmmmcfpacggndoaaflkmcoblhnbh', # wunderlist
                     'crx_menkifleemblimdogmoihpfopnplikde', # line
-                    'slingshot'] do
+                    'wingpanel'] do
   remap 'C-o', to: 'Alt-Left'
   remap 'C-i', to: 'Alt-Right'
 
@@ -26,9 +26,10 @@ window class_only: ['google-chrome',
   remap 'C-a', to: 'Home'
   remap 'C-e', to: 'End'
 
-  remap 'C-k', to: ['Shift-End',       'Ctrl-x']
-  remap 'C-u', to: ['Shift-Home',      'Ctrl-x']
-  remap 'C-w', to: ['Ctrl-Shift-Left', 'Ctrl-x']
+  remap 'C-k', to: ['Shift-End',       'Delete']
+  remap 'C-u', to: ['Shift-Home',      'Delete']
+  remap 'C-w', to: ['Ctrl-BackSpace']
+  # remap 'C-w', to: ['Ctrl-Shift-Left', 'Ctrl-x']
 
   remap 'C-d', to: 'Delete'
   remap 'M-d', to: 'Ctrl-Delete'
@@ -80,7 +81,7 @@ window class_only: 'crx_mjcnijlhddpbdemagnpefmlkjdagkogk' do
   remap 'Alt-space', to: 'S' # Search
   remap 'C-u',       to: 'Page_Up'
   remap 'C-d',       to: 'Page_Down'
-  remap 'C-q',       to: 'Ctrl-w'
+  remap 'C-q',       to: 'C-w'
 end
 
 
