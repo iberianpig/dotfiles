@@ -1,5 +1,5 @@
 " autocmdのリセット
-autocmd! 
+autocmd!
 set number     " 行番号を表示する
 set cursorline " カーソル行の背景色を変える
 
@@ -126,7 +126,7 @@ set wrapscan   " 最後尾まで検索を終えたら次の検索で先頭に移
 set gdefault   " 置換の時 g オプションをデフォルトで有効にする
 
 "選択済テキストで検索
-vnoremap // y/<C-R>"<CR> 
+vnoremap // y/<C-R>"<CR>
 
 " 検索後にジャンプした際に検索単語を画面中央に持ってくる
 nnoremap n nzz
@@ -468,6 +468,11 @@ let g:hier_highlight_group_qfw = 'qf_warning_ucurl'
 let g:qfsigns#Config = {'id': '5051', 'name': 'QFSign'}
 sign define QFSign linehl=NONE texthl=ErrorMsg text=>>
 
+highlight GitGutterAdd              ctermfg=155 ctermbg=235
+highlight GitGutterChange           ctermfg=111 ctermbg=235
+highlight GitGutterDelete           ctermfg=196 ctermbg=235
+highlight GitGutterChangeDelete     ctermfg=141 ctermbg=235
+
 " lightline {{{
 " available colorscheme:
 " wombat, solarized, powerline, jellybeans, Tomorrow,
@@ -518,7 +523,7 @@ function! MyLineInfo()
 endfunction
 
 function! MyReadonly()
-  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? '⭤' : ''
+  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? '' : ''
 endfunction
 
 function! MyFilename()
@@ -1074,7 +1079,7 @@ let g:gista#post_private = 1
 nmap gx <Plug>(openbrowser-smart-search)
 vmap gx y:<C-u>OpenBrowserSearch <C-R>"<CR>
 nmap gd :<C-u>OpenBrowserSearch -devdocs <C-r><C-w> <CR>
-vmap gd y:<C-u>OpenBrowserSearch -devdocs <C-R>"<CR> 
+vmap gd y:<C-u>OpenBrowserSearch -devdocs <C-R>"<CR>
 
 let g:openbrowser_browser_commands = [
       \ {'name': 'xdg-open',
@@ -1178,3 +1183,20 @@ augroup switch_auto_save
   autocmd!
   au BufEnter * call s:auto_save_detect()
 augroup END
+
+" gtags
+"" 検索結果Windowを閉じる
+nnoremap <C-q> <C-w><C-w><C-w>q
+" "" Grep 準備
+" nnoremap <C-g> :Gtags -g
+"" このファイルの関数一覧
+nnoremap <C-h> :Gtags -f %<CR>
+"" カーソル以下の定義元を探す
+nnoremap <C-j> :Gtags <C-r><C-w><CR>
+"" カーソル以下の使用箇所を探す
+nnoremap <C-k> :Gtags -r <C-r><C-w><CR>
+"" 次の検索結果
+nnoremap <C-n> :cn<CR>
+"" 前の検索結果
+nnoremap <C-p> :cp<CR>
+

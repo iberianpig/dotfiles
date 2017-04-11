@@ -77,19 +77,6 @@ eval "$(SHELL=/bin/bash)"
 #for powerline
 PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
 
-export MANPAGER='less -R'
-man() {
-  env \
-    LESS_TERMCAP_mb=$(printf "\e[1;31m") \
-    LESS_TERMCAP_md=$(printf "\e[1;31m") \
-    LESS_TERMCAP_me=$(printf "\e[0m") \
-    LESS_TERMCAP_se=$(printf "\e[0m") \
-    LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
-    LESS_TERMCAP_ue=$(printf "\e[0m") \
-    LESS_TERMCAP_us=$(printf "\e[1;32m") \
-    man "$@"
-}
-
 # reverse search, going forward(ctrl+s)
 stty -ixon
 
@@ -112,14 +99,7 @@ peco-select-history() {
 }
 bind -x '"\C-r": peco-select-history'
 
-# rbenv
-# NOTE: should be placed on ~/.bashrc
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
+# remap ctrl-w
+stty werase undef
+bind '"\C-w":unix-filename-rubout'
 
-# direnv
-eval "$(direnv hook bash)"
-
-# nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
