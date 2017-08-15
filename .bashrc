@@ -5,13 +5,19 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+# export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+# export HISTSIZE=100000                   # big big history
+# export HISTFILESIZE=100000               # big big history
+# shopt -s histappend                      # append to history, don't overwrite it
+#
+# # Save and reload the history after each command finishes
+# export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+
 export HISTSIZE=100000                   # big big history
 export HISTFILESIZE=100000               # big big history
-shopt -s histappend                      # append to history, don't overwrite it
-
-# Save and reload the history after each command finishes
-export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+export HISTCONTROL=erasedups:ignoreboth
+shopt -s histappend
+PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -40,15 +46,21 @@ esac
 #force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
-    fi
+  if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+    # We have color support; assume it's compliant with Ecma-48
+    # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
+    # a case would tend to support setf rather than setaf.)
+    color_prompt=yes
+  else
+    color_prompt=
+  fi
 fi
+
+# reset language
+case $TERM in
+      linux) LANG=C ;;
+      *)     LANG=ja_JP.UTF-8;;
+esac
 
 unset color_prompt force_color_prompt
 
@@ -84,22 +96,54 @@ if [ "$DISPLAY" ]; then
   xset r rate 180 45
 fi
 
-# peco
-peco-change-repo() {
-  cd $(ghq list -p | peco)
-}
-alias cr=peco-change-repo
+# fzf
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
+export FZF_TMUX_HEIGHT="50%"
+export FZF_DEFAULT_OPTS='
+--color fg:-1,bg:-1,hl:230,fg+:3,bg+:233,hl+:229
+--color info:150,prompt:110,spinner:150,pointer:167,marker:174
+'
+export FZF_DEFAULT_COMMAND='
+  (git ls-tree -r --name-only HEAD ||
+       find . -path "*/\.*" -prune -o -type f -print -o -type l -print |
+        sed s/^..//) 2> /dev/null'
 
-# Ctrl+rでhistoryをpecoで絞り込む
-peco-select-history() {
-    declare l=$(HISTTIMEFORMAT= history | sort -k1,1nr | perl -ne 'BEGIN { my @lines = (); } s/^\s*\d+\s*//; $in=$_; if (!(grep {$in eq $_} @lines)) { push(@lines, $in); print $in; }' | peco --query "$READLINE_LINE")
-    READLINE_LINE="$l"
-    READLINE_POINT=${#l}
-}
-bind -x '"\C-r": peco-select-history'
+if which fzf > /dev/null; then
+
+  fzf-change-repo() {
+    cd "$(ghq list -p | fzf)"
+  }
+  alias cr=fzf-change-repo
+
+  # Markdownのメモを探して開く
+  fzf-search-note() {
+    local note_path=~/Dropbox/document
+    # local selected_file="$(find  $note_path/201*.md -type f | fzf --tac --preview='head -30 {}')"
+    local selected_file="$(find  $note_path/201*.md -type f | fzf --tac --preview 'pygmentize {}')"
+
+    if [ -n "${selected_file}" ]; then
+      vi "${selected_file}"
+    fi
+  }
+  alias sn=fzf-search-note
+
+  function fzf-git-ls-files() {
+    # check whether the current directory is under `git` repository.
+    if git rev-parse 2> /dev/null; then
+      local selected_file="$(git ls-files . | fzf)"
+
+      if [ -n "${selected_file}" ]; then
+        vi "${selected_file}"
+      fi
+    fi
+  }
+  alias gl=fzf-git-ls-files
+fi
 
 # remap ctrl-w
 stty werase undef
 bind '"\C-w":unix-filename-rubout'
+
+xmodmap -e "keycode 9 = Escape  asciitilde"
 

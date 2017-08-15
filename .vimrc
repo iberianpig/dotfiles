@@ -145,9 +145,9 @@ inoremap <C-n> <Down>
 inoremap <C-p> <Up>
 inoremap <C-h> <BS>
 inoremap <C-d> <Del>
-inoremap <C-k> <C-o>D<Right>
-inoremap <C-u> <C-o>d^
-inoremap <C-w> <C-o>db
+inoremap <C-k> <C-o>D
+inoremap <C-u> <C-\><C-o>d^
+inoremap <C-w> <C-\><C-o>db
 
 " vを二回で行末まで選択
 vnoremap v $h
@@ -244,12 +244,15 @@ augroup add_syntax_hilight
   "シンタックスハイライトの追加
   autocmd BufNewFile,BufRead *.json.jbuilder            set ft=ruby
   autocmd BufNewFile,BufRead *.erb                      set ft=eruby
+  autocmd BufNewFile,BufRead *.slim                     set ft=slim
   autocmd BufNewFile,BufRead *.scss                     set ft=scss.css
   autocmd BufNewFile,BufRead *.coffee                   set ft=coffee
   autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set ft=markdown
 augroup END
 
 " set re=1
+
+set rtp+=/home/iberianpig/.ghq/github.com/junegunn/fzf/bin/
 
 let g:ruby_path = system('echo $HOME/.rbenv/shims')
 
@@ -342,6 +345,7 @@ NeoBundle     'osyo-manga/vim-watchdogs'
 NeoBundleLazy 'KazuakiM/vim-qfstatusline', {'autoload': {'commands': ['QfstatuslineUpdate']}}
 NeoBundleLazy 'KazuakiM/vim-qfsigns', {'autoload': {'commands': ['QfsignsClear', 'QfsignsJunmp', 'QfsignsUpdate']}}
 NeoBundleLazy 'tpope/vim-dispatch', {'autoload': {'commands': [{'complete': 'customlist,dispatch#make_complete', 'name': 'Make'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Dispatch'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'FocusDispatch'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Spawn'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Start'}, 'Copen']}}
+NeoBundle     'janko-m/vim-test'
 " NeoBundle     'vim-scripts/dbext.vim'
 NeoBundleLazy 'nathanaelkane/vim-indent-guides', {'augroup': 'indent_guides', 'autoload': {'mappings': [['n', '<Plug>IndentGuides']], 'commands': ['IndentGuidesEnable', 'IndentGuidesToggle', 'IndentGuidesDisable']}}
 NeoBundleLazy 'Chiel92/vim-autoformat', {'autoload': {'commands': ['CurrentFormatter', 'RemoveTrailingSpaces', {'complete': 'filetype', 'name': 'Autoformat'}, 'NextFormatter', 'PreviousFormatter']}}
@@ -364,8 +368,8 @@ NeoBundleLazy 'lambdalisue/vim-gista', {'autoload': {'commands': [{'complete': '
 
 " Markdown syntax
 NeoBundleLazy "rcmdnk/vim-markdown",           {  "autoload" : {"filetypes" : ["markdown"]} }
-NeoBundleLazy 'godlygeek/tabular',             {'autoload': {'commands': ['AddTabularPipeline', {'complete': 'customlist,<SID>CompleteTabularizeCommand', 'name': 'Tabularize'}, {'complete': 'customlist,<SID>CompleteTabularizeCommand', 'name': 'GTabularize'}, 'AddTabularPattern']}}
-NeoBundleLazy 'pekepeke/vim-operator-tabular', {'autoload': {'commands': ['TabularDebugLog']}}
+" NeoBundleLazy 'godlygeek/tabular',             {'autoload': {'commands': ['AddTabularPipeline', {'complete': 'customlist,<SID>CompleteTabularizeCommand', 'name': 'Tabularize'}, {'complete': 'customlist,<SID>CompleteTabularizeCommand', 'name': 'GTabularize'}, 'AddTabularPattern']}}
+" NeoBundleLazy 'pekepeke/vim-operator-tabular', {'autoload': {'commands': ['TabularDebugLog']}}
 NeoBundleLazy 'deton/jasentence.vim', { "autoload" : {"filetypes" : ["markdown"]} }
 
 " ctags
@@ -382,6 +386,7 @@ NeoBundleLazy 'todesking/ruby_hl_lvar.vim', { "autoload" : { "filetypes" : ["rub
 "rails
 NeoBundle 'basyura/unite-rails'
 NeoBundle 'tpope/vim-rails'
+NeoBundle 'slim-template/vim-slim'
 
 " perl
 NeoBundleLazy 'hotchpotch/perldoc-vim', { "autoload" : { "filetypes" : ["perl"] } }
@@ -408,6 +413,9 @@ NeoBundleLazy 'hail2u/vim-css3-syntax',    {'autoload':{'filetypes':['scss','css
 NeoBundleLazy 'csscomb/vim-csscomb',       {'autoload':{'filetypes':['scss', 'css']}}
 NeoBundleLazy 'cakebaker/scss-syntax.vim', {'autoload':{'filetypes':['scss']}}
 
+" golang
+NeoBundle 'fatih/vim-go', {'autoload':{'filetypes':['go']}}
+
 " log
 NeoBundleLazy 'vim-scripts/AnsiEsc.vim', {'autoload': {'mappings': ['<Plug>SaveWinPosn', '<Plug>RestoreWinPosn'], 'commands': ['DM', 'RWP', 'AnsiEsc', 'RM', 'SM', 'WLR', 'SWP']}}
 
@@ -428,6 +436,9 @@ NeoBundleLazy 'mopp/layoutplugin.vim', { 'autoload' : { 'commands' : 'LayoutPlug
 NeoBundle 'iberianpig/tig-explorer.vim'
 NeoBundle 'iberianpig/ranger-explorer.vim'
 
+" NeoBundle 'kaizoa/xz-peco.nvim'
+NeoBundle 'junegunn/fzf'
+
 "ローカルディレクトリからプラグインを読み込む
 call neobundle#local(expand('~/.vim/plugin'))
 
@@ -447,6 +458,7 @@ NeoBundleCheck
 " ...
 " 読み込んだプラグインの設定
 " ...
+"
 
 " set background=light "明るめの背景
 set background=dark "暗めの背景
@@ -684,6 +696,10 @@ let g:quickrun_config['ruby.rspec/watchdogs_checker'] = {
       \       'type': 'watchdogs_checker/rubocop',
       \       'cmdopt' : '-R -S -a -D'
       \   }
+let g:quickrun_config['ruby.minitest/watchdogs_checker'] = {
+      \       'type': 'watchdogs_checker/rubocop',
+      \       'cmdopt' : '-R -S -a -D'
+      \   }
 let g:quickrun_config['coffee/watchdogs_checker'] = {
       \       'type': 'watchdogs_checker/coffeelint',
       \   }
@@ -782,10 +798,17 @@ function! s:RSpecSnippet()
   endif
 endfunction
 
+function! s:MinitestSnippet()
+  if (expand('%') =~ "_test\.rb$") || (expand('%') =~ "^test.*\.rb$")
+    set ft=ruby.minitest
+  endif
+endfunction
+
 augroup rails_snippet
   autocmd!
   au BufEnter * call s:RailsSnippet()
   au BufEnter * call s:RSpecSnippet()
+  au BufEnter * call s:MinitestSnippet()
 augroup END
 
 " neco-lookの変換対象にする
@@ -904,11 +927,10 @@ augroup unite_global_keymap
 augroup END
 "prefix keyの設定
 function! s:unite_keymap()
-  nnoremap [unite] <Nop>
-  vnoremap [unite] <Nop>
+  " uniteのprefixを<Space>にする
+  nmap <Space> [unite]
   vmap <Space> <Nop>
   vmap <Space> [unite]
-  nmap <Space> [unite]
 
   nnoremap <silent> [unite]i :<C-u>Unite<Space>
   ""スペースキーとaキーでカレントディレクトリを表示
@@ -922,16 +944,16 @@ function! s:unite_keymap()
   "スペースキーとbキーでバッファを表示
   nnoremap <silent> [unite]b :<C-u>Unite<Space>buffer<CR>
 
-  " "スペースキーと]キーでtagsを検索
-  vnoremap [unite]] y:<C-u>UniteWithCursorWord -immediately tag:<C-r>"<CR>
-  nnoremap [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W><CR>
-  augroup unite_jump
-    autocmd!
-    autocmd BufEnter *
-          \   if empty(&buftype)
-          \|      nnoremap <buffer> [unite]t :<C-u>Unite jump<CR>
-          \|  endif
-  augroup END
+  " " "スペースキーと]キーでtagsを検索
+  " vnoremap [unite]] y:<C-u>UniteWithCursorWord -immediately tag:<C-r>"<CR>
+  " nnoremap [unite]] :<C-u>UniteWithCursorWord -immediately tag:<C-r><C-W><CR>
+  " augroup unite_jump
+  "   autocmd!
+  "   autocmd BufEnter *
+  "         \   if empty(&buftype)
+  "         \|      nnoremap <buffer> [unite]t :<C-u>Unite jump<CR>
+  "         \|  endif
+  " augroup END
 
   ""スペースキーとpキーでヒストリ/ヤンクを表示
   nnoremap <silent> [unite]p :<C-u>Unite<Space> yankround<CR>
@@ -940,8 +962,11 @@ function! s:unite_keymap()
   "スペースキーとoキーでoutline
   nnoremap <silent> [unite]o :<C-u>Unite<Space> outline -prompt-direction="top"<CR>
   " grep検索
+  "" prefix + gでプロジェクトのファイル内をキーワード検索
   nnoremap [unite]g :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR>
+  ""選択状態のキーワードで検索"
   vnoremap [unite]g y:<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R>"<CR>
+  ""カーソル上のキーワードで検索
   nnoremap [unite]cg :<C-u>UniteWithProjectDir grep:. -buffer-name=search-buffer <CR><C-R><C-W>
   " git-grep
   nnoremap [unite]G :<C-u>Unite grep/git:/ -buffer-name=search-buffer <CR>
@@ -954,15 +979,8 @@ function! s:unite_keymap()
   nnoremap <silent> [unite]B :<C-u>Unite bookmark<CR>
 
 
-  function! DispatchUniteFileRecAsyncOrGit()
-    if isdirectory(getcwd()."/.git")
-      Unite file_rec/git:--cached:--others:--exclude-standard -buffer-name=search-buffer
-    else
-      Unite file_rec/async -buffer-name=search-buffer
-    endif
-  endfunction
+  nnoremap <silent> [unite]<CR> :FZF<CR>
 
-  nnoremap <silent> [unite]<CR> :<C-u>call DispatchUniteFileRecAsyncOrGit()<CR>
 
   ""unite-rails
   noremap <silent> [unite]ec :<C-u>Unite rails/controller<CR>
@@ -1012,6 +1030,26 @@ function! s:unite_my_settings()
 endfunction
 "" }}}
 
+" function! DispatchUniteFileRecAsyncOrGit()
+"   let l:ignore_pipe = ' | grep -v ^.*\.png | grep -v ^.*\.gif | grep -v ^.*\.jpeg | grep -v ^.*\.jpg'
+"   let l:search_cmd = 'find -type f'
+"   if isdirectory(getcwd()."/.git")
+"     let l:search_cmd = 'git ls-files'
+"   endif
+"   call xz#peco#edit(l:search_cmd . l:ignore_pipe)
+" endfunction
+
+" function! DispatchUniteFileRecAsyncOrGit()
+"   call fzf#run()
+" endfunction
+
+let g:fzf_action = {
+  \ 'ctrl-o': 'open',
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit' }
+let g:fzf_layout = { 'down': '~40%' }
+
 " markdownの設定
 let g:vim_markdown_folding_disabled=1
 let g:vim_markdown_frontmatter=1
@@ -1057,8 +1095,8 @@ CAlterCommand je Ref webdict je
 
 "gitgutter
 let g:gitgutter_diff_args = '-w'
-nnoremap <silent> ,gg :<C-u>GitGutterToggle<CR>
-nnoremap <silent> ,gh :<C-u>GitGutterLineHighlightsToggle<CR>
+" nnoremap <silent> ,gg :<C-u>GitGutterToggle<CR>
+" nnoremap <silent> ,gh :<C-u>GitGutterLineHighlightsToggle<CR>
 
 "previm
 augroup PrevimSettings
@@ -1106,26 +1144,14 @@ augroup indent_guides_color
   autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=235
 augroup END
 
-let g:rspec_command = 'Dispatch rspec --format progress --no-profile {spec}'
+" test setting
+let test#strategy = "dispatch"
 
-if executable('spring')
-  augroup spring
-    autocmd!
-    autocmd BufEnter * if exists("b:rails_root") | let g:rspec_command = "compiler rspec | set makeprg=spring | Make rspec --color --drb --tty {spec}" | endif
-  endif
-augroup END
-
-function! s:load_rspec_settings()
-  nmap <silent><leader>r :call RunCurrentSpecFile()<CR>
-  nmap <silent><leader>n :call RunNearestSpec()<CR>
-  nmap <silent><leader>l :call RunLastSpec()<CR>
-  nmap <silent><leader>a :call RunAllSpecs()<CR>
-endfunction
-
-augroup RSpecSetting
-  autocmd!
-  autocmd  BufEnter *_spec.rb call s:load_rspec_settings()
-augroup END
+nmap <silent> <leader>t :TestNearest<CR>
+nmap <silent> <leader>T :TestFile<CR>
+nmap <silent> <leader>a :TestSuite<CR>
+nmap <silent> <leader>l :TestLast<CR>
+nmap <silent> <leader>g :TestVisit<CR>
 
 let g:vim_json_syntax_conceal = 0
 
@@ -1154,13 +1180,21 @@ vmap <Enter> <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 
-" tig-explorer
-nnoremap <silent><Leader>t :TigOpenCurrentFile<CR>
-nnoremap <silent><Leader>T :TigOpenProjectRootDir<CR>
+nmap , [explorer]
+vmap , <Nop>
+vmap , [explorer]
+nnoremap [explorer]T :TigOpenCurrentFile<CR>
+nnoremap [explorer]t :TigOpenProjectRootDir<CR>
+nnoremap [explorer]g :TigGrep<Cr>
+nnoremap [explorer]h :TigGrep<Cr>
+""選択状態のキーワードで検索"
+vnoremap [explorer]g y:TigGrep<Space><C-R>"<CR>
+""カーソル上のキーワードで検索
+" nnoremap [explorer]cg :<C-u>:TigGrep<Space><C-R><C-W><CR>
 
 " ranger-explorer
-nnoremap <silent><Leader>c :<C-u>RangerOpenCurrentDir<CR>
-nnoremap <silent><Leader>f :<C-u>RangerOpenProjectRootDir<CR>
+nnoremap [explorer]c :<C-u>RangerOpenCurrentDir<CR>
+nnoremap [explorer]f :<C-u>RangerOpenProjectRootDir<CR>
 
 
 " vim-auto-save
@@ -1186,7 +1220,7 @@ augroup END
 
 " gtags
 "" 検索結果Windowを閉じる
-nnoremap <C-q> <C-w><C-w><C-w>q
+nnoremap <C-q> <C-w>j<C-w>q
 " "" Grep 準備
 " nnoremap <C-g> :Gtags -g
 "" このファイルの関数一覧
@@ -1199,4 +1233,3 @@ nnoremap <C-k> :Gtags -r <C-r><C-w><CR>
 nnoremap <C-n> :cn<CR>
 "" 前の検索結果
 nnoremap <C-p> :cp<CR>
-

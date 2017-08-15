@@ -60,4 +60,6 @@ man() {
     man "$@"
 }
 
+# gtags
+export GTAGSLABEL=pygments
 

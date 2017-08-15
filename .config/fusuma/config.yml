@@ -25,4 +25,8 @@ pinch:
 
 threshold:
   swipe: 0.1
-  pinch: 1.5
+  pinch: 0.8
+
+interval:
+  swipe: 0.5
+  pinch: 0.3

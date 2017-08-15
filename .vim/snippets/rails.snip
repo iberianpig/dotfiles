@@ -304,3 +304,16 @@ abbr        try(:method)
 snippet     pry
 abbr        binding.pry
     binding.pry
+
+# attr_(reader|writer|accessor
+snippet attrr
+abbr attr_reader
+    attr_reader :${1:name}
+
+snippet attrw
+abbr attr_writer
+    attr_writer :${1:name}
+
+snippet attra
+abbr attr_accessor
+    attr_accessor :${1:name}
