@@ -442,9 +442,9 @@ function! s:ExecLoad(option, long_option, pattern, flags)
 	if l:open == 0
 	    cclose
         elseif g:Gtags_VerticalWindow == 1
-            topleft vertical copen
+            topleft vertical 5copen
         else
-            botright copen
+            botright 5copen
         endif
     endif
     " Parse the output of 'global -x or -t' and show in the quickfix window.

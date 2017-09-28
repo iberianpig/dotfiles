@@ -341,9 +341,10 @@ NeoBundle     'rking/ag.vim'
 NeoBundleLazy 'pocke/vim-hier', {'autoload': {'commands': ['HierStart', 'HierUpdate', 'HierClear', 'HierStop']}}
 NeoBundleLazy 'dannyob/quickfixstatus', {'autoload': {'commands': ['QuickfixStatusDisable', 'QuickfixStatusEnable']}}
 NeoBundle     'osyo-manga/shabadou.vim'
-NeoBundle     'osyo-manga/vim-watchdogs'
-NeoBundleLazy 'KazuakiM/vim-qfstatusline', {'autoload': {'commands': ['QfstatuslineUpdate']}}
-NeoBundleLazy 'KazuakiM/vim-qfsigns', {'autoload': {'commands': ['QfsignsClear', 'QfsignsJunmp', 'QfsignsUpdate']}}
+
+NeoBundle 'w0rp/ale'
+" NeoBundleLazy 'KazuakiM/vim-qfstatusline', {'autoload': {'commands': ['QfstatuslineUpdate']}}
+" NeoBundleLazy 'KazuakiM/vim-qfsigns', {'autoload': {'commands': ['QfsignsClear', 'QfsignsJunmp', 'QfsignsUpdate']}}
 NeoBundleLazy 'tpope/vim-dispatch', {'autoload': {'commands': [{'complete': 'customlist,dispatch#make_complete', 'name': 'Make'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Dispatch'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'FocusDispatch'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Spawn'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Start'}, 'Copen']}}
 NeoBundle     'janko-m/vim-test'
 " NeoBundle     'vim-scripts/dbext.vim'
@@ -469,16 +470,16 @@ let g:seiya_auto_enable=1
 " カーソル行にアンダーラインを引く(color terminal)
 highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
 
-" Watchdogsのエラー箇所のハイライトをいい感じにする
-execute 'highlight qf_error_ucurl ctermfg=167 ctermbg=52 gui=undercurl guifg=#cc6666 guibg=#5f0000 guisp=Red'
-let g:hier_highlight_group_qf  = 'qf_error_ucurl'
-execute 'highlight qf_warning_ucurl ctermfg=109 ctermbg=24 gui=underline guifg=#8abeb7 guibg=#005f5f guisp=Cyan'
-let g:hier_highlight_group_qfw = 'qf_warning_ucurl'
-
-" エラー箇所の行番号左にSignを表示
-" 行全体のハイライトはなし、SignのみErrorMsg（赤色）にする
-let g:qfsigns#Config = {'id': '5051', 'name': 'QFSign'}
-sign define QFSign linehl=NONE texthl=ErrorMsg text=>>
+" " Watchdogsのエラー箇所のハイライトをいい感じにする
+" execute 'highlight qf_error_ucurl ctermfg=167 ctermbg=52 gui=undercurl guifg=#cc6666 guibg=#5f0000 guisp=Red'
+" let g:hier_highlight_group_qf  = 'qf_error_ucurl'
+" execute 'highlight qf_warning_ucurl ctermfg=109 ctermbg=24 gui=underline guifg=#8abeb7 guibg=#005f5f guisp=Cyan'
+" let g:hier_highlight_group_qfw = 'qf_warning_ucurl'
+"
+" " エラー箇所の行番号左にSignを表示
+" " 行全体のハイライトはなし、SignのみErrorMsg（赤色）にする
+" let g:qfsigns#Config = {'id': '5051', 'name': 'QFSign'}
+" sign define QFSign linehl=NONE texthl=ErrorMsg text=>>
 
 highlight GitGutterAdd              ctermfg=155 ctermbg=235
 highlight GitGutterChange           ctermfg=111 ctermbg=235
@@ -493,11 +494,12 @@ highlight GitGutterChangeDelete     ctermfg=141 ctermbg=235
 let g:lightline = {
       \ 'colorscheme': 'Tomorrow_Night',
       \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
+      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], [ 'ctrlpmark'] ],
+      \   'right': [ [ 'ale_error', 'ale_warning', 'ale_ok', 'lineinfo' ] ]
       \ },
       \ 'inactive': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
-      \   'right': [ [ 'syntaxcheck', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'ale' ], ['ctrlpmark'] ],
+      \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
       \ },
       \ 'component_function':  {
       \   'filename':          'MyFilename',
@@ -511,16 +513,55 @@ let g:lightline = {
       \   'lineinfo':          'MyLineInfo',
       \ },
       \ 'component_expand':    {
-      \   'syntaxcheck':       'qfstatusline#Update',
+      \    'ale_error':   'Lightline_ale_error',
+      \    'ale_warning': 'Lightline_ale_warning',
+      \    'ale_ok':      'Lightline_ale_ok',
       \ },
       \ 'component_type':      {
-      \   'syntaxcheck':       'error',
+      \ 'ale_error':   'error',
+      \ 'ale_warning': 'warning',
+      \ 'ale_ok':      'ok',
       \ },
       \ 'tabline':             {
       \   'left':              [ [ 'tabs' ] ],
       \   'right':             [ [ 'currentworkingdir' ] ],
       \ },
       \}
+
+function! Lightline_ale_error() abort
+  return s:ale_string(0)
+endfunction
+
+function! Lightline_ale_warning() abort
+  return s:ale_string(1)
+endfunction
+
+function! Lightline_ale_ok() abort
+  return s:ale_string(2)
+endfunction
+
+function! s:ale_string(mode)
+  if !exists('g:ale_buffer_info')
+    return ''
+  endif
+
+  let l:buffer = bufnr('%')
+  let [l:error_count, l:warning_count] = ale#statusline#Count(l:buffer)
+  let [l:error_format, l:warning_format, l:no_errors] = g:ale_statusline_format
+
+  if a:mode == 0 " Error
+    return l:error_count ? printf(l:error_format, l:error_count) : ''
+  elseif a:mode == 1 " Warning
+    return l:warning_count ? printf(l:warning_format, l:warning_count) : ''
+  endif
+
+  return l:error_count == 0 && l:warning_count == 0 ? l:no_errors : ''
+endfunction
+
+augroup LightLineALE
+  autocmd!
+  autocmd User ALELint call lightline#update()
+augroup END
 
 function! MyModified()
   return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -639,6 +680,7 @@ endfunction
 function! CurrentWorkingDir()
   return fnamemodify(getcwd(),':')
 endfunction
+
 "}}}
 
 "quickrun
@@ -647,102 +689,6 @@ augroup ansiesc
   autocmd!
   autocmd FileType quickrun AnsiEsc
 augroup END
-
-" シンタックスチェックは<Leader>+wで行う
-nnoremap <Leader>w :<C-u>WatchdogsRun<CR>
-
-" let g:watchdogs_check_BufWritePost_enables = {
-"       \   'sh':         1,
-"       \   'sass':       1,
-"       \   'scss':       1
-"       \}
-"       " \   "javascript": 1,
-"       " \   "ruby": 1,
-
-let g:watchdogs_check_CursorHold_enable = 0
-let g:watchdogs_check_BufWritePost_enable = 0
-
-" <C-c> で実行を強制終了させる
-" quickrun.vim が実行していない場合には <C-c> を呼び出す
-nnoremap <expr><silent> <C-c> quickrun#is_running() ? quickrun#sweep_sessions() : "\<C-c>"
-
-"watchdogs_checker
-let g:quickrun_config = {
-      \   '_' : {
-      \       'hook/close_quickfix/enable_exit' : 1,
-      \       'hook/close_buffer/enable_failure' : 1,
-      \       'hook/close_buffer/enable_empty_data' : 1,
-      \       'outputter' : 'multi:buffer:quickfix',
-      \       'outputter/buffer/split' : ':botright 8sp',
-      \       'runner' : 'vimproc',
-      \       'runner/vimproc/updatetime' : 40,
-      \   },
-      \   'watchdogs_checker/_' : {
-      \       'outputter/quickfix/open_cmd' : '',
-      \       'hook/qfsigns_update/enable_exit' : 1,
-      \       'hook/back_window/enable_exit' : 1,
-      \       'hook/back_window/priority_exit' : 100,
-      \   },
-      \}
-let g:quickrun_config['ruby/watchdogs_checker'] = {
-      \       'type': 'watchdogs_checker/rubocop',
-      \       'cmdopt' : '-S -a -D'
-      \   }
-let g:quickrun_config['ruby.rails/watchdogs_checker'] = {
-      \       'type': 'watchdogs_checker/rubocop',
-      \       'cmdopt' : '-R -S -a -D'
-      \   }
-let g:quickrun_config['ruby.rspec/watchdogs_checker'] = {
-      \       'type': 'watchdogs_checker/rubocop',
-      \       'cmdopt' : '-R -S -a -D'
-      \   }
-let g:quickrun_config['ruby.minitest/watchdogs_checker'] = {
-      \       'type': 'watchdogs_checker/rubocop',
-      \       'cmdopt' : '-R -S -a -D'
-      \   }
-let g:quickrun_config['coffee/watchdogs_checker'] = {
-      \       'type': 'watchdogs_checker/coffeelint',
-      \   }
-let g:quickrun_config['css/watchdogs_checker'] = {
-      \       'type': 'watchdogs_checker/csslint'
-      \   }
-let g:quickrun_config['javascript/watchdogs_checker'] = {
-      \       'type': 'watchdogs_checker/eslint',
-      \       'cmdopt' : '--fix'
-      \  }
-let g:quickrun_config['javascript.jsx/watchdogs_checker'] = {
-      \       'type': 'watchdogs_checker/eslint',
-      \       'cmdopt' : '--fix'
-      \  }
-let g:quickrun_config['markdown/watchdogs_checker'] = {
-      \       'type': 'watchdogs_checker/textlint'
-      \  }
-let g:quickrun_config['sh/watchdogs_checker'] = {
-      \       'command' : 'shellcheck', 'cmdopt' : '-f gcc',
-      \       'type': 'watchdogs_checker/shellcheck'
-      \  }
-let g:quickrun_config['vim/watchdogs_checker'] = {
-      \     'type': executable('vint') ? 'watchdogs_checker/vint' : '',
-      \     'command'   : 'vint',
-      \     'exec'      : '%c %o %s:p' ,
-      \   }
-let g:quickrun_config['json/watchdogs_checker'] = {
-      \       'type': 'watchdogs_checker/jsonlint',
-      \       'cmdopt' : '-i'
-      \  }
-
-" execute
-let g:quickrun_config['html'] = { 'command' : 'open', 'exec' : '%c %s', 'outputter': 'browser' }
-
-" " If syntax error, cursor is moved at line setting sign.
-"let g:qfsigns#AutoJump = 1
-
-" If syntax error, view split and cursor is moved at line setting sign.
-"let g:qfsigns#AutoJump = 2
-
-let g:Qfstatusline#UpdateCmd = function('lightline#update')
-" watchdogs.vim の設定を追加
-call watchdogs#setup(g:quickrun_config)
 
 let g:unite_force_overwrite_statusline    = 0
 let g:vimfiler_force_overwrite_statusline = 0
@@ -861,6 +807,7 @@ call submode#map('winsize',        'n', '', 'K', '<C-w>+')
 " over.vimの起動
 nnoremap <silent> <C-s> :OverCommandLine<CR>%s/<C-r><C-w>//<Left>
 vnoremap <silent> <C-s> y:OverCommandLine<CR>%s/<C-r>"//<Left>
+vnoremap <silent> :s :OverCommandLine<CR>s//<Left>
 " カーソル下の単語をハイライト付きで置換
 nnoremap sb :overcommandline<CR>%s/<C-r><C-w>//<Left>
 " コピーした文字列をハイライト付きで置換
@@ -1185,8 +1132,7 @@ vmap , <Nop>
 vmap , [explorer]
 nnoremap [explorer]T :TigOpenCurrentFile<CR>
 nnoremap [explorer]t :TigOpenProjectRootDir<CR>
-nnoremap [explorer]g :TigGrep<Cr>
-nnoremap [explorer]h :TigGrep<Cr>
+nnoremap [explorer]g :TigGrep<space>
 ""選択状態のキーワードで検索"
 vnoremap [explorer]g y:TigGrep<Space><C-R>"<CR>
 ""カーソル上のキーワードで検索
@@ -1219,6 +1165,7 @@ augroup switch_auto_save
 augroup END
 
 " gtags
+let g:Gtags_OpenQuickfixWindow = 0
 "" 検索結果Windowを閉じる
 nnoremap <C-q> <C-w>j<C-w>q
 " "" Grep 準備
@@ -1233,3 +1180,15 @@ nnoremap <C-k> :Gtags -r <C-r><C-w><CR>
 nnoremap <C-n> :cn<CR>
 "" 前の検索結果
 nnoremap <C-p> :cp<CR>
+
+"ale
+let g:ale_set_quickfix = 1
+" let g:Qfstatusline#UpdateCmd = function('lightline#update')
+let g:ale_lint_on_enter=0 "ファイルを開いた時にチェックを実行。初期値1。設定で0に。
+let g:ale_lint_on_filetype_changed=0 "filetypeが変わった時にチェックを実行。初期値1。
+let g:ale_lint_on_save=0 "ファイルを保存する時にチェックを実行。初期値1。
+let g:ale_lint_on_text_changed=0 "内容が変更された時にチェックを実行。初期値1。余りにガチャガチャしすぎなら0に。
+let g:ale_lint_on_insert_leave=0 "インサートモードを終了する時にチェックを実行。初期値0。text_changedを0にしたらこちらを1にした方が良い。
+let g:ale_maximum_file_size=0 "チェックを行う最大ファイルサイズ。初期値は0。1以上に設定するとそのbyte数より大きいファイルをチェックしない。
+
+nnoremap <leader>w :ALELint<CR>

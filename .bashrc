@@ -145,5 +145,8 @@ fi
 stty werase undef
 bind '"\C-w":unix-filename-rubout'
 
-xmodmap -e "keycode 9 = Escape  asciitilde"
+# map <Shift-Escape> ~
+if [ -n "${DISPLAY+x}" ]; then
+  xmodmap -e "keycode 9 = Escape  asciitilde"
+fi
 

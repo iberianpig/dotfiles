@@ -63,3 +63,19 @@ man() {
 # gtags
 export GTAGSLABEL=pygments
 
+
+# locale
+case "$TERM" in
+#  linux)
+#    export LANG="C"
+#    export LANGUAGE="C"
+#    export LC_MESSAGES="C"
+#    export LC_CTYPE="C"
+#    export LC_COLLATE="C";;
+   *)
+    export LANG="ja_JP.UTF-8"
+    export LANGUAGE="ja:en_GB:en"
+    export LC_MESSAGES="ja_JP.UTF-8"
+    export LC_CTYPE="ja_JP.UTF-8"
+    export LC_COLLATE="ja_JP.UTF-8";;
+esac

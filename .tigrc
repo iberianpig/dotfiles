@@ -41,6 +41,7 @@ bind branch C !git co -b %(prompt) %(branch)
 bind branch P !git push origin %(branch)
 bind branch L !git pull origin %(branch)
 bind branch H !git-browse-remote %(branch)
+bind branch f !git fe
 
 bind generic M none
 bind branch M none
