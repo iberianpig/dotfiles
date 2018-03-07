@@ -303,7 +303,7 @@ abbr        try(:method)
 
 snippet     pry
 abbr        binding.pry
-    binding.pry
+    require 'pry-byebug'; binding.pry
 
 # attr_(reader|writer|accessor
 snippet attrr

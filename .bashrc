@@ -128,6 +128,8 @@ if which fzf > /dev/null; then
   }
   alias sn=fzf-search-note
 
+  alias tm="tw --dm:to=nukumaro22"
+
   function fzf-git-ls-files() {
     # check whether the current directory is under `git` repository.
     if git rev-parse 2> /dev/null; then
@@ -150,3 +152,5 @@ if [ -n "${DISPLAY+x}" ]; then
   xmodmap -e "keycode 9 = Escape  asciitilde"
 fi
 
+# reconnect dbus
+export $(dbus-launch)

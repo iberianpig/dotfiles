@@ -1,7 +1,7 @@
 # bash keybind
 window class_only: ['google-chrome',
                     'slack',
-                    'keepassx',
+                    'keepassxc',
                     'libreoffice',
                     'synapse',
                     'shift',
@@ -11,6 +11,8 @@ window class_only: ['google-chrome',
                     'crx_mjcnijlhddpbdemagnpefmlkjdagkogk', # pocket
                     'crx_ojcflmmmcfpacggndoaaflkmcoblhnbh', # wunderlist
                     'crx_menkifleemblimdogmoihpfopnplikde', # line
+                    'evince',
+                    'discord',
                     'wingpanel'] do
   remap 'C-o', to: 'Alt-Left'
   remap 'C-i', to: 'Alt-Right'
@@ -38,6 +40,7 @@ window class_only: ['google-chrome',
   remap 'C-m', to: 'Return'
 
   remap 'C-bracketleft', to: 'Escape'
+  remap 'C-q', to: 'Ctrl-w'
 
   %w(a z x c v w t f).each do |key|
     remap "Alt-#{key}", to: "C-#{key}"
@@ -48,10 +51,12 @@ window class_only: 'google-chrome' do
   remap 'Alt-space', to: 'Ctrl-l'
   remap 'Alt-n',     to: 'Ctrl-Tab'
   remap 'Alt-p',     to: 'Ctrl-Shift-Tab'
+  # remap 'C-u',       to: 'u'
+  # remap 'C-d',       to: 'd'
   remap 'C-q',       to: 'Ctrl-w'
 end
 
-window class_only: 'slack' do
+window class_only: ['discord', 'slack'] do
   remap 'Alt-space',    to: 'Ctrl-k'
   remap 'Alt-k',        to: 'Alt-Up'
   remap 'Alt-j',        to: 'Alt-Down'
@@ -69,8 +74,8 @@ window class_only: 'crx_hbdpomandigafcibbmofojjchbcdagbl' do
   remap 'Alt-space', to: 'S' # Search
   remap 'Alt-t',     to: 'n' # Open tweet dialog
   remap 'Alt-w',     to: %w(Escape Escape) # Close tweet dialog
-  remap 'C-p',       to: 'Page_Up'
-  remap 'C-n',       to: 'Page_Down'
+  # remap 'C-p',       to: 'Page_Up'
+  # remap 'C-n',       to: 'Page_Down'
   remap 'C-o',       to: 'BackSpace'
   remap 'Alt-Left',  to: 'BackSpace'
   remap 'C-q',       to: 'Ctrl-w'
@@ -85,7 +90,7 @@ window class_only: 'crx_mjcnijlhddpbdemagnpefmlkjdagkogk' do
 end
 
 
-window class_only: 'keepassx' do
+window class_only: 'keepassxc' do
   remap 'Alt-space', to: 'C-f'
   remap 'Alt-n',     to: 'C-n'
   remap 'Alt-b',     to: 'C-b'

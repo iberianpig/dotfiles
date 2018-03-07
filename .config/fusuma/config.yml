@@ -19,13 +19,13 @@ swipe:
       shortcut: 'super+s'
 pinch:
   in:
-    shortcut: 'ctrl+plus'
+    shortcut: 'ctrl+equal'
   out:
     shortcut: 'ctrl+minus'
 
 threshold:
   swipe: 0.1
-  pinch: 0.8
+  pinch: 0.5
 
 interval:
   swipe: 0.5

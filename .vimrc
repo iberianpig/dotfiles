@@ -58,6 +58,7 @@ set synmaxcol=300  " 長い行の場合、syntaxをoffにする
 set list           " 不可視文字を表示
 set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
+set iskeyword+=?,!,-,@-@ "?,!,@hogeなどをキーワードとする
 
 " Don't screw up folds when inserting text that might affect them, until
 " leaving insert mode. Foldmethod is local to the window. Protect against
@@ -74,6 +75,11 @@ augroup switch_folding_method
         \   let &l:foldmethod=w:last_fdm |
         \   unlet w:last_fdm |
         \ endif
+augroup END
+
+augroup vimrc-highlight
+  autocmd!
+  autocmd Syntax off if 10000 > line('$') | syntax sync minlines=100 | endif
 augroup END
 
 " Charset, Line ending -----------------
@@ -239,10 +245,12 @@ nnoremap <silent> gx :tabclose<CR>
 nnoremap <silent> gp :tabprevious<CR>
 nnoremap <silent> gn :tabnext<CR>
 
+
 augroup add_syntax_hilight
   autocmd!
   "シンタックスハイライトの追加
-  autocmd BufNewFile,BufRead *.json.jbuilder            set ft=ruby
+  autocmd BufNewFile,BufRead *.json.jbuilder set ft=ruby
+  autocmd BufNewFile,BufRead Gemfile.local set ft=ruby
   autocmd BufNewFile,BufRead *.erb                      set ft=eruby
   autocmd BufNewFile,BufRead *.slim                     set ft=slim
   autocmd BufNewFile,BufRead *.scss                     set ft=scss.css
@@ -437,8 +445,11 @@ NeoBundleLazy 'mopp/layoutplugin.vim', { 'autoload' : { 'commands' : 'LayoutPlug
 NeoBundle 'iberianpig/tig-explorer.vim'
 NeoBundle 'iberianpig/ranger-explorer.vim'
 
-" NeoBundle 'kaizoa/xz-peco.nvim'
+"unite like serching interface 
 NeoBundle 'junegunn/fzf'
+NeoBundle 'junegunn/fzf.vim', { 'dir': '~/.fzf', 'do': './install --all' }
+
+NeoBundle 'tomlion/vim-solidity'
 
 "ローカルディレクトリからプラグインを読み込む
 call neobundle#local(expand('~/.vim/plugin'))
@@ -888,8 +899,8 @@ function! s:unite_keymap()
   nnoremap <silent> [unite]M :<C-u>Unite<Space>file_mru<CR>
   "スペースキーとdキーで最近開いたディレクトリを表示
   nnoremap <silent> [unite]d :<C-u>Unite<Space> directory_mru<CR>
-  "スペースキーとbキーでバッファを表示
-  nnoremap <silent> [unite]b :<C-u>Unite<Space>buffer<CR>
+  " "スペースキーとbキーでバッファを表示
+  " nnoremap <silent> [unite]b :<C-u>Unite<Space>buffer<CR>
 
   " " "スペースキーと]キーでtagsを検索
   " vnoremap [unite]] y:<C-u>UniteWithCursorWord -immediately tag:<C-r>"<CR>
@@ -927,6 +938,26 @@ function! s:unite_keymap()
 
 
   nnoremap <silent> [unite]<CR> :FZF<CR>
+  " "スペースキーとbキーでバッファを表示
+  nnoremap <silent> [unite]b :Buffers<CR>
+
+  function! s:buflist()
+    redir => ls
+    silent ls
+    redir END
+    return split(ls, '\n')
+  endfunction
+
+  function! s:bufopen(e)
+    execute 'buffer' matchstr(a:e, '^[ 0-9]*')
+  endfunction
+
+  nnoremap <silent> <Leader><Enter> :call fzf#run({
+        \   'source':  reverse(<sid>buflist()),
+        \   'sink':    function('<sid>bufopen'),
+        \   'options': '+m',
+        \   'down':    len(<sid>buflist()) + 2
+        \ })<CR>
 
 
   ""unite-rails
@@ -977,19 +1008,7 @@ function! s:unite_my_settings()
 endfunction
 "" }}}
 
-" function! DispatchUniteFileRecAsyncOrGit()
-"   let l:ignore_pipe = ' | grep -v ^.*\.png | grep -v ^.*\.gif | grep -v ^.*\.jpeg | grep -v ^.*\.jpg'
-"   let l:search_cmd = 'find -type f'
-"   if isdirectory(getcwd()."/.git")
-"     let l:search_cmd = 'git ls-files'
-"   endif
-"   call xz#peco#edit(l:search_cmd . l:ignore_pipe)
-" endfunction
-
-" function! DispatchUniteFileRecAsyncOrGit()
-"   call fzf#run()
-" endfunction
-
+" fzf
 let g:fzf_action = {
   \ 'ctrl-o': 'open',
   \ 'ctrl-t': 'tab split',
@@ -1014,9 +1033,12 @@ augroup END
 " 辞書定義
 let g:ref_source_webdict_sites = {
       \   'je': {
-      \     'url': 'http://eow.alc.co.jp/search?q=%s',
+      \     'url': 'https://translate.google.com/#auto/ja/%s',
       \   },
       \   'ej': {
+      \     'url': 'http://eow.alc.co.jp/search?q=%s',
+      \   },
+      \   'alc': {
       \     'url': 'http://eow.alc.co.jp/search?q=%s',
       \   },
       \ }
@@ -1065,6 +1087,13 @@ nmap gx <Plug>(openbrowser-smart-search)
 vmap gx y:<C-u>OpenBrowserSearch <C-R>"<CR>
 nmap gd :<C-u>OpenBrowserSearch -devdocs <C-r><C-w> <CR>
 vmap gd y:<C-u>OpenBrowserSearch -devdocs <C-R>"<CR>
+vmap gex y:<C-u>OpenBrowserSearch -googletranslate_en <C-R>"<CR>
+vmap gjx y:<C-u>OpenBrowserSearch -googletranslate_ja <C-R>"<CR>
+
+let g:openbrowser_search_engines = {
+      \ 'googletranslate_en': 'https://translate.google.com/#ja/en/{query}',
+      \ 'googletranslate_ja': 'https://translate.google.com/#en/ja/{query}'
+      \ }
 
 let g:openbrowser_browser_commands = [
       \ {'name': 'xdg-open',
@@ -1100,6 +1129,20 @@ nmap <silent> <leader>a :TestSuite<CR>
 nmap <silent> <leader>l :TestLast<CR>
 nmap <silent> <leader>g :TestVisit<CR>
 
+" https://qiita.com/joker1007/items/4dbff328f39c11e732af
+function! DockerTransformer(cmd) abort
+  if $SPEC_CONTAINER_NAME != ''
+    echomsg 'docker-compose exec ' . $SPEC_CONTAINER_NAME . ' bundle exec ' . a:cmd
+    return  'docker-compose exec ' . $SPEC_CONTAINER_NAME . ' bundle exec ' . a:cmd
+  else
+    return 'bundle exec ' . a:cmd
+  endif
+endfunction
+
+let test#ruby#rspec#executable = 'rspec'
+let g:test#custom_transformations = {'docker': function('DockerTransformer')}
+let g:test#transformation = 'docker'
+
 let g:vim_json_syntax_conceal = 0
 
 " lexima plugin
@@ -1134,9 +1177,11 @@ nnoremap [explorer]T :TigOpenCurrentFile<CR>
 nnoremap [explorer]t :TigOpenProjectRootDir<CR>
 nnoremap [explorer]g :TigGrep<space>
 ""選択状態のキーワードで検索"
-vnoremap [explorer]g y:TigGrep<Space><C-R>"<CR>
+vnoremap [explorer]g y:TigGrep<Space><C-R>"
 ""カーソル上のキーワードで検索
 " nnoremap [explorer]cg :<C-u>:TigGrep<Space><C-R><C-W><CR>
+"" open tig blame with current file
+nnoremap [explorer]b :TigBlame<CR>
 
 " ranger-explorer
 nnoremap [explorer]c :<C-u>RangerOpenCurrentDir<CR>
@@ -1165,6 +1210,7 @@ augroup switch_auto_save
 augroup END
 
 " gtags
+let g:Gtags_Auto_Update = 1
 let g:Gtags_OpenQuickfixWindow = 0
 "" 検索結果Windowを閉じる
 nnoremap <C-q> <C-w>j<C-w>q
@@ -1174,8 +1220,10 @@ nnoremap <C-q> <C-w>j<C-w>q
 nnoremap <C-h> :Gtags -f %<CR>
 "" カーソル以下の定義元を探す
 nnoremap <C-j> :Gtags <C-r><C-w><CR>
+vnoremap <C-j> y:Gtags <C-r>"<CR>
 "" カーソル以下の使用箇所を探す
 nnoremap <C-k> :Gtags -r <C-r><C-w><CR>
+vnoremap <C-k> y:Gtags -r <C-r>"<CR>
 "" 次の検索結果
 nnoremap <C-n> :cn<CR>
 "" 前の検索結果

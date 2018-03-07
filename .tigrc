@@ -55,6 +55,9 @@ bind status C !?git commit -vn
 bind status a !?git commit -v  --amend
 # hookキャンセル+amendオプション
 bind status A !?git commit -vn --amend
+# file remove
+bind status D !@?rm %(file)
+
 
 # `-` でステージ・アンステージをスイッチ
 bind status u none
