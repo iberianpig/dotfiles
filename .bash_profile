@@ -79,3 +79,6 @@ case "$TERM" in
     export LC_CTYPE="ja_JP.UTF-8"
     export LC_COLLATE="ja_JP.UTF-8";;
 esac
+
+# reconnect dbus
+export $(dbus-launch)

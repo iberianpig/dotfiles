@@ -2,22 +2,23 @@
 set main-view = id date author commit-title:graph=yes,refs=yes
 
 # # Visualization
-set id-width = 8
-set blame-options = -C -C -C
-set horizontal-scroll = 33%
-set show-notes = yes
-set show-changes = yes
-set split-view-height = 80%
+set id-width              = 8
+set blame-options         = -C -C -C
+set horizontal-scroll     = 33%
+set show-notes            = yes
+set show-changes          = yes
+set split-view-height     = 80%
 set status-untracked-dirs = yes
-set tab-size = 2
-set diff-context = 3
-set diff-options = -m --first-parent
-set ignore-space = all
-set commit-order = topo
-set ignore-case = yes
-set focus-child = yes
-set grep-view = file-name:yes line-number:yes,interval=1 text
-set wrap-lines = yes
+set tab-size              = 2
+set diff-context          = 3
+set diff-options          = -m --first-parent
+set ignore-space          = all
+set commit-order          = topo
+set ignore-case           = yes
+set focus-child           = yes
+set grep-view             = file-name:yes line-number:yes,interval=1 text
+set wrap-lines            = yes
+set refresh-mode          = auto #options: after-command / periodic / 1
 
 # Bind Settings
 bind generic <C-f> move-page-down
@@ -36,16 +37,34 @@ bind diff V !?git revert %(prompt) %(commit)
 bind generic F none
 bind generic F !git fe # git fetch
 
-bind branch c !git co %(branch)
-bind branch C !git co -b %(prompt) %(branch)
-bind branch P !git push origin %(branch)
-bind branch L !git pull origin %(branch)
+bind branch c !?git co %(branch)
+bind branch C !?git co -b %(prompt) %(branch)
+bind branch P !?git push origin %(branch)
+bind branch L !?git pull origin %(branch)
 bind branch H !git-browse-remote %(branch)
 bind branch f !git fe
 
-bind generic M none
-bind branch M none
-bind branch M !git merge %(branch)
+# M で merge
+bind generic M      none
+bind branch  M      none
+bind branch  M      !git merge %(branch)
+bind diff    <Esc>m ?git merge %(commit)
+
+# R で rebase
+bind main    R ?git rebase %(commit)
+bind diff    R ?git rebase %(commit)
+bind branch  R ?git rebase %(commit)
+
+# I で rebase -i
+bind main    I      ?git rebase -i %(branch)
+bind diff    I      ?git rebase -i %(branch)
+bind refs    I      ?git rebase -i %(branch)
+bind main    <Esc>i ?git rebase -i %(commit)
+bind diff    <Esc>i ?git rebase -i %(commit)
+
+# reflog
+bind generic L      !sh -c "git reflog --pretty=raw | tig --pretty=raw"
+bind generic _      ?git reset --hard HEAD@{"%(prompt Enter HEAD@{} number: )"}
 
 # 差分表示してコミットメッセージ編集
 bind status c !?git commit -v
@@ -66,3 +85,21 @@ bind stage u none
 bind stage - status-update
 
 bind status d !sh -c "git difftool -y \"$(git rev-parse --show-toplevel)/%(file)\""
+
+# stash
+bind status  S      !?git stash push -p --message "%(prompt Enter stash -p comment: )" -- %(file)
+bind status  <Esc>s !?git stash push --message "%(prompt Enter stash All comment: )"
+bind stash   p      !?git stash pop %(stash)
+
+# diff
+## . で HEAD との diff
+bind main    .      !sh -c "git diff %(commit) | tig"
+bind diff    .      !sh -c "git diff %(commit) | tig"
+bind refs    .      !sh -c "git diff %(branch) | tig"
+## Alt-. で指定 commit ID との diff
+bind main    <Esc>. ?sh -c "git diff %(commit)..%(prompt Enter commit ID: ) | tig"
+bind diff    <Esc>. ?sh -c "git diff %(commit)..%(prompt Enter commit ID: ) | tig"
+bind refs    <Esc>. ?sh -c "git diff %(branch)..%(prompt Enter branch name: ) | tig"
+
+# authorで絞り込み
+bind main    a      <tig --author="%(prompt Enter author: )"

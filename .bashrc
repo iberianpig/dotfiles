@@ -100,10 +100,11 @@ fi
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
 export FZF_TMUX_HEIGHT="50%"
-export FZF_DEFAULT_OPTS='
+export FZF_DEFAULT_OPTS="
 --color fg:-1,bg:-1,hl:230,fg+:3,bg+:233,hl+:229
 --color info:150,prompt:110,spinner:150,pointer:167,marker:174
-'
+"
+
 export FZF_DEFAULT_COMMAND='
   (git ls-tree -r --name-only HEAD ||
        find . -path "*/\.*" -prune -o -type f -print -o -type l -print |
@@ -128,12 +129,22 @@ if which fzf > /dev/null; then
   }
   alias sn=fzf-search-note
 
-  alias tm="tw --dm:to=nukumaro22"
+  # Blogのメモを探して開く
+  fzf-search-blog() {
+    local note_path=~/.ghq/github.com/iberianpig/iberianpig.github.io/content/posts/
+    # local selected_file="$(find  $note_path/201*.md -type f | fzf --tac --preview='head -30 {}')"
+    local selected_file="$(find  $note_path/201*.md -type f | fzf --tac --preview 'pygmentize {}')"
+
+    if [ -n "${selected_file}" ]; then
+      vi "${selected_file}"
+    fi
+  }
+  alias sb=fzf-search-blog
 
   function fzf-git-ls-files() {
     # check whether the current directory is under `git` repository.
     if git rev-parse 2> /dev/null; then
-      local selected_file="$(git ls-files . | fzf)"
+      local selected_file="$(git ls-files . | fzf --tac --preview 'pygmentize {}')"
 
       if [ -n "${selected_file}" ]; then
         vi "${selected_file}"
@@ -141,7 +152,18 @@ if which fzf > /dev/null; then
     fi
   }
   alias gl=fzf-git-ls-files
+
+  function fzf-kill() {
+    ps aux | fzf  | awk '{ print $2 }'  | xargs  kill -9
+  }
+  alias pk=fzf-kill
+
 fi
+
+# Add an "alert" alias for long running commands.  Use like so:
+#   sleep 10; alert
+alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "Task finished" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+
 
 # remap ctrl-w
 stty werase undef
@@ -152,5 +174,5 @@ if [ -n "${DISPLAY+x}" ]; then
   xmodmap -e "keycode 9 = Escape  asciitilde"
 fi
 
-# reconnect dbus
-export $(dbus-launch)
+# wakatime
+source ~/.ghq/github.com/gjsheep/bash-wakatime/bash-wakatime.sh

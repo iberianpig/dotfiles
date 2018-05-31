@@ -346,11 +346,11 @@ NeoBundle     'sgur/vim-gitgutter'
 NeoBundle     'tmhedberg/matchit'
 NeoBundleLazy 'mattn/benchvimrc-vim', {'autoload': {'commands': [{'complete': 'file', 'name': 'BenchVimrc'}]}}
 NeoBundle     'rking/ag.vim'
-NeoBundleLazy 'pocke/vim-hier', {'autoload': {'commands': ['HierStart', 'HierUpdate', 'HierClear', 'HierStop']}}
 NeoBundleLazy 'dannyob/quickfixstatus', {'autoload': {'commands': ['QuickfixStatusDisable', 'QuickfixStatusEnable']}}
 NeoBundle     'osyo-manga/shabadou.vim'
 
 NeoBundle 'w0rp/ale'
+NeoBundle 'maximbaz/lightline-ale'
 " NeoBundleLazy 'KazuakiM/vim-qfstatusline', {'autoload': {'commands': ['QfstatuslineUpdate']}}
 " NeoBundleLazy 'KazuakiM/vim-qfsigns', {'autoload': {'commands': ['QfsignsClear', 'QfsignsJunmp', 'QfsignsUpdate']}}
 NeoBundleLazy 'tpope/vim-dispatch', {'autoload': {'commands': [{'complete': 'customlist,dispatch#make_complete', 'name': 'Make'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Dispatch'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'FocusDispatch'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Spawn'}, {'complete': 'customlist,dispatch#command_complete', 'name': 'Start'}, 'Copen']}}
@@ -389,7 +389,6 @@ NeoBundle 'szw/vim-tags'
 " rubyでのみvim-rubyを読み込む
 " NeoBundleLazy 'vim-ruby/vim-ruby', {  "autoload" : {"filetypes" : ["ruby"]} }
 NeoBundleLazy 'pocke/dicts', { "autoload" : { "filetypes" : ["ruby"] }  }
-NeoBundleLazy 'thoughtbot/vim-rspec', { "autoload" : { "filetypes" : ["ruby"] }  }
 NeoBundleLazy 'todesking/ruby_hl_lvar.vim', { "autoload" : { "filetypes" : ["ruby"] }  }
 
 "rails
@@ -410,10 +409,15 @@ NeoBundleLazy 'othree/html5.vim', { "autoload" : { "filetypes" : ["html"] } }
 
 " javascript
 NeoBundle     'elzr/vim-json'
-NeoBundleLazy 'othree/yajs.vim',                  {'autoload':{'filetypes':['javascript']}}
-NeoBundleLazy 'matthewsimo/angular-vim-snippets', { "autoload" : { "filetypes" : ["javascript"] } }
-NeoBundleLazy 'vim-scripts/JavaScript-Indent',    { "autoload": { "filetypes" : ["javascript"] }}
-NeoBundleLazy 'kchmck/vim-coffee-script',         {'autoload':{'filetypes':['coffee']}}
+NeoBundleLazy 'othree/yajs.vim',                  {'autoload':{'filetypes':['javascript', 'html']}}
+NeoBundleLazy 'vim-scripts/JavaScript-Indent',    { "autoload": { "filetypes" : ['javascript', 'html'] }}
+NeoBundleLazy 'pangloss/vim-javascript',    { "autoload": { "filetypes" : ['javascript', 'html'] }}
+NeoBundleLazy 'othree/javascript-libraries-syntax.vim', {'autoload':{'filetypes':['javascript', 'html']}}
+NeoBundleLazy 'othree/es.next.syntax.vim', {'autoload':{'filetypes':['javascript', 'html']}}
+NeoBundleLazy 'MaxMEllon/vim-jsx-pretty', {'autoload':{'filetypes':['javascript', 'html']}}
+"" not using
+" NeoBundleLazy 'kchmck/vim-coffee-script',         {'autoload':{'filetypes':['coffee']}}
+" NeoBundleLazy 'matthewsimo/angular-vim-snippets', { "autoload" : { "filetypes" : ['javascript', 'html'] } }
 
 " css
 NeoBundle     'lilydjwg/colorizer'
@@ -448,7 +452,9 @@ NeoBundle 'iberianpig/ranger-explorer.vim'
 "unite like serching interface 
 NeoBundle 'junegunn/fzf'
 NeoBundle 'junegunn/fzf.vim', { 'dir': '~/.fzf', 'do': './install --all' }
+NeoBundle 'tweekmonster/fzf-filemru'
 
+"solidity
 NeoBundle 'tomlion/vim-solidity'
 
 "ローカルディレクトリからプラグインを読み込む
@@ -481,12 +487,6 @@ let g:seiya_auto_enable=1
 " カーソル行にアンダーラインを引く(color terminal)
 highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
 
-" " Watchdogsのエラー箇所のハイライトをいい感じにする
-" execute 'highlight qf_error_ucurl ctermfg=167 ctermbg=52 gui=undercurl guifg=#cc6666 guibg=#5f0000 guisp=Red'
-" let g:hier_highlight_group_qf  = 'qf_error_ucurl'
-" execute 'highlight qf_warning_ucurl ctermfg=109 ctermbg=24 gui=underline guifg=#8abeb7 guibg=#005f5f guisp=Cyan'
-" let g:hier_highlight_group_qfw = 'qf_warning_ucurl'
-"
 " " エラー箇所の行番号左にSignを表示
 " " 行全体のハイライトはなし、SignのみErrorMsg（赤色）にする
 " let g:qfsigns#Config = {'id': '5051', 'name': 'QFSign'}
@@ -506,10 +506,10 @@ let g:lightline = {
       \ 'colorscheme': 'Tomorrow_Night',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], [ 'ctrlpmark'] ],
-      \   'right': [ [ 'ale_error', 'ale_warning', 'ale_ok', 'lineinfo' ] ]
+      \   'right': [[ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]]
       \ },
       \ 'inactive': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename', 'ale' ], ['ctrlpmark'] ],
+      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
       \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
       \ },
       \ 'component_function':  {
@@ -524,55 +524,22 @@ let g:lightline = {
       \   'lineinfo':          'MyLineInfo',
       \ },
       \ 'component_expand':    {
-      \    'ale_error':   'Lightline_ale_error',
-      \    'ale_warning': 'Lightline_ale_warning',
-      \    'ale_ok':      'Lightline_ale_ok',
+      \  'linter_checking': 'lightline#ale#checking',
+      \  'linter_warnings': 'lightline#ale#warnings',
+      \  'linter_errors': 'lightline#ale#errors',
+      \  'linter_ok': 'lightline#ale#ok',
       \ },
       \ 'component_type':      {
-      \ 'ale_error':   'error',
-      \ 'ale_warning': 'warning',
-      \ 'ale_ok':      'ok',
+      \     'linter_checking': 'left',
+      \     'linter_warnings': 'warning',
+      \     'linter_errors': 'error',
+      \     'linter_ok': 'left',
       \ },
       \ 'tabline':             {
       \   'left':              [ [ 'tabs' ] ],
       \   'right':             [ [ 'currentworkingdir' ] ],
       \ },
       \}
-
-function! Lightline_ale_error() abort
-  return s:ale_string(0)
-endfunction
-
-function! Lightline_ale_warning() abort
-  return s:ale_string(1)
-endfunction
-
-function! Lightline_ale_ok() abort
-  return s:ale_string(2)
-endfunction
-
-function! s:ale_string(mode)
-  if !exists('g:ale_buffer_info')
-    return ''
-  endif
-
-  let l:buffer = bufnr('%')
-  let [l:error_count, l:warning_count] = ale#statusline#Count(l:buffer)
-  let [l:error_format, l:warning_format, l:no_errors] = g:ale_statusline_format
-
-  if a:mode == 0 " Error
-    return l:error_count ? printf(l:error_format, l:error_count) : ''
-  elseif a:mode == 1 " Warning
-    return l:warning_count ? printf(l:warning_format, l:warning_count) : ''
-  endif
-
-  return l:error_count == 0 && l:warning_count == 0 ? l:no_errors : ''
-endfunction
-
-augroup LightLineALE
-  autocmd!
-  autocmd User ALELint call lightline#update()
-augroup END
 
 function! MyModified()
   return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -890,15 +857,17 @@ function! s:unite_keymap()
   vmap <Space> <Nop>
   vmap <Space> [unite]
 
-  nnoremap <silent> [unite]i :<C-u>Unite<Space>
+  nnoremap [unite]i :Commands<CR>
   ""スペースキーとaキーでカレントディレクトリを表示
-  nnoremap <silent> [unite]a :<C-u>UniteWithBufferDir -buffer-name=files file<CR>
+  nnoremap <silent> [unite]a :call fzf#vim#files(expand("%:p:h"), fzf#vim#with_preview())<CR>
   "スペースキーとmキーでプロジェクト内で最近開いたファイル一覧を表示
-  nnoremap <silent> [unite]m :<C-u>UniteWithProjectDir<Space>file_mru<CR>
-  "スペースキーとMキーで最近開いたファイル一覧を表示
-  nnoremap <silent> [unite]M :<C-u>Unite<Space>file_mru<CR>
+  " nnoremap <silent> [unite]m :<C-u>UniteWithProjectDir<Space>file_mru<CR>
+  " "スペースキーとMキーで最近開いたファイル一覧を表示
+  " nnoremap <silent> [unite]M :<C-u>Unite<Space>file_mru<CR>
+  " nnoremap <silent> [unite]m :call fzf#run({'source': v:oldfiles, 'options': '-m -x +s'})<CR>
+  nnoremap <silent> [unite]m :FilesMru --tiebreak=end<cr>
+
   "スペースキーとdキーで最近開いたディレクトリを表示
-  nnoremap <silent> [unite]d :<C-u>Unite<Space> directory_mru<CR>
   " "スペースキーとbキーでバッファを表示
   " nnoremap <silent> [unite]b :<C-u>Unite<Space>buffer<CR>
 
@@ -916,7 +885,8 @@ function! s:unite_keymap()
   ""スペースキーとpキーでヒストリ/ヤンクを表示
   nnoremap <silent> [unite]p :<C-u>Unite<Space> yankround<CR>
   ""スペースキーとhキーで:helpを検索
-  nnoremap <silent> [unite]h :<C-u>Unite<Space> help -buffer-name=search-buffer<CR>
+  " nnoremap <silent> [unite]h :<C-u>Unite<Space> help -buffer-name=search-buffer<CR>
+  nnoremap <silent> [unite]h :<C-u>Helptags<CR>
   "スペースキーとoキーでoutline
   nnoremap <silent> [unite]o :<C-u>Unite<Space> outline -prompt-direction="top"<CR>
   " grep検索
@@ -936,29 +906,10 @@ function! s:unite_keymap()
   " " bookmark
   nnoremap <silent> [unite]B :<C-u>Unite bookmark<CR>
 
-
   nnoremap <silent> [unite]<CR> :FZF<CR>
+
   " "スペースキーとbキーでバッファを表示
   nnoremap <silent> [unite]b :Buffers<CR>
-
-  function! s:buflist()
-    redir => ls
-    silent ls
-    redir END
-    return split(ls, '\n')
-  endfunction
-
-  function! s:bufopen(e)
-    execute 'buffer' matchstr(a:e, '^[ 0-9]*')
-  endfunction
-
-  nnoremap <silent> <Leader><Enter> :call fzf#run({
-        \   'source':  reverse(<sid>buflist()),
-        \   'sink':    function('<sid>bufopen'),
-        \   'options': '+m',
-        \   'down':    len(<sid>buflist()) + 2
-        \ })<CR>
-
 
   ""unite-rails
   noremap <silent> [unite]ec :<C-u>Unite rails/controller<CR>
@@ -1009,8 +960,16 @@ endfunction
 "" }}}
 
 " fzf
+" quickfixに流す
+function! s:build_quickfix_list(lines)
+  call setqflist(map(copy(a:lines), '{ "filename": v:val }'))
+  copen
+  cc
+endfunction
+
 let g:fzf_action = {
-  \ 'ctrl-o': 'open',
+  \ 'ctrl-q': function('s:build_quickfix_list'),
+  \ 'ctrl-o': 'edit',
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-s': 'split',
   \ 'ctrl-v': 'vsplit' }
@@ -1087,6 +1046,8 @@ nmap gx <Plug>(openbrowser-smart-search)
 vmap gx y:<C-u>OpenBrowserSearch <C-R>"<CR>
 nmap gd :<C-u>OpenBrowserSearch -devdocs <C-r><C-w> <CR>
 vmap gd y:<C-u>OpenBrowserSearch -devdocs <C-R>"<CR>
+nmap ga :<C-u>OpenBrowserSearch -alc <C-R>"<CR>
+vmap ga y:<C-u>OpenBrowserSearch -alc <C-R>"<CR>
 vmap gex y:<C-u>OpenBrowserSearch -googletranslate_en <C-R>"<CR>
 vmap gjx y:<C-u>OpenBrowserSearch -googletranslate_ja <C-R>"<CR>
 
@@ -1129,14 +1090,23 @@ nmap <silent> <leader>a :TestSuite<CR>
 nmap <silent> <leader>l :TestLast<CR>
 nmap <silent> <leader>g :TestVisit<CR>
 
+let test#ruby#rspec#options = {
+  \ 'nearest': '--backtrace',
+  \ 'file':    '--format documentation',
+  \ 'suite':   '--tag ~slow',
+\}
+
+" docker and rspec
 " https://qiita.com/joker1007/items/4dbff328f39c11e732af
 function! DockerTransformer(cmd) abort
   if $SPEC_CONTAINER_NAME != ''
-    echomsg 'docker-compose exec ' . $SPEC_CONTAINER_NAME . ' bundle exec ' . a:cmd
-    return  'docker-compose exec ' . $SPEC_CONTAINER_NAME . ' bundle exec ' . a:cmd
+    let prefix = 'docker-compose exec ' . $SPEC_CONTAINER_NAME . ' bundle exec '
   else
-    return 'bundle exec ' . a:cmd
+    let prefix = 'bundle exec '
   endif
+  let g:dispatch_compilers = {}
+  let g:dispatch_compilers[prefix] = ''
+  return  prefix . a:cmd
 endfunction
 
 let test#ruby#rspec#executable = 'rspec'
@@ -1175,13 +1145,17 @@ vmap , <Nop>
 vmap , [explorer]
 nnoremap [explorer]T :TigOpenCurrentFile<CR>
 nnoremap [explorer]t :TigOpenProjectRootDir<CR>
-nnoremap [explorer]g :TigGrep<space>
+nnoremap [explorer]g :Tig grep<space>
 ""選択状態のキーワードで検索"
-vnoremap [explorer]g y:TigGrep<Space><C-R>"
+vnoremap [explorer]g y:Tig grep<Space><C-R>"
 ""カーソル上のキーワードで検索
 " nnoremap [explorer]cg :<C-u>:TigGrep<Space><C-R><C-W><CR>
 "" open tig blame with current file
 nnoremap [explorer]b :TigBlame<CR>
+
+nnoremap [explorer]s :Tig status<CR>
+nnoremap [explorer]y :Tig stash<CR>
+nnoremap [explorer]r :Tig refs<CR>
 
 " ranger-explorer
 nnoremap [explorer]c :<C-u>RangerOpenCurrentDir<CR>
@@ -1224,19 +1198,28 @@ vnoremap <C-j> y:Gtags <C-r>"<CR>
 "" カーソル以下の使用箇所を探す
 nnoremap <C-k> :Gtags -r <C-r><C-w><CR>
 vnoremap <C-k> y:Gtags -r <C-r>"<CR>
-"" 次の検索結果
+
+"" 検索結果に移動
+nnoremap <C-c> :cc<CR>
+
+"" 次の検索結果に移動
 nnoremap <C-n> :cn<CR>
-"" 前の検索結果
+"" 前の検索結果に移動
 nnoremap <C-p> :cp<CR>
 
 "ale
 let g:ale_set_quickfix = 1
-" let g:Qfstatusline#UpdateCmd = function('lightline#update')
-let g:ale_lint_on_enter=0 "ファイルを開いた時にチェックを実行。初期値1。設定で0に。
-let g:ale_lint_on_filetype_changed=0 "filetypeが変わった時にチェックを実行。初期値1。
+let g:Qfstatusline#UpdateCmd = function('lightline#update')
+let g:ale_lint_on_enter=1 "ファイルを開いた時にチェックを実行。初期値1。設定で0に。
+let g:ale_lint_on_filetype_changed=1 "filetypeが変わった時にチェックを実行。初期値1。
 let g:ale_lint_on_save=0 "ファイルを保存する時にチェックを実行。初期値1。
 let g:ale_lint_on_text_changed=0 "内容が変更された時にチェックを実行。初期値1。余りにガチャガチャしすぎなら0に。
 let g:ale_lint_on_insert_leave=0 "インサートモードを終了する時にチェックを実行。初期値0。text_changedを0にしたらこちらを1にした方が良い。
 let g:ale_maximum_file_size=0 "チェックを行う最大ファイルサイズ。初期値は0。1以上に設定するとそのbyte数より大きいファイルをチェックしない。
 
+let g:ale_fixers = {
+      \'ruby': ['rubocop'],
+      \'json': ['fixjson']
+      \}
 nnoremap <leader>w :ALELint<CR>
+nnoremap <leader>f :ALEFix<CR>

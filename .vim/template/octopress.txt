@@ -1,9 +1,0 @@
----
-layout: post
-title: "{{_title_}}"
-published: {{_published_}}
-date: {{_date_}}
-comments: {{_comments_}}
-categories: {{_categories_}}
-ogp_image: 
----

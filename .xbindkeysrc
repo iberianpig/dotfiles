@@ -51,10 +51,10 @@
 "sudo /home/iberianpig/Dropbox/tool/linux/script/tethering.sh"
    Mod4 + F2
 
-"xdotool set_desktop $(expr $(xdotool get_desktop) - 1)"
+"sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1"
    Control+Shift + h
 
-"xdotool set_desktop $(expr $(xdotool get_desktop) + 1)"
+"sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1"
    Control+Shift + l
 
 # "/home/iberianpig/Dropbox/tool/linux/script/toggle_browser_terminal.sh"
@@ -64,11 +64,14 @@
    Control+Shift + m
 
 "/home/iberianpig/.ghq/github.com/iberianpig/relocate_window/relocate_window.sh"
-   Mod4 + F1
+   Mod4 + r
 
-"~/Dropbox/tool/linux/script/gyazo_gif.sh 10"
+"~/Dropbox/tool/linux/script/gyazo_gif.sh 10 > /tmp/gyazo_gif.log 2>&1"
    Mod4 + Print
-#
+
+"keepassxc  > /dev/null 2>&1"
+   Mod4 + k
+
 # End of xbindkeys configuration
 
 
