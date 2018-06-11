@@ -103,3 +103,6 @@ bind refs    <Esc>. ?sh -c "git diff %(branch)..%(prompt Enter branch name: ) | 
 
 # authorで絞り込み
 bind main    a      <tig --author="%(prompt Enter author: )"
+
+# reopen
+bind generic  <ESC>r  <tig
