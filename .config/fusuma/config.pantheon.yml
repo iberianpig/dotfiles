@@ -1,0 +1,40 @@
+swipe:
+  3:
+    left:
+      command: 'xdotool key alt+Right'
+    right:
+      command: 'xdotool key alt+Left'
+    up:
+      command: 'xdotool key alt+t'
+    down:
+      command: 'xdotool key alt+w'
+  4:
+    left:
+      # command: 'xdotool key super+Right'
+      command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1'
+    right:
+      # command: 'xdotool key super+Left'
+      command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1' 
+    up:
+      command: 'xdotool key super+s'
+    down:
+      command: 'xdotool key super+a'
+pinch:
+  2:
+    in:
+      command: 'xdotool key ctrl+equal'
+    out:
+      command: 'xdotool key ctrl+minus'
+  4:
+    in:
+      command: 'xdotool key super+a'
+    out:
+      command: 'xdotool key super+s'
+
+threshold:
+  swipe: 0.1
+  pinch: 0.5
+
+interval:
+  swipe: 0.5
+  pinch: 0.3

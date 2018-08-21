@@ -18,12 +18,13 @@ set ignore-case           = yes
 set focus-child           = yes
 set grep-view             = file-name:yes line-number:yes,interval=1 text
 set wrap-lines            = yes
-set refresh-mode          = auto #options: after-command / periodic / 1
+set refresh-mode          = periodic #options: auto / after-command / periodic / 1
 
 # Bind Settings
 bind generic <C-f> move-page-down
 bind generic <C-b> move-page-up
-bind generic g move-first-line
+bind generic g  none
+bind generic gg move-first-line
 bind main    G  none
 bind main    G  move-last-line
 bind generic G  move-last-line
@@ -56,11 +57,11 @@ bind diff    R ?git rebase %(commit)
 bind branch  R ?git rebase %(commit)
 
 # I で rebase -i
-bind main    I      ?git rebase -i %(branch)
-bind diff    I      ?git rebase -i %(branch)
-bind refs    I      ?git rebase -i %(branch)
-bind main    <Esc>i ?git rebase -i %(commit)
-bind diff    <Esc>i ?git rebase -i %(commit)
+bind main    <Esc>i      ?git rebase -i %(branch)
+bind diff    <Esc>i      ?git rebase -i %(branch)
+bind refs    <Esc>i      ?git rebase -i %(branch)
+bind main    I           ?git rebase -i %(commit)
+bind diff    I           ?git rebase -i %(commit)
 
 # reflog
 bind generic L      !sh -c "git reflog --pretty=raw | tig --pretty=raw"
@@ -103,6 +104,10 @@ bind refs    <Esc>. ?sh -c "git diff %(branch)..%(prompt Enter branch name: ) | 
 
 # authorで絞り込み
 bind main    a      <tig --author="%(prompt Enter author: )"
+
+# origin/masterと比較(PRのレビューに使う)
+bind main    <ESC>d      <sh -c "tig $(git merge-base origin/master %(commit))...%(commit)"
+bind main    <ESC>D      <sh -c "tig $(git merge-base %(prompt Enter branch name: ) %(commit))...%(commit)"
 
 # reopen
 bind generic  <ESC>r  <tig

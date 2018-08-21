@@ -11,6 +11,9 @@ export PATH=$PATH:$GOPATH/bin
 # npm
 export PATH=~/.npm-global/bin:$PATH
 
+# yarn
+export PATH=~/.yarn/bin:$PATH
+
 
 # #genymotion
 # export PATH="/opt/genymotion:$PATH"
@@ -30,7 +33,7 @@ export EDITOR="vim"
 export PATH="/usr/local/heroku/bin:$PATH"
 
 # gnu gobal
-export GTAGSCONF=/usr/local/share/gtags/gtags.conf
+export GTAGSCONF=~/.globalrc
 export GTAGSLABEL=pygments
 
 # rbenv
@@ -48,6 +51,9 @@ export NVM_DIR="$HOME/.nvm"
 # less
 export LESS='-iMR'
 export MANPAGER='less -iMR'
+
+# shellcheck disable=SC2046
+# Quote this to prevent word splitting.
 man() {
   env \
     LESS_TERMCAP_mb=$(printf "\e[1;31m") \
@@ -79,6 +85,3 @@ case "$TERM" in
     export LC_CTYPE="ja_JP.UTF-8"
     export LC_COLLATE="ja_JP.UTF-8";;
 esac
-
-# reconnect dbus
-export $(dbus-launch)

@@ -1,4 +1,5 @@
 #! /bin/bash
+# 既存ファイルが存在している場合、mvやrmするなどしてリンク先を削除しておくこと
 ln -fns ~/dotfiles/.vimrc ~/.vimrc
 ln -fns ~/dotfiles/.bashrc ~/.bashrc
 ln -fns ~/dotfiles/.bash_profile ~/.bash_profile
@@ -12,3 +13,4 @@ ln -fns ~/dotfiles/.ctags ~/.ctags
 ln -fns ~/dotfiles/.tigrc ~/.tigrc
 ln -fns ~/dotfiles/.config/fusuma ~/.config/fusuma
 ln -fns ~/dotfiles/.config/xremap ~/.config/xremap
+ln -fns ~/dotfiles/.config/autostart ~/.config/autostart

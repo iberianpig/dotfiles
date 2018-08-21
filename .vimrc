@@ -1,3 +1,6 @@
+set encoding=utf-8
+scriptencoding utf-8
+
 " autocmdのリセット
 autocmd!
 set number     " 行番号を表示する
@@ -83,10 +86,8 @@ augroup vimrc-highlight
 augroup END
 
 " Charset, Line ending -----------------
-" set encoding=utf-8
-" scriptencoding utf-8
 
-set ffs=unix,dos,mac  " LF, CRLF, CR
+set fileformats=unix,dos,mac  " LF, CRLF, CR
 set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
 
 set nospell
@@ -190,8 +191,7 @@ set imsearch=-1
 inoremap <C-c> <ESC>
 
 if has('unix') && !has('gui_running')
-  " ESC後にすぐ反映されない対策
- nnoremap <silent> <ESC> :nohlsearch<CR>
+ nnoremap <silent> <ESC><ESC> :nohlsearch<CR>
 endif
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
@@ -249,18 +249,18 @@ nnoremap <silent> gn :tabnext<CR>
 augroup add_syntax_hilight
   autocmd!
   "シンタックスハイライトの追加
-  autocmd BufNewFile,BufRead *.json.jbuilder set ft=ruby
-  autocmd BufNewFile,BufRead Gemfile.local set ft=ruby
-  autocmd BufNewFile,BufRead *.erb                      set ft=eruby
-  autocmd BufNewFile,BufRead *.slim                     set ft=slim
-  autocmd BufNewFile,BufRead *.scss                     set ft=scss.css
-  autocmd BufNewFile,BufRead *.coffee                   set ft=coffee
-  autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set ft=markdown
+  autocmd BufNewFile,BufRead *.json.jbuilder set filetype=ruby
+  autocmd BufNewFile,BufRead Gemfile.local set filetype=ruby
+  autocmd BufNewFile,BufRead *.erb                      set filetype=eruby
+  autocmd BufNewFile,BufRead *.slim                     set filetype=slim
+  autocmd BufNewFile,BufRead *.scss                     set filetype=scss.css
+  autocmd BufNewFile,BufRead *.coffee                   set filetype=coffee
+  autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
 augroup END
 
 " set re=1
 
-set rtp+=/home/iberianpig/.ghq/github.com/junegunn/fzf/bin/
+set runtimepath+=/home/iberianpig/.ghq/github.com/junegunn/fzf/bin/
 
 let g:ruby_path = system('echo $HOME/.rbenv/shims')
 
@@ -296,7 +296,7 @@ NeoBundleFetch 'Shougo/neobundle.vim'
 
 " Add or remove your Bundles here:
 NeoBundle     'Shougo/neocomplete.vim'
-NeoBundle     'Shougo/neomru.vim'
+" NeoBundle     'Shougo/neomru.vim'
 NeoBundle     'Shougo/vimshell.git'
 " NeoBundle 'Shougo/vimshell', { 'rev' : '3787e5' }
 " vimprocのインストールとbuild
@@ -457,6 +457,8 @@ NeoBundle 'tweekmonster/fzf-filemru'
 "solidity
 NeoBundle 'tomlion/vim-solidity'
 
+" NeoBundle 'wincent/terminus'
+
 "ローカルディレクトリからプラグインを読み込む
 call neobundle#local(expand('~/.vim/plugin'))
 
@@ -542,32 +544,32 @@ let g:lightline = {
       \}
 
 function! MyModified()
-  return &ft =~ 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+  return &filetype =~? 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
 endfunction
 
 function! MyPercent()
-  return &ft =~? 'vimfiler' ? '' : (100 * line('.') / line('$')) . '%'
+  return &filetype =~? 'vimfiler' ? '' : (100 * line('.') / line('$')) . '%'
 endfunction
 
 function! MyLineInfo()
-  return &ft =~? 'vimfiler\|unite' ? '' : printf('%3d:%-2d', line('.'), col('.'))
+  return &filetype =~? 'vimfiler\|unite' ? '' : printf('%3d:%-2d', line('.'), col('.'))
 endfunction
 
 function! MyReadonly()
-  return &ft !~? 'help\|vimfiler\|gundo' && &readonly ? '' : ''
+  return &filetype !~? 'help\|vimfiler\|gundo' && &readonly ? '' : ''
 endfunction
 
 function! MyFilename()
   let fname = expand('%:t')
-  return fname  == 'ControlP' ? g:lightline.ctrlp_item :
-        \ fname == '__Tagbar__' ? g:lightline.fname :
-        \ fname =~ '__Gundo\|NERD_tree' ? '' :
-        \ &ft   == 'vimfiler' ? vimfiler#get_status_string() :
-        \ &ft   == 'unite' ? unite#get_status_string() :
-        \ &ft   == 'vimshell' ? vimshell#get_status_string() :
-        \ (''   != MyReadonly() ? MyReadonly() . ' ' : '') .
-        \ (''   != fname ? MyStatusPath() . '/' . fname : '[No Name]') .
-        \ (''   != MyModified() ? ' ' . MyModified() : '')
+  return fname  ==# 'ControlP' ? g:lightline.ctrlp_item :
+        \ fname ==# '__Tagbar__' ? g:lightline.fname :
+        \ fname =~? '__Gundo\|NERD_tree' ? '' :
+        \ &filetype   ==# 'vimfiler' ? vimfiler#get_status_string() :
+        \ &filetype   ==# 'unite' ? unite#get_status_string() :
+        \ &filetype   ==# 'vimshell' ? vimshell#get_status_string() :
+        \ (''   !=# MyReadonly() ? MyReadonly() . ' ' : '') .
+        \ (''   !=# fname ? MyStatusPath() . '/' . fname : '[No Name]') .
+        \ (''   !=# MyModified() ? ' ' . MyModified() : '')
 endfunction
 
 function! MyStatusPath()
@@ -577,16 +579,16 @@ function! MyStatusPath()
   let path  = expand('%:p:h')
   let gpath = finddir('.git', path . ';.;')
 
-  if gpath == ''
+  if gpath ==# ''
     let gpath = findfile('Rakefile', path . ';')
   endif
 
-  if gpath == ''
+  if gpath ==# ''
     let b:my_status_path = fnamemodify(path, ':~:h')
     return b:my_status_path
   endif
 
-  if gpath == '.git' || gpath == 'Rakefile'
+  if gpath ==# '.git' || gpath ==# 'Rakefile'
     let b:my_status_path = fnamemodify(path, ':t')
   else
     let gpath = fnamemodify(gpath, ':h:h') . '/'
@@ -605,24 +607,24 @@ function! MyFiletype()
 endfunction
 
 function! MyFileencoding()
-  return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
+  return winwidth(0) > 70 ? (strlen(&fileencoding) ? &fileencoding : &encoding) : ''
 endfunction
 
 function! MyMode()
   let fname = expand('%:t')
-  return fname  == '__Tagbar__' ? 'Tagbar' :
-        \ fname == 'ControlP' ? 'CtrlP' :
-        \ fname == '__Gundo__' ? 'Gundo' :
-        \ fname == '__Gundo_Preview__' ? 'Gundo Preview' :
-        \ fname =~ 'NERD_tree' ? 'NERDTree' :
-        \ &ft   == 'unite' ? 'Unite' :
-        \ &ft   == 'vimfiler' ? 'VimFiler' :
-        \ &ft   == 'vimshell' ? 'VimShell' :
+  return fname  ==# '__Tagbar__' ? 'Tagbar' :
+        \ fname ==# 'ControlP' ? 'CtrlP' :
+        \ fname ==# '__Gundo__' ? 'Gundo' :
+        \ fname ==# '__Gundo_Preview__' ? 'Gundo Preview' :
+        \ fname =~# 'NERD_tree' ? 'NERDTree' :
+        \ &filetype   ==# 'unite' ? 'Unite' :
+        \ &filetype   ==# 'vimfiler' ? 'VimFiler' :
+        \ &filetype   ==# 'vimshell' ? 'VimShell' :
         \ winwidth(0) > 70 ? lightline#mode() : ''
 endfunction
 
 function! CtrlPMark()
-  if expand('%:t') =~ 'ControlP'
+  if expand('%:t') =~# 'ControlP'
     call lightline#link('iR'[g:lightline.ctrlp_regex])
     return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
           \ , g:lightline.ctrlp_next], 0)
@@ -711,20 +713,20 @@ endif
 
 " enable ruby & rails snippet only rails file
 function! s:RailsSnippet()
-  if exists('b:rails_root') && (&filetype == 'ruby')
-    set ft=ruby.rails
+  if exists('b:rails_root') && (&filetype ==# 'ruby')
+    set filetype=ruby.rails
   endif
 endfunction
 
 function! s:RSpecSnippet()
-  if (expand('%') =~ "_spec\.rb$") || (expand('%') =~ "^spec.*\.rb$")
-    set ft=ruby.rspec
+  if (expand('%') =~# '_spec\.rb$') || (expand('%') =~# '^spec.*\.rb$')
+    set filetype=ruby.rspec
   endif
 endfunction
 
 function! s:MinitestSnippet()
-  if (expand('%') =~ "_test\.rb$") || (expand('%') =~ "^test.*\.rb$")
-    set ft=ruby.minitest
+  if (expand('%') =~# '_test\.rb$') || (expand('%') =~# '^test.*\.rb$')
+    set filetype=ruby.minitest
   endif
 endfunction
 
@@ -799,9 +801,9 @@ OverCommandLineMap <C-v> <C-q>
 "" {{{Unite
 " " インサートモードで開始
 let g:unite_enable_start_insert=1
-" 最近のファイルの個数制限
-let g:unite_source_file_mru_limit           = 1000
-let g:unite_source_file_mru_filename_format = ''
+" " 最近のファイルの個数制限
+" let g:unite_source_file_mru_limit           = 1000
+" let g:unite_source_file_mru_filename_format = ''
 " file_recのキャッシュ
 let g:unite_source_rec_max_cache_files = 5000
 let g:unite_source_rec_min_cache_files = 100
@@ -865,7 +867,8 @@ function! s:unite_keymap()
   " "スペースキーとMキーで最近開いたファイル一覧を表示
   " nnoremap <silent> [unite]M :<C-u>Unite<Space>file_mru<CR>
   " nnoremap <silent> [unite]m :call fzf#run({'source': v:oldfiles, 'options': '-m -x +s'})<CR>
-  nnoremap <silent> [unite]m :FilesMru --tiebreak=end<cr>
+  nnoremap <silent> [unite]m :ProjectMru --tiebreak=end<cr>
+  nnoremap <silent> [unite]M :FilesMru --tiebreak=end<cr>
 
   "スペースキーとdキーで最近開いたディレクトリを表示
   " "スペースキーとbキーでバッファを表示
@@ -975,6 +978,9 @@ let g:fzf_action = {
   \ 'ctrl-v': 'vsplit' }
 let g:fzf_layout = { 'down': '~40%' }
 
+"" fzf-filemru
+let g:fzf_filemru_bufwrite=1
+
 " markdownの設定
 let g:vim_markdown_folding_disabled=1
 let g:vim_markdown_frontmatter=1
@@ -1082,7 +1088,7 @@ augroup indent_guides_color
 augroup END
 
 " test setting
-let test#strategy = "dispatch"
+let test#strategy = 'dispatch'
 
 nmap <silent> <leader>t :TestNearest<CR>
 nmap <silent> <leader>T :TestFile<CR>
@@ -1099,7 +1105,7 @@ let test#ruby#rspec#options = {
 " docker and rspec
 " https://qiita.com/joker1007/items/4dbff328f39c11e732af
 function! DockerTransformer(cmd) abort
-  if $SPEC_CONTAINER_NAME != ''
+  if $SPEC_CONTAINER_NAME !=# ''
     let prefix = 'docker-compose exec ' . $SPEC_CONTAINER_NAME . ' bundle exec '
   else
     let prefix = 'bundle exec '
@@ -1145,21 +1151,24 @@ vmap , <Nop>
 vmap , [explorer]
 nnoremap [explorer]T :TigOpenCurrentFile<CR>
 nnoremap [explorer]t :TigOpenProjectRootDir<CR>
-nnoremap [explorer]g :Tig grep<space>
+nnoremap [explorer]g :TigGrep<CR>
+nnoremap [explorer]gw :<C-u>:TigGrep<Space>\<<C-R><C-W>\><CR>
 ""選択状態のキーワードで検索"
-vnoremap [explorer]g y:Tig grep<Space><C-R>"
+vnoremap [explorer]g y:TigGrep<Space><C-R>"
 ""カーソル上のキーワードで検索
-" nnoremap [explorer]cg :<C-u>:TigGrep<Space><C-R><C-W><CR>
+nnoremap [explorer]r :TigGrepResume<CR>
 "" open tig blame with current file
 nnoremap [explorer]b :TigBlame<CR>
 
 nnoremap [explorer]s :Tig status<CR>
 nnoremap [explorer]y :Tig stash<CR>
-nnoremap [explorer]r :Tig refs<CR>
+" nnoremap [explorer]r :Tig refs<CR>
 
 " ranger-explorer
 nnoremap [explorer]c :<C-u>RangerOpenCurrentDir<CR>
 nnoremap [explorer]f :<C-u>RangerOpenProjectRootDir<CR>
+
+let g:tig_explorer_orig_tigrc='~/.tigrc'
 
 
 " vim-auto-save
@@ -1171,7 +1180,7 @@ let g:auto_save_no_updatetime = 1  " do not change the 'updatetime' option
 function! s:auto_save_detect() abort
   " read onlyの場合は自動保存しない"
   " filenameがResultの場合は自動保存しない(dbext.vimで作られる一時ファイル)
-  if &readonly || expand('%:t') == 'Result'
+  if &readonly || expand('%:t') ==# 'Result'
     let g:auto_save = 0 " 自動保存しない
   else
     let g:auto_save = 1 " 自動保存
@@ -1210,16 +1219,31 @@ nnoremap <C-p> :cp<CR>
 "ale
 let g:ale_set_quickfix = 1
 let g:Qfstatusline#UpdateCmd = function('lightline#update')
-let g:ale_lint_on_enter=1 "ファイルを開いた時にチェックを実行。初期値1。設定で0に。
-let g:ale_lint_on_filetype_changed=1 "filetypeが変わった時にチェックを実行。初期値1。
+let g:ale_lint_on_enter=0 "ファイルを開いた時にチェックを実行。初期値1。設定で0に。
+let g:ale_lint_on_filetype_changed=0 "filetypeが変わった時にチェックを実行。初期値1。
 let g:ale_lint_on_save=0 "ファイルを保存する時にチェックを実行。初期値1。
 let g:ale_lint_on_text_changed=0 "内容が変更された時にチェックを実行。初期値1。余りにガチャガチャしすぎなら0に。
 let g:ale_lint_on_insert_leave=0 "インサートモードを終了する時にチェックを実行。初期値0。text_changedを0にしたらこちらを1にした方が良い。
 let g:ale_maximum_file_size=0 "チェックを行う最大ファイルサイズ。初期値は0。1以上に設定するとそのbyte数より大きいファイルをチェックしない。
 
+let g:ale_linters = {'javascript': ['eslint', 'flow']}
+
 let g:ale_fixers = {
-      \'ruby': ['rubocop'],
-      \'json': ['fixjson']
+      \'ruby':       ['rubocop'],
+      \'json':       ['fixjson'],
+      \'javascript': ['eslint']
       \}
 nnoremap <leader>w :ALELint<CR>
 nnoremap <leader>f :ALEFix<CR>
+
+" highlight clear ALEErrorSign " otherwise uses error bg color (typically red)
+" highlight clear ALEWarningSign " otherwise uses error bg color (typically red)
+" let g:ale_sign_error = 'X' " could use emoji
+" let g:ale_sign_warning = '?' " could use emoji
+let g:ale_statusline_format = ['X %d', '? %d', '']
+" %linter% is the name of the linter that provided the message
+" %s is the error or warning message
+let g:ale_echo_msg_format = '%linter% says %s'
+" Map keys to navigate between lines with errors and warnings.
+nnoremap <leader>an :ALENextWrap<cr>
+nnoremap <leader>ap :ALEPreviousWrap<cr>

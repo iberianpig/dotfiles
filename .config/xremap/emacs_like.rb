@@ -1,5 +1,6 @@
 # bash keybind
 window class_only: ['google-chrome',
+                    'Navigator', # firefox
                     'slack',
                     'keepassxc',
                     'libreoffice',
@@ -7,14 +8,14 @@ window class_only: ['google-chrome',
                     'shift',
                     'mysql-workbench-bin',
                     'crx_hbdpomandigafcibbmofojjchbcdagbl', # twitter
+                    'crx_edcifkpoamnkimdpjiabhfjahoinbpbp', # twitter lite
                     'crx_hmjkmjkepdijhoojdojkdfohbdgmmhki', # google keep
                     'crx_mjcnijlhddpbdemagnpefmlkjdagkogk', # pocket
                     'crx_ojcflmmmcfpacggndoaaflkmcoblhnbh', # wunderlist
                     'crx_menkifleemblimdogmoihpfopnplikde', # line
                     'evince',
                     'discord',
-                    'calibre-ebook-viewer',
-                    'wingpanel'] do
+                    'calibre-ebook-viewer'] do
   remap 'Ctrl-o', to: 'Alt-Left'
   remap 'Ctrl-i', to: 'Alt-Right'
 
@@ -48,7 +49,7 @@ window class_only: ['google-chrome',
   end
 end
 
-window class_only: 'google-chrome' do
+window class_only: ['google-chrome', 'Navigator'] do
   remap 'Alt-space', to: 'Ctrl-l'
   remap 'Alt-n',     to: 'Ctrl-Tab'
   remap 'Alt-p',     to: 'Ctrl-Shift-Tab'
@@ -69,8 +70,8 @@ window class_only: ['discord', 'slack'] do
   remap 'Ctrl-q',       to: 'Ctrl-w'
 end
 
-# twitter
-window class_only: 'crx_hbdpomandigafcibbmofojjchbcdagbl' do
+# twitter, twitter lite
+window class_only: ['crx_hbdpomandigafcibbmofojjchbcdagbl', 'crx_edcifkpoamnkimdpjiabhfjahoinbpbp'] do
   remap 'Alt-space', to: 'S' # Search
   remap 'Alt-t',     to: 'n' # Open tweet dialog
   remap 'Alt-w',     to: %w(Escape Escape) # Close tweet dialog
@@ -94,6 +95,8 @@ window class_only: 'keepassxc' do
   remap 'Alt-space', to: 'Ctrl-f'
   remap 'Alt-n',     to: 'Ctrl-n'
   remap 'Alt-b',     to: 'Ctrl-b'
+  remap 'Ctrl-c',     to: 'Ctrl-c'
+  remap 'Ctrl-b',     to: 'Ctrl-b'
   remap 'Ctrl-q',       to: 'Ctrl-w'
 end
 

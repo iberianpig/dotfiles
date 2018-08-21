@@ -13,11 +13,17 @@
 # # Save and reload the history after each command finishes
 # export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
+export HISTFILE=/home/iberianpig/.bash_history
+
 export HISTSIZE=100000                   # big big history
 export HISTFILESIZE=100000               # big big history
-export HISTCONTROL=erasedups:ignoreboth
+HISTCONTROL=ignoreboth:erasedups
 shopt -s histappend
 PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
+
+
+# make histories uniq
+alias hfix='history -n && history | sort -k2 -k1nr | uniq -f1 | sort -n | cut -c8- > ~/.tmp$$ && history -c && history -r ~/.tmp$$ && history -w && rm ~/.tmp$$'  
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
