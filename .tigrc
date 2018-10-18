@@ -8,7 +8,7 @@ set horizontal-scroll     = 33%
 set show-notes            = yes
 set show-changes          = yes
 set split-view-height     = 80%
-set status-untracked-dirs = yes
+set status-show-untracked-dirs = yes
 set tab-size              = 2
 set diff-context          = 3
 set diff-options          = -m --first-parent
@@ -17,8 +17,8 @@ set commit-order          = topo
 set ignore-case           = yes
 set focus-child           = yes
 set grep-view             = file-name:yes line-number:yes,interval=1 text
-set wrap-lines            = yes
-set refresh-mode          = periodic #options: auto / after-command / periodic / 1
+set wrap-lines            = no # grepの位置がズレる
+set refresh-mode          = auto #options: auto / after-command / periodic / 1
 
 # Bind Settings
 bind generic <C-f> move-page-down
@@ -28,6 +28,7 @@ bind generic gg move-first-line
 bind main    G  none
 bind main    G  move-last-line
 bind generic G  move-last-line
+bind generic ;  :
 
 # revertを定義
 bind main v !?git revert %(commit)
@@ -95,7 +96,7 @@ bind stash   p      !?git stash pop %(stash)
 # diff
 ## . で HEAD との diff
 bind main    .      !sh -c "git diff %(commit) | tig"
-bind diff    .      !sh -c "git diff %(commit) | tig"
+bind diff    .      !sh -c "git diff %(commit) %(file) | tig"
 bind refs    .      !sh -c "git diff %(branch) | tig"
 ## Alt-. で指定 commit ID との diff
 bind main    <Esc>. ?sh -c "git diff %(commit)..%(prompt Enter commit ID: ) | tig"

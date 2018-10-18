@@ -23,7 +23,7 @@ PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
 
 
 # make histories uniq
-alias hfix='history -n && history | sort -k2 -k1nr | uniq -f1 | sort -n | cut -c8- > ~/.tmp$$ && history -c && history -r ~/.tmp$$ && history -w && rm ~/.tmp$$'  
+alias history_fix='history -n && history | sort -k2 -k1nr | uniq -f1 | sort -n | cut -c8- > ~/.tmp$$ && history -c && history -r ~/.tmp$$ && history -w && rm ~/.tmp$$'  
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -111,8 +111,9 @@ export FZF_DEFAULT_OPTS="
 --color info:150,prompt:110,spinner:150,pointer:167,marker:174
 "
 
+# include git untracked files without ignored || find
 export FZF_DEFAULT_COMMAND='
-  (git ls-tree -r --name-only HEAD ||
+  (git ls-files; git ls-files -o --exclude-standard ||
        find . -path "*/\.*" -prune -o -type f -print -o -type l -print |
         sed s/^..//) 2> /dev/null'
 

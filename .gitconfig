@@ -4,7 +4,7 @@
 [alias]
   addw = !"git diff -w --no-color | git apply --cached" # http://qiita.com/quattro_4/items/b75de424038d616868db
   co = checkout
-  fe = fetch --prune
+  fe = fetch
   tr = log --graph --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
   st = status
   ci = commit -a -v

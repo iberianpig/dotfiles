@@ -2,6 +2,8 @@ swipe:
   3:
     left:
       command: 'xdotool key alt+Right'
+      # command: 'xdotool key alt+Escape'
+      # command: 'xdotool keydown alt && sleep .1 && xdotool key Tab  && xdotool keyup alt'
     right:
       command: 'xdotool key alt+Left'
     up:
@@ -10,11 +12,11 @@ swipe:
       command: 'xdotool key alt+w'
   4:
     left:
-      # command: 'xdotool key super+Right'
-      command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1'
+      shortcut: 'super+Right'
+      # command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1'
     right:
-      # command: 'xdotool key super+Left'
-      command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1' 
+      shortcut: 'super+Left'
+      # command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1' 
     up:
       command: 'xdotool key super+s'
     down:
@@ -23,18 +25,27 @@ pinch:
   2:
     in:
       command: 'xdotool key ctrl+equal'
+      threshold: 0.5
     out:
       command: 'xdotool key ctrl+minus'
+      threshold: 0.5
   4:
     in:
       command: 'xdotool key super+a'
     out:
       command: 'xdotool key super+s'
 
+rotate:
+  3:
+    clockwise:
+      command: 'xdotool key XF86MonBrightnessUp'
+    counterclockwise:
+      command: 'xdotool key XF86MonBrightnessDown'
+
 threshold:
-  swipe: 0.1
+  swipe: 0.3
   pinch: 0.5
 
 interval:
-  swipe: 0.5
+  swipe: 1
   pinch: 0.3

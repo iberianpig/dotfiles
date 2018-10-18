@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=xbindkeys for Pantheon
+Comment=run xbindkeys
+Exec=xbindkeys -f /home/iberianpig/.xbindkeysrc.pantheon
+Icon=input-keyboard
+X-GNOME-Autostart-enabled=true
+Type=Application
+OnlyShowIn=Pantheon

@@ -95,8 +95,7 @@ window class_only: 'keepassxc' do
   remap 'Alt-space', to: 'Ctrl-f'
   remap 'Alt-n',     to: 'Ctrl-n'
   remap 'Alt-b',     to: 'Ctrl-b'
-  remap 'Ctrl-c',     to: 'Ctrl-c'
-  remap 'Ctrl-b',     to: 'Ctrl-b'
+  remap 'Alt-c',     to: 'Ctrl-c'
   remap 'Ctrl-q',       to: 'Ctrl-w'
 end
 
