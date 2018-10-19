@@ -146,19 +146,6 @@ nnoremap # #zz
 nnoremap g* g*zz
 nnoremap g# g#zz
 
-" "インサートモードで bash 風キーマップ
-inoremap <C-a> <C-o>^
-inoremap <C-e> <C-o>$
-inoremap <C-b> <Left>
-inoremap <C-f> <Right>
-inoremap <C-n> <Down>
-inoremap <C-p> <Up>
-inoremap <C-h> <BS>
-inoremap <C-d> <Del>
-inoremap <C-k> <C-o>D
-inoremap <C-u> <C-\><C-o>d^
-inoremap <C-w> <C-\><C-o>db
-
 " vを二回で行末まで選択
 vnoremap v $h
 
@@ -363,6 +350,8 @@ Plug 'mhinz/vim-signify'
 " Git diff用
 Plug 'tpope/vim-fugitive', {'on': ['Gdiff']}
 
+Plug 'lighttiger2505/gtags.vim'
+
 " 自動整形プラグイン
 Plug 'Chiel92/vim-autoformat'
 
@@ -388,7 +377,9 @@ Plug 'qpkorr/vim-renamer', { 'on': 'Renamer'}
 Plug 'editorconfig/editorconfig-vim', { 'on': ['EditorConfigReload']}
 
 " cd project-root
-" Plug 'airblade/vim-rooter'
+Plug 'airblade/vim-rooter'
+
+
 
 " syntax highlighter
 Plug 'todesking/ruby_hl_lvar.vim', { 'for' : ['ruby'] }
@@ -433,8 +424,9 @@ Plug 'MaxMEllon/vim-jsx-pretty',               {'for':['javascript', 'html']}
 "" typescript
 Plug 'leafgarland/typescript-vim', {'for':['typescript', 'tsx']}
 Plug 'Quramy/tsuquyomi', {'for':['typescript', 'tsx']}
+
 " graphql
-Plug 'jparise/vim-graphql',                    {'for':['javascript', 'html']}
+Plug 'jparise/vim-graphql',                    {'for':['javascript', 'html', 'graphql']}
 
 
 " css
@@ -1054,6 +1046,7 @@ augroup switch_auto_save
 augroup END
 
 " gtags
+set notagrelative "タグを相対パスとして扱わない
 let g:Gtags_Auto_Update = 1
 let g:Gtags_OpenQuickfixWindow = 1
 "" 検索結果Windowを閉じる
