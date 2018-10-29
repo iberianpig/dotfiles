@@ -6,7 +6,7 @@ filetype plugin indent off
 
 " autocmdのリセット
 autocmd!
-set nonumber     " 行番号を表示する
+set number     " 行番号を表示する
 set cursorline " カーソル行の背景色を変える
 
 augroup set_cursorline
@@ -93,7 +93,7 @@ augroup END
 set fileformats=unix,dos,mac  " LF, CRLF, CR
 set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
 
-set nospell
+" set nospell
 
 " カーソル移動系
 set backspace=indent,eol,start " Backspaceキーの影響範囲に制限を設けない
@@ -321,7 +321,9 @@ Plug 'osyo-manga/vim-brightest'
 Plug 'cohama/lexima.vim'
 
 " 補完系
-Plug 'Shougo/neocomplete.vim' | Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets' | Plug 'honza/vim-snippets'
+" Plug 'Shougo/neocomplete.vim' | Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets' | Plug 'honza/vim-snippets'
+
+Plug 'neoclide/coc.nvim', {'do': 'yarn install'} " vim8.1~ or nvim
 
 " %で閉じタグに飛ぶ
 Plug 'tmhedberg/matchit'
@@ -377,7 +379,7 @@ Plug 'qpkorr/vim-renamer', { 'on': 'Renamer'}
 Plug 'editorconfig/editorconfig-vim', { 'on': ['EditorConfigReload']}
 
 " cd project-root
-Plug 'airblade/vim-rooter'
+" Plug 'airblade/vim-rooter'
 
 
 
@@ -673,96 +675,96 @@ augroup ansiesc
   autocmd FileType quickrun AnsiEsc
 augroup END
 
-" neocomplete {{{
-let g:neocomplete#enable_at_startup               = 1
-" let g:neocomplete#auto_completion_start_length    = 2
-let g:neocomplete#enable_ignore_case              = 1
-" let g:neocomplete#enable_smart_case               = 1
-let g:neocomplete#enable_cursor_hold_i            = 1
-" let g:neocomplete#enable_camel_case               = 1
-" let g:neocomplete#enable_fuzzy_completion         = 1
-" let g:neocomplete#use_vimproc                     = 1
-let g:neocomplete#lock_buffer_name_pattern        = '\*ku\*'
-
-" docstringは表示しない
-set completeopt-=preview
-
-let g:neocomplete#sources#dictionary#dictionaries = {
-\   'ruby': $HOME . '/.vim/bundle/dicts/ruby.dict',
-\ }
-
-" for turn_vim
-" autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-" "NeoSnippet.vim
-let g:neosnippet#enable_snipmate_compatibility = 1
-" remove ${x} marker when switching normal mode
-let g:neosnippet#enable_auto_clear_markers = 1
-" Tell Neosnippet about the other snippets
-let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets, ~/.vim/snippets'
-" Plugin key-mappings.
-imap <Nul> <C-Space>
-imap <C-Space>     <Plug>(neosnippet_expand_or_jump)
-smap <C-Space>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-Space>     <Plug>(neosnippet_expand_target)
-
-" For snippet_complete marker.
-if has('conceal')
-  set conceallevel=2 concealcursor=i
-endif
-
-" enable ruby & rails snippet only rails file
-function! s:RailsSnippet()
-  if exists('b:rails_root') && (&filetype ==# 'ruby')
-    set filetype=ruby.rails
-  endif
-endfunction
-
-function! s:RSpecSnippet()
-  if (expand('%') =~# '_spec\.rb$') || (expand('%') =~# '^spec.*\.rb$')
-    set filetype=ruby.rspec
-  endif
-endfunction
-
-function! s:MinitestSnippet()
-  if (expand('%') =~# '_test\.rb$') || (expand('%') =~# '^test.*\.rb$')
-    set filetype=ruby.minitest
-  endif
-endfunction
-
-augroup rails_snippet
-  autocmd!
-  au BufEnter * call s:RailsSnippet()
-  au BufEnter * call s:RSpecSnippet()
-  au BufEnter * call s:MinitestSnippet()
-augroup END
-
-" neco-lookの変換対象にする
-if !exists('g:neocomplete#text_mode_filetypes')
-    let g:neocomplete#text_mode_filetypes = {}
-endif
-let g:neocomplete#text_mode_filetypes = {
-            \ 'rst': 1,
-            \ 'markdown': 1,
-            \ 'gitrebase': 1,
-            \ 'gitcommit': 1,
-            \ 'vcs-commit': 1,
-            \ 'hybrid': 1,
-            \ 'text': 1,
-            \ 'help': 1,
-            \ 'tex': 1,
-            \ }
-
-" filetype=javascript で include 補完を無効にする
-call neocomplete#custom#source('include',
-      \ 'disabled_filetypes', {'javascript' : 1})
-
-" filetype=javascript で tag 補完を無効にする
-call neocomplete#custom#source('tag',
-      \ 'disabled_filetypes', {'javascript' : 1})
-
-" すべての filetype で member 補完を無効にする
-call neocomplete#custom#source('tag',
-      \ 'disabled_filetypes', {'_' : 1})
+" " neocomplete {{{
+" let g:neocomplete#enable_at_startup               = 1
+" " let g:neocomplete#auto_completion_start_length    = 2
+" let g:neocomplete#enable_ignore_case              = 1
+" " let g:neocomplete#enable_smart_case               = 1
+" let g:neocomplete#enable_cursor_hold_i            = 1
+" " let g:neocomplete#enable_camel_case               = 1
+" " let g:neocomplete#enable_fuzzy_completion         = 1
+" " let g:neocomplete#use_vimproc                     = 1
+" let g:neocomplete#lock_buffer_name_pattern        = '\*ku\*'
+"
+" " docstringは表示しない
+" set completeopt-=preview
+"
+" let g:neocomplete#sources#dictionary#dictionaries = {
+"\   'ruby': $HOME . '/.vim/bundle/dicts/ruby.dict',
+"\ }
+"
+" " for turn_vim
+" " autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+" " "NeoSnippet.vim
+" let g:neosnippet#enable_snipmate_compatibility = 1
+" " remove ${x} marker when switching normal mode
+" let g:neosnippet#enable_auto_clear_markers = 1
+" " Tell Neosnippet about the other snippets
+" let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets, ~/.vim/snippets'
+" " Plugin key-mappings.
+" imap <Nul> <C-Space>
+" imap <C-Space>     <Plug>(neosnippet_expand_or_jump)
+" smap <C-Space>     <Plug>(neosnippet_expand_or_jump)
+" xmap <C-Space>     <Plug>(neosnippet_expand_target)
+"
+" " For snippet_complete marker.
+" if has('conceal')
+"   set conceallevel=2 concealcursor=i
+" endif
+"
+" " enable ruby & rails snippet only rails file
+" function! s:RailsSnippet()
+"   if exists('b:rails_root') && (&filetype ==# 'ruby')
+"     set filetype=ruby.rails
+"   endif
+" endfunction
+"
+" function! s:RSpecSnippet()
+"   if (expand('%') =~# '_spec\.rb$') || (expand('%') =~# '^spec.*\.rb$')
+"     set filetype=ruby.rspec
+"   endif
+" endfunction
+"
+" function! s:MinitestSnippet()
+"   if (expand('%') =~# '_test\.rb$') || (expand('%') =~# '^test.*\.rb$')
+"     set filetype=ruby.minitest
+"   endif
+" endfunction
+"
+" augroup rails_snippet
+"   autocmd!
+"   au BufEnter * call s:RailsSnippet()
+"   au BufEnter * call s:RSpecSnippet()
+"   au BufEnter * call s:MinitestSnippet()
+" augroup END
+"
+" " neco-lookの変換対象にする
+" if !exists('g:neocomplete#text_mode_filetypes')
+"     let g:neocomplete#text_mode_filetypes = {}
+" endif
+" let g:neocomplete#text_mode_filetypes = {
+"            \ 'rst': 1,
+"            \ 'markdown': 1,
+"            \ 'gitrebase': 1,
+"            \ 'gitcommit': 1,
+"            \ 'vcs-commit': 1,
+"            \ 'hybrid': 1,
+"            \ 'text': 1,
+"            \ 'help': 1,
+"            \ 'tex': 1,
+"            \ }
+"
+" " filetype=javascript で include 補完を無効にする
+" call neocomplete#custom#source('include',
+"      \ 'disabled_filetypes', {'javascript' : 1})
+"
+" " filetype=javascript で tag 補完を無効にする
+" call neocomplete#custom#source('tag',
+"      \ 'disabled_filetypes', {'javascript' : 1})
+"
+" " すべての filetype で member 補完を無効にする
+" call neocomplete#custom#source('tag',
+"      \ 'disabled_filetypes', {'_' : 1})
 
 
 "}}}
@@ -1108,9 +1110,49 @@ call submode#map('yankround',        'n', 'r', '<C-p>', '<Plug>(yankround-prev)'
 call submode#map('yankround',        'n', 'r', '<C-n>', '<Plug>(yankround-next)')
 
 let g:brightest#highlight = {
-\   "group" : "BrightestUnderline"
+\   'group' : 'BrightestUnderline'
 \}
 
 let g:brightest#pattern = '\k\+'
 " let g:brightest#enable_clear_highlight_on_CursorMoved = 1
 let g:brightest#enable_on_CursorHold = 1
+
+" 入力キーの辞書
+let s:compl_key_dict = {
+      \ char2nr("\<C-l>"): "\<C-x>\<C-l>",
+      \ char2nr("\<C-n>"): "\<C-x>\<C-n>",
+      \ char2nr("\<C-p>"): "\<C-x>\<C-p>",
+      \ char2nr("\<C-k>"): "\<C-x>\<C-k>",
+      \ char2nr("\<C-t>"): "\<C-x>\<C-t>",
+      \ char2nr("\<C-i>"): "\<C-x>\<C-i>",
+      \ char2nr("\<C-]>"): "\<C-x>\<C-]>",
+      \ char2nr("\<C-f>"): "\<C-x>\<C-f>",
+      \ char2nr("\<C-d>"): "\<C-x>\<C-d>",
+      \ char2nr("\<C-v>"): "\<C-x>\<C-v>",
+      \ char2nr("\<C-u>"): "\<C-x>\<C-u>",
+      \ char2nr("\<C-o>"): "\<C-x>\<C-o>",
+      \ char2nr('s'): "\<C-x>s",
+      \ char2nr("\<C-s>"): "\<C-x>s"
+      \}
+" 表示メッセージ
+let s:hint_i_ctrl_x_msg = join([
+      \ '<C-l>: While lines',
+      \ '<C-n>: keywords in the current file',
+      \ "<C-k>: keywords in 'dictionary'",
+      \ "<C-t>: keywords in 'thesaurus'",
+      \ '<C-i>: keywords in the current and included files',
+      \ '<C-]>: tags',
+      \ '<C-f>: file names',
+      \ '<C-d>: definitions or macros',
+      \ '<C-v>: Vim command-line',
+      \ "<C-u>: User defined completion ('completefunc')",
+      \ "<C-o>: omni completion ('omnifunc')",
+      \ "s: Spelling suggestions ('spell')"
+      \], "\n")
+function! s:hint_i_ctrl_x() abort
+  echo s:hint_i_ctrl_x_msg
+  let c = getchar()
+  return get(s:compl_key_dict, c, nr2char(c))
+endfunction
+ 
+inoremap <expr> <C-x>  <SID>hint_i_ctrl_x()

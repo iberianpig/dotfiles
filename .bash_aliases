@@ -50,3 +50,5 @@ dic () {
 alias vi='vim'
 
 alias open='gnome-open'
+
+alias makef='make -f tmp/Makefile'
