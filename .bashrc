@@ -86,7 +86,7 @@ fi
 ## see http://itiut.hatenablog.com/entry/2013/07/07/114143
 
 if [ -f ~/.bash_profile ]; then
-    . ~/.bash_profile
+  . ~/.bash_profile
 fi
 
 # eval "$(EDITOR=/usr/bin/vim)"
@@ -112,10 +112,9 @@ export FZF_DEFAULT_OPTS="
 "
 
 # include git untracked files without ignored || find
-export FZF_DEFAULT_COMMAND='
-  (git ls-files; git ls-files -o --exclude-standard ||
-       find . -path "*/\.*" -prune -o -type f -print -o -type l -print |
-        sed s/^..//) 2> /dev/null'
+export FZF_DEFAULT_COMMAND='(git ls-files; git ls-files -o --exclude-standard ||
+  find . -path "*/\.*" -prune -o -type f -print -o -type l -print |
+  sed s/^..//) 2> /dev/null'
 
 if which fzf > /dev/null; then
 
@@ -161,11 +160,26 @@ if which fzf > /dev/null; then
   alias gl=fzf-git-ls-files
 
   function fzf-kill() {
-    ps aux | fzf  | awk '{ print $2 }'  | xargs  kill -9
+    local selected=$(ps aux | fzf)
+    if [ -n "${selected}" ]; then
+      echo "${selected}" | awk '{print $12}' | xargs echo 'kill: '
+      echo "kill: ${selected}"
+    fi
   }
   alias pk=fzf-kill
 
-fi
+  # tm - create new tmux session, or switch to existing one. Works from within tmux too. (@bag-man)
+  # `tm` will allow you to select your tmux session via fzf.
+  # `tm irc` will attach to the irc session (if it exists), else it will create it.
+  function fzf-byobu() {
+    [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
+    if [ $1 ]; then
+      byobu $change -t "$1" 2>/dev/null || (byobu new-session -d -s $1 && byobu $change -t "$1"); return
+    fi
+    session=$(byobu list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) && byobu $change -t "$session" || echo "No sessions found."
+  }
+  alias bs=fzf-byobu
+fi # fzf
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert

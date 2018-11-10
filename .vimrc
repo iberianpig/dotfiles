@@ -240,8 +240,8 @@ nnoremap <silent> gn :tabnext<CR>
 augroup add_syntax_hilight
   autocmd!
   "シンタックスハイライトの追加
-  autocmd BufNewFile,BufRead *.json.jbuilder set filetype=ruby
-  autocmd BufNewFile,BufRead Gemfile.local set filetype=ruby
+  autocmd BufNewFile,BufRead *.json.jbuilder            set filetype=ruby
+  autocmd BufNewFile,BufRead Gemfile.local              set filetype=ruby
   autocmd BufNewFile,BufRead *.erb                      set filetype=eruby
   autocmd BufNewFile,BufRead *.slim                     set filetype=slim
   autocmd BufNewFile,BufRead *.scss                     set filetype=scss.css
@@ -322,6 +322,7 @@ Plug 'cohama/lexima.vim'
 
 " 補完系
 " Plug 'Shougo/neocomplete.vim' | Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets' | Plug 'honza/vim-snippets'
+Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets' | Plug 'honza/vim-snippets'
 
 Plug 'neoclide/coc.nvim', {'do': 'yarn install'} " vim8.1~ or nvim
 
@@ -352,6 +353,7 @@ Plug 'mhinz/vim-signify'
 " Git diff用
 Plug 'tpope/vim-fugitive', {'on': ['Gdiff']}
 
+" gtags
 Plug 'lighttiger2505/gtags.vim'
 
 " 自動整形プラグイン
@@ -379,12 +381,8 @@ Plug 'qpkorr/vim-renamer', { 'on': 'Renamer'}
 Plug 'editorconfig/editorconfig-vim', { 'on': ['EditorConfigReload']}
 
 " cd project-root
-" Plug 'airblade/vim-rooter'
+Plug 'airblade/vim-rooter'
 
-
-
-" syntax highlighter
-Plug 'todesking/ruby_hl_lvar.vim', { 'for' : ['ruby'] }
 
 ""Markdown
 " table
@@ -469,6 +467,9 @@ Plug 'chr4/nginx.vim'
 " ローカル管理のPlugin
 Plug '~/.ghq/github.com/iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.vim'
 Plug '~/.ghq/github.com/iberianpig/ranger-explorer.vim'
+
+" syntax highlighter
+Plug '~/.ghq/github.com/iberianpig/ruby_hl_lvar.vim', { 'for' : ['ruby']  }
 
 " Initialize plugin system
 call plug#end()
@@ -696,16 +697,16 @@ augroup END
 " " for turn_vim
 " " autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 " " "NeoSnippet.vim
-" let g:neosnippet#enable_snipmate_compatibility = 1
+let g:neosnippet#enable_snipmate_compatibility = 1
 " " remove ${x} marker when switching normal mode
 " let g:neosnippet#enable_auto_clear_markers = 1
 " " Tell Neosnippet about the other snippets
-" let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets, ~/.vim/snippets'
+let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets, ~/.vim/snippets'
 " " Plugin key-mappings.
-" imap <Nul> <C-Space>
-" imap <C-Space>     <Plug>(neosnippet_expand_or_jump)
-" smap <C-Space>     <Plug>(neosnippet_expand_or_jump)
-" xmap <C-Space>     <Plug>(neosnippet_expand_target)
+imap <Nul> <C-Space>
+imap <C-Space>     <Plug>(neosnippet_expand_or_jump)
+smap <C-Space>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-Space>     <Plug>(neosnippet_expand_target)
 "
 " " For snippet_complete marker.
 " if has('conceal')
@@ -1054,7 +1055,7 @@ let g:Gtags_OpenQuickfixWindow = 1
 "" 検索結果Windowを閉じる
 nnoremap <C-q> <C-w>j<C-w>q
 " "" Grep 準備
-" nnoremap <C-g> :Gtags -g
+nnoremap <C-g> :Gtags -g <CR>
 "" このファイルの関数一覧
 nnoremap <C-h> :Gtags -f %<CR>
 "" カーソル以下の定義元を探す
@@ -1156,3 +1157,5 @@ function! s:hint_i_ctrl_x() abort
 endfunction
  
 inoremap <expr> <C-x>  <SID>hint_i_ctrl_x()
+
+let g:ruby_hl_lvar_auto_enable = 1

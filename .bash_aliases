@@ -34,7 +34,6 @@ alias agh='ag --hidden'
 
 # tw
 alias tw='tw -yes'
-alias tm="tw --dm:to=nukumaro22"
 
 # mozc
 alias mozc-config="/usr/lib/mozc/mozc_tool -mode=config_dialog"
