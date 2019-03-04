@@ -50,4 +50,4 @@ alias vi='vim'
 
 alias open='gnome-open'
 
-alias makef='make -f tmp/Makefile'
+alias ssh_ec2='~/.ghq/github.com/iberianpig/connect_ec2/ssh_ec2.sh'

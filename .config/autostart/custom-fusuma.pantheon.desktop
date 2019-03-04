@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=fusuma for Pantheon
 Comment=run fusuma
-Exec=/home/iberianpig/.rbenv/shims/fusuma --device="DLL075B:01 06CB:76AF Touchpad" --config=/home/iberianpig/.config/fusuma/config.pantheon.yml
+Exec=/home/iberianpig/.ghq/github.com/iberianpig/fusuma/exe/fusuma --device="DLL075B:01 06CB:76AF Touchpad" --config=/home/iberianpig/.config/fusuma/config.pantheon.yml -d
 Icon=input-touchpad
 X-GNOME-Autostart-enabled=true
 Type=Application

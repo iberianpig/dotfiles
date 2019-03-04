@@ -12,23 +12,27 @@ swipe:
       command: 'xdotool key alt+w'
   4:
     left:
-      shortcut: 'super+Right'
-      # command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1'
+      # shortcut: 'super+Right'
+      command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1'
     right:
-      shortcut: 'super+Left'
-      # command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1' 
+      # shortcut: 'super+Left'
+      command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1' 
     up:
       command: 'xdotool key super+s'
     down:
       command: 'xdotool key super+a'
+    key_leftmeta:
+      up:
+        command: 'xdotool key XF86MonBrightnessUp'
+      down:
+        command: 'xdotool key XF86MonBrightnessDown'
 pinch:
   2:
     in:
-      command: 'xdotool key ctrl+equal'
-      threshold: 0.5
+      # command: 'xdotool key ctrl+equal'
+      command: 'xdotool keydown ctrl click 4 keyup ctrl'
     out:
-      command: 'xdotool key ctrl+minus'
-      threshold: 0.5
+      command: 'xdotool keydown ctrl click 5 keyup ctrl'
   4:
     in:
       command: 'xdotool key super+a'
@@ -42,10 +46,25 @@ rotate:
     counterclockwise:
       command: 'xdotool key XF86MonBrightnessDown'
 
-threshold:
-  swipe: 0.3
-  pinch: 0.5
+tap:
+  1:
+    command: 'xdotool click 1'
+  2:
+    command: 'xdotool click 3'
+  3:
+    command: 'xdotool click 2'
 
-interval:
-  swipe: 1
-  pinch: 0.3
+# threshold:
+#   rotate: 0.1
+# #   swipe: 0.3
+# #   pinch: 0.3
+# #
+# interval:
+#   rotate: 0.5
+# #   swipe: 1
+# #   pinch: 0.3
+
+local_plugin_paths: 
+  - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma/lib/fusuma/plugin/*"
+  - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-tap/lib/fusuma/plugin/*"
+

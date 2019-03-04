@@ -59,3 +59,6 @@
 	tool = vimdiff
 [fetch]
 	prune = true
+[ghq]
+	root = ~/.ghq
+	root = ~/go/src

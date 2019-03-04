@@ -180,6 +180,7 @@ set imsearch=-1
 ""Ctrl-Cでインサートモードを抜ける
 inoremap <C-c> <ESC>
 
+" ESC ESC でハイライトを消す
 if has('unix') && !has('gui_running')
  nnoremap <silent> <ESC><ESC> :nohlsearch<CR>
 endif
@@ -237,7 +238,7 @@ nnoremap <silent> gp :tabprevious<CR>
 nnoremap <silent> gn :tabnext<CR>
 
 
-augroup add_syntax_hilight
+augroup add_syntax_highlight
   autocmd!
   "シンタックスハイライトの追加
   autocmd BufNewFile,BufRead *.json.jbuilder            set filetype=ruby
@@ -317,14 +318,18 @@ Plug 'ujihisa/neco-look'
 " カーソル下をハイライト
 Plug 'osyo-manga/vim-brightest'
 
+" rubyの定義済変数のハイライト
+Plug 'iberianpig/ruby_hl_lvar.vim', { 'for' : ['ruby']   }
+
 " 括弧補完
 Plug 'cohama/lexima.vim'
 
 " 補完系
-" Plug 'Shougo/neocomplete.vim' | Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets' | Plug 'honza/vim-snippets'
-Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets' | Plug 'honza/vim-snippets'
 
-Plug 'neoclide/coc.nvim', {'do': 'yarn install'} " vim8.1~ or nvim
+
+Plug 'prabirshrestha/vim-lsp' | Plug 'prabirshrestha/async.vim' | Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim' | Plug 'natebosch/vim-lsc'
+Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets' | Plug 'honza/vim-snippets' | Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
+
 
 " %で閉じタグに飛ぶ
 Plug 'tmhedberg/matchit'
@@ -385,10 +390,8 @@ Plug 'airblade/vim-rooter'
 
 
 ""Markdown
-" table
-" Plug 'godlygeek/tabular' ",    {'on': ['AddTabularPipeline', 'Tabularize', 'GTabularize', 'AddTabularPattern']}
 " syntax
-" Plug 'rcmdnk/vim-markdown',  { 'for': ['markdown'] }
+Plug 'rcmdnk/vim-markdown',  { 'for': ['markdown'] } | Plug 'godlygeek/tabular' | Plug 'joker1007/vim-markdown-quote-syntax'
 " 日本語の句読点をTextObjectの区切りと扱う 
 Plug 'deton/jasentence.vim', { 'for': ['markdown'] }
 " マークダウンをブラウザ上でHTMLレンダリング
@@ -467,9 +470,6 @@ Plug 'chr4/nginx.vim'
 " ローカル管理のPlugin
 Plug '~/.ghq/github.com/iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.vim'
 Plug '~/.ghq/github.com/iberianpig/ranger-explorer.vim'
-
-" syntax highlighter
-Plug '~/.ghq/github.com/iberianpig/ruby_hl_lvar.vim', { 'for' : ['ruby']  }
 
 " Initialize plugin system
 call plug#end()
@@ -676,99 +676,48 @@ augroup ansiesc
   autocmd FileType quickrun AnsiEsc
 augroup END
 
-" " neocomplete {{{
-" let g:neocomplete#enable_at_startup               = 1
-" " let g:neocomplete#auto_completion_start_length    = 2
-" let g:neocomplete#enable_ignore_case              = 1
-" " let g:neocomplete#enable_smart_case               = 1
-" let g:neocomplete#enable_cursor_hold_i            = 1
-" " let g:neocomplete#enable_camel_case               = 1
-" " let g:neocomplete#enable_fuzzy_completion         = 1
-" " let g:neocomplete#use_vimproc                     = 1
-" let g:neocomplete#lock_buffer_name_pattern        = '\*ku\*'
-"
-" " docstringは表示しない
-" set completeopt-=preview
-"
-" let g:neocomplete#sources#dictionary#dictionaries = {
-"\   'ruby': $HOME . '/.vim/bundle/dicts/ruby.dict',
-"\ }
-"
-" " for turn_vim
-" " autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
-" " "NeoSnippet.vim
+"" NeoSnippet.vim
 let g:neosnippet#enable_snipmate_compatibility = 1
-" " remove ${x} marker when switching normal mode
-" let g:neosnippet#enable_auto_clear_markers = 1
-" " Tell Neosnippet about the other snippets
+" remove ${x} marker when switching normal mode
+let g:neosnippet#enable_auto_clear_markers = 1
+" Tell Neosnippet about the other snippets
 let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets, ~/.vim/snippets'
-" " Plugin key-mappings.
+" Plugin key-mappings.
 imap <Nul> <C-Space>
 imap <C-Space>     <Plug>(neosnippet_expand_or_jump)
 smap <C-Space>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-Space>     <Plug>(neosnippet_expand_target)
-"
-" " For snippet_complete marker.
-" if has('conceal')
-"   set conceallevel=2 concealcursor=i
-" endif
-"
-" " enable ruby & rails snippet only rails file
-" function! s:RailsSnippet()
-"   if exists('b:rails_root') && (&filetype ==# 'ruby')
-"     set filetype=ruby.rails
-"   endif
-" endfunction
-"
-" function! s:RSpecSnippet()
-"   if (expand('%') =~# '_spec\.rb$') || (expand('%') =~# '^spec.*\.rb$')
-"     set filetype=ruby.rspec
-"   endif
-" endfunction
-"
-" function! s:MinitestSnippet()
-"   if (expand('%') =~# '_test\.rb$') || (expand('%') =~# '^test.*\.rb$')
-"     set filetype=ruby.minitest
-"   endif
-" endfunction
-"
-" augroup rails_snippet
-"   autocmd!
-"   au BufEnter * call s:RailsSnippet()
-"   au BufEnter * call s:RSpecSnippet()
-"   au BufEnter * call s:MinitestSnippet()
-" augroup END
-"
-" " neco-lookの変換対象にする
-" if !exists('g:neocomplete#text_mode_filetypes')
-"     let g:neocomplete#text_mode_filetypes = {}
-" endif
-" let g:neocomplete#text_mode_filetypes = {
-"            \ 'rst': 1,
-"            \ 'markdown': 1,
-"            \ 'gitrebase': 1,
-"            \ 'gitcommit': 1,
-"            \ 'vcs-commit': 1,
-"            \ 'hybrid': 1,
-"            \ 'text': 1,
-"            \ 'help': 1,
-"            \ 'tex': 1,
-"            \ }
-"
-" " filetype=javascript で include 補完を無効にする
-" call neocomplete#custom#source('include',
-"      \ 'disabled_filetypes', {'javascript' : 1})
-"
-" " filetype=javascript で tag 補完を無効にする
-" call neocomplete#custom#source('tag',
-"      \ 'disabled_filetypes', {'javascript' : 1})
-"
-" " すべての filetype で member 補完を無効にする
-" call neocomplete#custom#source('tag',
-"      \ 'disabled_filetypes', {'_' : 1})
 
+" For snippet_complete marker.
+if has('conceal')
+  set conceallevel=2 concealcursor=i
+endif
 
-"}}}
+" enable ruby & rails snippet only rails file
+function! s:RailsSnippet()
+  if exists('b:rails_root') && (&filetype ==# 'ruby')
+    set filetype=ruby.rails
+  endif
+endfunction
+
+function! s:RSpecSnippet()
+  if (expand('%') =~# '_spec\.rb$') || (expand('%') =~# '^spec.*\.rb$')
+    set filetype=ruby.rspec
+  endif
+endfunction
+
+function! s:MinitestSnippet()
+  if (expand('%') =~# '_test\.rb$') || (expand('%') =~# '^test.*\.rb$')
+    set filetype=ruby.minitest
+  endif
+endfunction
+
+augroup rails_snippet
+  autocmd!
+  au BufEnter * call s:RailsSnippet()
+  au BufEnter * call s:RSpecSnippet()
+  au BufEnter * call s:MinitestSnippet()
+augroup END
 
 "" switch
 nnoremap - :Switch<cr>
@@ -812,7 +761,7 @@ let g:fzf_action = {
   \ 'ctrl-t': 'tab split',
   \ 'ctrl-s': 'split',
   \ 'ctrl-v': 'vsplit' }
-let g:fzf_layout = { 'down': '~40%' }
+let g:fzf_layout = { 'down': '~25%' }
 
 "" fzf-filemru
 let g:fzf_filemru_bufwrite=1
@@ -822,12 +771,16 @@ vmap <Space> <Nop>
 vmap <Space> [fzf]
 
 ""スペースキーとaキーでカレントディレクトリを表示
-nnoremap <silent> [fzf]a :call fzf#vim#files(expand("%:p:h"), fzf#vim#with_preview())<CR>
+nnoremap <silent> [fzf]a :call fzf#vim#files(expand("%:p:h"))<CR>
 "スペースキーとmキーでプロジェクト内で最近開いたファイル一覧を表示
 " nnoremap <silent> [fzf]m :<C-u>fzfWithProjectDir<Space>file_mru<CR>
 " "スペースキーとMキーで最近開いたファイル一覧を表示
 " nnoremap <silent> [fzf]M :<C-u>fzf<Space>file_mru<CR>
 " nnoremap <silent> [fzf]m :call fzf#run({'source': v:oldfiles, 'options': '-m -x +s'})<CR>
+augroup custom_filemru
+  autocmd!
+  autocmd BufWinEnter * UpdateMru
+augroup END
 nnoremap <silent> [fzf]m :ProjectMru --tiebreak=end<cr>
 nnoremap <silent> [fzf]M :FilesMru --tiebreak=end<cr>
 
@@ -842,6 +795,9 @@ nnoremap <silent> [fzf]h :<C-u>Helptags<CR>
 " markdownの設定
 " see /usr/share/vim/vim80/syntax/*.vim
 let g:markdown_fenced_languages = ['ruby', 'json', 'vim', 'sh', 'javascript']
+let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_conceal = 0
+
 "previm
 augroup PrevimSettings
   autocmd!
@@ -852,7 +808,6 @@ function! s:loadPrevimSetting()
   let g:previm_enable_realtime = 1
   nmap <Leader>r :PrevimOpen<CR>
 endfunction
-
 
 " "vim-ref
 " vim-ref のバッファを q で閉じられるようにする
@@ -959,11 +914,17 @@ let test#ruby#rspec#options = {
   \ 'suite':   '--tag ~slow',
 \}
 
+" let test#ruby#minitest#options = {
+"  \ 'nearest': '--backtrace',
+"  \ 'file':    '--format documentation',
+"  \ 'suite':   '--tag ~slow',
+"\}
+
 " docker and rspec
 " https://qiita.com/joker1007/items/4dbff328f39c11e732af
 function! DockerTransformer(cmd) abort
   if $SPEC_CONTAINER_NAME !=# ''
-    let prefix = 'docker-compose exec ' . $SPEC_CONTAINER_NAME . ' bundle exec '
+    let prefix = 'docker-compose exec ' . $SPEC_CONTAINER_NAME . ' '
   else
     let prefix = 'bundle exec '
   endif
@@ -1011,7 +972,7 @@ nnoremap [explorer]t :TigOpenProjectRootDir<CR>
 nnoremap [explorer]g :TigGrep<CR>
 " nnoremap [explorer]gw :<C-u>:TigGrep<Space>\<<C-R><C-W>\><CR>
 ""選択状態のキーワードで検索"
-vnoremap [explorer]g y:TigGrep<Space><C-R>"
+vnoremap [explorer]g y:TigGrep<Space>"<C-R>""
 ""カーソル上のキーワードで検索
 nnoremap [explorer]r :TigGrepResume<CR>
 "" open tig blame with current file
@@ -1022,6 +983,10 @@ nnoremap [explorer]y :Tig stash<CR>
 " nnoremap [explorer]r :Tig refs<CR>
 
 " let g:tig_explorer_orig_tigrc='~/.tigrc'
+let g:tig_explorer_keymap_edit    = '<C-o>'
+let g:tig_explorer_keymap_tabedit = '<C-t>'
+let g:tig_explorer_keymap_split   = '<C-s>'
+let g:tig_explorer_keymap_vsplit  = '<C-v>'
 
 " ranger-explorer
 nnoremap [explorer]c :<C-u>RangerOpenCurrentDir<CR>
@@ -1110,14 +1075,6 @@ call submode#enter_with('yankround', 'nv', 'r', 'p',     '<Plug>(yankround-p)')
 call submode#map('yankround',        'n', 'r', '<C-p>', '<Plug>(yankround-prev)')
 call submode#map('yankround',        'n', 'r', '<C-n>', '<Plug>(yankround-next)')
 
-let g:brightest#highlight = {
-\   'group' : 'BrightestUnderline'
-\}
-
-let g:brightest#pattern = '\k\+'
-" let g:brightest#enable_clear_highlight_on_CursorMoved = 1
-let g:brightest#enable_on_CursorHold = 1
-
 " 入力キーの辞書
 let s:compl_key_dict = {
       \ char2nr("\<C-l>"): "\<C-x>\<C-l>",
@@ -1158,4 +1115,38 @@ endfunction
  
 inoremap <expr> <C-x>  <SID>hint_i_ctrl_x()
 
-let g:ruby_hl_lvar_auto_enable = 1
+let g:brightest#highlight = {
+      \   'group' : 'BrightestUnderline'
+      \}
+
+let g:brightest#pattern = '\k\+'
+let g:brightest#enable_on_CursorHold = 1
+
+" vim-lsp
+let g:lsp_async_completion = 1
+
+"" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-Ruby
+if executable('solargraph')
+    " gem install solargraph
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'solargraph',
+        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
+        \ 'initialization_options': {"diagnostics": "true"},
+        \ 'whitelist': ['ruby'],
+        \ })
+endif
+"" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-TypeScript
+if executable('typescript-language-server')
+    au User lsp_setup call lsp#register_server({
+        \ 'name': 'typescript-language-server',
+        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
+        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
+        \ 'whitelist': ['typescript', 'typescript.tsx'],
+        \ })
+endif
+
+call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
+    \ 'name': 'neosnippet',
+    \ 'whitelist': ['*'],
+    \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
+    \ }))

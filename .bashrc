@@ -15,11 +15,15 @@
 
 export HISTFILE=/home/iberianpig/.bash_history
 
-export HISTSIZE=100000                   # big big history
-export HISTFILESIZE=100000               # big big history
+export HISTSIZE=10000                   # big big history
+export HISTFILESIZE=10000               # big big history
 HISTCONTROL=ignoreboth:erasedups
-shopt -s histappend
-PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
+# shopt -s histappend
+# PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
+
+# see: https://linuxfan.info/history_share
+export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+shopt -u histappend
 
 
 # make histories uniq
@@ -138,7 +142,6 @@ if which fzf > /dev/null; then
   # Blogのメモを探して開く
   fzf-search-blog() {
     local note_path=~/.ghq/github.com/iberianpig/iberianpig.github.io/content/posts/
-    # local selected_file="$(find  $note_path/201*.md -type f | fzf --tac --preview='head -30 {}')"
     local selected_file="$(find  $note_path/201*.md -type f | fzf --tac --preview 'pygmentize {}')"
 
     if [ -n "${selected_file}" ]; then
@@ -162,8 +165,8 @@ if which fzf > /dev/null; then
   function fzf-kill() {
     local selected=$(ps aux | fzf)
     if [ -n "${selected}" ]; then
-      echo "${selected}" | awk '{print $12}' | xargs echo 'kill: '
-      echo "kill: ${selected}"
+      echo "${selected}" | cut -d " " -f 26- | xargs echo 'kill: '
+      echo "${selected}" | awk '{print $2}' | xargs kill -9
     fi
   }
   alias pk=fzf-kill
@@ -173,8 +176,8 @@ if which fzf > /dev/null; then
   # `tm irc` will attach to the irc session (if it exists), else it will create it.
   function fzf-byobu() {
     [[ -n "$TMUX" ]] && change="switch-client" || change="attach-session"
-    if [ $1 ]; then
-      byobu $change -t "$1" 2>/dev/null || (byobu new-session -d -s $1 && byobu $change -t "$1"); return
+    if [ "$1" ]; then
+      byobu $change -t "$1" 2>/dev/null || (byobu new-session -d -s "$1" && byobu $change -t "$1"); return
     fi
     session=$(byobu list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) && byobu $change -t "$session" || echo "No sessions found."
   }
@@ -186,6 +189,27 @@ fi # fzf
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "Task finished" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 
+function makef() {
+  if [ -n "$MAKEF_PATH" ]; then
+    make -f "$MAKEF_PATH" "$@"
+  else
+    make -f ./Makefile "$@"
+  fi
+}
+
+_makef()
+{
+  local makf_path
+  if [ -n "$MAKEF_PATH" ]; then
+    makef_path="$MAKEF_PATH"
+  else
+    makef_path=./Makefile
+  fi
+  COMPREPLY=( $(compgen -W "$(grep -oE '^[a-zA-Z0-9_-]+:([^=]|$)' $makef_path | sed 's/[^a-zA-Z0-9_.-]*$//')" $2) )
+}
+complete -F _makef makef
+
+
 # remap ctrl-w
 stty werase undef
 bind '"\C-w":unix-filename-rubout'
@@ -195,5 +219,5 @@ if [ -n "${DISPLAY+x}" ]; then
   xmodmap -e "keycode 9 = Escape  asciitilde"
 fi
 
-# wakatime
+# # wakatime
 source ~/.ghq/github.com/gjsheep/bash-wakatime/bash-wakatime.sh
