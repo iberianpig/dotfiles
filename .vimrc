@@ -326,9 +326,9 @@ Plug 'cohama/lexima.vim'
 
 " 補完系
 
-
-Plug 'prabirshrestha/vim-lsp' | Plug 'prabirshrestha/async.vim' | Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim' | Plug 'natebosch/vim-lsc'
-Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets' | Plug 'honza/vim-snippets' | Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
+Plug 'prabirshrestha/async.vim' | Plug 'prabirshrestha/vim-lsp' 
+Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim' | Plug 'yami-beta/asyncomplete-omni.vim' | Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
+Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets'
 
 
 " %で閉じタグに飛ぶ
@@ -337,10 +337,10 @@ Plug 'tmhedberg/matchit'
 " quickfixのエラーメッセージを下部に表示する
 Plug 'dannyob/quickfixstatus', {'on': ['QuickfixStatusDisable', 'QuickfixStatusEnable']}
 
-" 非同期処理でLinterを動かす
+" " 非同期処理でLinterを動かす
 Plug 'w0rp/ale'
 
-" aleの結果をlightlineに出力
+" " aleの結果をlightlineに出力
 Plug 'maximbaz/lightline-ale'
 
 " 非同期バッチをTmuxやTerminalに渡して処理出来る
@@ -377,7 +377,9 @@ Plug 'vim-scripts/vim-auto-save'
 Plug 'rhysd/clever-f.vim'
 
 " Surround
-Plug 'tpope/vim-surround'
+" Plug 'tpope/vim-surround'
+Plug 'kana/vim-textobj-user' | Plug 'osyo-manga/vim-textobj-multiblock'
+Plug 'kana/vim-operator-user' | Plug 'rhysd/vim-operator-surround'
 
 " Rename
 Plug 'qpkorr/vim-renamer', { 'on': 'Renamer'}
@@ -388,6 +390,8 @@ Plug 'editorconfig/editorconfig-vim', { 'on': ['EditorConfigReload']}
 " cd project-root
 Plug 'airblade/vim-rooter'
 
+" grammar checker
+Plug 'rhysd/vim-grammarous'
 
 ""Markdown
 " syntax
@@ -395,8 +399,9 @@ Plug 'rcmdnk/vim-markdown',  { 'for': ['markdown'] } | Plug 'godlygeek/tabular' 
 " 日本語の句読点をTextObjectの区切りと扱う 
 Plug 'deton/jasentence.vim', { 'for': ['markdown'] }
 " マークダウンをブラウザ上でHTMLレンダリング
-Plug 'kannokanno/previm', {'for': ['markdown'] }
+" Plug 'kannokanno/previm', {'for': ['markdown'] }
 Plug 'rhysd/vim-gfm-syntax', { 'for': 'markdown' }
+Plug 'iamcco/markdown-preview.nvim', { 'for': 'markdown' ,'do': 'cd app & yarn install'  }
 
 
 ""Rails
@@ -669,13 +674,6 @@ endfunction
 
 "}}}
 
-"quickrun
-
-augroup ansiesc
-  autocmd!
-  autocmd FileType quickrun AnsiEsc
-augroup END
-
 "" NeoSnippet.vim
 let g:neosnippet#enable_snipmate_compatibility = 1
 " remove ${x} marker when switching normal mode
@@ -690,7 +688,7 @@ xmap <C-Space>     <Plug>(neosnippet_expand_target)
 
 " For snippet_complete marker.
 if has('conceal')
-  set conceallevel=2 concealcursor=i
+  set conceallevel=0 concealcursor=i
 endif
 
 " enable ruby & rails snippet only rails file
@@ -799,14 +797,13 @@ let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
 
 "previm
-augroup PrevimSettings
+augroup MarkdownPreviews
   autocmd!
-  autocmd  FileType markdown call s:loadPrevimSetting()
+  autocmd  FileType markdown call s:loadMarkdownPreview()
 augroup END
 
-function! s:loadPrevimSetting()
-  let g:previm_enable_realtime = 1
-  nmap <Leader>r :PrevimOpen<CR>
+function! s:loadMarkdownPreview()
+  nmap <Leader>r :MarkdownPreview<CR>
 endfunction
 
 " "vim-ref
@@ -851,6 +848,9 @@ call altercmd#load()
 CAlterCommand ej Ref webdict ej
 CAlterCommand je Ref webdict je
 
+nmap ga :<C-u>ej <C-R>"<CR>
+vmap ga y:<C-u>ej <C-R>"<CR>
+
 "gista
 let g:gista#github_user = 'iberianpig'
 let g:gista#post_private = 1
@@ -861,8 +861,8 @@ nmap gx :OpenBrowserSmartSearch <C-r><C-w> <CR>
 vmap gx y:<C-u>OpenBrowserSmartSearch <C-R>"<CR>
 nmap gd :<C-u>OpenBrowserSmartSearch -devdocs <C-r><C-w> <CR>
 vmap gd y:<C-u>OpenBrowserSmartSearch -devdocs <C-R>"<CR>
-nmap ga :<C-u>OpenBrowserSmartSearch -alc <C-R>"<CR>
-vmap ga y:<C-u>OpenBrowserSmartSearch -alc <C-R>"<CR>
+" nmap ga :<C-u>OpenBrowserSmartSearch -alc <C-R>"<CR>
+" vmap ga y:<C-u>OpenBrowserSmartSearch -alc <C-R>"<CR>
 vmap gex y:<C-u>OpenBrowserSmartSearch -googletranslate_en <C-R>"<CR>
 vmap gjx y:<C-u>OpenBrowserSmartSearch -googletranslate_ja <C-R>"<CR>
 
@@ -1051,10 +1051,10 @@ let g:ale_maximum_file_size=0 "チェックを行う最大ファイルサイズ�
 let g:ale_linters = {'javascript': ['eslint', 'flow']}
 
 let g:ale_fixers = {
-      \'ruby':       ['rubocop'],
-      \'json':       ['fixjson'],
-      \'javascript': ['eslint']
-      \}
+    \'ruby':       ['rubocop'],
+    \'json':       ['fixjson'],
+    \'javascript': ['eslint']
+    \}
 nnoremap <leader>w :ALELint<CR>
 nnoremap <leader>f :ALEFix<CR>
 
@@ -1124,29 +1124,83 @@ let g:brightest#enable_on_CursorHold = 1
 
 " vim-lsp
 let g:lsp_async_completion = 1
+let g:lsp_signs_enabled = 1         " enable signs
+let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
 
-"" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-Ruby
-if executable('solargraph')
+
+augroup vim-lsp-register
+  autocmd!
+  "" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-Ruby
+  if executable('solargraph')
     " gem install solargraph
     au User lsp_setup call lsp#register_server({
-        \ 'name': 'solargraph',
-        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
-        \ 'initialization_options': {"diagnostics": "true"},
-        \ 'whitelist': ['ruby'],
-        \ })
-endif
-"" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-TypeScript
-if executable('typescript-language-server')
+          \ 'name': 'solargraph',
+          \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
+          \ 'initialization_options': {"diagnostics": "false"},
+          \ 'whitelist': ['ruby', 'ruby.rails', 'ruby.rspec', 'ruby.minitest']
+          \ })
+    nnoremap <leader>f :LspDocumentFormatSync<CR>
+  endif
+  "" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-TypeScript
+  if executable('typescript-language-server')
     au User lsp_setup call lsp#register_server({
-        \ 'name': 'typescript-language-server',
-        \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
-        \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
-        \ 'whitelist': ['typescript', 'typescript.tsx'],
-        \ })
-endif
+          \ 'name': 'typescript-language-server',
+          \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
+          \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
+          \ 'whitelist': ['typescript', 'typescript.tsx'],
+          \ })
+    nnoremap <leader>f :LspDocumentFormatSync<CR>
+  endif
+augroup END
 
+" asyncomplete.vim
+let g:asyncomplete_auto_popup = 1
+
+" https://github.com/prabirshrestha/asyncomplete-neosnippet.vim
 call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
     \ 'name': 'neosnippet',
     \ 'whitelist': ['*'],
     \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
     \ }))
+
+" " https://github.com/yami-beta/asyncomplete-omni.vim
+" call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+"      \ 'name': 'omni',
+"      \ 'whitelist': ['*'],
+"      \ 'blacklist': ['c', 'cpp', 'html'],
+"      \ 'completor': function('asyncomplete#sources#omni#completor')
+"      \  }))
+
+imap <Nul> <C-Space>
+imap <C-space> <Plug>(asyncomplete_force_refresh)
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
+
+imap <expr> <C-y> pumvisible() ? asyncomplete#close_popup() : "\<C-y>"
+imap <expr> <ESC> pumvisible() ? asyncomplete#cancel_popup() : "\<ESC>"
+
+"vim-grammarous
+let g:grammarous#default_comments_only_filetypes = {
+            \ '*' : 1, 'help' : 0, 'markdown' : 0,
+            \ }
+
+" rhysd/vim-operator-surround
+" 括弧を追加する
+map <silent> sa <Plug>(operator-surround-append)
+" 括弧を削除する
+map <silent> sd <Plug>(operator-surround-delete)
+" 括弧を入れ替える
+map <silent> sr <Plug>(operator-surround-replace)
+
+" カーソル位置から一番近い括弧を削除する
+nmap <silent> sdd <Plug>(operator-surround-delete)<Plug>(textobj-multiblock-a)
+
+" カーソル位置から一番近い括弧を変更する
+nmap <silent> srr <Plug>(operator-surround-replace)<Plug>(textobj-multiblock-a)
+
+" text objectの拡張
+omap ab <Plug>(textobj-multiblock-a)
+omap ib <Plug>(textobj-multiblock-i)
+vmap ab <Plug>(textobj-multiblock-a)
+vmap ib <Plug>(textobj-multiblock-i)

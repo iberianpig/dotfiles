@@ -317,3 +317,7 @@ abbr attr_writer
 snippet attra
 abbr attr_accessor
     attr_accessor :${1:name}
+
+snippet dele
+abbr  delegate .. to .. prefix .. allow_nil
+	delegate :${1:methods}, to: :${2:object}, prefix: :${3:prefix}, allow_nil: ${0:allow_nil}

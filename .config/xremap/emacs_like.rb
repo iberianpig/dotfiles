@@ -1,5 +1,6 @@
 # bash keybind
 window class_only: ['google-chrome',
+                    # 'thunar',
                     'Navigator', # firefox
                     'slack',
                     'keepassxc',
@@ -12,7 +13,7 @@ window class_only: ['google-chrome',
                     'crx_hmjkmjkepdijhoojdojkdfohbdgmmhki', # google keep
                     'crx_mjcnijlhddpbdemagnpefmlkjdagkogk', # pocket
                     'crx_ojcflmmmcfpacggndoaaflkmcoblhnbh', # wunderlist
-                    'crx_menkifleemblimdogmoihpfopnplikde', # line
+                    'crx_ophjlpahpchlmihnnnihgmmeilfjmjjc', # line
                     'evince',
                     'discord',
                     'calibre-ebook-viewer'] do
@@ -44,7 +45,7 @@ window class_only: ['google-chrome',
   remap 'Ctrl-bracketleft', to: 'Escape'
   remap 'Ctrl-q', to: 'Ctrl-w'
 
-  %w(a z x c v w t f).each do |key|
+  %w[a z x c v w t f].each do |key|
     remap "Alt-#{key}", to: "Ctrl-#{key}"
   end
 end
@@ -53,11 +54,11 @@ window class_only: ['google-chrome', 'Navigator'] do
   remap 'Alt-space', to: 'Ctrl-l'
   remap 'Alt-n',     to: 'Ctrl-Tab'
   remap 'Alt-p',     to: 'Ctrl-Shift-Tab'
-  remap 'Ctrl-q',       to: 'Ctrl-w'
+  remap 'Ctrl-q', to: 'Ctrl-w'
   remap 'Alt-space', to: 'Ctrl-f'
 end
 
-window class_only: ['discord', 'slack'] do
+window class_only: %w[discord slack] do
   remap 'Alt-space',    to: 'Ctrl-k'
   remap 'Alt-k',        to: 'Alt-Up'
   remap 'Alt-j',        to: 'Alt-Down'
@@ -71,15 +72,15 @@ window class_only: ['discord', 'slack'] do
 end
 
 # twitter, twitter lite
-window class_only: ['crx_hbdpomandigafcibbmofojjchbcdagbl', 'crx_edcifkpoamnkimdpjiabhfjahoinbpbp'] do
+window class_only: %w[crx_hbdpomandigafcibbmofojjchbcdagbl crx_edcifkpoamnkimdpjiabhfjahoinbpbp] do
   remap 'Alt-space', to: 'S' # Search
   remap 'Alt-t',     to: 'n' # Open tweet dialog
-  remap 'Alt-w',     to: %w(Escape Escape) # Close tweet dialog
+  remap 'Alt-w',     to: %w[Escape Escape] # Close tweet dialog
   # remap 'Ctrl-p',       to: 'Page_Up'
   # remap 'Ctrl-n',       to: 'Page_Down'
-  remap 'Ctrl-o',       to: 'BackSpace'
-  remap 'Alt-Left',  to: 'BackSpace'
-  remap 'Ctrl-q',       to: 'Ctrl-w'
+  remap 'Ctrl-o', to: 'BackSpace'
+  remap 'Alt-Left', to: 'BackSpace'
+  remap 'Ctrl-q', to: 'Ctrl-w'
 end
 
 # pocket
@@ -90,13 +91,12 @@ window class_only: 'crx_mjcnijlhddpbdemagnpefmlkjdagkogk' do
   remap 'Ctrl-q',       to: 'Ctrl-w'
 end
 
-
 window class_only: 'keepassxc' do
   remap 'Alt-space', to: 'Ctrl-f'
   remap 'Alt-n',     to: 'Ctrl-n'
   remap 'Alt-b',     to: 'Ctrl-b'
   remap 'Alt-c',     to: 'Ctrl-c'
-  remap 'Ctrl-q',       to: 'Ctrl-w'
+  remap 'Ctrl-q', to: 'Ctrl-w'
 end
 
 window class_only: 'calibre-ebook-viewer' do

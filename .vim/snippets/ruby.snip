@@ -103,3 +103,9 @@ abbr    begin rescue end
 snippet     pry
 abbr        binding.pry
     require 'pry-byebug'; binding.pry
+
+snippet defo
+abbr    def override_this_method(...
+    def ${1:method}
+      raise NotImplementedError, "override #{self.class.name}##{__method__}"
+    end

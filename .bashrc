@@ -17,12 +17,18 @@ export HISTFILE=/home/iberianpig/.bash_history
 
 export HISTSIZE=10000                   # big big history
 export HISTFILESIZE=10000               # big big history
-HISTCONTROL=ignoreboth:erasedups
-# shopt -s histappend
-# PROMPT_COMMAND="history -n; history -w; history -c; history -r; $PROMPT_COMMAND"
+# HISTCONTROL=ignoreboth:erasedups
 
-# see: https://linuxfan.info/history_share
-export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
+# https://piro.sakura.ne.jp/latest/blosxom/webtech/2018-03-04_history-nodup-with-tmux.htm
+function share_history {
+  history -a
+  tac ~/.bash_history | awk '!a[$0]++' | tac > ~/.bash_history.tmp
+  [ -f ~/.bash_history.tmp ] &&
+    mv ~/.bash_history{.tmp,} &&
+    history -c &&
+    history -r
+}
+PROMPT_COMMAND='share_history'
 shopt -u histappend
 
 
@@ -104,6 +110,7 @@ stty -ixon
 
 if [ "$DISPLAY" ]; then
   xset r rate 180 45
+  # xset r rate 180 60
 fi
 
 # fzf
@@ -130,8 +137,7 @@ if which fzf > /dev/null; then
   # Markdownのメモを探して開く
   fzf-search-note() {
     local note_path=~/Dropbox/document
-    # local selected_file="$(find  $note_path/201*.md -type f | fzf --tac --preview='head -30 {}')"
-    local selected_file="$(find  $note_path/201*.md -type f | fzf --tac --preview 'pygmentize {}')"
+    local selected_file="$(find  $note_path/201*.md -type f | fzf --tac)"
 
     if [ -n "${selected_file}" ]; then
       vi "${selected_file}"
@@ -142,7 +148,7 @@ if which fzf > /dev/null; then
   # Blogのメモを探して開く
   fzf-search-blog() {
     local note_path=~/.ghq/github.com/iberianpig/iberianpig.github.io/content/posts/
-    local selected_file="$(find  $note_path/201*.md -type f | fzf --tac --preview 'pygmentize {}')"
+    local selected_file="$(find  $note_path/201*.md -type f | fzf --tac)"
 
     if [ -n "${selected_file}" ]; then
       vi "${selected_file}"
@@ -153,7 +159,7 @@ if which fzf > /dev/null; then
   function fzf-git-ls-files() {
     # check whether the current directory is under `git` repository.
     if git rev-parse 2> /dev/null; then
-      local selected_file="$(git ls-files . | fzf --tac --preview 'pygmentize {}')"
+      local selected_file="$(git ls-files . | fzf --tac)"
 
       if [ -n "${selected_file}" ]; then
         vi "${selected_file}"
@@ -181,33 +187,41 @@ if which fzf > /dev/null; then
     fi
     session=$(byobu list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) && byobu $change -t "$session" || echo "No sessions found."
   }
-  alias bs=fzf-byobu
+  alias bs=fzf-byobu # bs means byobu-session
 fi # fzf
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "Task finished" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-
 function makef() {
-  if [ -n "$MAKEF_PATH" ]; then
-    make -f "$MAKEF_PATH" "$@"
-  else
-    make -f ./Makefile "$@"
-  fi
+  make -f "$(makef_path)" "$@"
 }
 
 _makef()
 {
-  local makf_path
-  if [ -n "$MAKEF_PATH" ]; then
-    makef_path="$MAKEF_PATH"
-  else
-    makef_path=./Makefile
+  if [ ! "$(makef_path)" ]; then
+    return
   fi
-  COMPREPLY=( $(compgen -W "$(grep -oE '^[a-zA-Z0-9_-]+:([^=]|$)' $makef_path | sed 's/[^a-zA-Z0-9_.-]*$//')" $2) )
+  COMPREPLY=( $(compgen -W "$(grep -oE '^[a-zA-Z0-9_-]+:([^=]|$)' "$(makef_path)" | sed 's/[^a-zA-Z0-9_.-]*$//')" "$2") )
 }
 complete -F _makef makef
+
+makef_path()
+{
+  local path
+  if [ "$MAKEF_PATH" ]; then
+    if [ -f ./Makefile ]; then
+      path=$(tempfile)
+      cat ./Makefile "$MAKEF_PATH" > "$path"
+    else
+      path="$MAKEF_PATH"
+    fi
+  elif [ -f ./Makefile ]; then
+    path="./Makefile"
+  fi
+  echo $path
+}
 
 
 # remap ctrl-w

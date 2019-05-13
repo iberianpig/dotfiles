@@ -52,7 +52,13 @@ tap:
   2:
     command: 'xdotool click 3'
   3:
-    command: 'xdotool click 2'
+    command: 'xdotool key super+space'
+
+plugin: 
+  inputs:
+    libinput_command_input: # options for lib/plugin/inputs/libinput_command_input
+      enable-tap: true
+      device: /dev/input/event16
 
 # threshold:
 #   rotate: 0.1
@@ -65,6 +71,21 @@ tap:
 # #   pinch: 0.3
 
 local_plugin_paths: 
-  - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma/lib/fusuma/plugin/*"
-  - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-tap/lib/fusuma/plugin/*"
+  - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-tap/lib/fusuma/plugin/tap.rb"
 
+window:
+  - class: '/google-chrome/'
+    swipe: 
+      3:
+        left:
+          command: 'xdotool alt+right'
+        right:
+          command: 'xdotool alt+left'
+        up: 
+          command: 'xdotool ctrl+t'
+          key:
+            - value: 'Up'
+              command: 'xdotool ctrl+shift+t'
+
+  - class: '/hoge/'
+  - class: '/hoge/'

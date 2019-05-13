@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Remmina アプレット
+Comment=アプレットメニューからリモートデスクトップに接続する
+Icon=remmina
+Exec=remmina -i
+Terminal=false
+Type=Application
+Hidden=true

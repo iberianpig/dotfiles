@@ -12,6 +12,9 @@ export XDG_DATA_HOME="$HOME/.local/share"
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 
+# java
+export JAVA_HOME=/usr/lib/jvm/java-9-openjdk-amd64
+export PATH=$PATH:$JAVA_HOME/bin
 
 # npm
 export PATH=~/.npm-global/bin:$PATH
@@ -91,3 +94,5 @@ case "$TERM" in
     export LC_CTYPE="ja_JP.UTF-8"
     export LC_COLLATE="ja_JP.UTF-8";;
 esac
+
+export PATH="$HOME/.cargo/bin:$PATH"
