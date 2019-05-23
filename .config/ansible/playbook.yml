@@ -1,0 +1,126 @@
+- hosts: 127.0.0.1
+  connection: local
+  user: iberianpig
+  tasks:
+    - name: add Docker CE apt repository
+      shell: | 
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+        add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -ucs) stable"
+      become: true
+      args:
+        warn: no
+
+    - name: add gyazo apt repository
+      shell: curl -s https://packagecloud.io/install/repositories/gyazo/gyazo-for-linux/script.deb.sh | os=ubuntu dist=trusty bash
+      become: true
+      args:
+        warn: no
+
+    - name: add apt repositories
+      apt_repository: repo={{ item }}
+      become: true
+      with_items:
+        - ppa:numix/ppa
+        - ppa:philip.scott/elementary-tweaks
+        - ppa:alexlarsson/flatpak
+        - ppa:jonathonf/vim
+
+    - name: apt install
+      apt: name={{ item }} update_cache=yes cache_valid_time=36
+      become: true
+      with_items:
+        - apt-transport-https
+        - ca-certificates
+        - gnupg2
+        - software-properties-common
+        - docker-ce
+        - gyazo
+        - dconf-editor
+        - gconf-editor
+        - guake
+        - git
+        - tig
+        - ranger
+        - fcitx-mozc
+        - byobu
+        - jq
+        - direnv
+        - powertop
+        - numix-*
+        - playonlinux
+        - tlp
+        - xclip
+        - vim-gnome
+        - synaptic
+        - gdebi
+        - xbindkeys
+        - libinput-tools
+        - elementary-tweaks
+        - make
+        - automake
+        - autoconf
+        - pkg-config
+        - tree
+        - sassc
+        - gcc
+        - snapd
+        - gparted
+        - python-pip
+        - etckeeper
+        - libreadline-dev
+        - wmctrl
+        - xdotool
+        - gimp
+        - inkscape
+        - calibre
+        - shellcheck
+        - global
+    - name: snap install
+      command: snap install {{ item }}
+      become: true
+      with_items:
+        - bitwarden
+        # - slack --classic # it doesn't works with fcitx
+        - spotify
+        - libreoffice
+        - obs-studio
+        - vlc
+        - gnome-system-monitor
+        - hub --classic
+        - fwupd --classic
+        - go --classic
+
+    - name: pip install
+      pip: name={{item}}
+      with_items:
+        - vint
+        - wakatime
+
+    - name: add $USER Docker group
+      user: name=iberianpig groups=docker append=yes
+      become: true
+
+    - name: add $USER Input group
+      user: name=iberianpig groups=input append=yes
+      become: true
+
+    - name: Download Terminal hybrid color schemes
+      get_url:
+        url: https://gist.github.com/iberianpig/95ba787d302c9cd5b0ef/raw/79e5d1272b9188d27ef15de9a53c66b3974ab600/hybrid-pantheon.sh
+        dest: /tmp
+
+    - name: set color schemes
+      command: bash /tmp/hybrid-pantheon.sh
+
+    - name: Install docker-compose # requrie 1.20 or later to use detachKeys in ~/.docker/config.json
+      shell: |
+        dest=/usr/local/bin/docker-compose
+        version=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
+        curl -L https://github.com/docker/compose/releases/download/$version/docker-compose-$(uname -s)-$(uname -m) -o $dest
+        chmod a+x $dest
+      args: 
+        creates: /usr/local/bin/docker-compose
+      become: true
+
+    - name: Install Fusuma
+      command: gem install fusuma

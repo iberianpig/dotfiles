@@ -3,3 +3,4 @@
 /.vim/plugged/*
 *.ssh-agent
 
+playbook.retry

@@ -851,10 +851,6 @@ CAlterCommand je Ref webdict je
 nmap ga :<C-u>ej <C-R>"<CR>
 vmap ga y:<C-u>ej <C-R>"<CR>
 
-"gista
-let g:gista#github_user = 'iberianpig'
-let g:gista#post_private = 1
-
 " for open-browser plugin
 " nmap gx <Plug>(openbrowser-smart-search)
 nmap gx :OpenBrowserSmartSearch <C-r><C-w> <CR>
@@ -1139,7 +1135,7 @@ augroup vim-lsp-register
           \ 'initialization_options': {"diagnostics": "false"},
           \ 'whitelist': ['ruby', 'ruby.rails', 'ruby.rspec', 'ruby.minitest']
           \ })
-    nnoremap <leader>f :LspDocumentFormatSync<CR>
+    nnoremap <leader>F :LspDocumentFormatSync<CR>
   endif
   "" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-TypeScript
   if executable('typescript-language-server')
@@ -1149,7 +1145,7 @@ augroup vim-lsp-register
           \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
           \ 'whitelist': ['typescript', 'typescript.tsx'],
           \ })
-    nnoremap <leader>f :LspDocumentFormatSync<CR>
+    nnoremap <leader>F :LspDocumentFormatSync<CR>
   endif
 augroup END
 

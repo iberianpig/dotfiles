@@ -233,5 +233,7 @@ if [ -n "${DISPLAY+x}" ]; then
   xmodmap -e "keycode 9 = Escape  asciitilde"
 fi
 
-# # wakatime
+eval "$(direnv hook bash)"
+
+# wakatime
 source ~/.ghq/github.com/gjsheep/bash-wakatime/bash-wakatime.sh

@@ -13,4 +13,5 @@ ln -fns ~/dotfiles/.ctags ~/.ctags
 ln -fns ~/dotfiles/.tigrc ~/.tigrc
 ln -fns ~/dotfiles/.config/fusuma ~/.config/fusuma
 ln -fns ~/dotfiles/.config/xremap ~/.config/xremap
+ln -fns ~/dotfiles/.config/ansible ~/.config/ansible
 ln -fns ~/dotfiles/.config/autostart ~/.config/autostart
