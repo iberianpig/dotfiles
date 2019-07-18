@@ -96,3 +96,4 @@ case "$TERM" in
 esac
 
 export PATH="$HOME/.cargo/bin:$PATH"
+if [ -e /home/iberianpig/.nix-profile/etc/profile.d/nix.sh ]; then . /home/iberianpig/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

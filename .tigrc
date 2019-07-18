@@ -76,9 +76,8 @@ bind status C !?git commit -vn
 bind status a !?git commit -v  --amend
 # hookキャンセル+amendオプション
 bind status A !?git commit -vn --amend
-# file remove
+# remove file
 bind status D !@?rm %(file)
-
 
 # `-` でステージ・アンステージをスイッチ
 bind status u none
@@ -86,11 +85,18 @@ bind status - status-update
 bind stage u none
 bind stage - status-update
 
+# difftool
 bind status d !sh -c "git difftool -y \"$(git rev-parse --show-toplevel)/%(file)\""
 
+# コンフリクト解消に--ours, --theirs を利用
+bind status o !?git checkout --ours %(file)
+bind stage  o !?git checkout --ours %(file)
+bind status t !?git checkout --theirs %(file)
+bind stage  t !?git checkout --theirs %(file)
+
 # stash
-bind status  S      !?git stash push -p --message "%(prompt Enter stash -p comment: )" -- %(file)
-bind status  <Esc>s !?git stash push --message "%(prompt Enter stash All comment: )"
+bind status  <Esc>s !?git stash push -p --message "%(prompt Enter stash -p comment: )" -- %(file)
+bind status  S      !?git stash push --message "%(prompt Enter stash All comment: )"
 bind stash   p      !?git stash pop %(stash)
 
 # diff

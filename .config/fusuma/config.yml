@@ -10,19 +10,14 @@ swipe:
       command: 'xdotool key alt+w'
   4:
     left:
-      # shortcut: 'super+Right'
-      # command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1'
-      command: 'xdotool key super'  # gnome-shell
+      command: 'xdotool key super+Right'
     right:
-      # shortcut: 'super+Left'
-      # command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1' 
-      command: 'xdotool key super+a' # gnome-shell
+      command: 'xdotool key super+Left'
     up:
-      # command: 'xdotool key super+a'
-      command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1' # gnome-shell
+      command: 'xdotool key super+s'
     down:
-      # command: 'xdotool key super+s'
-      command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1' # gnome-shell
+      command: 'xdotool key super+a'
+
 pinch:
   2:
     in:
@@ -36,9 +31,11 @@ pinch:
       command: 'xdotool key super+s'
 
 threshold:
-  swipe: 0.1
-  pinch: 0.5
+  rotate: 0.1
+  swipe: 0.3
+  pinch: 0.3
 
 interval:
-  swipe: 0.5
+  rotate: 0.5
+  swipe: 1
   pinch: 0.3

@@ -13,10 +13,12 @@ swipe:
   4:
     left:
       # shortcut: 'super+Right'
-      command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1'
+      command: 'xdotool key super+Right'
+      # command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1'
     right:
       # shortcut: 'super+Left'
-      command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1' 
+      command: 'xdotool key super+Left'
+      # command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1' 
     up:
       command: 'xdotool key super+s'
     down:
@@ -60,15 +62,15 @@ plugin:
       enable-tap: true
       device: /dev/input/event16
 
-# threshold:
-#   rotate: 0.1
-# #   swipe: 0.3
-# #   pinch: 0.3
-# #
-# interval:
-#   rotate: 0.5
-# #   swipe: 1
-# #   pinch: 0.3
+threshold:
+  rotate: 0.1
+  swipe: 0.3
+  pinch: 0.3
+
+interval:
+  rotate: 0.5
+  swipe: 1
+  pinch: 0.3
 
 local_plugin_paths: 
   - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-tap/lib/fusuma/plugin/tap.rb"
@@ -87,5 +89,4 @@ window:
             - value: 'Up'
               command: 'xdotool ctrl+shift+t'
 
-  - class: '/hoge/'
   - class: '/hoge/'

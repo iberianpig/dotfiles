@@ -22,7 +22,6 @@
       with_items:
         - ppa:numix/ppa
         - ppa:philip.scott/elementary-tweaks
-        - ppa:alexlarsson/flatpak
         - ppa:jonathonf/vim
 
     - name: apt install
@@ -39,7 +38,7 @@
         - gconf-editor
         - guake
         - git
-        - tig
+        # - tig # need to install tig 2.4 manually
         - ranger
         - fcitx-mozc
         - byobu
@@ -75,6 +74,12 @@
         - calibre
         - shellcheck
         - global
+        - byzanz
+        - baobab
+        - fwupd
+        - awscli
+        - libmysqlclient-dev # for mysql2 gem
+        - mysql-server
     - name: snap install
       command: snap install {{ item }}
       become: true
@@ -85,10 +90,10 @@
         - libreoffice
         - obs-studio
         - vlc
-        - gnome-system-monitor
         - hub --classic
-        - fwupd --classic
         - go --classic
+        # - remmina # remmina can't read config on /home/ 
+        # - ngrok   # ngrok   can't read config on /home/ 
 
     - name: pip install
       pip: name={{item}}
@@ -98,10 +103,6 @@
 
     - name: add $USER Docker group
       user: name=iberianpig groups=docker append=yes
-      become: true
-
-    - name: add $USER Input group
-      user: name=iberianpig groups=input append=yes
       become: true
 
     - name: Download Terminal hybrid color schemes
@@ -124,3 +125,7 @@
 
     - name: Install Fusuma
       command: gem install fusuma
+
+    - name: add $USER Input group
+      user: name=iberianpig groups=input append=yes
+      become: true

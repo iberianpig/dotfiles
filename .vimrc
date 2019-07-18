@@ -14,47 +14,6 @@ augroup set_cursorline
   autocmd InsertEnter,InsertLeave * set cursorline!  "redraw!
 augroup END
 
-function! s:EnableChangeCursorShape()
-  augroup change_corsor_shape
-    autocmd!
-    if executable('pantheon-terminal')
-      "Pantheon Terminal
-      autocmd InsertEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"I-Beam"\"'
-      autocmd InsertLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-      autocmd VimLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-      autocmd VimEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-      autocmd WinLeave * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-      autocmd WinEnter * silent execute '!dconf write /org/pantheon/terminal/settings/cursor-shape "\"Block"\"'
-    endif
-
-    "Guake Terminal
-    if executable('guake')
-      autocmd InsertEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 1"
-      autocmd InsertLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-      autocmd VimLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-      autocmd VimEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-      autocmd WinLeave * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-      autocmd WinEnter * silent execute "!gconftool-2 --type int --set /apps/guake/style/cursor_shape 0"
-    endif
-    if executable('gnome-terminal')
-      autocmd InsertEnter * silent execute '!dconf write /org/gnome/terminal/legacy/profiles:/:a40311ba-987a-46d6-9b51-0eeaf9e48cde/cursor-shape \"ibeam\"'
-      autocmd InsertLeave * silent execute '!dconf write /org/gnome/terminal/legacy/profiles:/:a40311ba-987a-46d6-9b51-0eeaf9e48cde/cursor-shape \"block\"'
-      autocmd VimEnter * silent execute '!dconf write /org/gnome/terminal/legacy/profiles:/:a40311ba-987a-46d6-9b51-0eeaf9e48cde/cursor-shape \"block\"'
-      autocmd VimLeave * silent execute '!dconf write /org/gnome/terminal/legacy/profiles:/:a40311ba-987a-46d6-9b51-0eeaf9e48cde/cursor-shape \"block\"'
-      autocmd WinEnter * silent execute '!dconf write /org/gnome/terminal/legacy/profiles:/:a40311ba-987a-46d6-9b51-0eeaf9e48cde/cursor-shape \"block\"'
-      autocmd WinLeave * silent execute '!dconf write /org/gnome/terminal/legacy/profiles:/:a40311ba-987a-46d6-9b51-0eeaf9e48cde/cursor-shape \"block\"'
-    endif
-  augroup END
-endfunction
-
-function! s:DisableChangeCursorShape()
-  augroup change_corsor_shape
-    autocmd!
-  augroup END
-endfunction
-
-call s:EnableChangeCursorShape()
-
 set laststatus=2   " ステータス行を常に表示
 set cmdheight=2    " メッセージ表示欄を2行確保
 set showmatch      " 対応する括弧を強調表示
@@ -107,9 +66,9 @@ set ttyfast                    " カーソル移動高速化
 augroup restore_cursor_position
   autocmd!
   autocmd BufReadPost * " 最後のカーソル位置を復元する
-        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-        \   exe "normal! g'\"" |
-        \ endif
+       \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+       \   exe "normal! g'\"" |
+       \ endif
 augroup END
 
 "File処理関連
@@ -180,10 +139,10 @@ set imsearch=-1
 ""Ctrl-Cでインサートモードを抜ける
 inoremap <C-c> <ESC>
 
-" ESC ESC でハイライトを消す
-if has('unix') && !has('gui_running')
- nnoremap <silent> <ESC><ESC> :nohlsearch<CR>
-endif
+" " ESC ESC でハイライトを消す
+" if has('unix') && !has('gui_running')
+"  nnoremap <silent> <ESC><ESC> :nohlsearch<CR>
+" endif
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
 cmap w!! w !sudo tee > /dev/null %
@@ -285,14 +244,15 @@ call plug#begin('~/.vim/plugged')
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'junegunn/vim-easy-align'
 
-" Using a non-master branch
-Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
-
-" Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
-Plug 'fatih/vim-go', { 'tag': '*' }
-
-" Plugin options
-Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
+" " example
+" " Using a non-master branch
+" Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
+"
+" " Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
+" Plug 'fatih/vim-go', { 'tag': '*' }
+"
+" " Plugin options
+" Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
 
 " Plugin outside ~/.vim/plugged with post-update hook
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
@@ -314,6 +274,7 @@ Plug 'thinca/vim-ref', { 'on': ['Ref', 'RefHistory'] }
 Plug 'mfumi/ref-dicts-en'
 Plug 'tyru/vim-altercmd'
 Plug 'ujihisa/neco-look'
+Plug 'skanehira/translate.vim'
 
 " カーソル下をハイライト
 Plug 'osyo-manga/vim-brightest'
@@ -327,8 +288,29 @@ Plug 'cohama/lexima.vim'
 " 補完系
 
 Plug 'prabirshrestha/async.vim' | Plug 'prabirshrestha/vim-lsp' 
-Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim' | Plug 'yami-beta/asyncomplete-omni.vim' | Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
+Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim' | Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
 Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets'
+
+
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install',
+  \ 'branch': 'release/1.x',
+  \ 'for': [
+    \ 'javascript',
+    \ 'typescript',
+    \ 'css',
+    \ 'less',
+    \ 'scss',
+    \ 'json',
+    \ 'graphql',
+    \ 'markdown',
+    \ 'vue',
+    \ 'lua',
+    \ 'php',
+    \ 'python',
+    \ 'ruby',
+    \ 'html',
+    \ 'swift' ] }
 
 
 " %で閉じタグに飛ぶ
@@ -423,15 +405,13 @@ Plug 'othree/html5.vim', {'for':['html']}
 "" javascript
 Plug 'elzr/vim-json',                          {'for':['json']}
 Plug 'othree/yajs.vim',                        {'for':['javascript', 'html']}
-Plug 'vim-scripts/JavaScript-Indent',          {'for':['javascript', 'html']}
-Plug 'pangloss/vim-javascript',                {'for':['javascript', 'html']}
-Plug 'othree/javascript-libraries-syntax.vim', {'for':['javascript', 'html']}
-Plug 'othree/es.next.syntax.vim',              {'for':['javascript', 'html']}
-Plug 'MaxMEllon/vim-jsx-pretty',               {'for':['javascript', 'html']}
+Plug 'pangloss/vim-javascript'
+Plug 'MaxMEllon/vim-jsx-pretty'
 
 "" typescript
 Plug 'leafgarland/typescript-vim', {'for':['typescript', 'tsx']}
-Plug 'Quramy/tsuquyomi', {'for':['typescript', 'tsx']}
+" Plug 'Quramy/tsuquyomi', {'for':['typescript', 'tsx']}
+Plug 'ianks/vim-tsx', {'for':['typescript', 'tsx']}
 
 " graphql
 Plug 'jparise/vim-graphql',                    {'for':['javascript', 'html', 'graphql']}
@@ -1049,7 +1029,8 @@ let g:ale_linters = {'javascript': ['eslint', 'flow']}
 let g:ale_fixers = {
     \'ruby':       ['rubocop'],
     \'json':       ['fixjson'],
-    \'javascript': ['eslint']
+    \'javascript': ['eslint'],
+    \'typescript': ['eslint']
     \}
 nnoremap <leader>w :ALELint<CR>
 nnoremap <leader>f :ALEFix<CR>
@@ -1122,7 +1103,7 @@ let g:brightest#enable_on_CursorHold = 1
 let g:lsp_async_completion = 1
 let g:lsp_signs_enabled = 1         " enable signs
 let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
-
+let g:lsp_text_edit_enabled = 0 " solargraphで補完キャンセルした場合に改行が削除される不具合があったため
 
 augroup vim-lsp-register
   autocmd!
@@ -1173,8 +1154,8 @@ imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-k>     <Plug>(neosnippet_expand_target)
 
-imap <expr> <C-y> pumvisible() ? asyncomplete#close_popup() : "\<C-y>"
-imap <expr> <ESC> pumvisible() ? asyncomplete#cancel_popup() : "\<ESC>"
+" imap <expr> <C-y> pumvisible() ? asyncomplete#close_popup() : "\<C-y>"
+" imap <expr> <ESC> pumvisible() ? asyncomplete#cancel_popup() : "\<ESC>"
 
 "vim-grammarous
 let g:grammarous#default_comments_only_filetypes = {

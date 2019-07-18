@@ -194,36 +194,6 @@ fi # fzf
 #   sleep 10; alert
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "Task finished" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
-function makef() {
-  make -f "$(makef_path)" "$@"
-}
-
-_makef()
-{
-  if [ ! "$(makef_path)" ]; then
-    return
-  fi
-  COMPREPLY=( $(compgen -W "$(grep -oE '^[a-zA-Z0-9_-]+:([^=]|$)' "$(makef_path)" | sed 's/[^a-zA-Z0-9_.-]*$//')" "$2") )
-}
-complete -F _makef makef
-
-makef_path()
-{
-  local path
-  if [ "$MAKEF_PATH" ]; then
-    if [ -f ./Makefile ]; then
-      path=$(tempfile)
-      cat ./Makefile "$MAKEF_PATH" > "$path"
-    else
-      path="$MAKEF_PATH"
-    fi
-  elif [ -f ./Makefile ]; then
-    path="./Makefile"
-  fi
-  echo $path
-}
-
-
 # remap ctrl-w
 stty werase undef
 bind '"\C-w":unix-filename-rubout'
@@ -237,3 +207,6 @@ eval "$(direnv hook bash)"
 
 # wakatime
 source ~/.ghq/github.com/gjsheep/bash-wakatime/bash-wakatime.sh
+
+# makef
+source /home/iberianpig/.ghq/github.com/iberianpig/makef/makef.sh
