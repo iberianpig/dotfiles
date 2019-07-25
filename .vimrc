@@ -139,10 +139,10 @@ set imsearch=-1
 ""Ctrl-Cでインサートモードを抜ける
 inoremap <C-c> <ESC>
 
-" " ESC ESC でハイライトを消す
-" if has('unix') && !has('gui_running')
-"  nnoremap <silent> <ESC><ESC> :nohlsearch<CR>
-" endif
+" ESC ESC でハイライトを消す
+if has('unix') && !has('gui_running')
+ nnoremap <silent> <ESC><ESC> :nohlsearch<CR>
+endif
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
 cmap w!! w !sudo tee > /dev/null %
@@ -162,6 +162,7 @@ set helplang=ja,en
 
 ".vimrcの編集用
 nnoremap <Space>. :<C-u>tabedit $HOME/dotfiles/.vimrc<CR>
+nnoremap R :<C-u>source $HOME/.vimrc<CR>
 
 " q: のタイポ抑制
 nnoremap q: :q
@@ -288,7 +289,7 @@ Plug 'cohama/lexima.vim'
 " 補完系
 
 Plug 'prabirshrestha/async.vim' | Plug 'prabirshrestha/vim-lsp' 
-Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim' | Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
+Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim' | Plug 'prabirshrestha/asyncomplete-neosnippet.vim' | Plug 'yami-beta/asyncomplete-omni.vim'
 Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets'
 
 
@@ -451,6 +452,9 @@ Plug 'tomlion/vim-solidity'
 
 " nginx
 Plug 'chr4/nginx.vim'
+
+" ansible
+Plug 'pearofducks/ansible-vim', { 'do': 'cd ./UltiSnips; ./generate.py'  }
 
 " ローカル管理のPlugin
 Plug '~/.ghq/github.com/iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.vim'
@@ -660,15 +664,16 @@ let g:neosnippet#enable_snipmate_compatibility = 1
 let g:neosnippet#enable_auto_clear_markers = 1
 " Tell Neosnippet about the other snippets
 let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets, ~/.vim/snippets'
-" Plugin key-mappings.
-imap <Nul> <C-Space>
-imap <C-Space>     <Plug>(neosnippet_expand_or_jump)
-smap <C-Space>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-Space>     <Plug>(neosnippet_expand_target)
+" " Plugin key-mappings.
+" imap <Nul> <C-Space>
+" imap <C-Space>     <Plug>(neosnippet_expand_or_jump)
+" smap <C-Space>     <Plug>(neosnippet_expand_or_jump)
+" xmap <C-Space>     <Plug>(neosnippet_expand_target)
 
 " For snippet_complete marker.
 if has('conceal')
-  set conceallevel=0 concealcursor=i
+  " set conceallevel=0 concealcursor=i
+  set conceallevel=2 concealcursor=i
 endif
 
 " enable ruby & rails snippet only rails file
@@ -875,7 +880,7 @@ augroup indent_guides_color
   autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=238
 augroup END
 
-" test setting
+" vim-test setting
 let test#strategy = 'dispatch'
 
 nmap <silent> <leader>t :TestNearest<CR>
@@ -993,8 +998,6 @@ augroup END
 set notagrelative "タグを相対パスとして扱わない
 let g:Gtags_Auto_Update = 1
 let g:Gtags_OpenQuickfixWindow = 1
-"" 検索結果Windowを閉じる
-nnoremap <C-q> <C-w>j<C-w>q
 " "" Grep 準備
 nnoremap <C-g> :Gtags -g <CR>
 "" このファイルの関数一覧
@@ -1011,8 +1014,12 @@ nnoremap <C-c> :cc<CR>
 
 "" 次の検索結果に移動
 nnoremap <C-n> :cn<CR>
+
 "" 前の検索結果に移動
 nnoremap <C-p> :cp<CR>
+
+"" 検索結果Windowを閉じる
+nnoremap <C-q> <C-w>j<C-w>q
 
 "ale
 let g:ale_set_quickfix = 1
@@ -1030,7 +1037,8 @@ let g:ale_fixers = {
     \'ruby':       ['rubocop'],
     \'json':       ['fixjson'],
     \'javascript': ['eslint'],
-    \'typescript': ['eslint']
+    \'typescript': ['eslint'],
+    \'css':        ['stylelint']
     \}
 nnoremap <leader>w :ALELint<CR>
 nnoremap <leader>f :ALEFix<CR>
@@ -1105,6 +1113,24 @@ let g:lsp_signs_enabled = 1         " enable signs
 let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
 let g:lsp_text_edit_enabled = 0 " solargraphで補完キャンセルした場合に改行が削除される不具合があったため
 
+function! s:configure_lsp() abort
+  setlocal omnifunc=lsp#complete   " オムニ補完を有効化
+  " LSP用にマッピング
+  nnoremap <buffer> <C-]> :<C-u>LspDefinition<CR>
+  nnoremap <buffer> <C-j> :<C-u>LspDefinition<CR>
+  nnoremap <buffer> <C-k> :<C-u>LspReferences<CR>
+  nnoremap <buffer> K :<C-u>LspHover<CR>
+  nnoremap <buffer> <C-s> :<C-u>LspRename<CR>
+  nnoremap <leader> F :LspDocumentFormatSync<CR>
+  " nnoremap <buffer> gs :<C-u>LspDocumentSymbol<CR>
+  " nnoremap <buffer> gS :<C-u>LspWorkspaceSymbol<CR>
+  " nnoremap <buffer> gQ :<C-u>LspDocumentFormat<CR>
+  " vnoremap <buffer> gQ :LspDocumentRangeFormat<CR>
+  " nnoremap <buffer> gi :<C-u>LspImplementation<CR>
+endfunction
+
+
+
 augroup vim-lsp-register
   autocmd!
   "" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-Ruby
@@ -1116,19 +1142,21 @@ augroup vim-lsp-register
           \ 'initialization_options': {"diagnostics": "false"},
           \ 'whitelist': ['ruby', 'ruby.rails', 'ruby.rspec', 'ruby.minitest']
           \ })
-    nnoremap <leader>F :LspDocumentFormatSync<CR>
+    autocmd FileType ruby,ruby.rails,ruby.rspec,ruby.minitest call s:configure_lsp()
   endif
+
   "" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-TypeScript
   if executable('typescript-language-server')
     au User lsp_setup call lsp#register_server({
           \ 'name': 'typescript-language-server',
           \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
           \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
-          \ 'whitelist': ['typescript', 'typescript.tsx'],
+          \ 'whitelist': ['typescript', 'typescript.tsx', 'javascript', 'javascript.jsx'],
           \ })
-    nnoremap <leader>F :LspDocumentFormatSync<CR>
+    autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx call s:configure_lsp()
   endif
 augroup END
+
 
 " asyncomplete.vim
 let g:asyncomplete_auto_popup = 1
@@ -1140,13 +1168,13 @@ call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_opt
     \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
     \ }))
 
-" " https://github.com/yami-beta/asyncomplete-omni.vim
-" call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-"      \ 'name': 'omni',
-"      \ 'whitelist': ['*'],
-"      \ 'blacklist': ['c', 'cpp', 'html'],
-"      \ 'completor': function('asyncomplete#sources#omni#completor')
-"      \  }))
+" https://github.com/yami-beta/asyncomplete-omni.vim
+call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+     \ 'name': 'omni',
+     \ 'whitelist': ['*'],
+     \ 'blacklist': ['c', 'cpp', 'html'],
+     \ 'completor': function('asyncomplete#sources#omni#completor')
+     \  }))
 
 imap <Nul> <C-Space>
 imap <C-space> <Plug>(asyncomplete_force_refresh)
@@ -1154,8 +1182,8 @@ imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-k>     <Plug>(neosnippet_expand_target)
 
-" imap <expr> <C-y> pumvisible() ? asyncomplete#close_popup() : "\<C-y>"
-" imap <expr> <ESC> pumvisible() ? asyncomplete#cancel_popup() : "\<ESC>"
+imap <expr> <C-y> pumvisible() ? asyncomplete#close_popup() : "\<C-y>"
+imap <expr> <ESC> pumvisible() ? asyncomplete#cancel_popup() : "\<ESC>"
 
 "vim-grammarous
 let g:grammarous#default_comments_only_filetypes = {

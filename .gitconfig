@@ -34,7 +34,7 @@
 [color]
   ui = auto
 [github]
-  user = iberianpig
+	user = iberianpig
 [credential]
   helper = cache
 [web]
