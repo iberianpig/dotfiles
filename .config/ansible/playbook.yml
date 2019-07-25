@@ -2,16 +2,38 @@
   connection: local
   user: iberianpig
   tasks:
-    - name: add Docker CE apt repository
-      shell: | 
-        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-        add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -ucs) stable"
+    - name: get upstream codename
+      shell: lsb_release -usc
+      register: upstream
+
+    - debug: var=upstream.stdout  # bionic
+
+    - name: add Docker CE apt gpg
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
       become: true
       args:
         warn: no
 
+    - name: add Docker CE apt repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ upstream.stdout  }} stable
+        state: present
+      become: true
+
+    - name: add playonlinux apt gpg
+      shell: curl -fsSL http://deb.playonlinux.com/public.gpg | apt-key add -
+      become: true
+      args:
+        warn: no
+
+    - name: add playonlinux CE apt repository
+      apt_repository:
+        repo: deb http://deb.playonlinux.com/ {{ upstream.stdout }} main
+        state: present
+      become: true
+
     - name: add gyazo apt repository
-      shell: curl -s https://packagecloud.io/install/repositories/gyazo/gyazo-for-linux/script.deb.sh | os=ubuntu dist=trusty bash
+      shell: which gyazo || curl -s https://packagecloud.io/install/repositories/gyazo/gyazo-for-linux/script.deb.sh | os=ubuntu dist={{ upstream.stdout }} bash
       become: true
       args:
         warn: no
@@ -28,12 +50,13 @@
       apt: name={{ item }} update_cache=yes cache_valid_time=36
       become: true
       with_items:
-        - apt-transport-https
-        - ca-certificates
-        - gnupg2
-        - software-properties-common
+        - apt-transport-https        # for docker
+        - ca-certificates            # for docker
+        - gnupg2                     # for docker
+        - software-properties-common # for docker
         - docker-ce
         - gyazo
+        - scrot # use from ~/.gyazo.config.yml
         - dconf-editor
         - gconf-editor
         - guake
@@ -80,6 +103,9 @@
         - awscli
         - libmysqlclient-dev # for mysql2 gem
         - mysql-server
+          # - vagrant # error occured by dependency of gems. Install from https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_linux_amd64.zip
+        - virtualbox
+        - virtualbox-ext-pack
     - name: snap install
       command: snap install {{ item }}
       become: true
@@ -122,6 +148,13 @@
       args: 
         creates: /usr/local/bin/docker-compose
       become: true
+
+    - name: Install vagrant
+      shell: |
+        which vagrant || curl -L https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_x86_64.deb -o /tmp/vagrant.deb && dpkg -i /tmp/vagrant.deb
+      become: true
+      args:
+        warn: no
 
     - name: Install Fusuma
       command: gem install fusuma
