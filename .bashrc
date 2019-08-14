@@ -130,7 +130,12 @@ export FZF_DEFAULT_COMMAND='(git ls-files; git ls-files -o --exclude-standard ||
 if which fzf > /dev/null; then
 
   fzf-change-repo() {
-    cd "$(ghq list -p | fzf)"
+    local repository="$(ghq list -p | fzf)"
+    echo $repository
+    if [ -n "${repository}" ]; then
+      local dirname=$(basename "${repository}")
+      cd "${repository}" && tmux rename-window "${dirname}" || return
+    fi
   }
   alias cr=fzf-change-repo
 
