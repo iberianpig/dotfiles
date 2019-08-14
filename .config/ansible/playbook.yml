@@ -106,6 +106,7 @@
           # - vagrant # error occured by dependency of gems. Install from https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_linux_amd64.zip
         - virtualbox
         - virtualbox-ext-pack
+        - libxcb-xtest0 # zoom dependency
     - name: snap install
       command: snap install {{ item }}
       become: true
@@ -152,6 +153,9 @@
     - name: Install vagrant
       shell: |
         which vagrant || curl -L https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_x86_64.deb -o /tmp/vagrant.deb && dpkg -i /tmp/vagrant.deb
+    - name: Install Zoom
+      shell: |
+        which zoom || (curl -L https://zoom.us/client/latest/zoom_amd64.deb -o /tmp/zoom.deb && dpkg -i /tmp/zoom.deb)
       become: true
       args:
         warn: no
