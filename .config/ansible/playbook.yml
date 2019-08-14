@@ -26,7 +26,7 @@
       args:
         warn: no
 
-    - name: add playonlinux CE apt repository
+    - name: add playonlinux apt repository
       apt_repository:
         repo: deb http://deb.playonlinux.com/ {{ upstream.stdout }} main
         state: present
@@ -151,9 +151,13 @@
         creates: /usr/local/bin/docker-compose
       become: true
 
-    - name: Install vagrant
+    - name: Install Vagrant
       shell: |
-        which vagrant || curl -L https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_x86_64.deb -o /tmp/vagrant.deb && dpkg -i /tmp/vagrant.deb
+        which vagrant || (curl -L https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_x86_64.deb -o /tmp/vagrant.deb && dpkg -i /tmp/vagrant.deb)
+      become: true
+      args:
+        warn: no
+
     - name: Install Zoom
       shell: |
         which zoom || (curl -L https://zoom.us/client/latest/zoom_amd64.deb -o /tmp/zoom.deb && dpkg -i /tmp/zoom.deb)
