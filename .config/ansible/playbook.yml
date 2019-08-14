@@ -68,7 +68,7 @@
         - jq
         - direnv
         - powertop
-        - numix-*
+        - numix-icon-theme-circle
         - playonlinux
         - tlp
         - xclip
