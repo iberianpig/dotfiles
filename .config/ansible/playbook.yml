@@ -106,6 +106,7 @@
           # - vagrant # error occured by dependency of gems. Install from https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_linux_amd64.zip
         - virtualbox
         - virtualbox-ext-pack
+        - tmate
         - libxcb-xtest0 # zoom dependency
     - name: snap install
       command: snap install {{ item }}
