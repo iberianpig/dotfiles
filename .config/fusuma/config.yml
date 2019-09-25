@@ -21,21 +21,32 @@ swipe:
 pinch:
   2:
     in:
-      command: 'xdotool key ctrl+equal'
+      command: 'xdotool keydown ctrl click 4 keyup ctrl'
     out:
-      command: 'xdotool key ctrl+minus'
+      command: 'xdotool keydown ctrl click 5 keyup ctrl'
   4:
     in:
       command: 'xdotool key super+a'
     out:
       command: 'xdotool key super+s'
 
-threshold:
-  rotate: 0.1
-  swipe: 0.3
-  pinch: 0.3
+rotate:
+  3:
+    clockwise:
+      command: 'xdotool key XF86MonBrightnessUp'
+    counterclockwise:
+      command: 'xdotool key XF86MonBrightnessDown'
 
-interval:
-  rotate: 0.5
-  swipe: 1
-  pinch: 0.3
+# threshold:
+#   rotate: 0.1
+#   swipe: 1
+#   pinch: 0.3
+#
+# interval:
+#   rotate: 0.5
+#   swipe: 0.5
+#   pinch: 0.3
+
+
+# local_plugin_paths: 
+#   - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-tap/lib/fusuma/plugin/tap.rb"

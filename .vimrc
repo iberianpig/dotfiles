@@ -80,7 +80,7 @@ set autoread   " 外部でファイルに変更がされた場合は読みなお
 
 augroup vimrc-checktime "window移動/一定時間カーソルが停止した場合に強制的に読みなおす
   autocmd!
-  set updatetime=400
+  set updatetime=300
   autocmd WinEnter * checktime
   autocmd CursorHold * checktime
 augroup END
@@ -107,9 +107,6 @@ nnoremap g# g#zz
 
 " vを二回で行末まで選択
 vnoremap v $h
-
-"すべてを選択
-nnoremap <Leader><C-A> ggVG
 
 "ビープの設定
 "ビープ音すべてを無効にする
@@ -281,17 +278,22 @@ Plug 'skanehira/translate.vim'
 Plug 'osyo-manga/vim-brightest'
 
 " rubyの定義済変数のハイライト
-Plug 'iberianpig/ruby_hl_lvar.vim', { 'for' : ['ruby']   }
+" Plug 'iberianpig/ruby_hl_lvar.vim', { 'for' : ['ruby']   }
 
 " 括弧補完
 Plug 'cohama/lexima.vim'
 
 " 補完系
 
-Plug 'prabirshrestha/async.vim' | Plug 'prabirshrestha/vim-lsp' 
-Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim' | Plug 'prabirshrestha/asyncomplete-neosnippet.vim' | Plug 'yami-beta/asyncomplete-omni.vim'
-Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets'
+" Plug 'prabirshrestha/async.vim' | Plug 'prabirshrestha/vim-lsp' 
+" Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim' | Plug 'prabirshrestha/asyncomplete-neosnippet.vim' | Plug 'prabirshrestha/asyncomplete-file.vim'
 
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets'
+Plug 'honza/vim-snippets'
+
+" Plug 'zxqfl/tabnine-vim'
 
 Plug 'prettier/vim-prettier', {
   \ 'do': 'yarn install',
@@ -317,14 +319,16 @@ Plug 'prettier/vim-prettier', {
 " %で閉じタグに飛ぶ
 Plug 'tmhedberg/matchit'
 
+Plug 'thinca/vim-quickrun'
+
 " quickfixのエラーメッセージを下部に表示する
 Plug 'dannyob/quickfixstatus', {'on': ['QuickfixStatusDisable', 'QuickfixStatusEnable']}
 
 " " 非同期処理でLinterを動かす
-Plug 'w0rp/ale'
+" Plug 'w0rp/ale'
 
 " " aleの結果をlightlineに出力
-Plug 'maximbaz/lightline-ale'
+" Plug 'maximbaz/lightline-ale'
 
 " 非同期バッチをTmuxやTerminalに渡して処理出来る
 Plug 'tpope/vim-dispatch', {'on': ['Dispatch', 'FocusDispatch','Spawn', 'Start', 'Copen']}
@@ -341,17 +345,11 @@ Plug 'mhinz/vim-signify'
 " Git diff用
 Plug 'tpope/vim-fugitive', {'on': ['Gdiff']}
 
-" gtags
-Plug 'lighttiger2505/gtags.vim'
-
 " 自動整形プラグイン
 Plug 'Chiel92/vim-autoformat'
 
 " PJ毎の稼働時間を記録
 Plug 'wakatime/vim-wakatime'
-
-"  Yank
-Plug 'LeafCage/yankround.vim'
 
 " 自動保存
 Plug 'vim-scripts/vim-auto-save'
@@ -430,7 +428,10 @@ Plug 'vim-scripts/AnsiEsc.vim', {'on': ['DM', 'RWP', 'AnsiEsc', 'RM', 'SM', 'WLR
 
 
 "colorscheme
-Plug 'w0ng/vim-hybrid'
+Plug 'w0ng/vim-hybrid' 
+Plug 'morhetz/gruvbox'
+Plug 'kristijanhusak/vim-hybrid-material'
+
 Plug 'miyakogi/seiya.vim'
 
 "help
@@ -474,8 +475,18 @@ syntax on
 " set background=light "明るめの背景
 set background=dark "暗めの背景
 
-colorscheme hybrid
+" colorschme
+
+" " " hybrid
+" colorscheme hybrid
 let g:seiya_auto_enable=1
+
+" " hybrid-material
+let g:hybrid_transparent_background = 1
+colorscheme hybrid_material
+
+" " gruvbox
+" colorscheme gruvbox
 
 " カーソル行にアンダーラインを引く(color terminal)
 highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
@@ -502,7 +513,7 @@ highlight SignifySignChange cterm=bold ctermbg=235  ctermfg=111
 let g:lightline = {
       \ 'colorscheme': 'Tomorrow_Night',
       \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], [ 'ctrlpmark'] ],
+      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], [ 'ctrlpmark'], [ 'cocstatus', 'currentfunction' ] ],
       \   'right': [[ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]]
       \ },
       \ 'inactive': {
@@ -519,6 +530,8 @@ let g:lightline = {
       \   'currentworkingdir': 'CurrentWorkingDir',
       \   'percent':           'MyPercent',
       \   'lineinfo':          'MyLineInfo',
+      \   'cocstatus': 'coc#status',
+      \   'currentfunction': 'CocCurrentFunction',
       \ },
       \ 'component_expand':    {
       \  'linter_checking': 'lightline#ale#checking',
@@ -656,25 +669,11 @@ function! CurrentWorkingDir()
   return fnamemodify(getcwd(),':')
 endfunction
 
+function! CocCurrentFunction()
+  return get(b:, 'coc_current_function', '')
+endfunction
+
 "}}}
-
-"" NeoSnippet.vim
-let g:neosnippet#enable_snipmate_compatibility = 1
-" remove ${x} marker when switching normal mode
-let g:neosnippet#enable_auto_clear_markers = 1
-" Tell Neosnippet about the other snippets
-let g:neosnippet#snippets_directory='~/.vim/bundle/vim-snippets/snippets, ~/.vim/snippets'
-" " Plugin key-mappings.
-" imap <Nul> <C-Space>
-" imap <C-Space>     <Plug>(neosnippet_expand_or_jump)
-" smap <C-Space>     <Plug>(neosnippet_expand_or_jump)
-" xmap <C-Space>     <Plug>(neosnippet_expand_target)
-
-" For snippet_complete marker.
-if has('conceal')
-  " set conceallevel=0 concealcursor=i
-  set conceallevel=2 concealcursor=i
-endif
 
 " enable ruby & rails snippet only rails file
 function! s:RailsSnippet()
@@ -749,8 +748,9 @@ let g:fzf_layout = { 'down': '~25%' }
 "" fzf-filemru
 let g:fzf_filemru_bufwrite=1
 
+nnoremap <Space> <Nop>
 nmap <Space> [fzf]
-vmap <Space> <Nop>
+vnoremap <Space> <Nop>
 vmap <Space> [fzf]
 
 ""スペースキーとaキーでカレントディレクトリを表示
@@ -788,7 +788,7 @@ augroup MarkdownPreviews
 augroup END
 
 function! s:loadMarkdownPreview()
-  nmap <Leader>r :MarkdownPreview<CR>
+  nnoremap <Leader>r :MarkdownPreview<CR>
 endfunction
 
 " "vim-ref
@@ -833,19 +833,19 @@ call altercmd#load()
 CAlterCommand ej Ref webdict ej
 CAlterCommand je Ref webdict je
 
-nmap ga :<C-u>ej <C-R>"<CR>
-vmap ga y:<C-u>ej <C-R>"<CR>
+nnoremap ga :<C-u>ej <C-R>"<CR>
+vnoremap ga y:<C-u>ej <C-R>"<CR>
 
 " for open-browser plugin
 " nmap gx <Plug>(openbrowser-smart-search)
-nmap gx :OpenBrowserSmartSearch <C-r><C-w> <CR>
-vmap gx y:<C-u>OpenBrowserSmartSearch <C-R>"<CR>
-nmap gd :<C-u>OpenBrowserSmartSearch -devdocs <C-r><C-w> <CR>
-vmap gd y:<C-u>OpenBrowserSmartSearch -devdocs <C-R>"<CR>
+nnoremap gx :OpenBrowserSmartSearch <C-r><C-w> <CR>
+vnoremap gx y:<C-u>OpenBrowserSmartSearch <C-R>"<CR>
+nnoremap gd :<C-u>OpenBrowserSmartSearch -devdocs <C-r><C-w> <CR>
+vnoremap gd y:<C-u>OpenBrowserSmartSearch -devdocs <C-R>"<CR>
 " nmap ga :<C-u>OpenBrowserSmartSearch -alc <C-R>"<CR>
 " vmap ga y:<C-u>OpenBrowserSmartSearch -alc <C-R>"<CR>
-vmap gex y:<C-u>OpenBrowserSmartSearch -googletranslate_en <C-R>"<CR>
-vmap gjx y:<C-u>OpenBrowserSmartSearch -googletranslate_ja <C-R>"<CR>
+vnoremap gex y:<C-u>OpenBrowserSmartSearch -googletranslate_en <C-R>"<CR>
+vnoremap gjx y:<C-u>OpenBrowserSmartSearch -googletranslate_ja <C-R>"<CR>
 
 " reloadしたら消えてしまう
 if !exists('g:openbrowser_search_engines')
@@ -873,7 +873,7 @@ let g:indent_guides_enable_on_vim_startup=0
 let g:indent_guides_color_change_percent = 30
 let g:indent_guides_guide_size=1
 let g:indent_guides_exclude_filetypes = ['help', 'vimfiler', 'tagbar', 'unite']
-nmap <silent> <Leader>ig :IndentGuidesToggle<CR>
+nnoremap <silent> <Leader>ig :IndentGuidesToggle<CR>
 augroup indent_guides_color
   autocmd!
   autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=236
@@ -883,17 +883,17 @@ augroup END
 " vim-test setting
 let test#strategy = 'dispatch'
 
-nmap <silent> <leader>t :TestNearest<CR>
-nmap <silent> <leader>T :TestFile<CR>
-nmap <silent> <leader>a :TestSuite<CR>
-nmap <silent> <leader>l :TestLast<CR>
-nmap <silent> <leader>g :TestVisit<CR>
+nnoremap <silent> <leader>t :TestNearest<CR>
+nnoremap <silent> <leader>T :TestFile<CR>
+nnoremap <silent> <leader>a :TestSuite<CR>
+nnoremap <silent> <leader>l :TestLast<CR>
+nnoremap <silent> <leader>g :TestVisit<CR>
 
-let test#ruby#rspec#options = {
-  \ 'nearest': '--backtrace',
-  \ 'file':    '--format documentation',
-  \ 'suite':   '--tag ~slow',
-\}
+" let test#ruby#rspec#options = {
+"  \ 'nearest': '--backtrace',
+"  \ 'file':    '--format documentation',
+"  \ 'suite':   '--tag ~slow',
+"\}
 
 " let test#ruby#minitest#options = {
 "  \ 'nearest': '--backtrace',
@@ -935,18 +935,15 @@ call lexima#add_rule({'at': '\%#\n\s*]', 'char': ']', 'input': ']', 'delete': ']
 nmap <C-_> <Plug>(caw:hatpos:toggle)
 vmap <C-_> <Plug>(caw:hatpos:toggle)
 
-highlight multiple_cursors_cursor term=reverse cterm=reverse gui=reverse
-highlight link multiple_cursors_visual Visual
-
 " easy-align
 "" Start interactive EasyAlign in visual mode (e.g. vip<Enter>)
 vmap <Enter> <Plug>(EasyAlign)
 "" Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
-
+nnoremap , <Nop>
 nmap , [explorer]
-vmap , <Nop>
+vnoremap , <Nop>
 vmap , [explorer]
 nnoremap [explorer]T :TigOpenCurrentFile<CR>
 nnoremap [explorer]t :TigOpenProjectRootDir<CR>
@@ -994,21 +991,6 @@ augroup switch_auto_save
   au BufEnter * call s:auto_save_detect()
 augroup END
 
-" gtags
-set notagrelative "タグを相対パスとして扱わない
-let g:Gtags_Auto_Update = 1
-let g:Gtags_OpenQuickfixWindow = 1
-" "" Grep 準備
-nnoremap <C-g> :Gtags -g <CR>
-"" このファイルの関数一覧
-nnoremap <C-h> :Gtags -f %<CR>
-"" カーソル以下の定義元を探す
-nnoremap <C-j> :Gtags <C-r><C-w><CR>
-vnoremap <C-j> y:Gtags <C-r>"<CR>
-"" カーソル以下の使用箇所を探す
-nnoremap <C-k> :Gtags -r <C-r><C-w><CR>
-vnoremap <C-k> y:Gtags -r <C-r>"<CR>
-
 "" 検索結果に移動
 nnoremap <C-c> :cc<CR>
 
@@ -1018,47 +1000,16 @@ nnoremap <C-n> :cn<CR>
 "" 前の検索結果に移動
 nnoremap <C-p> :cp<CR>
 
+"" 次の結果リストに移動
+nnoremap <A-n> :cnewer<CR>
+
+"" 前の結 ストに移動
+nnoremap <A-p> :colder<CR>
+
 "" 検索結果Windowを閉じる
-nnoremap <C-q> <C-w>j<C-w>q
-
-"ale
-let g:ale_set_quickfix = 1
-let g:Qfstatusline#UpdateCmd = function('lightline#update')
-let g:ale_lint_on_enter=0 "ファイルを開いた時にチェックを実行。初期値1。設定で0に。
-let g:ale_lint_on_filetype_changed=0 "filetypeが変わった時にチェックを実行。初期値1。
-let g:ale_lint_on_save=0 "ファイルを保存する時にチェックを実行。初期値1。
-let g:ale_lint_on_text_changed=0 "内容が変更された時にチェックを実行。初期値1。余りにガチャガチャしすぎなら0に。
-let g:ale_lint_on_insert_leave=0 "インサートモードを終了する時にチェックを実行。初期値0。text_changedを0にしたらこちらを1にした方が良い。
-let g:ale_maximum_file_size=0 "チェックを行う最大ファイルサイズ。初期値は0。1以上に設定するとそのbyte数より大きいファイルをチェックしない。
-
-let g:ale_linters = {'javascript': ['eslint', 'flow']}
-
-let g:ale_fixers = {
-    \'ruby':       ['rubocop'],
-    \'json':       ['fixjson'],
-    \'javascript': ['eslint'],
-    \'typescript': ['eslint'],
-    \'css':        ['stylelint']
-    \}
-nnoremap <leader>w :ALELint<CR>
-nnoremap <leader>f :ALEFix<CR>
-
-" highlight clear ALEErrorSign " otherwise uses error bg color (typically red)
-" highlight clear ALEWarningSign " otherwise uses error bg color (typically red)
-" let g:ale_sign_error = 'X' " could use emoji
-" let g:ale_sign_warning = '?' " could use emoji
-let g:ale_statusline_format = ['X %d', '? %d', '']
-" %linter% is the name of the linter that provided the message
-" %s is the error or warning message
-let g:ale_echo_msg_format = '%linter% says %s'
-" Map keys to navigate between lines with errors and warnings.
-nnoremap <leader>an :ALENextWrap<cr>
-nnoremap <leader>ap :ALEPreviousWrap<cr>
-
-" yankround.vim
-call submode#enter_with('yankround', 'nv', 'r', 'p',     '<Plug>(yankround-p)')
-call submode#map('yankround',        'n', 'r', '<C-p>', '<Plug>(yankround-prev)')
-call submode#map('yankround',        'n', 'r', '<C-n>', '<Plug>(yankround-next)')
+" nnoremap <C-q> <C-w>j<C-w>q
+" https://github.com/neomake/neomake/issues/842
+nnoremap <C-q> :cclose<CR>
 
 " 入力キーの辞書
 let s:compl_key_dict = {
@@ -1107,83 +1058,123 @@ let g:brightest#highlight = {
 let g:brightest#pattern = '\k\+'
 let g:brightest#enable_on_CursorHold = 1
 
-" vim-lsp
-let g:lsp_async_completion = 1
-let g:lsp_signs_enabled = 1         " enable signs
-let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
-let g:lsp_text_edit_enabled = 0 " solargraphで補完キャンセルした場合に改行が削除される不具合があったため
+" " vim-lsp
+" let g:lsp_async_completion = 1
+" let g:lsp_signs_enabled = 1         " enable signs
+" let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
+" let g:lsp_text_edit_enabled = 0 " solargraphで補完キャンセルした場合に改行が削除される不具合があったため
+"
+" function! s:configure_lsp() abort
+"   setlocal omnifunc=lsp#complete   " オムニ補完を有効化
+"   " LSP用にマッピング
+"   nnoremap <buffer> <C-]> :<C-u>LspDefinition<CR>
+"   nnoremap <buffer> <C-j> :<C-u>LspDefinition<CR>
+"   nnoremap <buffer> <C-k> :<C-u>LspReferences<CR>
+"   nnoremap <buffer> K :<C-u>LspHover<CR>
+"   nnoremap <buffer> <C-s> :<C-u>LspRename<CR>
+"   nnoremap <leader> F :LspDocumentFormatSync<CR>
+"   " nnoremap <buffer> gs :<C-u>LspDocumentSymbol<CR>
+"   " nnoremap <buffer> gS :<C-u>LspWorkspaceSymbol<CR>
+"   " nnoremap <buffer> gQ :<C-u>LspDocumentFormat<CR>
+"   " vnoremap <buffer> gQ :LspDocumentRangeFormat<CR>
+"   " nnoremap <buffer> gi :<C-u>LspImplementation<CR>
+" endfunction
+"
+" augroup vim-lsp-register
+"   autocmd!
+"   "" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-Ruby
+"   if executable('solargraph')
+"     " gem install solargraph
+"     au User lsp_setup call lsp#register_server({
+"         \ 'name': 'solargraph',
+"         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
+"         \ 'initialization_options': {"diagnostics": "false"},
+"         \ 'whitelist': ['ruby', 'ruby.rails', 'ruby.rspec', 'ruby.minitest']
+"         \ })
+"     autocmd FileType ruby,ruby.rails,ruby.rspec,ruby.minitest call s:configure_lsp()
+"   endif
+"
+"   "" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-TypeScript
+"   if executable('typescript-language-server')
+"     au User lsp_setup call lsp#register_server({
+"         \ 'name': 'typescript-language-server',
+"         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
+"         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
+"         \ 'whitelist': ['typescript', 'typescript.tsx', 'javascript', 'javascript.jsx'],
+"         \ })
+"     autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx call s:configure_lsp()
+"   endif
+" augroup END
+"
+"
+" " asyncomplete.vim
+" let g:asyncomplete_auto_popup = 1
+"
+" " https://github.com/prabirshrestha/asyncomplete-neosnippet.vim
+" call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
+"    \ 'name': 'neosnippet',
+"    \ 'whitelist': ['*'],
+"    \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
+"    \ }))
+"
+" " https://github.com/prabirshrestha/asyncomplete-file.vim
+" call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+"    \ 'name': 'file',
+"    \ 'whitelist': ['*'],
+"    \ 'completor': function('asyncomplete#sources#file#completor')
+"    \ }))
+"
+" imap <Nul> <C-Space>
+" imap <C-space> <Plug>(asyncomplete_force_refresh)
+" imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+" smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+" xmap <C-k>     <Plug>(neosnippet_expand_target)
+"
+" imap <expr> <C-y> pumvisible() ? asyncomplete#close_popup() : "\<C-y>"
+" imap <expr> <ESC> pumvisible() ? asyncomplete#cancel_popup() : "\<ESC>"
+"
 
-function! s:configure_lsp() abort
-  setlocal omnifunc=lsp#complete   " オムニ補完を有効化
-  " LSP用にマッピング
-  nnoremap <buffer> <C-]> :<C-u>LspDefinition<CR>
-  nnoremap <buffer> <C-j> :<C-u>LspDefinition<CR>
-  nnoremap <buffer> <C-k> :<C-u>LspReferences<CR>
-  nnoremap <buffer> K :<C-u>LspHover<CR>
-  nnoremap <buffer> <C-s> :<C-u>LspRename<CR>
-  nnoremap <leader> F :LspDocumentFormatSync<CR>
-  " nnoremap <buffer> gs :<C-u>LspDocumentSymbol<CR>
-  " nnoremap <buffer> gS :<C-u>LspWorkspaceSymbol<CR>
-  " nnoremap <buffer> gQ :<C-u>LspDocumentFormat<CR>
-  " vnoremap <buffer> gQ :LspDocumentRangeFormat<CR>
-  " nnoremap <buffer> gi :<C-u>LspImplementation<CR>
-endfunction
+" coc.nvim
+nnoremap <space><space> :<C-u>CocList<cr>
+nnoremap <space>r :<C-u>CocListResume<cr>
+nmap <C-]> <Plug>(coc-definition)
+nmap <C-j> <Plug>(coc-definition)
+nmap <C-k> <Plug>(coc-references)
+nnoremap K :<C-u>call CocAction('doHover')<cr>
+nmap <C-s> <Plug>(coc-rename)
+nmap <leader>f <Plug>(coc-format)
+"   " nnoremap <buffer> gs :<C-u>LspDocumentSymbol<CR>
+"   " nnoremap <buffer> gS :<C-u>LspWorkspaceSymbol<CR>
+"   " nnoremap <buffer> gQ :<C-u>LspDocumentFormat<CR>
+"   " vnoremap <buffer> gQ :LspDocumentRangeFormat<CR>
+"   " nnoremap <buffer> gi :<C-u>LspImplementation<CR>
 
+imap <C-k> <Plug>(coc-snippets-expand-jump)
 
+"" Map for document filetypes so the server could handle 
+let g:coc_filetype_map = {
+     \ 'ruby.rails': 'ruby',
+     \ 'ruby.minitest': 'ruby',
+     \ 'ruby.rspec': 'ruby',
+     \ }
 
-augroup vim-lsp-register
-  autocmd!
-  "" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-Ruby
-  if executable('solargraph')
-    " gem install solargraph
-    au User lsp_setup call lsp#register_server({
-          \ 'name': 'solargraph',
-          \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
-          \ 'initialization_options': {"diagnostics": "false"},
-          \ 'whitelist': ['ruby', 'ruby.rails', 'ruby.rspec', 'ruby.minitest']
-          \ })
-    autocmd FileType ruby,ruby.rails,ruby.rspec,ruby.minitest call s:configure_lsp()
-  endif
+autocmd FileType python let b:coc_root_patterns = ['.venv', '.git', '.env']
 
-  "" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-TypeScript
-  if executable('typescript-language-server')
-    au User lsp_setup call lsp#register_server({
-          \ 'name': 'typescript-language-server',
-          \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
-          \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
-          \ 'whitelist': ['typescript', 'typescript.tsx', 'javascript', 'javascript.jsx'],
-          \ })
-    autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx call s:configure_lsp()
-  endif
-augroup END
-
-
-" asyncomplete.vim
-let g:asyncomplete_auto_popup = 1
-
-" https://github.com/prabirshrestha/asyncomplete-neosnippet.vim
-call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
-    \ 'name': 'neosnippet',
-    \ 'whitelist': ['*'],
-    \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
-    \ }))
-
-" https://github.com/yami-beta/asyncomplete-omni.vim
-call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-     \ 'name': 'omni',
-     \ 'whitelist': ['*'],
-     \ 'blacklist': ['c', 'cpp', 'html'],
-     \ 'completor': function('asyncomplete#sources#omni#completor')
-     \  }))
-
-imap <Nul> <C-Space>
-imap <C-space> <Plug>(asyncomplete_force_refresh)
-imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-xmap <C-k>     <Plug>(neosnippet_expand_target)
-
-imap <expr> <C-y> pumvisible() ? asyncomplete#close_popup() : "\<C-y>"
-imap <expr> <ESC> pumvisible() ? asyncomplete#cancel_popup() : "\<ESC>"
+" augroup configure_coc_list
+"   autocmd!
+"   autocmd FileType list:/lists call configure_coc_list
+" augroup END
+"
+" function! s:configure_coc_list() abort
+"   echomsg "set configure_coc_list"
+"   " CocList用にマッピング
+"   imap <buffer> <C-n> :<C-u>CocNext<CR>
+"   imap <buffer> <C-p> :<C-u>CocPrev<CR>
+"   imap <buffer> <C-q> :<C-u><ESC><CR>
+"   nmap <buffer> <C-n> :<C-u>CocNext<CR>
+"   nmap <buffer> <C-p> :<C-u>CocPrev<CR>
+"   nmap <buffer> <C-q> :<C-u><ESC><CR>
+" endfunction
 
 "vim-grammarous
 let g:grammarous#default_comments_only_filetypes = {

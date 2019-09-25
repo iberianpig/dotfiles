@@ -1,0 +1,28 @@
+{
+  "coc.preferences.useQuickfixForLocations": true,
+  "coc.preferences.bracketEnterImprove": true,
+  "coc.preferences.currentFunctionSymbolAutoUpdate": true,
+  "diagnostic.checkCurrentLine": true,
+  "diagnostic.virtualText": true,
+  "diagnostic.signOffset": 1500,
+  "list.previousKeymap": "<C-p>",
+  "list.nextKeymap": "<C-n>",
+  "list.insertMappings": {
+    "<C-n>": "prompt:next",
+    "<C-p>": "prompt:previous"
+  },
+  "list.normalMappings": {
+    "<C-n>": "do:next",
+    "<C-p>": "do:previous"
+  },
+  "solargraph.completion":true",
+  "solargraph.diagnostics": true,
+  "solargraph.formatting": true,
+  "solargraph.autoformat": false,
+  "python.jediEnabled": false,
+  "python.linting.enabled": true,
+  "python.venvFolders": [".venv"],
+  "snippets.extends": {
+    "ruby.rspec": ["ruby", "ruby.rspec"]
+  }
+}

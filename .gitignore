@@ -1,6 +1,7 @@
 /.vim/.netrwhist
 /.vim/bundle/*
 /.vim/plugged/*
+/.vim/sessions/*
 *.ssh-agent
 
 playbook.retry

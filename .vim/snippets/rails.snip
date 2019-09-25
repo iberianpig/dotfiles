@@ -321,3 +321,8 @@ abbr attr_accessor
 snippet dele
 abbr  delegate .. to .. prefix .. allow_nil
 	delegate :${1:methods}, to: :${2:object}, prefix: :${3:prefix}, allow_nil: ${0:allow_nil}
+
+snippet  logger.error
+abbr        
+   Rails.logger.error("#{self.class.name}##{__method__}: #{${0:e}.inspect}")
+

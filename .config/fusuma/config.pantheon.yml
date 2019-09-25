@@ -50,9 +50,9 @@ rotate:
 
 tap:
   1:
-    command: 'xdotool click 1'
+    # command: 'xdotool click 1'
   2:
-    command: 'xdotool click 3'
+    # command: 'xdotool click 3'
   3:
     command: 'xdotool key super+space'
 
@@ -60,17 +60,12 @@ plugin:
   inputs:
     libinput_command_input: # options for lib/plugin/inputs/libinput_command_input
       enable-tap: true
-      device: /dev/input/event16
-
-threshold:
-  rotate: 0.1
-  swipe: 0.3
-  pinch: 0.3
-
-interval:
-  rotate: 0.5
-  swipe: 1
-  pinch: 0.3
+      enable-dwt: true
+      device: /dev/input/event18
+  filters:
+    libinput_device_filter:
+      keep_device_names:
+        - Touchpad
 
 local_plugin_paths: 
   - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-tap/lib/fusuma/plugin/tap.rb"

@@ -13,7 +13,7 @@ export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 
 # java
-export JAVA_HOME=/usr/lib/jvm/java-9-openjdk-amd64
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 export PATH=$PATH:$JAVA_HOME/bin
 
 # npm
@@ -97,3 +97,5 @@ esac
 
 export PATH="$HOME/.cargo/bin:$PATH"
 if [ -e /home/iberianpig/.nix-profile/etc/profile.d/nix.sh ]; then . /home/iberianpig/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+export PATH="$HOME/flutter/bin:$PATH"

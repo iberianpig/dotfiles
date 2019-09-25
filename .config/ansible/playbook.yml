@@ -33,7 +33,9 @@
       become: true
 
     - name: add gyazo apt repository
-      shell: which gyazo || curl -s https://packagecloud.io/install/repositories/gyazo/gyazo-for-linux/script.deb.sh | os=ubuntu dist={{ upstream.stdout }} bash
+      shell: |
+        which gyazo && exit 0
+        curl -s https://packagecloud.io/install/repositories/gyazo/gyazo-for-linux/script.deb.sh | os=ubuntu dist={{ upstream.stdout }} bash
       become: true
       args:
         warn: no
@@ -45,6 +47,7 @@
         - ppa:numix/ppa
         - ppa:philip.scott/elementary-tweaks
         - ppa:jonathonf/vim
+        - ppa:openjdk-r/ppa
 
     - name: apt install
       apt: name={{ item }} update_cache=yes cache_valid_time=36
@@ -70,6 +73,7 @@
         - powertop
         - numix-icon-theme-circle
         - playonlinux
+        - wine-stable
         - tlp
         - xclip
         - vim-gnome
@@ -108,6 +112,11 @@
         - virtualbox-ext-pack
         - tmate
         - libxcb-xtest0 # zoom dependency
+        - libgnome2-bin # gnome-open
+        - lib32stdc++6 # flutter dependency
+        - openjdk-8-jdk # flutter dependency
+        - libreoffice
+        - vlc
     - name: snap install
       command: snap install {{ item }}
       become: true
@@ -115,9 +124,8 @@
         - bitwarden
         # - slack --classic # it doesn't works with fcitx
         - spotify
-        - libreoffice
+        # - libreoffice #cant open local file
         - obs-studio
-        - vlc
         - hub --classic
         - go --classic
         # - remmina # remmina can't read config on /home/ 
@@ -143,6 +151,7 @@
 
     - name: Install docker-compose # requrie 1.20 or later to use detachKeys in ~/.docker/config.json
       shell: |
+        which docker-compose && exit 0
         dest=/usr/local/bin/docker-compose
         version=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
         curl -L https://github.com/docker/compose/releases/download/$version/docker-compose-$(uname -s)-$(uname -m) -o $dest
@@ -153,14 +162,26 @@
 
     - name: Install Vagrant
       shell: |
-        which vagrant || (curl -L https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_x86_64.deb -o /tmp/vagrant.deb && dpkg -i /tmp/vagrant.deb)
+        which vagrant && exit 0
+        curl -L https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_x86_64.deb -o /tmp/vagrant.deb && dpkg -i /tmp/vagrant.deb
       become: true
       args:
         warn: no
 
     - name: Install Zoom
       shell: |
-        which zoom || (curl -L https://zoom.us/client/latest/zoom_amd64.deb -o /tmp/zoom.deb && dpkg -i /tmp/zoom.deb)
+        which zoom && exit 0
+        curl -L https://zoom.us/client/latest/zoom_amd64.deb -o /tmp/zoom.deb && dpkg -i /tmp/zoom.deb
+      become: true
+      args:
+        warn: no
+
+    - name: Install AWS ECS CLI
+      shell: |
+        which ecs-cli && exit 0
+        dest=/usr/local/bin/ecs-cli
+        curl -o $dest https://amazon-ecs-cli.s3.amazonaws.com/ecs-cli-linux-amd64-latest
+        chmod a+x $dest
       become: true
       args:
         warn: no
