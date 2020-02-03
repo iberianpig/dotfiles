@@ -15,14 +15,14 @@
     "<C-n>": "do:next",
     "<C-p>": "do:previous"
   },
-  "solargraph.completion":true",
+  "solargraph.completion": true,
   "solargraph.diagnostics": true,
   "solargraph.formatting": true,
-  "solargraph.autoformat": false,
+  "solargraph.autoformat": true,
   "python.jediEnabled": false,
   "python.linting.enabled": true,
-  "python.venvFolders": [".venv"],
-  "snippets.extends": {
-    "ruby.rspec": ["ruby", "ruby.rspec"]
-  }
+  "python.pythonPath":"server_tentative/.venv/bin/python",
+  "snippets.ultisnips.enable": false,
+  "snippets.snipmate.enable": true,
+  "snippets.userSnippetsDirectory": "~/.vim/snippets"
 }

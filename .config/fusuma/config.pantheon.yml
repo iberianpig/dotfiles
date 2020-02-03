@@ -2,32 +2,79 @@ swipe:
   3:
     left:
       command: 'xdotool key alt+Right'
+      # command: "xte 'keydown Alt_L' 'keydown Right' 'keyup Right' 'keyup Alt_L'"
       # command: 'xdotool key alt+Escape'
       # command: 'xdotool keydown alt && sleep .1 && xdotool key Tab  && xdotool keyup alt'
     right:
       command: 'xdotool key alt+Left'
+      # command: "xte 'keydown Alt_L' 'keydown Left' 'keyup Left' 'keyup Alt_L'"
     up:
-      command: 'xdotool key alt+t'
+      command: 'xdotool key ctrl+t'
+      keypress:
+        LEFTSHIFT:
+          command: 'xdotool key --clearmodifiers ctrl+shift+t'
     down:
       command: 'xdotool key alt+w'
   4:
     left:
       # shortcut: 'super+Right'
-      command: 'xdotool key super+Right'
-      # command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1'
+      # command: 'xdotool key super+Right'
+      workspace: 'next'
+      keypress:
+        LEFTSHIFT: 
+          window: 'next'
+          # command: 'xdotool key --clearmodifiers super+alt+Right'
+        LEFTMETA:
+          command: 'xdotool key --clearmodifiers super+ctrl+Left'
     right:
       # shortcut: 'super+Left'
-      command: 'xdotool key super+Left'
-      # command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1' 
+      # command: 'xdotool key super+Left'
+      workspace: 'prev'
+      keypress:
+        LEFTSHIFT: 
+          window: 'prev'
+          # command: 'xdotool key --clearmodifiers super+alt+Left'
+        LEFTMETA:
+          command: 'xdotool key --clearmodifiers super+ctrl+Right'
     up:
       command: 'xdotool key super+s'
+      keypress:
+        LEFTSHIFT:
+          # command: 'xdotool key --clearmodifiers XF86MonBrightnessUp'
+        LEFTMETA+LEFTALT:
+          command: 'xdotool key --clearmodifiers XF86AudioRaiseVolume'
+        LEFTMETA:
+          # command: 'xdotool key --clearmodifiers super+Up'
+          window:
+            # fullscreen: 'add'
+            maximized: 'toggle'
     down:
       command: 'xdotool key super+a'
-    key_leftmeta:
-      up:
-        command: 'xdotool key XF86MonBrightnessUp'
-      down:
-        command: 'xdotool key XF86MonBrightnessDown'
+      keypress:
+        LEFTSHIFT:
+          # command: 'xdotool key --clearmodifiers XF86MonBrightnessDown'
+        LEFTMETA+LEFTALT:
+          command: 'xdotool key --clearmodifiers XF86AudioLowerVolume'
+        LEFTMETA:
+          # command: 'xdotool key --clearmodifiers super+Up'
+          # window:
+            # fullscreen: 'remove'
+          window: 'close'
+
+scroll:
+  4:
+    up:
+      command: 
+        LEFTSHIFT:
+          command: 'xdotool key --clearmodifiers XF86MonBrightnessUp'
+    down:
+      command: 
+        LEFTSHIFT:
+          command: 'xdotool key --clearmodifiers XF86MonBrightnessDown'
+
+keypress:
+  LEFTSHIFT+CAPSLOCK:
+        command: 'echo ---------LEFTSHIFT----------'
 pinch:
   2:
     in:
@@ -61,14 +108,18 @@ plugin:
     libinput_command_input: # options for lib/plugin/inputs/libinput_command_input
       enable-tap: true
       enable-dwt: true
-      device: /dev/input/event18
+      show-keycodes: true
+      # device: /dev/input/event18
   filters:
     libinput_device_filter:
       keep_device_names:
-        - Touchpad
+        # - DLL075B:01 06CB:76AF Touchpad
+        # - Logitech Rechargeable Touchpad T650
 
-local_plugin_paths: 
-  - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-tap/lib/fusuma/plugin/tap.rb"
+# local_plugin_paths: # For developper
+#   - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-keypress/lib/fusuma/plugin/keypress.rb"
+#   - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-tap/lib/fusuma/plugin/tap.rb"
+#   - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-wmctrl/lib/fusuma/plugin/wmctrl.rb"
 
 window:
   - class: '/google-chrome/'

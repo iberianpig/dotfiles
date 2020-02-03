@@ -31,15 +31,15 @@ set iskeyword+=?,!,-,@-@ "?,!,@hogeなどをキーワードとする
 augroup switch_folding_method
   autocmd!
   autocmd InsertEnter *
-        \ if !exists('w:last_fdm') |
-        \   let w:last_fdm=&foldmethod |
-        \   setlocal foldmethod=manual |
-        \ endif
+      \ if !exists('w:last_fdm') |
+      \   let w:last_fdm=&foldmethod |
+      \   setlocal foldmethod=manual |
+      \ endif
   autocmd InsertLeave,WinLeave *
-        \ if exists('w:last_fdm') |
-        \   let &l:foldmethod=w:last_fdm |
-        \   unlet w:last_fdm |
-        \ endif
+      \ if exists('w:last_fdm') |
+      \   let &l:foldmethod=w:last_fdm |
+      \   unlet w:last_fdm |
+      \ endif
 augroup END
 
 augroup vimrc-highlight
@@ -51,6 +51,32 @@ augroup END
 
 set fileformats=unix,dos,mac  " LF, CRLF, CR
 set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
+
+function! s:detect_terminal()
+    if &buftype == "terminal" && &filetype == ""
+        set filetype=terminal
+    endif
+endfunction
+
+
+function! s:set_terminal_option()
+   " ここに :terminal のバッファ固有の設定を記述する
+   set ambiwidth=single  " ズレが発生するので元に戻す
+endfunction
+
+function! s:unset_terminal_option()
+   " ここに :terminalから戻った時に設定を戻す
+   set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
+endfunction
+
+
+augroup toggle_terminal_option
+    autocmd!
+   " BufNew の時点では 'buftype' が設定されていないので timer イベントでごまかすなど…
+    autocmd BufNew * call timer_start(0, { -> s:detect_terminal() })
+    autocmd BufWinEnter,FileType * call s:unset_terminal_option()
+    autocmd BufWinEnter,FileType terminal call s:set_terminal_option()
+augroup END
 
 " set nospell
 
@@ -66,9 +92,9 @@ set ttyfast                    " カーソル移動高速化
 augroup restore_cursor_position
   autocmd!
   autocmd BufReadPost * " 最後のカーソル位置を復元する
-       \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-       \   exe "normal! g'\"" |
-       \ endif
+      \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+      \   exe "normal! g'\"" |
+      \ endif
 augroup END
 
 "File処理関連
@@ -137,9 +163,12 @@ set imsearch=-1
 inoremap <C-c> <ESC>
 
 " ESC ESC でハイライトを消す
-if has('unix') && !has('gui_running')
- nnoremap <silent> <ESC><ESC> :nohlsearch<CR>
-endif
+nnoremap <silent> <ESC><ESC> :call ClearHighlight()<CR>
+
+function! ClearHighlight() abort
+  call feedkeys(":nohlsearch\<CR>", "n") " ハイライトをオフにする
+  call popup_clear() " ポップアップのクリア
+endfunction
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
 cmap w!! w !sudo tee > /dev/null %
@@ -163,6 +192,7 @@ nnoremap R :<C-u>source $HOME/.vimrc<CR>
 
 " q: のタイポ抑制
 nnoremap q: :q
+" 英字キーボードのタイプミス対策
 nnoremap ; :
 vnoremap ; :
 " remap record macro key from q to Q
@@ -211,6 +241,7 @@ augroup END
 " set re=1
 
 set runtimepath+=/home/iberianpig/.ghq/github.com/junegunn/fzf/bin/
+set runtimepath+=/home/iberianpig/.vim/snippets/
 
 let g:ruby_path = system('echo $HOME/.rbenv/shims')
 
@@ -285,35 +316,31 @@ Plug 'cohama/lexima.vim'
 
 " 補完系
 
-" Plug 'prabirshrestha/async.vim' | Plug 'prabirshrestha/vim-lsp' 
-" Plug 'prabirshrestha/asyncomplete.vim' | Plug 'prabirshrestha/asyncomplete-lsp.vim' | Plug 'prabirshrestha/asyncomplete-neosnippet.vim' | Plug 'prabirshrestha/asyncomplete-file.vim'
-
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-Plug 'Shougo/neosnippet.vim' | Plug 'Shougo/neosnippet-snippets'
 Plug 'honza/vim-snippets'
 
 " Plug 'zxqfl/tabnine-vim'
 
 Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install',
-  \ 'branch': 'release/1.x',
-  \ 'for': [
-    \ 'javascript',
-    \ 'typescript',
-    \ 'css',
-    \ 'less',
-    \ 'scss',
-    \ 'json',
-    \ 'graphql',
-    \ 'markdown',
-    \ 'vue',
-    \ 'lua',
-    \ 'php',
-    \ 'python',
-    \ 'ruby',
-    \ 'html',
-    \ 'swift' ] }
+ \ 'do': 'yarn install',
+ \ 'branch': 'release/1.x',
+ \ 'for': [
+   \ 'javascript',
+   \ 'typescript',
+   \ 'css',
+   \ 'less',
+   \ 'scss',
+   \ 'json',
+   \ 'graphql',
+   \ 'markdown',
+   \ 'vue',
+   \ 'lua',
+   \ 'php',
+   \ 'python',
+   \ 'ruby',
+   \ 'html',
+   \ 'swift' ] }
 
 
 " %で閉じタグに飛ぶ
@@ -369,7 +396,7 @@ Plug 'qpkorr/vim-renamer', { 'on': 'Renamer'}
 Plug 'editorconfig/editorconfig-vim', { 'on': ['EditorConfigReload']}
 
 " cd project-root
-Plug 'airblade/vim-rooter'
+" Plug 'airblade/vim-rooter'
 
 " grammar checker
 Plug 'rhysd/vim-grammarous'
@@ -390,6 +417,9 @@ Plug 'iamcco/markdown-preview.nvim', { 'for': 'markdown' ,'do': 'cd app & yarn i
 Plug 'tpope/vim-rails', { 'for': ['ruby'] }
 " slimのsyntax highlight
 Plug 'slim-template/vim-slim', { 'for': ['slim'] }
+
+"" python
+Plug 'Glench/Vim-Jinja2-Syntax'
 
 "" perl
 Plug 'hotchpotch/perldoc-vim', { 'for': ['perl'] }
@@ -511,45 +541,45 @@ highlight SignifySignChange cterm=bold ctermbg=235  ctermfg=111
 " Tomorrow_Night, Tomorrow_Night_Blue, Tomorrow_Night_Eighties,
 " PaperColor, seoul256, landscape and 16color
 let g:lightline = {
-      \ 'colorscheme': 'Tomorrow_Night',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], [ 'ctrlpmark'], [ 'cocstatus', 'currentfunction' ] ],
-      \   'right': [[ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]]
-      \ },
-      \ 'inactive': {
-      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
-      \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
-      \ },
-      \ 'component_function':  {
-      \   'filename':          'MyFilename',
-      \   'fileformat':        'MyFileformat',
-      \   'filetype':          'MyFiletype',
-      \   'fileencoding':      'MyFileencoding',
-      \   'mode':              'MyMode',
-      \   'ctrlpmark':         'CtrlPMark',
-      \   'currentworkingdir': 'CurrentWorkingDir',
-      \   'percent':           'MyPercent',
-      \   'lineinfo':          'MyLineInfo',
-      \   'cocstatus': 'coc#status',
-      \   'currentfunction': 'CocCurrentFunction',
-      \ },
-      \ 'component_expand':    {
-      \  'linter_checking': 'lightline#ale#checking',
-      \  'linter_warnings': 'lightline#ale#warnings',
-      \  'linter_errors': 'lightline#ale#errors',
-      \  'linter_ok': 'lightline#ale#ok',
-      \ },
-      \ 'component_type':      {
-      \     'linter_checking': 'left',
-      \     'linter_warnings': 'warning',
-      \     'linter_errors': 'error',
-      \     'linter_ok': 'left',
-      \ },
-      \ 'tabline':             {
-      \   'left':              [ [ 'tabs' ] ],
-      \   'right':             [ [ 'currentworkingdir' ] ],
-      \ },
-      \}
+    \ 'colorscheme': 'Tomorrow_Night',
+    \ 'active': {
+    \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], [ 'ctrlpmark'], [ 'cocstatus', 'currentfunction' ] ],
+    \   'right': [[ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]]
+    \ },
+    \ 'inactive': {
+    \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
+    \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+    \ },
+    \ 'component_function':  {
+    \   'filename':          'MyFilename',
+    \   'fileformat':        'MyFileformat',
+    \   'filetype':          'MyFiletype',
+    \   'fileencoding':      'MyFileencoding',
+    \   'mode':              'MyMode',
+    \   'ctrlpmark':         'CtrlPMark',
+    \   'currentworkingdir': 'CurrentWorkingDir',
+    \   'percent':           'MyPercent',
+    \   'lineinfo':          'MyLineInfo',
+    \   'cocstatus': 'coc#status',
+    \   'currentfunction': 'CocCurrentFunction',
+    \ },
+    \ 'component_expand':    {
+    \  'linter_checking': 'lightline#ale#checking',
+    \  'linter_warnings': 'lightline#ale#warnings',
+    \  'linter_errors': 'lightline#ale#errors',
+    \  'linter_ok': 'lightline#ale#ok',
+    \ },
+    \ 'component_type':      {
+    \     'linter_checking': 'left',
+    \     'linter_warnings': 'warning',
+    \     'linter_errors': 'error',
+    \     'linter_ok': 'left',
+    \ },
+    \ 'tabline':             {
+    \   'left':              [ [ 'tabs' ] ],
+    \   'right':             [ [ 'currentworkingdir' ] ],
+    \ },
+    \}
 
 function! MyModified()
   return &filetype =~? 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -570,14 +600,14 @@ endfunction
 function! MyFilename()
   let fname = expand('%:t')
   return fname  ==# 'ControlP' ? g:lightline.ctrlp_item :
-        \ fname ==# '__Tagbar__' ? g:lightline.fname :
-        \ fname =~? '__Gundo\|NERD_tree' ? '' :
-        \ &filetype   ==# 'vimfiler' ? vimfiler#get_status_string() :
-        \ &filetype   ==# 'unite' ? unite#get_status_string() :
-        \ &filetype   ==# 'vimshell' ? vimshell#get_status_string() :
-        \ (''   !=# MyReadonly() ? MyReadonly() . ' ' : '') .
-        \ (''   !=# fname ? MyStatusPath() . '/' . fname : '[No Name]') .
-        \ (''   !=# MyModified() ? ' ' . MyModified() : '')
+      \ fname ==# '__Tagbar__' ? g:lightline.fname :
+      \ fname =~? '__Gundo\|NERD_tree' ? '' :
+      \ &filetype   ==# 'vimfiler' ? vimfiler#get_status_string() :
+      \ &filetype   ==# 'unite' ? unite#get_status_string() :
+      \ &filetype   ==# 'vimshell' ? vimshell#get_status_string() :
+      \ (''   !=# MyReadonly() ? MyReadonly() . ' ' : '') .
+      \ (''   !=# fname ? MyStatusPath() . '/' . fname : '[No Name]') .
+      \ (''   !=# MyModified() ? ' ' . MyModified() : '')
 endfunction
 
 function! MyStatusPath()
@@ -621,30 +651,30 @@ endfunction
 function! MyMode()
   let fname = expand('%:t')
   return fname  ==# '__Tagbar__' ? 'Tagbar' :
-        \ fname ==# 'ControlP' ? 'CtrlP' :
-        \ fname ==# '__Gundo__' ? 'Gundo' :
-        \ fname ==# '__Gundo_Preview__' ? 'Gundo Preview' :
-        \ fname =~# 'NERD_tree' ? 'NERDTree' :
-        \ &filetype   ==# 'unite' ? 'Unite' :
-        \ &filetype   ==# 'vimfiler' ? 'VimFiler' :
-        \ &filetype   ==# 'vimshell' ? 'VimShell' :
-        \ winwidth(0) > 70 ? lightline#mode() : ''
+      \ fname ==# 'ControlP' ? 'CtrlP' :
+      \ fname ==# '__Gundo__' ? 'Gundo' :
+      \ fname ==# '__Gundo_Preview__' ? 'Gundo Preview' :
+      \ fname =~# 'NERD_tree' ? 'NERDTree' :
+      \ &filetype   ==# 'unite' ? 'Unite' :
+      \ &filetype   ==# 'vimfiler' ? 'VimFiler' :
+      \ &filetype   ==# 'vimshell' ? 'VimShell' :
+      \ winwidth(0) > 70 ? lightline#mode() : ''
 endfunction
 
 function! CtrlPMark()
   if expand('%:t') =~# 'ControlP'
     call lightline#link('iR'[g:lightline.ctrlp_regex])
     return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
-          \ , g:lightline.ctrlp_next], 0)
+        \ , g:lightline.ctrlp_next], 0)
   else
     return ''
   endif
 endfunction
 
 let g:ctrlp_status_func = {
-      \ 'main': 'CtrlPStatusFunc_1',
-      \ 'prog': 'CtrlPStatusFunc_2',
-      \ }
+    \ 'main': 'CtrlPStatusFunc_1',
+    \ 'prog': 'CtrlPStatusFunc_2',
+    \ }
 
 function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
   let g:lightline.ctrlp_regex = a:regex
@@ -738,11 +768,11 @@ function! s:build_quickfix_list(lines)
 endfunction
 
 let g:fzf_action = {
-  \ 'ctrl-q': function('s:build_quickfix_list'),
-  \ 'ctrl-o': 'edit',
-  \ 'ctrl-t': 'tab split',
-  \ 'ctrl-s': 'split',
-  \ 'ctrl-v': 'vsplit' }
+ \ 'ctrl-q': function('s:build_quickfix_list'),
+ \ 'ctrl-o': 'edit',
+ \ 'ctrl-t': 'tab split',
+ \ 'ctrl-s': 'split',
+ \ 'ctrl-v': 'vsplit' }
 let g:fzf_layout = { 'down': '~25%' }
 
 "" fzf-filemru
@@ -803,16 +833,16 @@ augroup END
 
 " 辞書定義
 let g:ref_source_webdict_sites = {
-      \   'je': {
-      \     'url': 'https://translate.google.com/#auto/ja/%s',
-      \   },
-      \   'ej': {
-      \     'url': 'http://eow.alc.co.jp/search?q=%s',
-      \   },
-      \   'alc': {
-      \     'url': 'http://eow.alc.co.jp/search?q=%s',
-      \   },
-      \ }
+     \   'je': {
+     \     'url': 'https://translate.google.com/#auto/ja/%s',
+     \   },
+     \   'ej': {
+     \     'url': 'http://eow.alc.co.jp/search?q=%s',
+     \   },
+     \   'alc': {
+     \     'url': 'http://eow.alc.co.jp/search?q=%s',
+     \   },
+     \ }
 
 " デフォルトサイト
 let g:ref_source_webdict_sites.default = 'ej'
@@ -850,21 +880,21 @@ vnoremap gjx y:<C-u>OpenBrowserSmartSearch -googletranslate_ja <C-R>"<CR>
 " reloadしたら消えてしまう
 if !exists('g:openbrowser_search_engines')
   let g:openbrowser_search_engines = {
-        \ 'googletranslate_en': 'https://translate.google.com/#ja/en/{query}',
-        \ 'googletranslate_ja': 'https://translate.google.com/#en/ja/{query}'
-        \ }
+       \ 'googletranslate_en': 'https://translate.google.com/#ja/en/{query}',
+       \ 'googletranslate_ja': 'https://translate.google.com/#en/ja/{query}'
+       \ }
 endif
 
 let g:openbrowser_browser_commands = [
-      \ {'name': 'xdg-open',
-      \  'args': ['{browser}', '{uri}']},
-      \ {'name': 'x-www-browser',
-      \  'args': ['{browser}', '{uri}']},
-      \ {'name': 'firefox',
-      \  'args': ['{browser}', '{uri}']},
-      \ {'name': 'luakit',
-      \  'args': ['{browser}', '{uri}']},
-      \]
+     \ {'name': 'xdg-open',
+     \  'args': ['{browser}', '{uri}']},
+     \ {'name': 'x-www-browser',
+     \  'args': ['{browser}', '{uri}']},
+     \ {'name': 'firefox',
+     \  'args': ['{browser}', '{uri}']},
+     \ {'name': 'luakit',
+     \  'args': ['{browser}', '{uri}']},
+     \]
 
 " indent guides
 let g:indent_guides_auto_colors = 0
@@ -1013,129 +1043,54 @@ nnoremap <C-q> :cclose<CR>
 
 " 入力キーの辞書
 let s:compl_key_dict = {
-      \ char2nr("\<C-l>"): "\<C-x>\<C-l>",
-      \ char2nr("\<C-n>"): "\<C-x>\<C-n>",
-      \ char2nr("\<C-p>"): "\<C-x>\<C-p>",
-      \ char2nr("\<C-k>"): "\<C-x>\<C-k>",
-      \ char2nr("\<C-t>"): "\<C-x>\<C-t>",
-      \ char2nr("\<C-i>"): "\<C-x>\<C-i>",
-      \ char2nr("\<C-]>"): "\<C-x>\<C-]>",
-      \ char2nr("\<C-f>"): "\<C-x>\<C-f>",
-      \ char2nr("\<C-d>"): "\<C-x>\<C-d>",
-      \ char2nr("\<C-v>"): "\<C-x>\<C-v>",
-      \ char2nr("\<C-u>"): "\<C-x>\<C-u>",
-      \ char2nr("\<C-o>"): "\<C-x>\<C-o>",
-      \ char2nr('s'): "\<C-x>s",
-      \ char2nr("\<C-s>"): "\<C-x>s"
-      \}
+     \ char2nr("\<C-l>"): "\<C-x>\<C-l>",
+     \ char2nr("\<C-n>"): "\<C-x>\<C-n>",
+     \ char2nr("\<C-p>"): "\<C-x>\<C-p>",
+     \ char2nr("\<C-k>"): "\<C-x>\<C-k>",
+     \ char2nr("\<C-t>"): "\<C-x>\<C-t>",
+     \ char2nr("\<C-i>"): "\<C-x>\<C-i>",
+     \ char2nr("\<C-]>"): "\<C-x>\<C-]>",
+     \ char2nr("\<C-f>"): "\<C-x>\<C-f>",
+     \ char2nr("\<C-d>"): "\<C-x>\<C-d>",
+     \ char2nr("\<C-v>"): "\<C-x>\<C-v>",
+     \ char2nr("\<C-u>"): "\<C-x>\<C-u>",
+     \ char2nr("\<C-o>"): "\<C-x>\<C-o>",
+     \ char2nr('s'): "\<C-x>s",
+     \ char2nr("\<C-s>"): "\<C-x>s"
+     \}
 " 表示メッセージ
 let s:hint_i_ctrl_x_msg = join([
-      \ '<C-l>: While lines',
-      \ '<C-n>: keywords in the current file',
-      \ "<C-k>: keywords in 'dictionary'",
-      \ "<C-t>: keywords in 'thesaurus'",
-      \ '<C-i>: keywords in the current and included files',
-      \ '<C-]>: tags',
-      \ '<C-f>: file names',
-      \ '<C-d>: definitions or macros',
-      \ '<C-v>: Vim command-line',
-      \ "<C-u>: User defined completion ('completefunc')",
-      \ "<C-o>: omni completion ('omnifunc')",
-      \ "s: Spelling suggestions ('spell')"
-      \], "\n")
+     \ '<C-l>: While lines',
+     \ '<C-n>: keywords in the current file',
+     \ "<C-k>: keywords in 'dictionary'",
+     \ "<C-t>: keywords in 'thesaurus'",
+     \ '<C-i>: keywords in the current and included files',
+     \ '<C-]>: tags',
+     \ '<C-f>: file names',
+     \ '<C-d>: definitions or macros',
+     \ '<C-v>: Vim command-line',
+     \ "<C-u>: User defined completion ('completefunc')",
+     \ "<C-o>: omni completion ('omnifunc')",
+     \ "s: Spelling suggestions ('spell')"
+     \], "\n")
 function! s:hint_i_ctrl_x() abort
   echo s:hint_i_ctrl_x_msg
   let c = getchar()
   return get(s:compl_key_dict, c, nr2char(c))
 endfunction
- 
+
 inoremap <expr> <C-x>  <SID>hint_i_ctrl_x()
 
 let g:brightest#highlight = {
-      \   'group' : 'BrightestUnderline'
-      \}
+     \   'group' : 'BrightestUnderline'
+     \}
 
 let g:brightest#pattern = '\k\+'
 let g:brightest#enable_on_CursorHold = 1
 
-" " vim-lsp
-" let g:lsp_async_completion = 1
-" let g:lsp_signs_enabled = 1         " enable signs
-" let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
-" let g:lsp_text_edit_enabled = 0 " solargraphで補完キャンセルした場合に改行が削除される不具合があったため
-"
-" function! s:configure_lsp() abort
-"   setlocal omnifunc=lsp#complete   " オムニ補完を有効化
-"   " LSP用にマッピング
-"   nnoremap <buffer> <C-]> :<C-u>LspDefinition<CR>
-"   nnoremap <buffer> <C-j> :<C-u>LspDefinition<CR>
-"   nnoremap <buffer> <C-k> :<C-u>LspReferences<CR>
-"   nnoremap <buffer> K :<C-u>LspHover<CR>
-"   nnoremap <buffer> <C-s> :<C-u>LspRename<CR>
-"   nnoremap <leader> F :LspDocumentFormatSync<CR>
-"   " nnoremap <buffer> gs :<C-u>LspDocumentSymbol<CR>
-"   " nnoremap <buffer> gS :<C-u>LspWorkspaceSymbol<CR>
-"   " nnoremap <buffer> gQ :<C-u>LspDocumentFormat<CR>
-"   " vnoremap <buffer> gQ :LspDocumentRangeFormat<CR>
-"   " nnoremap <buffer> gi :<C-u>LspImplementation<CR>
-" endfunction
-"
-" augroup vim-lsp-register
-"   autocmd!
-"   "" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-Ruby
-"   if executable('solargraph')
-"     " gem install solargraph
-"     au User lsp_setup call lsp#register_server({
-"         \ 'name': 'solargraph',
-"         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'solargraph stdio']},
-"         \ 'initialization_options': {"diagnostics": "false"},
-"         \ 'whitelist': ['ruby', 'ruby.rails', 'ruby.rspec', 'ruby.minitest']
-"         \ })
-"     autocmd FileType ruby,ruby.rails,ruby.rspec,ruby.minitest call s:configure_lsp()
-"   endif
-"
-"   "" https://github.com/prabirshrestha/vim-lsp/wiki/Servers-TypeScript
-"   if executable('typescript-language-server')
-"     au User lsp_setup call lsp#register_server({
-"         \ 'name': 'typescript-language-server',
-"         \ 'cmd': {server_info->[&shell, &shellcmdflag, 'typescript-language-server --stdio']},
-"         \ 'root_uri':{server_info->lsp#utils#path_to_uri(lsp#utils#find_nearest_parent_file_directory(lsp#utils#get_buffer_path(), 'tsconfig.json'))},
-"         \ 'whitelist': ['typescript', 'typescript.tsx', 'javascript', 'javascript.jsx'],
-"         \ })
-"     autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx call s:configure_lsp()
-"   endif
-" augroup END
-"
-"
-" " asyncomplete.vim
-" let g:asyncomplete_auto_popup = 1
-"
-" " https://github.com/prabirshrestha/asyncomplete-neosnippet.vim
-" call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
-"    \ 'name': 'neosnippet',
-"    \ 'whitelist': ['*'],
-"    \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
-"    \ }))
-"
-" " https://github.com/prabirshrestha/asyncomplete-file.vim
-" call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
-"    \ 'name': 'file',
-"    \ 'whitelist': ['*'],
-"    \ 'completor': function('asyncomplete#sources#file#completor')
-"    \ }))
-"
-" imap <Nul> <C-Space>
-" imap <C-space> <Plug>(asyncomplete_force_refresh)
-" imap <C-k>     <Plug>(neosnippet_expand_or_jump)
-" smap <C-k>     <Plug>(neosnippet_expand_or_jump)
-" xmap <C-k>     <Plug>(neosnippet_expand_target)
-"
-" imap <expr> <C-y> pumvisible() ? asyncomplete#close_popup() : "\<C-y>"
-" imap <expr> <ESC> pumvisible() ? asyncomplete#cancel_popup() : "\<ESC>"
-"
-
 " coc.nvim
 nnoremap <space><space> :<C-u>CocList<cr>
+nnoremap <space>d :<C-u>CocList diagnostics<cr>
 nnoremap <space>r :<C-u>CocListResume<cr>
 nmap <C-]> <Plug>(coc-definition)
 nmap <C-j> <Plug>(coc-definition)
@@ -1150,13 +1105,16 @@ nmap <leader>f <Plug>(coc-format)
 "   " nnoremap <buffer> gi :<C-u>LspImplementation<CR>
 
 imap <C-k> <Plug>(coc-snippets-expand-jump)
+inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+
 
 "" Map for document filetypes so the server could handle 
 let g:coc_filetype_map = {
-     \ 'ruby.rails': 'ruby',
-     \ 'ruby.minitest': 'ruby',
-     \ 'ruby.rspec': 'ruby',
-     \ }
+    \ 'ruby.rails': 'ruby',
+    \ 'ruby.minitest': 'ruby',
+    \ 'ruby.rspec': 'ruby',
+    \ }
 
 autocmd FileType python let b:coc_root_patterns = ['.venv', '.git', '.env']
 
@@ -1178,8 +1136,8 @@ autocmd FileType python let b:coc_root_patterns = ['.venv', '.git', '.env']
 
 "vim-grammarous
 let g:grammarous#default_comments_only_filetypes = {
-            \ '*' : 1, 'help' : 0, 'markdown' : 0,
-            \ }
+           \ '*' : 1, 'help' : 0, 'markdown' : 0,
+           \ }
 
 " rhysd/vim-operator-surround
 " 括弧を追加する

@@ -32,6 +32,18 @@
         state: present
       become: true
 
+    - name: add spotify apt gpg
+      shell: curl -fsSL https://download.spotify.com/debian/pubkey.gpg | apt-key add -
+      become: true
+      args:
+        warn: no
+
+    - name: add spotify apt repository
+      apt_repository:
+        repo: deb http://repository.spotify.com stable non-free
+        state: present
+      become: true
+
     - name: add gyazo apt repository
       shell: |
         which gyazo && exit 0
@@ -117,14 +129,15 @@
         - openjdk-8-jdk # flutter dependency
         - libreoffice
         - vlc
+        - spotify-client
     - name: snap install
       command: snap install {{ item }}
       become: true
       with_items:
         - bitwarden
         # - slack --classic # it doesn't works with fcitx
-        - spotify
-        # - libreoffice #cant open local file
+        # - spotify # use too much CPU resouces
+        # - libreoffice # cant open local file
         - obs-studio
         - hub --classic
         - go --classic

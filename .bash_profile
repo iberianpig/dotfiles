@@ -46,8 +46,12 @@ export GTAGSLABEL=pygments
 
 # rbenv
 # NOTE: should be placed on ~/.bashrc
-export PATH="$HOME/.rbenv/bin:$PATH"
-eval "$(rbenv init -)"
+if [ -e $HOME/.rbenv/bin ]; then
+  export PATH="$HOME/.rbenv/bin:$PATH"
+  # eval "$(rbenv init -)"
+fi
+
+  
 
 # direnv
 eval "$(direnv hook bash)"

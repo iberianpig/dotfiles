@@ -8,12 +8,16 @@ window class_only: ['google-chrome',
                     'synapse',
                     'shift',
                     'mysql-workbench-bin',
+                    'Mysql-workbench-bin',
+                    'mysql-workbench-bin.Mysql-workbench-bin',
+                    'io.elementary.files.Io.elementary.files',
                     'crx_hbdpomandigafcibbmofojjchbcdagbl', # twitter
                     'crx_edcifkpoamnkimdpjiabhfjahoinbpbp', # twitter lite
                     'crx_hmjkmjkepdijhoojdojkdfohbdgmmhki', # google keep
                     'crx_mjcnijlhddpbdemagnpefmlkjdagkogk', # pocket
                     'crx_ojcflmmmcfpacggndoaaflkmcoblhnbh', # wunderlist
                     'crx_ophjlpahpchlmihnnnihgmmeilfjmjjc', # line
+                    'crx_ngboffpgmgciiinnflnkgedmbalfkeeg', # scrapbox
                     'evince',
                     'discord',
                     'calibre-ebook-viewer'] do
