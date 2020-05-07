@@ -1,138 +1,65 @@
 swipe:
   3:
     left:
-      command: 'xdotool key alt+Right'
-      # command: "xte 'keydown Alt_L' 'keydown Right' 'keyup Right' 'keyup Alt_L'"
-      # command: 'xdotool key alt+Escape'
-      # command: 'xdotool keydown alt && sleep .1 && xdotool key Tab  && xdotool keyup alt'
+      command: 'xdotool key alt+Right' # History forward
     right:
-      command: 'xdotool key alt+Left'
-      # command: "xte 'keydown Alt_L' 'keydown Left' 'keyup Left' 'keyup Alt_L'"
+      command: 'xdotool key alt+Left' # History back
     up:
-      command: 'xdotool key ctrl+t'
+      command: 'xdotool key ctrl+t' # Open new tab
       keypress:
         LEFTSHIFT:
-          command: 'xdotool key --clearmodifiers ctrl+shift+t'
+          command: 'xdotool key --clearmodifiers ctrl+shift+t' # Open last closed tab
     down:
-      command: 'xdotool key alt+w'
+      command: 'xdotool key ctrl+w' # Close tab
   4:
     left:
-      # shortcut: 'super+Right'
-      # command: 'xdotool key super+Right'
-      workspace: 'next'
+      workspace: 'next' # Switch to next workspace
       keypress:
         LEFTSHIFT: 
-          window: 'next'
-          # command: 'xdotool key --clearmodifiers super+alt+Right'
+          window: 'next' # Move window to next workspace
         LEFTMETA:
-          command: 'xdotool key --clearmodifiers super+ctrl+Left'
+          command: 'xdotool key --clearmodifiers super+ctrl+Left' # Move window to left side
     right:
-      # shortcut: 'super+Left'
-      # command: 'xdotool key super+Left'
-      workspace: 'prev'
+      workspace: 'prev' # Switch to previous workspace
       keypress:
         LEFTSHIFT: 
-          window: 'prev'
-          # command: 'xdotool key --clearmodifiers super+alt+Left'
+          window: 'prev' # Move window to previous workspace
         LEFTMETA:
-          command: 'xdotool key --clearmodifiers super+ctrl+Right'
+          command: 'xdotool key --clearmodifiers super+ctrl+Right'  # Move window to left side
     up:
-      command: 'xdotool key super+s'
+      command: 'xdotool key super+s' # Workspace overview
       keypress:
-        LEFTSHIFT:
-          # command: 'xdotool key --clearmodifiers XF86MonBrightnessUp'
-        LEFTMETA+LEFTALT:
-          command: 'xdotool key --clearmodifiers XF86AudioRaiseVolume'
         LEFTMETA:
-          # command: 'xdotool key --clearmodifiers super+Up'
           window:
-            # fullscreen: 'add'
-            maximized: 'toggle'
+            maximized: 'toggle' # Toggle Maximize/Unmaximize Window
     down:
-      command: 'xdotool key super+a'
+      command: 'xdotool key super+a' # Window overview
       keypress:
-        LEFTSHIFT:
-          # command: 'xdotool key --clearmodifiers XF86MonBrightnessDown'
-        LEFTMETA+LEFTALT:
-          command: 'xdotool key --clearmodifiers XF86AudioLowerVolume'
         LEFTMETA:
-          # command: 'xdotool key --clearmodifiers super+Up'
-          # window:
-            # fullscreen: 'remove'
-          window: 'close'
+          window: 'close' # Close window
 
-scroll:
-  4:
-    up:
-      command: 
-        LEFTSHIFT:
-          command: 'xdotool key --clearmodifiers XF86MonBrightnessUp'
-    down:
-      command: 
-        LEFTSHIFT:
-          command: 'xdotool key --clearmodifiers XF86MonBrightnessDown'
-
-keypress:
-  LEFTSHIFT+CAPSLOCK:
-        command: 'echo ---------LEFTSHIFT----------'
 pinch:
   2:
     in:
-      # command: 'xdotool key ctrl+equal'
-      command: 'xdotool keydown ctrl click 4 keyup ctrl'
+      command: 'xdotool keydown ctrl click 4 keyup ctrl' # Zoom in
     out:
-      command: 'xdotool keydown ctrl click 5 keyup ctrl'
+      command: 'xdotool keydown ctrl click 5 keyup ctrl' # Zoom out
   4:
     in:
-      command: 'xdotool key super+a'
+      command: 'xdotool key super+a' # Window overview
     out:
-      command: 'xdotool key super+s'
+      command: 'xdotool key super+s' # Workspace overview
 
 rotate:
   3:
     clockwise:
-      command: 'xdotool key XF86MonBrightnessUp'
+      command: 'xdotool key XF86MonBrightnessUp' # Brightness up
     counterclockwise:
-      command: 'xdotool key XF86MonBrightnessDown'
-
-tap:
-  1:
-    # command: 'xdotool click 1'
-  2:
-    # command: 'xdotool click 3'
-  3:
-    command: 'xdotool key super+space'
+      command: 'xdotool key XF86MonBrightnessDown' # Brightness down
 
 plugin: 
   inputs:
     libinput_command_input: # options for lib/plugin/inputs/libinput_command_input
-      enable-tap: true
-      enable-dwt: true
-      show-keycodes: true
-      # device: /dev/input/event18
-  filters:
-    libinput_device_filter:
-      keep_device_names:
-        # - DLL075B:01 06CB:76AF Touchpad
-        # - Logitech Rechargeable Touchpad T650
-
-# local_plugin_paths: # For developper
-#   - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-keypress/lib/fusuma/plugin/keypress.rb"
-#   - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-tap/lib/fusuma/plugin/tap.rb"
-#   - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-wmctrl/lib/fusuma/plugin/wmctrl.rb"
-
-window:
-  - class: '/google-chrome/'
-    swipe: 
-      3:
-        left:
-          command: 'xdotool alt+right'
-        right:
-          command: 'xdotool alt+left'
-        up: 
-          command: 'xdotool ctrl+t'
-          key:
-            - value: 'Up'
-              command: 'xdotool ctrl+shift+t'
-
-  - class: '/hoge/'
+      enable-tap: true # click to tap
+      enable-dwt: true # disable tap while typing
+      show-keycodes: true # https://github.com/iberianpig/fusuma-plugin-keypress#add-show-keycode-option

@@ -114,3 +114,5 @@ end
 # window class_only: 'libreoffice' do
 #   remap 'Ctrl-plus', to:
 # end
+
+remap 'Alt-g', to: execute('io.elementary.terminal')

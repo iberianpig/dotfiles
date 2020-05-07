@@ -22,7 +22,7 @@
   "python.jediEnabled": false,
   "python.linting.enabled": true,
   "python.pythonPath":"server_tentative/.venv/bin/python",
-  "snippets.ultisnips.enable": false,
-  "snippets.snipmate.enable": true,
-  "snippets.userSnippetsDirectory": "~/.vim/snippets"
+  "snippets.ultisnips.enable": true,
+  "snippets.snipmate.enable": false,
+  "snippets.userSnippetsDirectory": "~/.vim/snippets/",
 }

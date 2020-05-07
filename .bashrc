@@ -215,3 +215,7 @@ source ~/.ghq/github.com/gjsheep/bash-wakatime/bash-wakatime.sh
 
 # makef
 source /home/iberianpig/.ghq/github.com/iberianpig/makef/makef.sh
+
+# tabtab source for packages
+# uninstall by removing these lines
+[ -f ~/.config/tabtab/__tabtab.bash ] && . ~/.config/tabtab/__tabtab.bash || true

@@ -31,22 +31,22 @@ pinch:
       command: 'xdotool key super+s'
 
 rotate:
-  3:
     clockwise:
       command: 'xdotool key XF86MonBrightnessUp'
     counterclockwise:
       command: 'xdotool key XF86MonBrightnessDown'
 
-# threshold:
-#   rotate: 0.1
-#   swipe: 1
-#   pinch: 0.3
-#
-# interval:
-#   rotate: 0.5
-#   swipe: 0.5
-#   pinch: 0.3
+threshold:
+  pinch: 0.3
 
+interval:
+  pinch: 0.3
 
-# local_plugin_paths: 
-#   - "/home/iberianpig/.ghq/github.com/iberianpig/fusuma-plugin-tap/lib/fusuma/plugin/tap.rb"
+plugin:
+  inputs:
+    libinput_command_input: # options for lib/plugin/inputs/libinput_command_input
+      enable-tap: true
+      enable-dwt: true
+      show-keycodes: true
+      verbose: true
+      # device: /dev/input/event18

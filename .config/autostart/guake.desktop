@@ -17,3 +17,4 @@ Categories=GNOME;GTK;System;Utility;TerminalEmulator;
 StartupNotify=true
 X-Desktop-File-Install-Version=0.22
 Keywords=Terminal;Utility;
+X-GNOME-Autostart-enabled=false

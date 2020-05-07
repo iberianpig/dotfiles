@@ -85,9 +85,6 @@ bind status - status-update
 bind stage u none
 bind stage - status-update
 
-# difftool
-bind status d !sh -c "git difftool -y \"$(git rev-parse --show-toplevel)/%(file)\""
-
 # コンフリクト解消に--ours, --theirs を利用
 bind status o !?git checkout --ours %(file)
 bind stage  o !?git checkout --ours %(file)
@@ -113,15 +110,27 @@ bind refs    <Esc>. ?sh -c "git diff %(branch)..%(prompt Enter branch name: ) | 
 bind main    a      <tig --author="%(prompt Enter author: )"
 
 # origin/masterと比較(PRのレビューに使う)
-bind main    <ESC>d      <sh -c "tig $(git merge-base origin/master %(commit))...%(commit)"
-bind main    <ESC>D      <sh -c "tig $(git merge-base %(prompt Enter branch name: ) %(commit))...%(commit)"
+bind main    <Esc>prm      <sh -c "tig $(git merge-base origin/master %(commit))...%(commit)"
+bind main    <Esc>pr      <sh -c "tig $(git merge-base %(prompt Enter branch name: ) %(commit))...%(commit)"
 
 # githubでコミットのページを確認する
-bind main  B !@hub browse -- commit/%(commit)
-bind diff  B !@hub browse -- commit/%(commit)
-bind tree  B !@hub browse -- tree/%(commit)/%(directory)
-bind blob  B !@hub browse -- tree/%(commit)/%(file)
-bind blame B !@hub browse -- tree/%(commit)/%(file)
+# bind main  B !@hub browse -- commit/%(commit)
+# bind diff  B !@hub browse -- commit/%(commit)
+# bind tree  B !@hub browse -- tree/%(commit)/%(directory)
+# bind blob  B !@hub browse -- tree/%(commit)/%(file)
+# bind blame B !@hub browse -- tree/%(commit)/%(file)
+
+bind main  B @sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:])'/commit/%(commit)'"
+bind diff  B @sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:])'/commit/%(commit)'"
+bind tree  B @sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:])'/tree/%(commit)/%(directory)'"
+bind blob  B @sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:])'/tree/%(commit)/%(file)'"
+bind blame B @sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:])'/tree/%(commit)/%(file)'"
 
 # reopen
 bind generic  <ESC>r  <tig
+
+bind generic T !git notes edit %(commit)
+
+# difftool
+bind status <Esc>d !sh -c "git difftool -y \"$(git rev-parse --show-toplevel)/%(file)\""
+bind main   <Esc>d !?sh -c "git difftool -d --trust-exit-code $(git merge-base origin/master %(commit))...%(commit)"

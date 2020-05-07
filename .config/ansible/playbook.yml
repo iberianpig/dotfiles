@@ -60,6 +60,7 @@
         - ppa:philip.scott/elementary-tweaks
         - ppa:jonathonf/vim
         - ppa:openjdk-r/ppa
+        - ppa:git-core/ppa
 
     - name: apt install
       apt: name={{ item }} update_cache=yes cache_valid_time=36
@@ -82,11 +83,11 @@
         - byobu
         - jq
         - direnv
+        # - tlp # note only use powertop
         - powertop
         - numix-icon-theme-circle
         - playonlinux
         - wine-stable
-        - tlp
         - xclip
         - vim-gnome
         - synaptic
@@ -116,7 +117,7 @@
         - byzanz
         - baobab
         - fwupd
-        - awscli
+        # - awscli too old
         - libmysqlclient-dev # for mysql2 gem
         - mysql-server
           # - vagrant # error occured by dependency of gems. Install from https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_linux_amd64.zip
@@ -135,6 +136,7 @@
       become: true
       with_items:
         - bitwarden
+        - authy
         # - slack --classic # it doesn't works with fcitx
         # - spotify # use too much CPU resouces
         # - libreoffice # cant open local file
@@ -199,8 +201,20 @@
       args:
         warn: no
 
-    - name: Install Fusuma
-      command: gem install fusuma
+    - name: Install AWS CLI
+      shell: |
+        which aws && exit 0
+        dest=/tmp
+        zip=$dest/awscli.zip
+        curl -o $zip https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
+        unzip $zip -d $dest
+        $dest/aws/install
+      become: true
+      args:
+        warn: no
+
+    # - name: Install Fusuma
+    #   command: gem install fusuma
 
     - name: add $USER Input group
       user: name=iberianpig groups=input append=yes

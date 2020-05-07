@@ -48,7 +48,7 @@ export GTAGSLABEL=pygments
 # NOTE: should be placed on ~/.bashrc
 if [ -e $HOME/.rbenv/bin ]; then
   export PATH="$HOME/.rbenv/bin:$PATH"
-  # eval "$(rbenv init -)"
+  eval "$(rbenv init -)"
 fi
 
   
@@ -103,3 +103,5 @@ export PATH="$HOME/.cargo/bin:$PATH"
 if [ -e /home/iberianpig/.nix-profile/etc/profile.d/nix.sh ]; then . /home/iberianpig/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
 export PATH="$HOME/flutter/bin:$PATH"
+
+export PATH="/home/iberianpig/.ghq/github.com/tfutils/tfenv/bin/:$PATH"

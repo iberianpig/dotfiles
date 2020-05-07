@@ -58,7 +58,6 @@ function! s:detect_terminal()
     endif
 endfunction
 
-
 function! s:set_terminal_option()
    " ここに :terminal のバッファ固有の設定を記述する
    set ambiwidth=single  " ズレが発生するので元に戻す
@@ -92,9 +91,9 @@ set ttyfast                    " カーソル移動高速化
 augroup restore_cursor_position
   autocmd!
   autocmd BufReadPost * " 最後のカーソル位置を復元する
-      \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-      \   exe "normal! g'\"" |
-      \ endif
+    \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+    \   exe "normal! g'\"" |
+    \ endif
 augroup END
 
 "File処理関連
@@ -163,12 +162,13 @@ set imsearch=-1
 inoremap <C-c> <ESC>
 
 " ESC ESC でハイライトを消す
-nnoremap <silent> <ESC><ESC> :call ClearHighlight()<CR>
-
-function! ClearHighlight() abort
-  call feedkeys(":nohlsearch\<CR>", "n") " ハイライトをオフにする
-  call popup_clear() " ポップアップのクリア
-endfunction
+nnoremap <silent> <ESC><ESC> :nohlsearch<CR>
+" nnoremap <silent> <ESC><ESC> :call ClearHighlight()<CR>
+" 
+" function! ClearHighlight() abort
+"   call feedkeys(":nohlsearch\<CR>", "n") " ハイライトをオフにする
+"   call popup_clear() "ポップアップのクリア
+" endfunction
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
 cmap w!! w !sudo tee > /dev/null %
@@ -235,6 +235,7 @@ augroup add_syntax_highlight
   autocmd BufNewFile,BufRead *.scss                     set filetype=scss.css
   autocmd BufNewFile,BufRead *.coffee                   set filetype=coffee
   autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
+  autocmd BufNewFile,BufRead *.vtl                      set filetype=velocity
   autocmd BufRead,BufNewFile *.ts                       set filetype=typescript
 augroup END
 
@@ -316,9 +317,28 @@ Plug 'cohama/lexima.vim'
 
 " 補完系
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+
+Plug 'mattn/vim-lsp-settings'
+
+Plug 'lighttiger2505/deoplete-vim-lsp'
+" Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
+
+Plug 'Shougo/deoplete.nvim' | Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc'
+
+
+" Plug 'SirVer/ultisnips'
 
 Plug 'honza/vim-snippets'
+" Plug 'hrsh7th/vim-vsnip'
+" Plug 'hrsh7th/vim-vsnip-integ'
+
+Plug 'Shougo/neosnippet.vim'
+Plug 'Shougo/neosnippet-snippets'
+" Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
+
 
 " Plug 'zxqfl/tabnine-vim'
 
@@ -351,10 +371,10 @@ Plug 'thinca/vim-quickrun'
 " quickfixのエラーメッセージを下部に表示する
 Plug 'dannyob/quickfixstatus', {'on': ['QuickfixStatusDisable', 'QuickfixStatusEnable']}
 
-" " 非同期処理でLinterを動かす
+" " " 非同期処理でLinterを動かす
 " Plug 'w0rp/ale'
-
-" " aleの結果をlightlineに出力
+" 
+" " " aleの結果をlightlineに出力
 " Plug 'maximbaz/lightline-ale'
 
 " 非同期バッチをTmuxやTerminalに渡して処理出来る
@@ -381,6 +401,9 @@ Plug 'wakatime/vim-wakatime'
 " 自動保存
 Plug 'vim-scripts/vim-auto-save'
 
+" スタートページ
+Plug 'mhinz/vim-startify'
+
 " 再帰的なfジャンプ
 Plug 'rhysd/clever-f.vim'
 
@@ -396,7 +419,7 @@ Plug 'qpkorr/vim-renamer', { 'on': 'Renamer'}
 Plug 'editorconfig/editorconfig-vim', { 'on': ['EditorConfigReload']}
 
 " cd project-root
-" Plug 'airblade/vim-rooter'
+Plug 'airblade/vim-rooter'
 
 " grammar checker
 Plug 'rhysd/vim-grammarous'
@@ -411,6 +434,7 @@ Plug 'deton/jasentence.vim', { 'for': ['markdown'] }
 Plug 'rhysd/vim-gfm-syntax', { 'for': 'markdown' }
 Plug 'iamcco/markdown-preview.nvim', { 'for': 'markdown' ,'do': 'cd app & yarn install'  }
 
+Plug 'heavenshell/vim-textlint', { 'for': 'markdown' }
 
 ""Rails
 " 規約ベースのコードジャンプ、b:rails_rootを定義
@@ -443,7 +467,10 @@ Plug 'leafgarland/typescript-vim', {'for':['typescript', 'tsx']}
 Plug 'ianks/vim-tsx', {'for':['typescript', 'tsx']}
 
 " graphql
-Plug 'jparise/vim-graphql',                    {'for':['javascript', 'html', 'graphql']}
+Plug 'jparise/vim-graphql',  {'for':['javascript', 'html', 'graphql']}
+
+" vtl
+Plug 'lepture/vim-velocity', { 'for':['velocity', 'vtl'] }
 
 
 " css
@@ -487,6 +514,10 @@ Plug 'chr4/nginx.vim'
 " ansible
 Plug 'pearofducks/ansible-vim', { 'do': 'cd ./UltiSnips; ./generate.py'  }
 
+" terraform
+Plug 'hashivim/vim-terraform'
+
+
 " ローカル管理のPlugin
 Plug '~/.ghq/github.com/iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.vim'
 Plug '~/.ghq/github.com/iberianpig/ranger-explorer.vim'
@@ -502,12 +533,12 @@ syntax on
 " 読み込んだプラグインの設定
 " ...
 
-" set background=light "明るめの背景
+" " set background=light "明るめの背景
 set background=dark "暗めの背景
-
-" colorschme
-
-" " " hybrid
+" 
+" " colorschme
+" 
+" " " " hybrid
 " colorscheme hybrid
 let g:seiya_auto_enable=1
 
@@ -525,12 +556,11 @@ highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
 
 " highlight lines in Sy and vimdiff etc.)
 
-" highlight DiffAdd           cterm=bold ctermbg=none ctermfg=119
-" highlight DiffDelete        cterm=bold ctermbg=none ctermfg=167
-" highlight DiffChange        cterm=bold ctermbg=none ctermfg=227
+highlight DiffAdd           cterm=bold ctermbg=none ctermfg=119
+highlight DiffDelete        cterm=bold ctermbg=none ctermfg=167
+highlight DiffChange        cterm=bold ctermbg=none ctermfg=227
 
-" highlight signs in Sy
-
+" " highlight signs in Sy
 highlight SignifySignAdd    cterm=bold ctermbg=235  ctermfg=155
 highlight SignifySignDelete cterm=bold ctermbg=235  ctermfg=196
 highlight SignifySignChange cterm=bold ctermbg=235  ctermfg=111
@@ -543,8 +573,8 @@ highlight SignifySignChange cterm=bold ctermbg=235  ctermfg=111
 let g:lightline = {
     \ 'colorscheme': 'Tomorrow_Night',
     \ 'active': {
-    \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], [ 'ctrlpmark'], [ 'cocstatus', 'currentfunction' ] ],
-    \   'right': [[ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]]
+    \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], [ 'ctrlpmark'], [ 'currentfunction' ] ],
+    \   'right': [[ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], ['lsp_errors', 'lsp_warnings', 'lsp_ok'], ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]]
     \ },
     \ 'inactive': {
     \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
@@ -560,26 +590,31 @@ let g:lightline = {
     \   'currentworkingdir': 'CurrentWorkingDir',
     \   'percent':           'MyPercent',
     \   'lineinfo':          'MyLineInfo',
-    \   'cocstatus': 'coc#status',
-    \   'currentfunction': 'CocCurrentFunction',
     \ },
     \ 'component_expand':    {
     \  'linter_checking': 'lightline#ale#checking',
     \  'linter_warnings': 'lightline#ale#warnings',
     \  'linter_errors': 'lightline#ale#errors',
     \  'linter_ok': 'lightline#ale#ok',
+    \  'lsp_warnings': 'LightlineLSPWarnings',
+    \  'lsp_errors':   'LightlineLSPErrors',
+    \  'lsp_ok':       'LightlineLSPOk',
     \ },
     \ 'component_type':      {
     \     'linter_checking': 'left',
     \     'linter_warnings': 'warning',
     \     'linter_errors': 'error',
     \     'linter_ok': 'left',
+    \     'lsp_warnings': 'warning',
+    \     'lsp_errors':   'error',
+    \     'lsp_ok':       'middle',
     \ },
     \ 'tabline':             {
     \   'left':              [ [ 'tabs' ] ],
     \   'right':             [ [ 'currentworkingdir' ] ],
     \ },
     \}
+
 
 function! MyModified()
   return &filetype =~? 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -699,37 +734,34 @@ function! CurrentWorkingDir()
   return fnamemodify(getcwd(),':')
 endfunction
 
-function! CocCurrentFunction()
-  return get(b:, 'coc_current_function', '')
-endfunction
 
 "}}}
 
-" enable ruby & rails snippet only rails file
-function! s:RailsSnippet()
-  if exists('b:rails_root') && (&filetype ==# 'ruby')
-    set filetype=ruby.rails
-  endif
-endfunction
-
-function! s:RSpecSnippet()
-  if (expand('%') =~# '_spec\.rb$') || (expand('%') =~# '^spec.*\.rb$')
-    set filetype=ruby.rspec
-  endif
-endfunction
-
-function! s:MinitestSnippet()
-  if (expand('%') =~# '_test\.rb$') || (expand('%') =~# '^test.*\.rb$')
-    set filetype=ruby.minitest
-  endif
-endfunction
-
-augroup rails_snippet
-  autocmd!
-  au BufEnter * call s:RailsSnippet()
-  au BufEnter * call s:RSpecSnippet()
-  au BufEnter * call s:MinitestSnippet()
-augroup END
+" " enable ruby & rails snippet only rails file
+" function! s:RailsSnippet()
+"   if exists('b:rails_root') && (&filetype ==# 'ruby')
+"     set filetype=ruby.rails
+"   endif
+" endfunction
+" 
+" function! s:RSpecSnippet()
+"   if (expand('%') =~# '_spec\.rb$') || (expand('%') =~# '^spec.*\.rb$')
+"     set filetype=ruby.rspec
+"   endif
+" endfunction
+" 
+" function! s:MinitestSnippet()
+"   if (expand('%') =~# '_test\.rb$') || (expand('%') =~# '^test.*\.rb$')
+"     set filetype=ruby.minitest
+"   endif
+" endfunction
+" 
+" augroup rails_snippet
+"   autocmd!
+"   au BufEnter * call s:RailsSnippet()
+"   au BufEnter * call s:RSpecSnippet()
+"   au BufEnter * call s:MinitestSnippet()
+" augroup END
 
 "" switch
 nnoremap - :Switch<cr>
@@ -748,8 +780,8 @@ call submode#map('winsize',        'n', '', 'K', '<C-w>+')
 
 "" over.vim
 " over.vimの起動
-nnoremap <silent> <C-s> :OverCommandLine<CR>%s/<C-r><C-w>//<Left>
-vnoremap <silent> <C-s> y:OverCommandLine<CR>%s/<C-r>"//<Left>
+nnoremap <silent> <C-s> :OverCommandLine<CR>%s/<C-r><C-w>//<Left><C-r><C-w>
+vnoremap <silent> <C-s> y:OverCommandLine<CR>%s/<C-r>"//<Left><C-r>"
 vnoremap <silent> :s :OverCommandLine<CR>s//<Left>
 " カーソル下の単語をハイライト付きで置換
 nnoremap s :OverCommandLine<CR>%s/<C-r><C-w>//<Left>
@@ -872,16 +904,18 @@ nnoremap gx :OpenBrowserSmartSearch <C-r><C-w> <CR>
 vnoremap gx y:<C-u>OpenBrowserSmartSearch <C-R>"<CR>
 nnoremap gd :<C-u>OpenBrowserSmartSearch -devdocs <C-r><C-w> <CR>
 vnoremap gd y:<C-u>OpenBrowserSmartSearch -devdocs <C-R>"<CR>
-" nmap ga :<C-u>OpenBrowserSmartSearch -alc <C-R>"<CR>
-" vmap ga y:<C-u>OpenBrowserSmartSearch -alc <C-R>"<CR>
-vnoremap gex y:<C-u>OpenBrowserSmartSearch -googletranslate_en <C-R>"<CR>
-vnoremap gjx y:<C-u>OpenBrowserSmartSearch -googletranslate_ja <C-R>"<CR>
+nnoremap ga :<C-u>OpenBrowserSmartSearch -alc <C-R>"<CR>
+vnoremap ga y:<C-u>OpenBrowserSmartSearch -alc <C-R>"<CR>
+vnoremap gex y:<C-u>OpenBrowserSmartSearch -deepl_en <C-R>"<CR>
+vnoremap gjx y:<C-u>OpenBrowserSmartSearch -deepl_ja <C-R>"<CR>
 
 " reloadしたら消えてしまう
 if !exists('g:openbrowser_search_engines')
   let g:openbrowser_search_engines = {
        \ 'googletranslate_en': 'https://translate.google.com/#ja/en/{query}',
-       \ 'googletranslate_ja': 'https://translate.google.com/#en/ja/{query}'
+       \ 'googletranslate_ja': 'https://translate.google.com/#en/ja/{query}',
+       \ 'deepl_en': 'https://www.deepl.com/translator#ja/en/{query}',
+       \ 'deepl_ja': 'https://www.deepl.com/translator#en/ja/{query}',
        \ }
 endif
 
@@ -935,8 +969,13 @@ nnoremap <silent> <leader>g :TestVisit<CR>
 " https://qiita.com/joker1007/items/4dbff328f39c11e732af
 function! DockerTransformer(cmd) abort
   if $SPEC_CONTAINER_NAME !=# ''
-    let prefix = 'docker-compose exec ' . $SPEC_CONTAINER_NAME . ' '
+    echomsg 'use docker-compose exec ' . $SPEC_CONTAINER_NAME . ' ' . $SPEC_PREFIX .' '
+    let prefix = 'docker-compose exec ' . $SPEC_CONTAINER_NAME . ' ' . $SPEC_PREFIX .' '
+  elseif exists('b:rails_root') && executable(b:rails_root . '/bin/rspec')
+    echomsg 'use bin/rspec'
+    let prefix = 'bin/'
   else
+    echomsg 'use bundle exec rspec'
     let prefix = 'bundle exec '
   endif
   let g:dispatch_compilers = {}
@@ -1021,25 +1060,48 @@ augroup switch_auto_save
   au BufEnter * call s:auto_save_detect()
 augroup END
 
+
+" augroup switch_list
+"   autocmd!
+"   autocmd BufEnter * call s:switch_list_mapping()
+" augroup end
+" 
+" function! s:switch_list_mapping() abort
+"   let wi = getwininfo(win_getid())[0]
+"   if wi.loclist
+"     echo "Curwin is location list"
+"   elseif wi.quickfix
+"     echo "Curwin is quickfix"
+"   endif
+" endfunction
+
 "" 検索結果に移動
-nnoremap <C-c> :cc<CR>
+nnoremap <C-c> :cl<CR>
 
 "" 次の検索結果に移動
-nnoremap <C-n> :cn<CR>
+nnoremap <C-n> :cnext<CR>
 
 "" 前の検索結果に移動
-nnoremap <C-p> :cp<CR>
+nnoremap <C-p> :cprevious<CR>
 
-"" 次の結果リストに移動
-nnoremap <A-n> :cnewer<CR>
+"" 検索結果Windowを閉じる
+nnoremap <C-q> <C-w>j<C-w>q
+" https://github.com/neomake/neomake/issues/842
+" nnoremap <C-q> :cclose<CR>
 
-"" 前の結 ストに移動
-nnoremap <A-p> :colder<CR>
+"" 検索結果に移動
+nnoremap <A-c> :ll<CR>
+
+"" 次の検索結果に移動
+nnoremap <A-n> :lnext<CR>
+
+"" 前の検索結果に移動
+nnoremap <A-p> :lprevious<CR>
 
 "" 検索結果Windowを閉じる
 " nnoremap <C-q> <C-w>j<C-w>q
 " https://github.com/neomake/neomake/issues/842
-nnoremap <C-q> :cclose<CR>
+nnoremap <A-q> :lclose<CR>
 
 " 入力キーの辞書
 let s:compl_key_dict = {
@@ -1088,51 +1150,44 @@ let g:brightest#highlight = {
 let g:brightest#pattern = '\k\+'
 let g:brightest#enable_on_CursorHold = 1
 
-" coc.nvim
-nnoremap <space><space> :<C-u>CocList<cr>
-nnoremap <space>d :<C-u>CocList diagnostics<cr>
-nnoremap <space>r :<C-u>CocListResume<cr>
-nmap <C-]> <Plug>(coc-definition)
-nmap <C-j> <Plug>(coc-definition)
-nmap <C-k> <Plug>(coc-references)
-nnoremap K :<C-u>call CocAction('doHover')<cr>
-nmap <C-s> <Plug>(coc-rename)
-nmap <leader>f <Plug>(coc-format)
-"   " nnoremap <buffer> gs :<C-u>LspDocumentSymbol<CR>
-"   " nnoremap <buffer> gS :<C-u>LspWorkspaceSymbol<CR>
-"   " nnoremap <buffer> gQ :<C-u>LspDocumentFormat<CR>
-"   " vnoremap <buffer> gQ :LspDocumentRangeFormat<CR>
-"   " nnoremap <buffer> gi :<C-u>LspImplementation<CR>
 
-imap <C-k> <Plug>(coc-snippets-expand-jump)
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+let g:lsp_signs_enabled = 1         " enable signs
+let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
+let g:lsp_signs_priority = 11
 
+imap <C-k>     <Plug>(neosnippet_expand_or_jump)
+smap <C-k>     <Plug>(neosnippet_expand_or_jump)
+xmap <C-k>     <Plug>(neosnippet_expand_target)
 
+" inoremap <expr><ESC>  deoplete#cancel_popup()
+" imap <expr> <ESC> pumvisible() ?
+"      \ neocomplete#close_popup() : "\<Plug>(smartinput_CR)"
 
-"" Map for document filetypes so the server could handle 
-let g:coc_filetype_map = {
-    \ 'ruby.rails': 'ruby',
-    \ 'ruby.minitest': 'ruby',
-    \ 'ruby.rspec': 'ruby',
-    \ }
+inoremap <expr><ESC>
+      \ deoplete#smart_close_popup()."\<C-h>"
 
-autocmd FileType python let b:coc_root_patterns = ['.venv', '.git', '.env']
+let g:neosnippet#enable_snipmate_compatibility = 1
 
-" augroup configure_coc_list
-"   autocmd!
-"   autocmd FileType list:/lists call configure_coc_list
-" augroup END
-"
-" function! s:configure_coc_list() abort
-"   echomsg "set configure_coc_list"
-"   " CocList用にマッピング
-"   imap <buffer> <C-n> :<C-u>CocNext<CR>
-"   imap <buffer> <C-p> :<C-u>CocPrev<CR>
-"   imap <buffer> <C-q> :<C-u><ESC><CR>
-"   nmap <buffer> <C-n> :<C-u>CocNext<CR>
-"   nmap <buffer> <C-p> :<C-u>CocPrev<CR>
-"   nmap <buffer> <C-q> :<C-u><ESC><CR>
-" endfunction
+function! s:on_lsp_buffer_enabled() abort
+  setlocal omnifunc=lsp#complete
+  setlocal signcolumn=yes
+  " nnoremap <buffer> <C-n> :<C-u>LspNextDiagnostic<CR>
+  " nnoremap <buffer> <C-p> :<C-u>LspPreviousDiagnostic<CR>
+  nnoremap <leader>w :<C-u>LspDocumentDiagnostics<cr>
+  nmap <C-j> :<C-u>LspDefinition<cr>
+  nmap <C-k> :<C-u>LspReferences<cr>
+  nnoremap K :<C-u>LspHover<cr>
+  nnoremap <C-s> :<C-u>LspRename<CR>
+  nnoremap <leader>f :<C-u>LspDocumentFormatSync<CR>
+  vnoremap <leader>f :<C-u>LspDocumentRangeFormatSync<CR>
+  nnoremap <leader>c :<C-u>LspCodeAction<CR>
+endfunction
+
+augroup lsp_install
+    autocmd!
+    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+    autocmd User lsp_diagnostics_updated,lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+augroup END
 
 "vim-grammarous
 let g:grammarous#default_comments_only_filetypes = {
@@ -1158,3 +1213,10 @@ omap ab <Plug>(textobj-multiblock-a)
 omap ib <Plug>(textobj-multiblock-i)
 vmap ab <Plug>(textobj-multiblock-a)
 vmap ib <Plug>(textobj-multiblock-i)
+
+
+" let g:ale_linters = {}
+" let g:ale_linters.markdown = ['textlint']
+" " let g:ale_linters.javascript = ['eslint']
+let g:deoplete#enable_at_startup = 1
+set completeopt-=preview "preview windowを出さない

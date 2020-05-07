@@ -1,0 +1,209 @@
+swipe:
+  3:
+    left:
+      # command: 'xdotool key alt+Right'
+      sendkey: "LEFTALT+RIGHT"
+      # command: "xte 'keydown Alt_L' 'keydown Right' 'keyup Right' 'keyup Alt_L'"
+      # command: 'xdotool key alt+Escape'
+      # command: 'xdotool keydown alt && sleep .1 && xdotool key Tab  && xdotool keyup alt'
+    right:
+      # command: 'xdotool key alt+Left'
+      sendkey: "LEFTALT+LEFT"
+      # command: "xte 'keydown Alt_L' 'keydown Left' 'keyup Left' 'keyup Alt_L'"
+    up:
+      sendkey: "LEFTCTRL+T"
+      keypress:
+        LEFTSHIFT:
+          sendkey: "LEFTCTRL+LEFTSHIFT+T"
+    down:
+      sendkey: "LEFTALT+W"
+  4:
+    left:
+      # shortcut: 'super+Right'
+      # command: 'xdotool key super+Right'
+      sendkey: 'LEFTMETA+RIGHT'
+      # workspace: "next"
+      keypress:
+        LEFTSHIFT:
+          window: "next"
+          # command: 'xdotool key --clearmodifiers super+alt+Right'
+        LEFTMETA:
+          # command: "xdotool key --clearmodifiers super+ctrl+Left"
+          sendkey: "LEFTMETA+LEFTCTRL+LEFT"
+        LEFTCTRL:
+          # command: 'xdotool key --clearmodifiers XF86MonBrightnessDown'
+          sendkey: BRIGHTNESSDOWN
+        LEFTALT:
+          sendkey: VOLUMEDOWN
+    right:
+      sendkey: 'LEFTMETA+LEFT'
+      # shortcut: 'super+Left'
+      # command: 'xdotool key super+Left'
+      # workspace: "prev"
+      keypress:
+
+        LEFTSHIFT:
+          window: "prev"
+          # command: 'xdotool key --clearmodifiers super+alt+Left'
+          # sendkey: 'LEFTMETA+LEFTALT+RIGHT'
+        LEFTMETA:
+          # command: "xdotool key --clearmodifiers super+ctrl+Right"
+          sendkey: "LEFTMETA+LEFTCTRL+RIGHT"
+        LEFTCTRL:
+          sendkey: BRIGHTNESSUP
+          # command: 'xdotool key --clearmodifiers XF86MonBrightnessUp'
+        LEFTALT:
+          sendkey: VOLUMEUP
+    up:
+      window:
+        "maximized_toggle"
+        # fullscreen: 'add'
+      # command: "xdotool key super+s"
+      # sendkey: "LEFTMETA+S"
+      # keypress:
+      #   LEFTSHIFT:
+      #   # command: 'xdotool key --clearmodifiers XF86MonBrightnessUp'
+      #   LEFTALT:
+      #     # command: "xdotool key --clearmodifiers XF86AudioRaiseVolume"
+      #     sendkey: VOLUMEUP
+      #   LEFTMETA:
+      #     # command: 'xdotool key --clearmodifiers super+Up'
+      #     window:
+      #       # fullscreen: 'add'
+      #       maximized: "toggle"
+    down:
+      command: "xdotool key super+a"
+      keypress:
+        LEFTMETA:
+          # command: 'xdotool key --clearmodifiers super+Up'
+          # window:
+          # fullscreen: 'remove'
+          window: "close"
+
+pinch:
+  2:
+    in:
+      # command: 'xdotool key ctrl+equal'
+      # command: "xdotool keydown ctrl click 4 keyup ctrl"
+      sendkey: LEFTCTRL+EQUAL
+      keypress:
+        LEFTMETA:
+          sendkey: LEFTMETA+EQUAL
+    out:
+      # command: "xdotool keydown ctrl click 5 keyup ctrl"
+      sendkey: LEFTCTRL+MINUS
+      keypress:
+        LEFTMETA:
+          sendkey: LEFTMETA+MINUS
+  4:
+    in:
+      command: "xdotool key super+a"
+    out:
+      command: "xdotool key super+s"
+
+rotate:
+  3:
+    clockwise:
+      # command: "xdotool key XF86MonBrightnessUp"
+      sendkey: "BRIGHTNESSUP"
+    counterclockwise:
+      sendkey: "BRIGHTNESSDOWN"
+
+tap:
+  # 1:
+  #   command: 'notify-send tap 1'
+  # 2:
+  #   command: 'notify-send tap 2'
+  # 3:
+  #   command: 'notify-send tap 3'
+  # 4:
+  #   command: 'notify-send tap 4'
+
+hold:
+  # 1:
+  #   command: 'notify-send hold 1'
+  2:
+    command: 'notify-send hold 2'
+  3:
+    command: 'notify-send hold 3'
+  4:
+    command: 'notify-send hold 4'
+
+# hold:
+#   3:
+#     sendkey: "LEFTALT+F7"
+#     keypress:
+#       LEFTSHIFT:
+#         command: 'notify-send "shift+hold" 3'
+#       # LEFTMETA:
+#         # sendkey: "LEFTALT+F7"
+#         # command: "xdotool key --clearmodifiers alt+F7"
+#         # command: "xdotool key --clearmodifiers alt+F7"
+#       LEFTALT:
+#         # command: "xdotool key --clearmodifiers alt+F7"
+#         sendkey: "LEFTALT+F7"
+#   4:
+#     # command: 'notify-send hold 4'
+#     sendkey: "LEFTALT+F8"
+
+threshold:
+  rotate: 1
+  swipe: 1
+  pinch: 1
+
+interval:
+  rotate: 1
+  swipe: 1
+  pinch: 1
+
+
+plugin:
+  inputs:
+    libinput_command_input: # options for lib/plugin/inputs/libinput_command_input
+      enable-tap: true
+      enable-dwt: true
+      show-keycodes: true
+      verbose: true
+      libinput-list-devices: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/libinput-list-devices
+      libinput-debug-events: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/libinput-debug-events
+  filters:
+    libinput_device_filter:
+      keep_device_names:
+        - "DLL075B:01 06CB:76AF Touchpad"
+        # - Logitech Rechargeable Touchpad T650
+        # - hogehoge
+  buffers:
+    gesture_buffer:
+      # seconds_to_keep: 0.01
+  executors:
+    sendkey_executor:
+      device_name: 
+# 
+# application:
+#   Google chrome:
+#     swipe:
+#       3:
+#         left:
+#           command: "xdotool alt+right"
+#         right:
+#           command: "xdotool alt+left"
+#         up:
+#           command: "xdotool ctrl+t"
+#           keypress:
+#             - code: "Up"
+#               command: "xdotool ctrl+shift+t"
+# 
+# scroll:
+#   4:
+#     up:
+#       command:
+#         LEFTSHIFT:
+#           command: "xdotool key --clearmodifiers XF86MonBrightnessUp"
+#     down:
+#       command:
+#         LEFTSHIFT:
+#           command: "xdotool key --clearmodifiers XF86MonBrightnessDown"
+# 
+# keypress:
+#   LEFTSHIFT+CAPSLOCK:
+#     command: "echo ---------LEFTSHIFT----------"
