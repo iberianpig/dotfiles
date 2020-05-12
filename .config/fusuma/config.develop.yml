@@ -116,16 +116,18 @@ tap:
   #   command: 'notify-send tap 2'
   # 3:
   #   command: 'notify-send tap 3'
+  # 3:
+  #   command: 'xdotool keydown ctrl ; xdotool click --repeat 2 1 ; sleep 1; xdotool keyup ctrl'
   # 4:
   #   command: 'notify-send tap 4'
 
 hold:
-  # 1:
-  #   command: 'notify-send hold 1'
+  1:
+    command: 'notify-send hold 1'
   2:
     command: 'notify-send hold 2'
   3:
-    command: 'notify-send hold 3'
+    command: "xdotool click --repeat 2 1 && goldendict $(xsel -p)"
   4:
     command: 'notify-send hold 4'
 
@@ -206,4 +208,4 @@ plugin:
 # 
 # keypress:
 #   LEFTSHIFT+CAPSLOCK:
-#     command: "echo ---------LEFTSHIFT----------"
+

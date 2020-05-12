@@ -503,7 +503,7 @@ Plug 'mopp/layoutplugin.vim', { 'on' : 'LayoutPlugin'}
 
 "unite like serching interface
 Plug 'junegunn/fzf'
-Plug 'tweekmonster/fzf-filemru'
+Plug 'pbogut/fzf-mru.vim'
 
 "solidity
 Plug 'tomlion/vim-solidity'
@@ -822,12 +822,13 @@ nnoremap <silent> [fzf]a :call fzf#vim#files(expand("%:p:h"))<CR>
 " "スペースキーとMキーで最近開いたファイル一覧を表示
 " nnoremap <silent> [fzf]M :<C-u>fzf<Space>file_mru<CR>
 " nnoremap <silent> [fzf]m :call fzf#run({'source': v:oldfiles, 'options': '-m -x +s'})<CR>
-augroup custom_filemru
-  autocmd!
-  autocmd BufWinEnter * UpdateMru
-augroup END
-nnoremap <silent> [fzf]m :ProjectMru --tiebreak=end<cr>
-nnoremap <silent> [fzf]M :FilesMru --tiebreak=end<cr>
+" augroup custom_filemru
+"   autocmd!
+"   autocmd BufWinEnter * UpdateMru
+" augroup END
+let g:fzf_mru_relative = 1
+nnoremap <silent> [fzf]m :FZFMru<cr>
+nnoremap <silent> [fzf]M :History<cr>
 
 nnoremap <silent> [fzf]<CR> :FZF<CR>
 
@@ -1076,7 +1077,8 @@ augroup END
 " endfunction
 
 "" 検索結果に移動
-nnoremap <C-c> :cl<CR>
+" nnoremap <C-c> :cl<CR>
+nnoremap <C-c> :cc<CR>
 
 "" 次の検索結果に移動
 nnoremap <C-n> :cnext<CR>
