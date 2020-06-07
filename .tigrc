@@ -120,11 +120,11 @@ bind main    <Esc>pr      <sh -c "tig $(git merge-base %(prompt Enter branch nam
 # bind blob  B !@hub browse -- tree/%(commit)/%(file)
 # bind blame B !@hub browse -- tree/%(commit)/%(file)
 
-bind main  B @sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:])'/commit/%(commit)'"
-bind diff  B @sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:])'/commit/%(commit)'"
-bind tree  B @sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:])'/tree/%(commit)/%(directory)'"
-bind blob  B @sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:])'/tree/%(commit)/%(file)'"
-bind blame B @sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:])'/tree/%(commit)/%(file)'"
+bind main  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:] | sed 's/(.*)//')'/commit/%(commit)'"
+bind diff  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:] | sed 's/(.*)//')'/commit/%(commit)'"
+bind tree  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:] | sed 's/(.*)//')'/tree/%(commit)/%(directory)'"
+bind blob  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:] | sed 's/(.*)//')'/tree/%(commit)/%(file)'"
+bind blame B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | grep -Eo '(gitlab.com|github.com)[:/][^.]+(?!.git)*' | head -1 | tr : / | tr -d [:blank:] | sed 's/(.*)//')'/tree/%(commit)/%(file)'"
 
 # reopen
 bind generic  <ESC>r  <tig
