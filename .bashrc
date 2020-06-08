@@ -142,7 +142,7 @@ if which fzf > /dev/null; then
   # Markdownのメモを探して開く
   fzf-search-note() {
     local note_path=~/Dropbox/document
-    local selected_file="$(find  $note_path/201*.md -type f | fzf --tac)"
+    local selected_file="$(find  $note_path/20*.md -type f | fzf --tac)"
 
     if [ -n "${selected_file}" ]; then
       vi "${selected_file}"

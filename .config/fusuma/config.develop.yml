@@ -1,15 +1,19 @@
 swipe:
   3:
     left:
-      # command: 'xdotool key alt+Right'
+      # command: for i in {1..5} ; do sh -c 'fusuma-sendkey VOLUMEDOWN &' ; done
       sendkey: "LEFTALT+RIGHT"
+      # command: 'xdotool key alt+Right'
       # command: "xte 'keydown Alt_L' 'keydown Right' 'keyup Right' 'keyup Alt_L'"
       # command: 'xdotool key alt+Escape'
       # command: 'xdotool keydown alt && sleep .1 && xdotool key Tab  && xdotool keyup alt'
+      # command: ~/.ghq/github.com/iberianpig/fusuma-plugin-wmctrl/bin/cycle.sh 1
     right:
-      # command: 'xdotool key alt+Left'
+      # command: "fusuma-sendkey VOLUMEDOWN && fusuma-sendkey VOLUMEDOWN && fusuma-sendkey VOLUMEDOWN"
       sendkey: "LEFTALT+LEFT"
+      # command: 'xdotool key alt+Left'
       # command: "xte 'keydown Alt_L' 'keydown Left' 'keyup Left' 'keyup Alt_L'"
+      # command: ~/.ghq/github.com/iberianpig/fusuma-plugin-wmctrl/bin/cycle.sh -1
     up:
       sendkey: "LEFTCTRL+T"
       keypress:
@@ -41,7 +45,6 @@ swipe:
       # command: 'xdotool key super+Left'
       # workspace: "prev"
       keypress:
-
         LEFTSHIFT:
           window: "prev"
           # command: 'xdotool key --clearmodifiers super+alt+Left'
@@ -55,8 +58,7 @@ swipe:
         LEFTALT:
           sendkey: VOLUMEUP
     up:
-      window:
-        "maximized_toggle"
+      window: "maximized"
         # fullscreen: 'add'
       # command: "xdotool key super+s"
       # sendkey: "LEFTMETA+S"
@@ -83,15 +85,14 @@ swipe:
 pinch:
   2:
     in:
-      # command: 'xdotool key ctrl+equal'
-      # command: "xdotool keydown ctrl click 4 keyup ctrl"
-      sendkey: LEFTCTRL+EQUAL
+      command: "xdotool keydown ctrl click 4 keyup ctrl"
+      # sendkey: LEFTCTRL+EQUAL
       keypress:
         LEFTMETA:
           sendkey: LEFTMETA+EQUAL
     out:
-      # command: "xdotool keydown ctrl click 5 keyup ctrl"
-      sendkey: LEFTCTRL+MINUS
+      command: "xdotool keydown ctrl click 5 keyup ctrl"
+      # sendkey: LEFTCTRL+MINUS
       keypress:
         LEFTMETA:
           sendkey: LEFTMETA+MINUS
@@ -116,20 +117,19 @@ tap:
   #   command: 'notify-send tap 2'
   # 3:
   #   command: 'notify-send tap 3'
-  # 3:
-  #   command: 'xdotool keydown ctrl ; xdotool click --repeat 2 1 ; sleep 1; xdotool keyup ctrl'
-  # 4:
-  #   command: 'notify-send tap 4'
+  4:
+    command: 'notify-send tap 4'
 
 hold:
-  1:
-    command: 'notify-send hold 1'
-  2:
-    command: 'notify-send hold 2'
+  # 1:
+  #   command: 'notify-send hold 1'
+  # 2:
+  #   command: 'notify-send hold 2'
   3:
-    command: "xdotool click --repeat 2 1 && goldendict $(xsel -p)"
-  4:
-    command: 'notify-send hold 4'
+    # command: "xdotool click --repeat 2 1 && goldendict $(xsel -p)"
+    command: test -n "$(xsel -p)" && xdg-open https://www.deepl.com/translator#en/ja/"$(xsel -p)"
+  # 4:
+  #   command: 'notify-send hold 4'
 
 # hold:
 #   3:
@@ -171,7 +171,7 @@ plugin:
   filters:
     libinput_device_filter:
       keep_device_names:
-        - "DLL075B:01 06CB:76AF Touchpad"
+        # - "DLL075B:01 06CB:76AF Touchpad"
         # - Logitech Rechargeable Touchpad T650
         # - hogehoge
   buffers:
@@ -206,6 +206,3 @@ plugin:
 #         LEFTSHIFT:
 #           command: "xdotool key --clearmodifiers XF86MonBrightnessDown"
 # 
-# keypress:
-#   LEFTSHIFT+CAPSLOCK:
-
