@@ -19,7 +19,7 @@ set cmdheight=2    " メッセージ表示欄を2行確保
 set showmatch      " 対応する括弧を強調表示
 set matchpairs+=「:」,『:』,（:）,【:】,《:》,〈:〉,［:］,‘:’,“:”
 set helpheight=998 " ヘルプを画面いっぱいに開く
-set synmaxcol=300  " 長い行の場合、syntaxをoffにする
+" set synmaxcol=300  " 長い行の場合、syntaxをoffにする 既定では3000
 set list           " 不可視文字を表示
 set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
@@ -31,15 +31,15 @@ set iskeyword+=?,!,-,@-@ "?,!,@hogeなどをキーワードとする
 augroup switch_folding_method
   autocmd!
   autocmd InsertEnter *
-      \ if !exists('w:last_fdm') |
-      \   let w:last_fdm=&foldmethod |
-      \   setlocal foldmethod=manual |
-      \ endif
+     \ if !exists('w:last_fdm') |
+     \   let w:last_fdm=&foldmethod |
+     \   setlocal foldmethod=manual |
+     \ endif
   autocmd InsertLeave,WinLeave *
-      \ if exists('w:last_fdm') |
-      \   let &l:foldmethod=w:last_fdm |
-      \   unlet w:last_fdm |
-      \ endif
+     \ if exists('w:last_fdm') |
+     \   let &l:foldmethod=w:last_fdm |
+     \   unlet w:last_fdm |
+     \ endif
 augroup END
 
 augroup vimrc-highlight
@@ -241,10 +241,10 @@ augroup END
 
 " set re=1
 
-set runtimepath+=/home/iberianpig/.ghq/github.com/junegunn/fzf/bin/
-set runtimepath+=/home/iberianpig/.vim/snippets/
+set runtimepath+=~/.ghq/github.com/junegunn/fzf/bin/
+" set runtimepath+=~/.vim/snippets/
 
-let g:ruby_path = system('echo $HOME/.rbenv/shims')
+" let g:ruby_path = system('echo $HOME/.rbenv/shims')
 
 " 不要なデフォルトプラグインの停止
 let g:loaded_gzip              = 1
@@ -274,17 +274,6 @@ call plug#begin('~/.vim/plugged')
 " Shorthand notation; fetches https://github.com/junegunn/vim-easy-align
 Plug 'junegunn/vim-easy-align'
 
-" " example
-" " Using a non-master branch
-" Plug 'rdnetto/YCM-Generator', { 'branch': 'stable' }
-"
-" " Using a tagged release; wildcard allowed (requires git 1.9.2 or above)
-" Plug 'fatih/vim-go', { 'tag': '*' }
-"
-" " Plugin options
-" Plug 'nsf/gocode', { 'tag': 'v.20150303', 'rtp': 'vim' }
-
-" Plugin outside ~/.vim/plugged with post-update hook
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 
@@ -309,36 +298,30 @@ Plug 'skanehira/translate.vim'
 " カーソル下をハイライト
 Plug 'osyo-manga/vim-brightest'
 
-" rubyの定義済変数のハイライト
-" Plug 'iberianpig/ruby_hl_lvar.vim', { 'for' : ['ruby']   }
-
 " 括弧補完
 Plug 'cohama/lexima.vim'
 
 " 補完系
 
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
 
 Plug 'mattn/vim-lsp-settings'
-
-Plug 'lighttiger2505/deoplete-vim-lsp'
-" Plug 'tbodt/deoplete-tabnine', { 'do': './install.sh' }
-
-Plug 'Shougo/deoplete.nvim' | Plug 'roxma/nvim-yarp' | Plug 'roxma/vim-hug-neovim-rpc'
+Plug 'tsuyoshicho/vim-efm-langserver-settings'
 
 
-" Plug 'SirVer/ultisnips'
-
-Plug 'honza/vim-snippets'
-" Plug 'hrsh7th/vim-vsnip'
-" Plug 'hrsh7th/vim-vsnip-integ'
-
+" Plug 'thomasfaingnaert/vim-lsp-snippets'
+" Plug 'thomasfaingnaert/vim-lsp-neosnippet'
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
-" Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
+Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
 
+" Plug 'yami-beta/asyncomplete-omni.vim'
+" Plug 'Shougo/neco-syntax'
+" Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
+Plug 'htlsne/asyncomplete-look'
 
 " Plug 'zxqfl/tabnine-vim'
 
@@ -521,6 +504,7 @@ Plug 'hashivim/vim-terraform'
 " ローカル管理のPlugin
 Plug '~/.ghq/github.com/iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.vim'
 Plug '~/.ghq/github.com/iberianpig/ranger-explorer.vim'
+Plug '~/.ghq/github.com/iberianpig/ruby_hl_lvar.vim', { 'for' : ['ruby']   }
 
 " Initialize plugin system
 call plug#end()
@@ -737,31 +721,33 @@ endfunction
 
 "}}}
 
-" " enable ruby & rails snippet only rails file
-" function! s:RailsSnippet()
-"   if exists('b:rails_root') && (&filetype ==# 'ruby')
-"     set filetype=ruby.rails
-"   endif
-" endfunction
-" 
-" function! s:RSpecSnippet()
-"   if (expand('%') =~# '_spec\.rb$') || (expand('%') =~# '^spec.*\.rb$')
-"     set filetype=ruby.rspec
-"   endif
-" endfunction
-" 
-" function! s:MinitestSnippet()
-"   if (expand('%') =~# '_test\.rb$') || (expand('%') =~# '^test.*\.rb$')
-"     set filetype=ruby.minitest
-"   endif
-" endfunction
-" 
-" augroup rails_snippet
-"   autocmd!
-"   au BufEnter * call s:RailsSnippet()
-"   au BufEnter * call s:RSpecSnippet()
-"   au BufEnter * call s:MinitestSnippet()
-" augroup END
+" enable ruby & rails snippet only rails file
+
+
+function! s:RailsSnippet()
+  if exists('b:rails_root') && (&filetype ==# 'ruby')
+    :NeoSnippetSource ~/.vim/snippets/rails.snip
+  endif
+endfunction
+
+function! s:RSpecSnippet()
+  if (expand('%') =~# '_spec\.rb$') || (expand('%') =~# '^spec.*\.rb$')
+    :NeoSnippetSource ~/.vim/snippets/rspec.snip
+  endif
+endfunction
+
+function! s:MinitestSnippet()
+  if (expand('%') =~# '_test\.rb$') || (expand('%') =~# '^test.*\.rb$')
+    :NeoSnippetSource ~/.vim/snippets/minitest.snip
+  endif
+endfunction
+
+augroup rails_snippet
+  autocmd!
+  au BufEnter * call s:RailsSnippet()
+  au BufEnter * call s:RSpecSnippet()
+  au BufEnter * call s:MinitestSnippet()
+augroup END
 
 "" switch
 nnoremap - :Switch<cr>
@@ -990,16 +976,6 @@ let g:test#transformation = 'docker'
 
 let g:vim_json_syntax_conceal = 0
 
-" lexima plugin
-call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:;]', 'char': '(', 'input': '('})
-call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:;]', 'char': '{', 'input': '{'})
-call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:;]', 'char': '[', 'input': '['})
-call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:;]', 'char': '''', 'input': ''''})
-call lexima#add_rule({'at': '\%#.*[-0-9a-zA-Z_,:;]', 'char': '"', 'input': '"'})
-call lexima#add_rule({'at': '\%#\n\s*)', 'char': ')', 'input': ')', 'delete': ')'})
-call lexima#add_rule({'at': '\%#\n\s*}', 'char': '}', 'input': '}', 'delete': '}'})
-call lexima#add_rule({'at': '\%#\n\s*]', 'char': ']', 'input': ']', 'delete': ']'})
-
 "caw
 " <C-/> or <C-_> でコメントトグル
 nmap <C-_> <Plug>(caw:hatpos:toggle)
@@ -1152,43 +1128,53 @@ let g:brightest#highlight = {
 let g:brightest#pattern = '\k\+'
 let g:brightest#enable_on_CursorHold = 1
 
-
-let g:lsp_signs_enabled = 1         " enable signs
+let g:lsp_signs_enabled = 1        " enable signs
 let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
+let g:lsp_diagnostics_echo_delay = 500
 let g:lsp_signs_priority = 11
+
+let g:lsp_textprop_enabled = 0 " エラー部の強調表示。solargraphで複数行削除時にエラーになるため無効化
+
+let g:asyncomplete_auto_popup = 1
+
+let g:lsp_log_file          = expand('/tmp/vim-lsp.log')
+let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
+
+let g:lsp_highlight_references_enabled = 1
 
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
 xmap <C-k>     <Plug>(neosnippet_expand_target)
 
-" inoremap <expr><ESC>  deoplete#cancel_popup()
-" imap <expr> <ESC> pumvisible() ?
-"      \ neocomplete#close_popup() : "\<Plug>(smartinput_CR)"
-
-inoremap <expr><ESC>
-      \ deoplete#smart_close_popup()."\<C-h>"
-
 let g:neosnippet#enable_snipmate_compatibility = 1
+let g:neosnippet#snippets_directory='~/.vim/snippets'
+
+setlocal signcolumn=yes
 
 function! s:on_lsp_buffer_enabled() abort
+  " rubocop auto correct doesn't work properly with efm-language-server
+  if (index(g:efm_langserver_settings#filetype_blacklist, 'ruby') == -1)
+    call add(g:efm_langserver_settings#filetype_blacklist, 'ruby')
+  endif
+
   setlocal omnifunc=lsp#complete
-  setlocal signcolumn=yes
   " nnoremap <buffer> <C-n> :<C-u>LspNextDiagnostic<CR>
   " nnoremap <buffer> <C-p> :<C-u>LspPreviousDiagnostic<CR>
   nnoremap <leader>w :<C-u>LspDocumentDiagnostics<cr>
   nmap <C-j> :<C-u>LspDefinition<cr>
   nmap <C-k> :<C-u>LspReferences<cr>
-  nnoremap K :<C-u>LspHover<cr>
+  " nnoremap K :<C-u>LspHover<cr>
+  nnoremap K :<C-u>LspPeekDefenition<cr>
   nnoremap <C-s> :<C-u>LspRename<CR>
   nnoremap <leader>f :<C-u>LspDocumentFormatSync<CR>
   vnoremap <leader>f :<C-u>LspDocumentRangeFormatSync<CR>
   nnoremap <leader>c :<C-u>LspCodeAction<CR>
 endfunction
 
-augroup lsp_install
+augroup lsp_enabled
     autocmd!
     " call s:on_lsp_buffer_enabled only for languages that has the server registered.
-    autocmd User lsp_diagnostics_updated,lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
 "vim-grammarous
@@ -1216,9 +1202,51 @@ omap ib <Plug>(textobj-multiblock-i)
 vmap ab <Plug>(textobj-multiblock-a)
 vmap ib <Plug>(textobj-multiblock-i)
 
+" " set completeopt-=preview "preview windowを出さない
+" 
+" let g:lsc_server_commands = {
+" \  'ruby': {
+" \    'command': 'solargraph stdio',
+" \    'log_level': -1,
+" \    'suppress_stderr': v:true,
+" \  },
+" \  'javascript': {
+" \    'command': 'typescript-language-server --stdio',
+" \    'log_level': -1,
+" \    'suppress_stderr': v:true,
+" \  }
+" \}
+" let g:lsc_auto_map = v:true
+" 
+" let g:lsc_enable_autocomplete  = 1
+" let g:lsc_enable_diagnostics   = 1
+" let g:lsc_reference_highlights = 1
+" let g:lsc_trace_level          = 'off'
+" let g:lsc_enable_snippet_support = 1
+" let g:neosnippet#enable_completed_snippet = 1
+" autocmd CompleteDone * call neosnippet#complete_done()
+" 
+" imap <expr> <C-j>   vsnip#available(1)  ? '<Plug>(vsnip-expand)'         : '<C-j>'
+" imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+" smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
+" imap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+" smap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
+" imap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+" smap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
+    \ 'name': 'neosnippet',
+    \ 'whitelist': ['*'],
+    \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
+    \ }))
 
-" let g:ale_linters = {}
-" let g:ale_linters.markdown = ['textlint']
-" " let g:ale_linters.javascript = ['eslint']
-let g:deoplete#enable_at_startup = 1
-set completeopt-=preview "preview windowを出さない
+" au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
+"      \ 'name': 'necosyntax',
+"      \ 'whitelist': ['*'],
+"      \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
+"      \ }))
+"
+au User asyncomplete_setup call asyncomplete#register_source({
+    \ 'name': 'look',
+    \ 'whitelist': ['*'],
+    \ 'completor': function('asyncomplete#sources#look#completor'),
+    \ })
