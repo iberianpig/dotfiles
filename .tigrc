@@ -12,6 +12,7 @@ set status-show-untracked-dirs = yes
 set tab-size              = 2
 set diff-context          = 3
 set diff-options          = -m --first-parent
+set diff-highlight        = true
 set ignore-space          = all
 set commit-order          = topo
 set ignore-case           = yes

@@ -27,6 +27,7 @@
   editor = vim
   excludesfile = /home/iberianpig/.gitignore_global
   autocrlf = input
+  pager = "diff-highlight | less"
 [push]
   default = current
 [pull]
