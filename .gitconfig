@@ -25,7 +25,7 @@
   remove-deleted-files = !git ls-files --deleted | xargs -I % git rm %
 [core]
   editor = vim
-  excludesfile = /home/iberianpig/.gitignore_global
+  excludesfile = ~/.gitignore_global
   autocrlf = input
   pager = "diff-highlight | less"
 [push]
@@ -64,7 +64,7 @@
 	root = ~/go/src
 	root = ~/.ghq
 [commit]
-	template = /home/iberianpig/.gitcommit
+	template = ~/.gitcommit
 [secrets]
 	providers = git secrets --aws-provider
 	patterns = (A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}
