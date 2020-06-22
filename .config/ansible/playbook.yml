@@ -145,7 +145,7 @@
         - fwupd --classic
 
     - name: pip install
-      pip: name={{item}}
+      pip: name={{item}} executable=pip3 state=latest
       with_items:
         - vim-vint
         - wakatime
@@ -217,3 +217,11 @@
     - name: add $USER Input group
       user: name=iberianpig groups=input append=yes
       become: true
+
+    - name: Install github cli
+      shell: |
+        which gh && exit 0
+        curl -L https://github.com/cli/cli/releases/download/v0.10.0/gh_0.10.0_linux_amd64.deb -o /tmp/gh.deb && dpkg -i /tmp/gh.deb
+      become: true
+      args:
+        warn: no
