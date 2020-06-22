@@ -53,9 +53,9 @@ set fileformats=unix,dos,mac  " LF, CRLF, CR
 set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
 
 function! s:detect_terminal()
-    if &buftype == "terminal" && &filetype == ""
-        set filetype=terminal
-    endif
+  if &buftype ==# 'terminal' && &filetype ==# ''
+    set filetype=terminal
+  endif
 endfunction
 
 function! s:set_terminal_option()
@@ -307,10 +307,7 @@ Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
-
 Plug 'mattn/vim-lsp-settings'
-Plug 'tsuyoshicho/vim-efm-langserver-settings'
-
 
 " Plug 'thomasfaingnaert/vim-lsp-snippets'
 " Plug 'thomasfaingnaert/vim-lsp-neosnippet'
@@ -353,6 +350,8 @@ Plug 'thinca/vim-quickrun'
 
 " quickfixのエラーメッセージを下部に表示する
 Plug 'dannyob/quickfixstatus', {'on': ['QuickfixStatusDisable', 'QuickfixStatusEnable']}
+
+Plug 'anyakichi/vim-qfutil'
 
 " " " 非同期処理でLinterを動かす
 " Plug 'w0rp/ale'
@@ -1054,72 +1053,94 @@ augroup END
 
 "" 検索結果に移動
 " nnoremap <C-c> :cl<CR>
-nnoremap <C-c> :cc<CR>
-
-"" 次の検索結果に移動
-nnoremap <C-n> :cnext<CR>
-
-"" 前の検索結果に移動
-nnoremap <C-p> :cprevious<CR>
-
-"" 検索結果Windowを閉じる
-nnoremap <C-q> <C-w>j<C-w>q
-" https://github.com/neomake/neomake/issues/842
-" nnoremap <C-q> :cclose<CR>
-
-"" 検索結果に移動
-nnoremap <A-c> :ll<CR>
-
-"" 次の検索結果に移動
-nnoremap <A-n> :lnext<CR>
-
-"" 前の検索結果に移動
-nnoremap <A-p> :lprevious<CR>
+" nnoremap <C-c> :cc<CR>
+" 
+" "" 次の検索結果に移動
+" nnoremap <C-n> :cnext<CR>
+" 
+" "" 前の検索結果に移動
+" nnoremap <C-p> :cprevious<CR>
 
 "" 検索結果Windowを閉じる
 " nnoremap <C-q> <C-w>j<C-w>q
 " https://github.com/neomake/neomake/issues/842
-nnoremap <A-q> :lclose<CR>
+nnoremap <C-q> :cclose\|lclose<CR>
 
-" 入力キーの辞書
-let s:compl_key_dict = {
-     \ char2nr("\<C-l>"): "\<C-x>\<C-l>",
-     \ char2nr("\<C-n>"): "\<C-x>\<C-n>",
-     \ char2nr("\<C-p>"): "\<C-x>\<C-p>",
-     \ char2nr("\<C-k>"): "\<C-x>\<C-k>",
-     \ char2nr("\<C-t>"): "\<C-x>\<C-t>",
-     \ char2nr("\<C-i>"): "\<C-x>\<C-i>",
-     \ char2nr("\<C-]>"): "\<C-x>\<C-]>",
-     \ char2nr("\<C-f>"): "\<C-x>\<C-f>",
-     \ char2nr("\<C-d>"): "\<C-x>\<C-d>",
-     \ char2nr("\<C-v>"): "\<C-x>\<C-v>",
-     \ char2nr("\<C-u>"): "\<C-x>\<C-u>",
-     \ char2nr("\<C-o>"): "\<C-x>\<C-o>",
-     \ char2nr('s'): "\<C-x>s",
-     \ char2nr("\<C-s>"): "\<C-x>s"
-     \}
-" 表示メッセージ
-let s:hint_i_ctrl_x_msg = join([
-     \ '<C-l>: While lines',
-     \ '<C-n>: keywords in the current file',
-     \ "<C-k>: keywords in 'dictionary'",
-     \ "<C-t>: keywords in 'thesaurus'",
-     \ '<C-i>: keywords in the current and included files',
-     \ '<C-]>: tags',
-     \ '<C-f>: file names',
-     \ '<C-d>: definitions or macros',
-     \ '<C-v>: Vim command-line',
-     \ "<C-u>: User defined completion ('completefunc')",
-     \ "<C-o>: omni completion ('omnifunc')",
-     \ "s: Spelling suggestions ('spell')"
-     \], "\n")
-function! s:hint_i_ctrl_x() abort
-  echo s:hint_i_ctrl_x_msg
-  let c = getchar()
-  return get(s:compl_key_dict, c, nr2char(c))
-endfunction
+" "" 検索結果に移動
+" nnoremap <A-c> :ll<CR>
+" 
+" "" 次の検索結果に移動
+" nnoremap <A-n> :lnext<CR>
+" 
+" "" 前の検索結果に移動
+" nnoremap <A-p> :lprevious<CR>
+" 
+" "" 検索結果Windowを閉じる
+" " nnoremap <C-q> <C-w>j<C-w>q
+" " https://github.com/neomake/neomake/issues/842
+" nnoremap <A-q> :lclose<CR>
 
-inoremap <expr> <C-x>  <SID>hint_i_ctrl_x()
+" Quickfix
+nnoremap <silent> q\ :<C-u>call qfutil#toggle()<CR>
+
+nnoremap <silent> <C-n> :<C-u>call qfutil#next(v:count)<CR>
+nnoremap <silent> <C-p> :<C-u>call qfutil#previous(v:count)<CR>
+nnoremap <silent> g<C-n> :<C-u>call qfutil#last(v:count)<CR>
+nnoremap <silent> g<C-p> :<C-u>call qfutil#first(v:count)<CR>
+
+nnoremap <silent> q. :<C-u>call qfutil#toggle_window()<CR>
+nnoremap <silent> qq :<C-u>call qfutil#qq(v:count)<CR>
+nnoremap <silent> qn :<C-u>call qfutil#nfile(v:count)<CR>
+nnoremap <silent> qp :<C-u>call qfutil#pfile(v:count)<CR>
+nnoremap <silent> qa :<C-u>call qfutil#list()<CR>
+nnoremap <silent> qo :<C-u>call qfutil#older(v:count)<CR>
+nnoremap <silent> qi :<C-u>call qfutil#newer(v:count)<CR>
+
+augroup open_quickfix_window_automatically
+  autocmd!
+  autocmd QuickFixCmdPost [^l]* cwindow
+  autocmd QuickFixCmdPost l* lwindow
+augroup END
+
+" " 入力キーの辞書
+" let s:compl_key_dict = {
+"     \ char2nr("\<C-l>"): "\<C-x>\<C-l>",
+"     \ char2nr("\<C-n>"): "\<C-x>\<C-n>",
+"     \ char2nr("\<C-p>"): "\<C-x>\<C-p>",
+"     \ char2nr("\<C-k>"): "\<C-x>\<C-k>",
+"     \ char2nr("\<C-t>"): "\<C-x>\<C-t>",
+"     \ char2nr("\<C-i>"): "\<C-x>\<C-i>",
+"     \ char2nr("\<C-]>"): "\<C-x>\<C-]>",
+"     \ char2nr("\<C-f>"): "\<C-x>\<C-f>",
+"     \ char2nr("\<C-d>"): "\<C-x>\<C-d>",
+"     \ char2nr("\<C-v>"): "\<C-x>\<C-v>",
+"     \ char2nr("\<C-u>"): "\<C-x>\<C-u>",
+"     \ char2nr("\<C-o>"): "\<C-x>\<C-o>",
+"     \ char2nr('s'): "\<C-x>s",
+"     \ char2nr("\<C-s>"): "\<C-x>s"
+"     \}
+" " 表示メッセージ
+" let s:hint_i_ctrl_x_msg = join([
+"     \ '<C-l>: While lines',
+"     \ '<C-n>: keywords in the current file',
+"     \ "<C-k>: keywords in 'dictionary'",
+"     \ "<C-t>: keywords in 'thesaurus'",
+"     \ '<C-i>: keywords in the current and included files',
+"     \ '<C-]>: tags',
+"     \ '<C-f>: file names',
+"     \ '<C-d>: definitions or macros',
+"     \ '<C-v>: Vim command-line',
+"     \ "<C-u>: User defined completion ('completefunc')",
+"     \ "<C-o>: omni completion ('omnifunc')",
+"     \ "s: Spelling suggestions ('spell')"
+"     \], "\n")
+" function! s:hint_i_ctrl_x() abort
+"   echo s:hint_i_ctrl_x_msg
+"   let c = getchar()
+"   return get(s:compl_key_dict, c, nr2char(c))
+" endfunction
+" 
+" inoremap <expr> <C-x>  <SID>hint_i_ctrl_x()
 
 let g:brightest#highlight = {
      \   'group' : 'BrightestUnderline'
@@ -1152,11 +1173,6 @@ let g:neosnippet#snippets_directory='~/.vim/snippets'
 setlocal signcolumn=yes
 
 function! s:on_lsp_buffer_enabled() abort
-  " rubocop auto correct doesn't work properly with efm-language-server
-  if (index(g:efm_langserver_settings#filetype_blacklist, 'ruby') == -1)
-    call add(g:efm_langserver_settings#filetype_blacklist, 'ruby')
-  endif
-
   setlocal omnifunc=lsp#complete
   " nnoremap <buffer> <C-n> :<C-u>LspNextDiagnostic<CR>
   " nnoremap <buffer> <C-p> :<C-u>LspPreviousDiagnostic<CR>
@@ -1164,7 +1180,7 @@ function! s:on_lsp_buffer_enabled() abort
   nmap <C-j> :<C-u>LspDefinition<cr>
   nmap <C-k> :<C-u>LspReferences<cr>
   " nnoremap K :<C-u>LspHover<cr>
-  nnoremap K :<C-u>LspPeekDefenition<cr>
+  nnoremap K :<C-u>LspPeekDefinition<cr>
   nnoremap <C-s> :<C-u>LspRename<CR>
   nnoremap <leader>f :<C-u>LspDocumentFormatSync<CR>
   vnoremap <leader>f :<C-u>LspDocumentRangeFormatSync<CR>
@@ -1202,51 +1218,17 @@ omap ib <Plug>(textobj-multiblock-i)
 vmap ab <Plug>(textobj-multiblock-a)
 vmap ib <Plug>(textobj-multiblock-i)
 
-" " set completeopt-=preview "preview windowを出さない
-" 
-" let g:lsc_server_commands = {
-" \  'ruby': {
-" \    'command': 'solargraph stdio',
-" \    'log_level': -1,
-" \    'suppress_stderr': v:true,
-" \  },
-" \  'javascript': {
-" \    'command': 'typescript-language-server --stdio',
-" \    'log_level': -1,
-" \    'suppress_stderr': v:true,
-" \  }
-" \}
-" let g:lsc_auto_map = v:true
-" 
-" let g:lsc_enable_autocomplete  = 1
-" let g:lsc_enable_diagnostics   = 1
-" let g:lsc_reference_highlights = 1
-" let g:lsc_trace_level          = 'off'
-" let g:lsc_enable_snippet_support = 1
-" let g:neosnippet#enable_completed_snippet = 1
-" autocmd CompleteDone * call neosnippet#complete_done()
-" 
-" imap <expr> <C-j>   vsnip#available(1)  ? '<Plug>(vsnip-expand)'         : '<C-j>'
-" imap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-" smap <expr> <C-l>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-l>'
-" imap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
-" smap <expr> <Tab>   vsnip#available(1)  ? '<Plug>(vsnip-jump-next)'      : '<Tab>'
-" imap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
-" smap <expr> <S-Tab> vsnip#available(-1) ? '<Plug>(vsnip-jump-prev)'      : '<S-Tab>'
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
-    \ 'name': 'neosnippet',
-    \ 'whitelist': ['*'],
-    \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
-    \ }))
+augroup asyncomplete_register_source
+  autocmd!
+  au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
+        \ 'name': 'neosnippet',
+        \ 'whitelist': ['*'],
+        \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
+        \ }))
 
-" au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
-"      \ 'name': 'necosyntax',
-"      \ 'whitelist': ['*'],
-"      \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
-"      \ }))
-"
-au User asyncomplete_setup call asyncomplete#register_source({
-    \ 'name': 'look',
-    \ 'whitelist': ['*'],
-    \ 'completor': function('asyncomplete#sources#look#completor'),
-    \ })
+  au User asyncomplete_setup call asyncomplete#register_source({
+        \ 'name': 'look',
+        \ 'whitelist': ['*'],
+        \ 'completor': function('asyncomplete#sources#look#completor'),
+        \ })
+augroup END
