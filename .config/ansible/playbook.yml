@@ -147,7 +147,7 @@
     - name: pip install
       pip: name={{item}}
       with_items:
-        - vint
+        - vim-vint
         - wakatime
 
     - name: add $USER Docker group

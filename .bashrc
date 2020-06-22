@@ -13,7 +13,7 @@
 # # Save and reload the history after each command finishes
 # export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
-export HISTFILE=/home/iberianpig/.bash_history
+export HISTFILE=~/.bash_history
 
 export HISTSIZE=10000                   # big big history
 export HISTFILESIZE=10000               # big big history
@@ -211,11 +211,15 @@ fi
 eval "$(direnv hook bash)"
 
 # wakatime
-source ~/.ghq/github.com/gjsheep/bash-wakatime/bash-wakatime.sh
+[ -f ~/.ghq/github.com/gjsheep/bash-wakatime/bash-wakatime.sh ] && source ~/.ghq/github.com/gjsheep/bash-wakatime/bash-wakatime.sh
 
 # makef
-source /home/iberianpig/.ghq/github.com/iberianpig/makef/makef.sh
+[ -f ~/.ghq/github.com/iberianpig/makef/makef.sh ] && source ~/.ghq/github.com/iberianpig/makef/makef.sh
 
 # tabtab source for packages
 # uninstall by removing these lines
 [ -f ~/.config/tabtab/__tabtab.bash ] && . ~/.config/tabtab/__tabtab.bash || true
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion

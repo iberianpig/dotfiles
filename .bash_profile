@@ -46,7 +46,7 @@ export GTAGSLABEL=pygments
 
 # rbenv
 # NOTE: should be placed on ~/.bashrc
-if [ -e $HOME/.rbenv/bin ]; then
+if [ -e "$HOME/.rbenv/bin" ]; then
   export PATH="$HOME/.rbenv/bin:$PATH"
   eval "$(rbenv init -)"
 fi
@@ -56,10 +56,10 @@ fi
 # direnv
 eval "$(direnv hook bash)"
 
-# nvm
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-export NODE_PATH=$(npm root -g)
+# # nvm
+# export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+# export NODE_PATH=$(npm root -g)
 
 
 # less
@@ -100,8 +100,9 @@ case "$TERM" in
 esac
 
 export PATH="$HOME/.cargo/bin:$PATH"
-if [ -e /home/iberianpig/.nix-profile/etc/profile.d/nix.sh ]; then . /home/iberianpig/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+if [ -e "~/.nix-profile/etc/profile.d/nix.sh" ]; then . "~/.nix-profile/etc/profile.d/nix.sh"; fi # added by Nix installer
 
 export PATH="$HOME/flutter/bin:$PATH"
 
-export PATH="/home/iberianpig/.ghq/github.com/tfutils/tfenv/bin/:$PATH"
+export PATH="$HOME/.ghq/github.com/tfutils/tfenv/bin/:$PATH"
