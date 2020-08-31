@@ -3,5 +3,5 @@ Name=Dropbox custom script
 Comment=run /home/iberianpig/Dropbox/tool/linux/script/dropbox_start.sh
 Exec=/home/iberianpig/Dropbox/tool/linux/script/dropbox_start.sh
 Icon=dropbox
-X-GNOME-Autostart-enabled=false
+X-GNOME-Autostart-enabled=true
 Type=Application

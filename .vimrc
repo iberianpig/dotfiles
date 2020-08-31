@@ -105,7 +105,7 @@ set autoread   " 外部でファイルに変更がされた場合は読みなお
 
 augroup vimrc-checktime "window移動/一定時間カーソルが停止した場合に強制的に読みなおす
   autocmd!
-  set updatetime=300
+  set updatetime=1000
   autocmd WinEnter * checktime
   autocmd CursorHold * checktime
 augroup END
@@ -241,7 +241,7 @@ augroup END
 
 " set re=1
 
-set runtimepath+=~/.ghq/github.com/junegunn/fzf/bin/
+" set runtimepath+=~/.ghq/github.com/junegunn/fzf/bin/
 " set runtimepath+=~/.vim/snippets/
 
 " let g:ruby_path = system('echo $HOME/.rbenv/shims')
@@ -299,7 +299,7 @@ Plug 'skanehira/translate.vim'
 Plug 'osyo-manga/vim-brightest'
 
 " 括弧補完
-Plug 'cohama/lexima.vim'
+" Plug 'cohama/lexima.vim'
 
 " 補完系
 
@@ -319,6 +319,8 @@ Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
 " Plug 'Shougo/neco-syntax'
 " Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
 Plug 'htlsne/asyncomplete-look'
+
+Plug 'kitagry/asyncomplete-tabnine.vim', { 'do': './install.sh'  }
 
 " Plug 'zxqfl/tabnine-vim'
 
@@ -381,7 +383,8 @@ Plug 'Chiel92/vim-autoformat'
 Plug 'wakatime/vim-wakatime'
 
 " 自動保存
-Plug 'vim-scripts/vim-auto-save'
+" Plug 'vim-scripts/vim-auto-save'
+Plug '907th/vim-auto-save'
 
 " スタートページ
 Plug 'mhinz/vim-startify'
@@ -998,6 +1001,11 @@ nnoremap [explorer]g :TigGrep<CR>
 vnoremap [explorer]g y:TigGrep<Space>"<C-R>""
 ""カーソル上のキーワードで検索
 nnoremap [explorer]r :TigGrepResume<CR>
+
+" 履歴から検索
+nnoremap [explorer]G :Tig -G""<LEFT>
+vnoremap [explorer]G y:Tig -G"<C-R>""
+
 "" open tig blame with current file
 nnoremap [explorer]b :TigBlame<CR>
 
@@ -1006,10 +1014,21 @@ nnoremap [explorer]y :Tig stash<CR>
 " nnoremap [explorer]r :Tig refs<CR>
 
 " let g:tig_explorer_orig_tigrc='~/.tigrc'
-let g:tig_explorer_keymap_edit    = '<C-o>'
-let g:tig_explorer_keymap_tabedit = '<C-t>'
-let g:tig_explorer_keymap_split   = '<C-s>'
-let g:tig_explorer_keymap_vsplit  = '<C-v>'
+" let g:tig_explorer_keymap_edit    = '<C-o>'
+" let g:tig_explorer_keymap_tabedit = '<C-t>'
+" let g:tig_explorer_keymap_split   = '<C-s>'
+" let g:tig_explorer_keymap_vsplit  = '<C-v>'
+
+" let g:tig_explorer_keymap_commit_edit    = '<ESC>o'
+" let g:tig_explorer_keymap_commit_tabedit = '<ESC>t'
+" let g:tig_explorer_keymap_commit_split   = '<ESC>s'
+" let g:tig_explorer_keymap_commit_vsplit  = '<ESC>v'
+
+" let g:tig_explorer_keymap_commit_edit    = '<C-o>'
+" let g:tig_explorer_keymap_commit_tabedit = '<C-t>'
+" let g:tig_explorer_keymap_commit_split   = '<C-s>'
+" let g:tig_explorer_keymap_commit_vsplit  = '<C-v>'
+" let g:tig_explorer_use_builtin_term = 0
 
 " ranger-explorer
 nnoremap [explorer]c :<C-u>RangerOpenCurrentDir<CR>
@@ -1157,6 +1176,7 @@ let g:lsp_signs_priority = 11
 let g:lsp_textprop_enabled = 0 " エラー部の強調表示。solargraphで複数行削除時にエラーになるため無効化
 
 let g:asyncomplete_auto_popup = 1
+inoremap <expr> <CR> pumvisible() ? asyncomplete#close_popup() . "\<CR>" : "\<CR>"
 
 let g:lsp_log_file          = expand('/tmp/vim-lsp.log')
 let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
@@ -1180,7 +1200,7 @@ function! s:on_lsp_buffer_enabled() abort
   nmap <C-j> :<C-u>LspDefinition<cr>
   nmap <C-k> :<C-u>LspReferences<cr>
   " nnoremap K :<C-u>LspHover<cr>
-  nnoremap K :<C-u>LspPeekDefinition<cr>
+  nnoremap K :<C-u>LspHover<cr>
   nnoremap <C-s> :<C-u>LspRename<CR>
   nnoremap <leader>f :<C-u>LspDocumentFormatSync<CR>
   vnoremap <leader>f :<C-u>LspDocumentRangeFormatSync<CR>
@@ -1223,12 +1243,25 @@ augroup asyncomplete_register_source
   au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
         \ 'name': 'neosnippet',
         \ 'whitelist': ['*'],
+        \ 'priority': 100,
         \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
         \ }))
 
   au User asyncomplete_setup call asyncomplete#register_source({
         \ 'name': 'look',
         \ 'whitelist': ['*'],
+        \ 'priority': 1000,
         \ 'completor': function('asyncomplete#sources#look#completor'),
         \ })
+
+  au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#tabnine#get_source_options({
+   \ 'name': 'tabnine',
+   \ 'allowlist': ['*'],
+   \ 'priority': 10,
+   \ 'completor': function('asyncomplete#sources#tabnine#completor'),
+   \ 'config': {
+   \   'line_limit': 1000,
+   \   'max_num_result': 20,
+   \  },
+   \ }))
 augroup END

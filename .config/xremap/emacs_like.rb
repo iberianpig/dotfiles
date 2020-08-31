@@ -18,6 +18,7 @@ window class_only: ['google-chrome',
                     'crx_ojcflmmmcfpacggndoaaflkmcoblhnbh', # wunderlist
                     'crx_ophjlpahpchlmihnnnihgmmeilfjmjjc', # line
                     'crx_ngboffpgmgciiinnflnkgedmbalfkeeg', # scrapbox
+                    'www.deepl.com__translator', # deepl as app
                     'evince',
                     'discord',
                     'calibre-ebook-viewer'] do

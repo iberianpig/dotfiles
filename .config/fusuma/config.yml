@@ -1,52 +1,33 @@
 swipe:
   3:
     left:
-      command: 'xdotool key alt+Right'
+      command: 'xdotool key ctrl+alt+Right'
     right:
-      command: 'xdotool key alt+Left'
+      command: 'xdotool key ctrl+alt+Left'
     up:
-      command: 'xdotool key alt+t'
-    down:
-      command: 'xdotool key alt+w'
+      command: 'xdotool key super+s'
+    #down:
+    #  command: 'xdotool key super+s'
   4:
     left:
-      command: 'xdotool key super+Right'
+      command: 'xdotool key super+alt+Right'
     right:
-      command: 'xdotool key super+Left'
-    up:
-      command: 'xdotool key super+s'
-    down:
-      command: 'xdotool key super+a'
+      command: 'xdotool key super+alt+Left'
+    #up:
+      #command: 'xdotool key super+a'
+    #down:
+      #command: 'xdotool key super+s'
 
 pinch:
-  2:
-    in:
-      command: 'xdotool keydown ctrl click 4 keyup ctrl'
-    out:
-      command: 'xdotool keydown ctrl click 5 keyup ctrl'
-  4:
-    in:
-      command: 'xdotool key super+a'
-    out:
-      command: 'xdotool key super+s'
-
-rotate:
-    clockwise:
-      command: 'xdotool key XF86MonBrightnessUp'
-    counterclockwise:
-      command: 'xdotool key XF86MonBrightnessDown'
+  in:
+    command: 'xdotool key ctrl+plus'
+  out:
+    command: 'xdotool key ctrl+minus'
 
 threshold:
-  pinch: 0.3
+  swipe: 1
+  pinch: 0.5
 
 interval:
-  pinch: 0.3
-
-plugin:
-  inputs:
-    libinput_command_input: # options for lib/plugin/inputs/libinput_command_input
-      enable-tap: true
-      enable-dwt: true
-      show-keycodes: true
-      verbose: true
-      # device: /dev/input/event18
+  swipe: 1
+  pinch: 0.5

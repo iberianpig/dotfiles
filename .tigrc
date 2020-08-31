@@ -87,10 +87,10 @@ bind stage u none
 bind stage - status-update
 
 # コンフリクト解消に--ours, --theirs を利用
-bind status o !?git checkout --ours %(file)
-bind stage  o !?git checkout --ours %(file)
-bind status t !?git checkout --theirs %(file)
-bind stage  t !?git checkout --theirs %(file)
+bind status fo !?git checkout --ours %(file)
+bind stage  fo !?git checkout --ours %(file)
+bind status ft !?git checkout --theirs %(file)
+bind stage  ft !?git checkout --theirs %(file)
 
 # stash
 bind status  <Esc>s !?git stash push -p --message "%(prompt Enter stash -p comment: )" -- %(file)
@@ -111,8 +111,7 @@ bind refs    <Esc>. ?sh -c "git diff %(branch)..%(prompt Enter branch name: ) | 
 bind main    a      <tig --author="%(prompt Enter author: )"
 
 # origin/masterと比較(PRのレビューに使う)
-bind main    <Esc>prm      <sh -c "tig $(git merge-base origin/master %(commit))...%(commit)"
-bind main    <Esc>pr      <sh -c "tig $(git merge-base %(prompt Enter branch name: ) %(commit))...%(commit)"
+bind generic <Esc>p  <sh -c "tig $(git merge-base %(commit) $(git branch  | grep '*' | cut -d ' ' -f 2))...$(git branch  | grep \* | cut -d ' ' -f 2)"
 
 # githubでコミットのページを確認する
 # bind main  B !@hub browse -- commit/%(commit)
