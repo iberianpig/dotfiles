@@ -1,56 +1,52 @@
 swipe:
   3:
     left:
-      command: 'xdotool key alt+Right'
-      threshold: 0.3
+      sendkey: 'LEFTALT+RIGHT'
+      keypress:
+        LEFTMETA:
+          sendkey: 'RIGHTMETA+LEFT'
     right:
-      command: 'xdotool key alt+Left'
-      threshold: 0.3
+      sendkey: 'LEFTALT+LEFT'
+      keypress:
+        LEFTMETA:
+          sendkey: 'RIGHTMETA+RIGHT'
     up:
-      command: 'xdotool key alt+t'
-      threshold: 0.6
+      sendkey: 'LEFTCTRL+T'
+      keypress:
+        LEFTMETA:
+          sendkey: 'RIGHTMETA+UP'
     down:
-      command: 'xdotool key alt+w'
-      threshold: 0.6
-  4:
-    left:
-      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
-      # command: 'xdotool key super'  # gnome-shell
-      # command: 'xdotool keydown alt && sleep .1 && xdotool key Tab && xdotool keyup alt'
-      # command: 'xdotool key alt+Tab'
-      # command: 'xdotool key alt+Escape'
-    right:
-      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
-      # command: 'xdotool key super+a' # gnome-shell
-      # command: 'xdotool key alt+shift+Escape'
-    up:
-      command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1' # gnome-shell
-      interval: 0.5
-    down:
-      command: 'sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1' # gnome-shell
-      interval: 0.5
+      sendkey: 'LEFTCTRL+W'
+      keypress:
+        LEFTMETA:
+          sendkey: 'RIGHTMETA+DOWN'
 pinch:
   2:
     in:
-      command: 'xdotool key ctrl+equal'
+      sendkey: 'LEFTCTRL+EQUAL'
       threshold: 0.1
     out:
-      command: 'xdotool key ctrl+minus'
+      sendkey: 'LEFTCTRL+MINUS'
       threshold: 0.1
   4:
     in:
-      command: 'xdotool key super+a'
-      interval: 5
-      threshold: 0.2
+      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
+      threshold: 1
+      interval: 2
     out:
-      command: 'xdotool key super+s'
-      interval: 5
-      threshold: 0.2
+      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
+      threshold: 1
+      interval: 2
 
 threshold:
-  swipe: 0.3
+  # swipe: 0.3
   pinch: 1
 
 interval:
   swipe: 1
   pinch: 1
+
+plugin:
+  inputs:
+    libinput_command_input:
+      show-keycodes: true
