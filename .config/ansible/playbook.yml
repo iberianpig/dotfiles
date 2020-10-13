@@ -3,10 +3,30 @@
   user: iberianpig
   tasks:
     - name: get upstream codename
-      shell: lsb_release -usc
+      shell: lsb_release -sc # error latest ubuntu => shell: lsb_release -usc
       register: upstream
 
     - debug: var=upstream.stdout  # bionic
+
+    - name: apt install
+      apt: name={{ item }} update_cache=no
+      become: true
+      with_items:
+        - curl
+
+    - name: install pip3
+      shell: |
+        which pip3 && exit 0
+        dest=/tmp/get-pip.py
+        curl -L https://bootstrap.pypa.io/get-pip.py -o $dest
+        python3 $dest
+
+      get_url:
+        url: https://gist.github.com/iberianpig/95ba787d302c9cd5b0ef/raw/79e5d1272b9188d27ef15de9a53c66b3974ab600/hybrid-pantheon.sh
+        dest: /tmp
+      become: true
+      args:
+        warn: no
 
     - name: add Docker CE apt gpg
       shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
@@ -20,20 +40,20 @@
         state: present
       become: true
 
-    - name: add playonlinux apt gpg
-      shell: curl -fsSL http://deb.playonlinux.com/public.gpg | apt-key add -
-      become: true
-      args:
-        warn: no
+    #- name: add playonlinux apt gpg
+    #  shell: curl -fsSL http://deb.playonlinux.com/public.gpg | apt-key add -
+    #  become: true
+    #  args:
+    #    warn: no
 
-    - name: add playonlinux apt repository
-      apt_repository:
-        repo: deb http://deb.playonlinux.com/ {{ upstream.stdout }} main
-        state: present
-      become: true
+    #- name: add playonlinux apt repository
+    #  apt_repository:
+    #    repo: deb http://deb.playonlinux.com/ {{ upstream.stdout }} main
+    #    state: present
+    #  become: true
 
     - name: add spotify apt gpg
-      shell: curl -fsSL https://download.spotify.com/debian/pubkey.gpg | apt-key add -
+      shell: curl -fsSL https://download.spotify.com/debian/pubkey_0D811D58.gpg | apt-key add -
       become: true
       args:
         warn: no
@@ -57,7 +77,7 @@
       become: true
       with_items:
         - ppa:numix/ppa
-        - ppa:philip.scott/elementary-tweaks
+        # - ppa:philip.scott/elementary-tweaks
         - ppa:openjdk-r/ppa
         - ppa:git-core/ppa
         - ppa:mmstick76/alacritty
@@ -89,12 +109,13 @@
         - playonlinux
         - wine-stable
         - xclip
-        - vim-gnome
+        # - vim-gnome
+        - vim-gtk
         - synaptic
         - gdebi
         - xbindkeys
         - libinput-tools
-        - elementary-tweaks
+        # - elementary-tweaks
         - make
         - automake
         - autoconf
@@ -104,7 +125,7 @@
         - gcc
         - snapd
         - gparted
-        - python-pip
+        # - python-pip
         - etckeeper
         - libreadline-dev
         - wmctrl
@@ -119,11 +140,12 @@
         - libmysqlclient-dev # for mysql2 gem
         - mysql-server
           # - vagrant # error occured by dependency of gems. Install from https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_linux_amd64.zip
-        - virtualbox
-        - virtualbox-ext-pack
+          # - virtualbox
+          #- virtualbox-ext-pack
         - tmate
         - libxcb-xtest0 # zoom dependency
-        - libgnome2-bin # gnome-open
+        - libgl1-mesa-glx # zoom dependency
+        # - libgnome2-bin # gnome-open
         - lib32stdc++6 # flutter dependency
         - openjdk-8-jdk # flutter dependency
         - libreoffice
@@ -137,6 +159,7 @@
         - bitwarden
         - authy
         # - slack --classic # it doesn't works with fcitx
+        # A
         # - spotify # use too much CPU resouces
         # - libreoffice # cant open local file
         - obs-studio
@@ -233,3 +256,17 @@
       become: true
       args:
         warn: no
+
+    - name: diff-highlight
+      shell: |
+        ls /usr/local/bin/diff-highlight && exit 0 
+        cd /usr/share/doc/git/contrib/diff-highlight
+        make
+        chmod a+x /usr/share/doc/git/contrib/diff-highlight/diff-highlight
+        ln -s /usr/share/doc/git/contrib/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
+        chmod a+x /usr/local/bin/diff-highlight
+      become: true
+      args:
+        warn: no
+
+
