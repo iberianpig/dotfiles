@@ -21,13 +21,6 @@
         curl -L https://bootstrap.pypa.io/get-pip.py -o $dest
         python3 $dest
 
-      get_url:
-        url: https://gist.github.com/iberianpig/95ba787d302c9cd5b0ef/raw/79e5d1272b9188d27ef15de9a53c66b3974ab600/hybrid-pantheon.sh
-        dest: /tmp
-      become: true
-      args:
-        warn: no
-
     - name: add Docker CE apt gpg
       shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
       become: true
@@ -143,8 +136,9 @@
           # - virtualbox
           #- virtualbox-ext-pack
         - tmate
-        - libxcb-xtest0 # zoom dependency
-        - libgl1-mesa-glx # zoom dependency
+        # - libxcb-xtest0 # zoom dependency
+        # - libgl1-mesa-glx # zoom dependency
+        - libegl1-mesa # zoom dependency
         # - libgnome2-bin # gnome-open
         - lib32stdc++6 # flutter dependency
         - openjdk-8-jdk # flutter dependency
@@ -159,7 +153,6 @@
         - bitwarden
         - authy
         # - slack --classic # it doesn't works with fcitx
-        # A
         # - spotify # use too much CPU resouces
         # - libreoffice # cant open local file
         - obs-studio
