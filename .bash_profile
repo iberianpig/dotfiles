@@ -1,5 +1,6 @@
 #/usr/sbin
 export PATH="/usr/sbin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 # config
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -7,8 +8,6 @@ export XDG_CACHE_HOME="$HOME/.cache"
 export XDG_DATA_HOME="$HOME/.local/share"
 
 # # golang
-# export GOROOT=/usr/lib/go
-# export PATH=$PATH:$GOROOT/bin
 export GOPATH=$HOME/go
 export PATH=$PATH:$GOPATH/bin
 

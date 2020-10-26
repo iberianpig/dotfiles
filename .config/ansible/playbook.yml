@@ -162,6 +162,32 @@
         # - ngrok   # ngrok   can't read config on /home/ 
         - fwupd --classic
 
+    - name: Install github cli
+      shell: |
+        which gh && exit 0
+        curl --silent https://api.github.com/repos/cli/cli/releases/latest | jq .assets[].browser_download_url -r | grep linux_amd64.deb | xargs -I{} curl -L {} -o /tmp/gh.deb && dpkg -i /tmp/gh.deb
+      become: true
+      args:
+        warn: no
+
+    - name: diff-highlight
+      shell: |
+        ls /usr/local/bin/diff-highlight && exit 0 
+        cd /usr/share/doc/git/contrib/diff-highlight
+        make
+        chmod a+x /usr/share/doc/git/contrib/diff-highlight/diff-highlight
+        ln -s /usr/share/doc/git/contrib/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
+        chmod a+x /usr/local/bin/diff-highlight
+      become: true
+      args:
+        warn: no
+
+    - name: fzf
+      shell: |
+        which fzf && exit 0
+        git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+        ~/.fzf/install --all
+
     - name: pip install
       pip: name={{item}} executable=pip3 state=latest
       with_items:
@@ -241,25 +267,4 @@
     - name: add $USER Input group
       user: name=iberianpig groups=input append=yes
       become: true
-
-    - name: Install github cli
-      shell: |
-        which gh && exit 0
-        curl --silent https://api.github.com/repos/cli/cli/releases/latest | jq .assets[].browser_download_url -r | grep linux_amd64.deb | xargs -I{} curl -L {} -o /tmp/gh.deb && dpkg -i /tmp/gh.deb
-      become: true
-      args:
-        warn: no
-
-    - name: diff-highlight
-      shell: |
-        ls /usr/local/bin/diff-highlight && exit 0 
-        cd /usr/share/doc/git/contrib/diff-highlight
-        make
-        chmod a+x /usr/share/doc/git/contrib/diff-highlight/diff-highlight
-        ln -s /usr/share/doc/git/contrib/diff-highlight/diff-highlight /usr/local/bin/diff-highlight
-        chmod a+x /usr/local/bin/diff-highlight
-      become: true
-      args:
-        warn: no
-
 
