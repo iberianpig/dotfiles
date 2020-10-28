@@ -134,3 +134,4 @@ bind generic T !git notes edit %(commit)
 # difftool
 bind status <Esc>d !sh -c "git difftool -y \"$(git rev-parse --show-toplevel)/%(file)\""
 bind main   <Esc>d !?sh -c "git difftool -d --trust-exit-code $(git merge-base origin/master %(commit))...%(commit)"
+source ~/.tigrc.large

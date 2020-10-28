@@ -427,6 +427,9 @@ Plug 'tpope/vim-rails', { 'for': ['ruby'] }
 " slimのsyntax highlight
 Plug 'slim-template/vim-slim', { 'for': ['slim'] }
 
+"" Go
+Plug 'benmills/vimux' | Plug 'sebdah/vim-delve'
+
 "" python
 Plug 'Glench/Vim-Jinja2-Syntax'
 
@@ -501,7 +504,6 @@ Plug 'pearofducks/ansible-vim', { 'do': 'cd ./UltiSnips; ./generate.py'  }
 
 " terraform
 Plug 'hashivim/vim-terraform'
-
 
 " ローカル管理のPlugin
 Plug '~/.ghq/github.com/iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.vim'
@@ -942,6 +944,21 @@ nnoremap <silent> <leader>a :TestSuite<CR>
 nnoremap <silent> <leader>l :TestLast<CR>
 nnoremap <silent> <leader>g :TestVisit<CR>
 
+
+let test#go#runner = 'gotest'
+
+function! DebugNearest()
+  let g:test#go#runner = 'delve'
+  TestNearest
+  unlet g:test#go#runner
+endfunction
+
+nnoremap <leader>b  :DlvToggleBreakpoint<CR>
+
+nnoremap <silent> <leader>d  :call DebugNearest()<CR>
+
+let g:delve_use_vimux = 1
+
 " let test#ruby#rspec#options = {
 "  \ 'nearest': '--backtrace',
 "  \ 'file':    '--format documentation',
@@ -957,15 +974,20 @@ nnoremap <silent> <leader>g :TestVisit<CR>
 " docker and rspec
 " https://qiita.com/joker1007/items/4dbff328f39c11e732af
 function! DockerTransformer(cmd) abort
+  let prefix = ''
   if $SPEC_CONTAINER_NAME !=# ''
     echomsg 'use docker-compose exec ' . $SPEC_CONTAINER_NAME . ' ' . $SPEC_PREFIX .' '
     let prefix = 'docker-compose exec ' . $SPEC_CONTAINER_NAME . ' ' . $SPEC_PREFIX .' '
-  elseif exists('b:rails_root') && executable(b:rails_root . '/bin/rspec')
-    echomsg 'use bin/rspec'
-    let prefix = 'bin/'
-  else
-    echomsg 'use bundle exec rspec'
-    let prefix = 'bundle exec '
+  endif
+
+  if &filetype == 'ruby'
+    if exists('b:rails_root') && executable(b:rails_root . '/bin/rspec')
+      echomsg 'use bin/rspec'
+      let prefix = 'bin/'
+    else
+      echomsg 'use bundle exec rspec'
+      let prefix = 'bundle exec '
+    endif
   endif
   let g:dispatch_compilers = {}
   let g:dispatch_compilers[prefix] = ''
@@ -1028,7 +1050,7 @@ nnoremap [explorer]y :Tig stash<CR>
 " let g:tig_explorer_keymap_commit_tabedit = '<C-t>'
 " let g:tig_explorer_keymap_commit_split   = '<C-s>'
 " let g:tig_explorer_keymap_commit_vsplit  = '<C-v>'
-" let g:tig_explorer_use_builtin_term = 0
+let g:tig_explorer_use_builtin_term = 0
 
 " ranger-explorer
 nnoremap [explorer]c :<C-u>RangerOpenCurrentDir<CR>
@@ -1199,7 +1221,6 @@ function! s:on_lsp_buffer_enabled() abort
   nnoremap <leader>w :<C-u>LspDocumentDiagnostics<cr>
   nmap <C-j> :<C-u>LspDefinition<cr>
   nmap <C-k> :<C-u>LspReferences<cr>
-  " nnoremap K :<C-u>LspHover<cr>
   nnoremap K :<C-u>LspHover<cr>
   nnoremap <C-s> :<C-u>LspRename<CR>
   nnoremap <leader>f :<C-u>LspDocumentFormatSync<CR>
