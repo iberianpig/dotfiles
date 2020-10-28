@@ -13,7 +13,7 @@
 # # Save and reload the history after each command finishes
 # export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
-export HISTFILE=~/.bash_history
+export HISTFILE=$HOME/.bash_history
 
 export HISTSIZE=10000                   # big big history
 export HISTFILESIZE=10000               # big big history

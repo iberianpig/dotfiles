@@ -820,7 +820,7 @@ let g:fzf_mru_relative = 1
 nnoremap <silent> [fzf]m :FZFMru<cr>
 nnoremap <silent> [fzf]M :History<cr>
 
-nnoremap <silent> [fzf]<CR> :FZF<CR>
+nnoremap <silent> [fzf]<CR> :GitFiles<CR>
 
 " "スペースキーとbキーでバッファを表示
 nnoremap <silent> [fzf]b :Buffers<CR>
@@ -983,10 +983,10 @@ function! DockerTransformer(cmd) abort
   if &filetype == 'ruby'
     if exists('b:rails_root') && executable(b:rails_root . '/bin/rspec')
       echomsg 'use bin/rspec'
-      let prefix = 'bin/'
+      let prefix = prefix . 'bin/'
     else
       echomsg 'use bundle exec rspec'
-      let prefix = 'bundle exec '
+      let prefix = prefix . 'bundle exec '
     endif
   endif
   let g:dispatch_compilers = {}

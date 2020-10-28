@@ -56,8 +56,9 @@ fi
 eval "$(direnv hook bash)"
 
 # # nvm
-# export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 # export NODE_PATH=$(npm root -g)
 
 
@@ -84,13 +85,13 @@ export GTAGSLABEL=pygments
 
 # locale
 case "$TERM" in
-#  linux)
-#    export LANG="C"
-#    export LANGUAGE="C"
-#    export LC_MESSAGES="C"
-#    export LC_CTYPE="C"
-#    export LC_COLLATE="C";;
-   *)
+  linux)
+    export LANG="C"
+    export LANGUAGE="C"
+    export LC_MESSAGES="C"
+    export LC_CTYPE="C"
+    export LC_COLLATE="C";;
+  *)
     export LANG="ja_JP.UTF-8"
     export LANGUAGE="ja:en_GB:en"
     export LC_MESSAGES="ja_JP.UTF-8"
@@ -104,4 +105,7 @@ if [ -e "~/.nix-profile/etc/profile.d/nix.sh" ]; then . "~/.nix-profile/etc/prof
 
 export PATH="$HOME/flutter/bin:$PATH"
 
-export PATH="$HOME/.ghq/github.com/tfutils/tfenv/bin/:$PATH"
+if [ -e "$HOME/.ghq/github.com/tfutils/tfenv/bin/" ]; then export PATH="$HOME/.ghq/github.com/tfutils/tfenv/bin/:$PATH"; fi
+
+export PATH="$HOME/.vim/plugged/fzf/bin/:$PATH"
+export BYOBU_CONFIG_DIR="$HOME/.config/byobu"
