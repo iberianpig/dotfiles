@@ -108,8 +108,7 @@ PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -
 stty -ixon
 
 if [ "$DISPLAY" ]; then
-  xset r rate 180 45
-  # xset r rate 180 60
+  xset r rate 200 45
 fi
 
 

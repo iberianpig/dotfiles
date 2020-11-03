@@ -1,22 +1,42 @@
 swipe:
+  4:
+    up:
+      sendkey: 'LEFTCTRL+LEFTALT+DOWN'
+      keypress:
+        LEFTSHIFT:
+          sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+DOWN'
+    down:
+      sendkey: 'LEFTCTRL+LEFTALT+UP'
+      LEFTSHIFT:
+        sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+UP'
+    left:
+      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
+      threshold: 1
+      interval: 1
+    right:
+      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
+      threshold: 1
+      interval: 1
+
   3:
     left:
       sendkey: 'LEFTALT+RIGHT'
       keypress:
         LEFTMETA:
-          sendkey: 'RIGHTMETA+LEFT'
+          sendkey: 'LEFTMETA+LEFT'
     right:
       sendkey: 'LEFTALT+LEFT'
       keypress:
         LEFTMETA:
-          sendkey: 'RIGHTMETA+RIGHT'
+          sendkey: 'LEFTMETA+RIGHT'
     up:
       sendkey: 'LEFTCTRL+T'
       keypress:
         LEFTMETA:
           sendkey: 'RIGHTMETA+UP'
     down:
-      sendkey: 'LEFTCTRL+W'
+      # sendkey: 'LEFTCTRL+W'
+      sendkey: 'LEFTCTRL+Q'
       keypress:
         LEFTMETA:
           sendkey: 'RIGHTMETA+DOWN'
@@ -38,15 +58,16 @@ pinch:
       threshold: 1
       interval: 2
 
-threshold:
-  # swipe: 0.3
-  pinch: 1
-
-interval:
-  swipe: 1
-  pinch: 1
+hold:
+  3:
+    sendkey: "LEFTALT+F7" # move window
+    keypress:
+      LEFTSHIFT:
+        sendkey: "LEFTALT+F8" # resize window
 
 plugin:
   inputs:
     libinput_command_input:
       show-keycodes: true
+      enable-tap: true
+      verbose: true

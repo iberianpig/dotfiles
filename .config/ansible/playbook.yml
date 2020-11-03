@@ -8,7 +8,7 @@
 
     - debug: var=upstream.stdout  # bionic
 
-    - name: apt install
+    - name: apt install curl
       apt: name={{ item }} update_cache=no
       become: true
       with_items:
@@ -90,7 +90,7 @@
         - gconf-editor
         - guake
         - git
-        # - tig # need to install tig 2.4 manually
+        - tig
         - ranger
         - fcitx-mozc
         - byobu
@@ -130,8 +130,8 @@
         - global
         - byzanz
         - baobab
-        - libmysqlclient-dev # for mysql2 gem
-        - mysql-server
+        # - libmysqlclient-dev # for mysql2 gem
+        # - mysql-server
           # - vagrant # error occured by dependency of gems. Install from https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_linux_amd64.zip
           # - virtualbox
           #- virtualbox-ext-pack
@@ -172,7 +172,7 @@
 
     - name: diff-highlight
       shell: |
-        ls /usr/local/bin/diff-highlight && exit 0 
+        ls -L /usr/local/bin/diff-highlight && exit 0 
         cd /usr/share/doc/git/contrib/diff-highlight
         make
         chmod a+x /usr/share/doc/git/contrib/diff-highlight/diff-highlight
@@ -268,3 +268,10 @@
       user: name=iberianpig groups=input append=yes
       become: true
 
+    - name: install calibre
+      shell: |
+        which calibre && exit 0
+        curl https://download.calibre-ebook.com/linux-installer.sh | bash
+      become: true
+      args:
+        warn: no
