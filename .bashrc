@@ -101,9 +101,6 @@ fi
 # eval "$(EDITOR=/usr/bin/vim)"
 eval "$(SHELL=/bin/bash)"
 
-#for powerline
-PS1="$PS1"'$([ -n "$TMUX" ] && tmux setenv TMUXPWD_$(tmux display -p "#D" | tr -d %) "$PWD")'
-
 # reverse search, going forward(ctrl+s)
 stty -ixon
 
