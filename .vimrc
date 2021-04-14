@@ -23,7 +23,7 @@ set helpheight=998 " ヘルプを画面いっぱいに開く
 set list           " 不可視文字を表示
 set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
-set iskeyword+=?,!,-,@-@ "?,!,@hogeなどをキーワードとする
+" set iskeyword+=?,!,-,@-@ "?,!,@hogeなどをキーワードとする
 
 " Don't screw up folds when inserting text that might affect them, until
 " leaving insert mode. Foldmethod is local to the window. Protect against
@@ -232,7 +232,7 @@ augroup add_syntax_highlight
   autocmd BufNewFile,BufRead Gemfile.local              set filetype=ruby
   autocmd BufNewFile,BufRead *.erb                      set filetype=eruby
   autocmd BufNewFile,BufRead *.slim                     set filetype=slim
-  autocmd BufNewFile,BufRead *.scss                     set filetype=scss.css
+  " autocmd BufNewFile,BufRead *.scss                     set filetype=scss.css
   autocmd BufNewFile,BufRead *.coffee                   set filetype=coffee
   autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
   autocmd BufNewFile,BufRead *.vtl                      set filetype=velocity
@@ -307,6 +307,7 @@ Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
+" Plug '~/.ghq/github.com/prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 
 " Plug 'thomasfaingnaert/vim-lsp-snippets'
@@ -320,7 +321,7 @@ Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
 " Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
 Plug 'htlsne/asyncomplete-look'
 
-Plug 'kitagry/asyncomplete-tabnine.vim', { 'do': './install.sh'  }
+" Plug 'kitagry/asyncomplete-tabnine.vim', { 'do': './install.sh'  }
 
 " Plug 'zxqfl/tabnine-vim'
 
@@ -363,6 +364,7 @@ Plug 'anyakichi/vim-qfutil'
 
 " 非同期バッチをTmuxやTerminalに渡して処理出来る
 Plug 'tpope/vim-dispatch', {'on': ['Dispatch', 'FocusDispatch','Spawn', 'Start', 'Copen']}
+Plug 'skywind3000/asyncrun.vim'
 
 " テストランナー
 Plug 'janko-m/vim-test'
@@ -404,7 +406,7 @@ Plug 'qpkorr/vim-renamer', { 'on': 'Renamer'}
 Plug 'editorconfig/editorconfig-vim', { 'on': ['EditorConfigReload']}
 
 " cd project-root
-Plug 'airblade/vim-rooter'
+" Plug 'airblade/vim-rooter'
 
 " grammar checker
 Plug 'rhysd/vim-grammarous'
@@ -417,7 +419,7 @@ Plug 'deton/jasentence.vim', { 'for': ['markdown'] }
 " マークダウンをブラウザ上でHTMLレンダリング
 " Plug 'kannokanno/previm', {'for': ['markdown'] }
 Plug 'rhysd/vim-gfm-syntax', { 'for': 'markdown' }
-Plug 'iamcco/markdown-preview.nvim', { 'for': 'markdown' ,'do': 'cd app & yarn install'  }
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
 
 Plug 'heavenshell/vim-textlint', { 'for': 'markdown' }
 
@@ -428,7 +430,8 @@ Plug 'tpope/vim-rails', { 'for': ['ruby'] }
 Plug 'slim-template/vim-slim', { 'for': ['slim'] }
 
 "" Go
-Plug 'benmills/vimux' | Plug 'sebdah/vim-delve'
+Plug 'benmills/vimux' | Plug 'sebdah/vim-delve', { 'for': ['go'] }
+" Plug 'mattn/vim-goimports', { 'for': ['go'] }
 
 "" python
 Plug 'Glench/Vim-Jinja2-Syntax'
@@ -462,11 +465,11 @@ Plug 'lepture/vim-velocity', { 'for':['velocity', 'vtl'] }
 
 
 " css
-Plug 'lilydjwg/colorizer'
-Plug 'JulesWang/css.vim',         {'for':['scss', 'css']}
-Plug 'hail2u/vim-css3-syntax',    {'for':['scss', 'css']}
-Plug 'csscomb/vim-csscomb',       {'for':['scss', 'css']}
-Plug 'cakebaker/scss-syntax.vim', {'for':['scss']}
+" Plug 'lilydjwg/colorizer'
+" Plug 'JulesWang/css.vim',         {'for':['scss', 'css']}
+" Plug 'hail2u/vim-css3-syntax',    {'for':['scss', 'css']}
+" Plug 'csscomb/vim-csscomb',       {'for':['scss', 'css']}
+" Plug 'cakebaker/scss-syntax.vim', {'for':['scss']}
 
 " log
 Plug 'vim-scripts/AnsiEsc.vim', {'on': ['DM', 'RWP', 'AnsiEsc', 'RM', 'SM', 'WLR', 'SWP']}
@@ -504,6 +507,8 @@ Plug 'pearofducks/ansible-vim', { 'do': 'cd ./UltiSnips; ./generate.py'  }
 
 " terraform
 Plug 'hashivim/vim-terraform'
+
+Plug 'lambdalisue/gina.vim'
 
 " ローカル管理のPlugin
 Plug '~/.ghq/github.com/iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.vim'
@@ -552,6 +557,12 @@ highlight DiffChange        cterm=bold ctermbg=none ctermfg=227
 highlight SignifySignAdd    cterm=bold ctermbg=235  ctermfg=155
 highlight SignifySignDelete cterm=bold ctermbg=235  ctermfg=196
 highlight SignifySignChange cterm=bold ctermbg=235  ctermfg=111
+
+let g:signify_sign_add               = '+'
+let g:signify_sign_delete            = '_'
+let g:signify_sign_delete_first_line = '-'
+let g:signify_sign_change            = '!'
+let g:signify_sign_change_delete     = g:signify_sign_change . g:signify_sign_delete_first_line
 
 " lightline {{{
 " available colorscheme:
@@ -823,7 +834,8 @@ nnoremap <silent> [fzf]M :History<cr>
 nnoremap <silent> [fzf]<CR> :GitFiles<CR>
 
 " "スペースキーとbキーでバッファを表示
-nnoremap <silent> [fzf]b :Buffers<CR>
+" nnoremap <silent> [fzf]b :Buffers<CR>
+nnoremap <silent> [fzf]b :Buffers<cr>
 
 nnoremap <silent> [fzf]h :<C-u>Helptags<CR>
 
@@ -873,13 +885,11 @@ let g:ref_source_webdict_sites.default = 'ej'
 " 出力に対するフィルタ
 " 最初の数行邪魔なので削除
 function! g:ref_source_webdict_sites.je.filter(output)
-  let l:str = substitute(a:output, '       単語帳', '', 'g')
-  return join(split(str, "\n")[28 :], "\n")
+  return join(split(a:output, "\n")[60 :], "\n")
 endfunction
 
 function! g:ref_source_webdict_sites.ej.filter(output)
-  let l:str = substitute(a:output, '       単語帳',' ', 'g')
-  return join(split(str, "\n")[28 :], "\n")
+  return join(split(a:output, "\n")[60 :], "\n")
 endfunction
 
 call altercmd#load()
@@ -937,6 +947,9 @@ augroup END
 
 " vim-test setting
 let test#strategy = 'dispatch'
+augroup MyGroup
+    autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
+augroup END
 
 nnoremap <silent> <leader>t :TestNearest<CR>
 nnoremap <silent> <leader>T :TestFile<CR>
@@ -960,41 +973,58 @@ nnoremap <silent> <leader>d  :call DebugNearest()<CR>
 let g:delve_use_vimux = 1
 
 " let test#ruby#rspec#options = {
-"  \ 'nearest': '--backtrace',
-"  \ 'file':    '--format documentation',
-"  \ 'suite':   '--tag ~slow',
+" \ 'nearest': '--backtrace',
+" \ 'file':    '--format documentation',
+" \ 'suite':   '--tag ~slow',
+"\}
+" 
+" let test#ruby#minitest#options = {
+" \ 'nearest': '--backtrace',
+" \ 'file':    '--format documentation',
+" \ 'suite':   '--tag ~slow',
 "\}
 
-" let test#ruby#minitest#options = {
-"  \ 'nearest': '--backtrace',
-"  \ 'file':    '--format documentation',
-"  \ 'suite':   '--tag ~slow',
-"\}
+" quickfix for rspec with dispatch.vim
+" NOTE: https://github.com/tpope/vim-dispatch/issues/41#issuecomment-95080600
+let g:dispatch_compilers = {
+      \ 'latex': 'tex',
+      \ 'bundle exec': ''}
+
 
 " docker and rspec
 " https://qiita.com/joker1007/items/4dbff328f39c11e732af
 function! DockerTransformer(cmd) abort
+  let cmd = a:cmd
   let prefix = ''
-  if $SPEC_CONTAINER_NAME !=# ''
-    echomsg 'use docker-compose exec ' . $SPEC_CONTAINER_NAME . ' ' . $SPEC_PREFIX .' '
-    let prefix = 'docker-compose exec ' . $SPEC_CONTAINER_NAME . ' ' . $SPEC_PREFIX .' '
-  endif
+  let compose_option = ''
 
-  if &filetype == 'ruby'
-    if exists('b:rails_root') && executable(b:rails_root . '/bin/rspec')
-      echomsg 'use bin/rspec'
-      let prefix = prefix . 'bin/'
-    else
-      echomsg 'use bundle exec rspec'
-      let prefix = prefix . 'bundle exec '
-    endif
+  if $SPEC_COMPOSE_FILE !=# ''
+    let compose_option = ' -f ' . $SPEC_COMPOSE_FILE
   endif
-  let g:dispatch_compilers = {}
-  let g:dispatch_compilers[prefix] = ''
-  return  prefix . a:cmd
+  if &filetype == 'ruby'
+    if $SPEC_PROJECT_ROOT__RUBY !=# ''
+      cd $SPEC_PROJECT_ROOT__RUBY
+      let g:test#project_root = $SPEC_PROJECT_ROOT__RUBY
+    endif
+    if $SPEC_CONTAINER__RUBY !=# ''  | let prefix = 'docker-compose' . compose_option . ' exec ' .  $SPEC_CONTAINER__RUBY . ' ' . $SPEC_PREFIX__RUBY .' ' |  endif
+  endif
+  if &filetype == 'go'
+    if $SPEC_PROJECT_ROOT__GO !=# ''
+      cd $SPEC_PROJECT_ROOT__GO
+      let g:test#project_root = $SPEC_PROJECT_ROOT__GO
+    endif
+    if $SPEC_CONTAINER__GO !=# ''    | let prefix = 'docker-compose' . compose_option . ' exec ' . $SPEC_CONTAINER__GO . ' ' . $SPEC_PREFIX__GO .' ' | endif
+  endif
+  if prefix
+    let g:dispatch_compilers[prefix] = ''
+    echomsg prefix . cmd
+    return  prefix . cmd
+  endif
+  echomsg cmd
+  return cmd
 endfunction
 
-let test#ruby#rspec#executable = 'rspec'
+" let test#ruby#rspec#executable = 'rspec'
 let g:test#custom_transformations = {'docker': function('DockerTransformer')}
 let g:test#transformation = 'docker'
 
@@ -1036,6 +1066,7 @@ nnoremap [explorer]y :Tig stash<CR>
 " nnoremap [explorer]r :Tig refs<CR>
 
 " let g:tig_explorer_orig_tigrc='~/.tigrc'
+let g:tig_explorer_keymap_edit_e  = 'e'
 " let g:tig_explorer_keymap_edit    = '<C-o>'
 " let g:tig_explorer_keymap_tabedit = '<C-t>'
 " let g:tig_explorer_keymap_split   = '<C-s>'
@@ -1045,21 +1076,17 @@ nnoremap [explorer]y :Tig stash<CR>
 " let g:tig_explorer_keymap_commit_tabedit = '<ESC>t'
 " let g:tig_explorer_keymap_commit_split   = '<ESC>s'
 " let g:tig_explorer_keymap_commit_vsplit  = '<ESC>v'
-
-" let g:tig_explorer_keymap_commit_edit    = '<C-o>'
-" let g:tig_explorer_keymap_commit_tabedit = '<C-t>'
-" let g:tig_explorer_keymap_commit_split   = '<C-s>'
-" let g:tig_explorer_keymap_commit_vsplit  = '<C-v>'
 let g:tig_explorer_use_builtin_term = 0
 
 " ranger-explorer
-nnoremap [explorer]c :<C-u>RangerOpenCurrentDir<CR>
+nnoremap [explorer]c :<C-u>RangerOpenCurrentFile<CR>
 nnoremap [explorer]f :<C-u>RangerOpenProjectRootDir<CR>
 
 " vim-auto-save
 let g:auto_save_silent = 1  " do not display the auto-save notification
 let g:auto_save_in_insert_mode = 0  " do not save while in insert mode
 let g:auto_save_no_updatetime = 1  " do not change the 'updatetime' option
+let g:auto_save_events = ["CursorHold", "InsertLeave", "TextChanged"]
 
 " 自動保存の有効・無効の設定
 function! s:auto_save_detect() abort
@@ -1196,10 +1223,15 @@ let g:lsp_diagnostics_echo_delay = 500
 let g:lsp_signs_priority = 11
 
 let g:lsp_textprop_enabled = 0 " エラー部の強調表示。solargraphで複数行削除時にエラーになるため無効化
+let g:lsp_diagnostics_highlights_insert_mode_enabled = 0
+let g:lsp_diagnostics_highlights_enabled = 0
+let g:lsp_diagnostics_highlights_delay = 2000
+	let g:lsp_format_sync_timeout = 1000
 
 let g:asyncomplete_auto_popup = 1
 inoremap <expr> <CR> pumvisible() ? asyncomplete#close_popup() . "\<CR>" : "\<CR>"
 
+let g:lsp_log_verbose = 1
 let g:lsp_log_file          = expand('/tmp/vim-lsp.log')
 let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
 
@@ -1274,15 +1306,4 @@ augroup asyncomplete_register_source
         \ 'priority': 1000,
         \ 'completor': function('asyncomplete#sources#look#completor'),
         \ })
-
-  au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#tabnine#get_source_options({
-   \ 'name': 'tabnine',
-   \ 'allowlist': ['*'],
-   \ 'priority': 10,
-   \ 'completor': function('asyncomplete#sources#tabnine#completor'),
-   \ 'config': {
-   \   'line_limit': 1000,
-   \   'max_num_result': 20,
-   \  },
-   \ }))
 augroup END

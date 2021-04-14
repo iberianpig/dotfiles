@@ -21,7 +21,6 @@
   sp = stash pop
   ss = stash save
   delete-merged-branches = !git branch --merged | grep -v \\* | xargs -I % git branch -d %
-  rebase-master = rebase master
   remove-deleted-files = !git ls-files --deleted | xargs -I % git rm %
 [core]
   editor = vim
@@ -74,3 +73,6 @@
 	allowed = wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 [init]
 	templatedir = ~/.git-templates/git-secrets
+	defaultBranch = main
+[rebase]
+	autostash = true

@@ -3,5 +3,5 @@ Name=xremap
 Comment=run xremap
 Exec=/usr/local/bin/xremap /home/iberianpig/.config/xremap/emacs_like.rb
 Icon=input-keyboard
-X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-enabled=false
 Type=Application

@@ -1,7 +1,15 @@
 - hosts: 127.0.0.1
   connection: local
   user: iberianpig
+  roles: 
+    # ansible-galaxy install pddg.xkeysnail
+    - name: pddg.xkeysnail
+      vars:
+        xkeysnail_config_dir: /etc/opt/xkeysnail
+        xkeysnail_config_file: "{{ ansible_env.HOME }}/.config/xkeysnail/config.py"
+
   tasks:
+
     - name: get upstream codename
       shell: lsb_release -sc # error latest ubuntu => shell: lsb_release -usc
       register: upstream
@@ -61,6 +69,15 @@
       shell: |
         which gyazo && exit 0
         curl -s https://packagecloud.io/install/repositories/gyazo/gyazo-for-linux/script.deb.sh | os=ubuntu dist={{ upstream.stdout }} bash
+      become: true
+      args:
+        warn: no
+
+    - name: add gh repository
+      shell: |
+        which gh && exit 0
+        apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+        apt-add-repository https://cli.github.com/packages
       become: true
       args:
         warn: no
@@ -146,6 +163,7 @@
         - vlc
         - spotify-client
         - alacritty
+        - gh
     - name: snap install
       command: snap install {{ item }}
       become: true
@@ -161,14 +179,6 @@
         # - remmina # remmina can't read config on /home/ 
         # - ngrok   # ngrok   can't read config on /home/ 
         - fwupd --classic
-
-    - name: Install github cli
-      shell: |
-        which gh && exit 0
-        curl --silent https://api.github.com/repos/cli/cli/releases/latest | jq .assets[].browser_download_url -r | grep linux_amd64.deb | xargs -I{} curl -L {} -o /tmp/gh.deb && dpkg -i /tmp/gh.deb
-      become: true
-      args:
-        warn: no
 
     - name: diff-highlight
       shell: |
@@ -273,5 +283,13 @@
         which calibre && exit 0
         curl https://download.calibre-ebook.com/linux-installer.sh | bash
       become: true
+      args:
+        warn: no
+
+    - name: install nvm
+      shell: |
+        which nvm && exit 0
+        version=v0.36.0
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/$version/install.sh | bash
       args:
         warn: no

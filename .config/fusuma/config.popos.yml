@@ -1,0 +1,87 @@
+application:
+  global:
+    swipe:
+      4:
+        up:
+          sendkey: 'LEFTMETA+LEFTCTRL+DOWN'
+          keypress:
+            LEFTSHIFT:
+              sendkey: 'LEFTMETA+LEFTSHIFT+DOWN'
+        down:
+          sendkey: 'LEFTMETA+LEFTCTRL+UP'
+          keypress:
+            LEFTSHIFT:
+              sendkey: 'LEFTMETA+LEFTSHIFT+UP'
+        left:
+          command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
+        right:
+          command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
+    pinch:
+      2:
+        in:
+          sendkey: 'LEFTCTRL+EQUAL'
+          threshold: 0.1
+        out:
+          sendkey: 'LEFTCTRL+MINUS'
+          threshold: 0.1
+      4:
+        in:
+          command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
+          threshold: 1
+          interval: 2
+        out:
+          command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
+          threshold: 1
+          interval: 2
+    rotate:
+      3:
+        clockwise:
+          sendkey: "LEFTMETA+SPACE" # next layout
+        counterclockwise:
+          sendkey: "LEFTMETA+LEFTSHIFT+SPACE"  # previous layout
+
+    hold:
+      3:
+        sendkey: "LEFTALT+F7" # move window
+        keypress:
+          LEFTSHIFT:
+            sendkey: "LEFTALT+F8" # resize window
+      4:
+        # command: notify-send '4 fingers hold'
+        sendkey: "LEFTMETA+V"
+
+  Slack:
+    swipe: 
+      3:
+        up: 
+          sendkey: "LEFTALT+DOWN"
+        down: 
+          sendkey: "LEFTALT+UP"
+  Alcacritty:
+    swipe: 
+      3:
+        up: 
+          sendkey: "LEFTCTRL+G+N"
+        down: 
+          sendkey: "LEFTCTRL+G+N"
+
+  Google-chrome:
+    swipe:
+      3:
+        left:
+          sendkey: 'LEFTALT+RIGHT'
+        right:
+          sendkey: 'LEFTALT+LEFT'
+        up:
+          sendkey: 'LEFTCTRL+T'
+        # down:
+        #   sendkey: 'LEFTCTRL+W'
+        down: { sendkey: 'LEFTCTRL+Q' }
+
+plugin:
+  inputs:
+    libinput_command_input:
+      show-keycodes: true
+      enable-tap: true
+      enable-dwt: true
+      verbose: true

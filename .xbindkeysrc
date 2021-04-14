@@ -51,12 +51,12 @@
 "sudo /home/iberianpig/Dropbox/tool/linux/script/tethering.sh"
    Mod4 + F2
 
-"sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1"
-   Control+Shift + k # gnome-shell
+# "sh ~/Dropbox/tool/linux/script/desktop_switcher.sh -1"
+   # Control+Shift + k # gnome-shell
    # Control+Shift + h # pantheon
 
-"sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1"
-   Control+Shift + j # gnome-shell
+# "sh ~/Dropbox/tool/linux/script/desktop_switcher.sh 1"
+   # Control+Shift + j # gnome-shell
    # Control+Shift + l # pantheon
 
 # "/home/iberianpig/Dropbox/tool/linux/script/toggle_browser_terminal.sh"

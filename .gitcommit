@@ -4,9 +4,14 @@
 
 # Closes #123, #456
 # Breaks 
-#
-#
 
 
-# <type>: feat / fix / docs / style / refactor / perf / test / chore
-# https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#heading=h.z8a3t6ehl060
+# feat (feature)
+# fix (bug fix)
+# docs (documentation)
+# style (formatting, missing semi colons, …)
+# refactor
+# test (when adding missing tests)
+# chore (maintain)
+#
+# ref: https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#heading=h.z8a3t6ehl060

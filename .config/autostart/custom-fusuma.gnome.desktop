@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=fusuma for GNOME
-Comment=run fusuma
-Exec=/home/iberianpig/.rbenv/shims/fusuma --device="DLL075B:01 06CB:76AF Touchpad" --config=/home/iberianpig/.config/fusuma/config.gnome.yml
-Icon=input-touchpad
-X-GNOME-Autostart-enabled=true
-Type=Application
-OnlyShowIn=GNOME

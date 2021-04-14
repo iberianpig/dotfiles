@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=fusuma for Develop
 Comment=run fusuma
-Exec=/home/iberianpig/.ghq/github.com/iberianpig/fusuma/exe/fusuma --config=/home/iberianpig/.config/fusuma/config.develop.yml -d
+Exec=/home/iberianpig/fusuma_dev/run.sh
 Icon=input-touchpad
-X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-enabled=false
 Type=Application

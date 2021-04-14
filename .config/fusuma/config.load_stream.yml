@@ -1,0 +1,164 @@
+swipe:
+  3:
+    begin:
+      command: xdotool mousedown 1
+    update:
+      command: xdotool mousemove_relative -- $move_x, $move_y
+      # command: xdotool mousemove_relative -- $unaccelerated_x, $unaccelerated_y
+      interval: 0.01
+      accel: 2
+    end:
+      command: xdotool mouseup 1
+      keypress:
+        LEFTSHIFT+LEFTCTRL: &deepl
+          command: xdotool mouseup 1; test -n "$(xsel -p)" && echo $(xsel -p) | ruby -ne 'p URI.encode $_' | xargs -I{} google-chrome  --incognito --app=deepl.com https://www.deepl.com/translator#auto/auto/{}
+          interval: 5
+        LEFTCTRL+LEFTSHIFT:
+          <<: *deepl
+  4:
+    up:
+      sendkey: 'LEFTMETA+S'
+      keypress:
+        LEFTSHIFT:
+          command: xdotool key --clearmodifiers Super+Down
+    down:
+      sendkey: 'LEFTMETA+W'
+      keypress:
+        LEFTSHIFT:
+          command: xdotool key --clearmodifiers Super+Up
+    left:
+      sendkey: 'LEFTMETA+D'
+      keypress:
+        LEFTSHIFT:
+          command: xdotool key --clearmodifiers Super+Right
+    right:
+      sendkey: 'LEFTMETA+A'
+      keypress:
+        LEFTSHIFT:
+          command: xdotool key --clearmodifiers Super+Left
+
+pinch:
+  2:
+    begin: {command: xdotool keydown ctrl} 
+    end: {command: xdotool keyup ctrl} 
+    in:
+      # threshold: 0.1
+      # interval: 0.5
+      update:
+        # sendkey: 'LEFTCTRL+EQUAL'
+        # command: xdotool key ctrl click 4 
+        # interval: 0.1
+        command: xdotool click 4 # Zoom in
+        keypress:
+          LEFTALT:
+            sendkey: VOLUMEUP
+    out:
+      # threshold: 0.1
+      # interval: 0.5
+      update:
+        # sendkey: 'LEFTCTRL+MINUS'
+        # command: xdotool click 5 
+        command: xdotool click 5 # Zoom out
+        keypress:
+          LEFTALT:
+            sendkey: VOLUMEDOWN
+  4:
+    in:
+      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
+      # threshold: 1
+      interval: 1
+    out:
+      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
+      # threshold: 1
+      interval: 1
+rotate:
+  3:
+    clockwise:
+      # sendkey: "LEFTMETA+SPACE" # next layout
+      update:
+        sendkey: VOLUMEUP
+        LEFTALT:
+          command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepUp
+    counterclockwise:
+      # sendkey: "LEFTMETA+LEFTSHIFT+SPACE"  # previous layout
+      update:
+        sendkey: VOLUMEDOWN
+        LEFTALT:
+          command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepDown
+
+hold:
+  3:
+    sendkey: "LEFTALT+F7" # move window
+    keypress:
+      LEFTSHIFT:
+        sendkey: "LEFTALT+F8" # resize window
+  4:
+    sendkey: "MUTE"
+
+plugin:
+  inputs:
+    libinput_command_input:
+      show-keycodes: true
+      enable-tap: true
+      enable-dwt: true
+      verbose: true
+---
+context:
+  application:  Google-chrome
+
+swipe:
+  3:
+    left:
+      sendkey: 'LEFTALT+RIGHT'
+    right:
+      sendkey: 'LEFTALT+LEFT'
+    up:
+      sendkey: 'LEFTCTRL+T'
+    down:
+      sendkey: 'LEFTCTRL+Q'
+---
+context:
+  application:  Gnome-terminal
+swipe:
+  3: 
+    up:
+      sendkey: 'LEFTSHIFT+LEFTCTRL+T'
+    down:
+      sendkey: 'LEFTSHIFT+LEFTCTRL+W'
+
+# swipe:
+#   3:
+#     begin:
+#       command: xdotool mousedown 1
+#     update:
+#       command: xdotool mousemove_relative -- $move_x, $move_y
+#       # command: xdotool mousemove_relative -- $unaccelerated_x, $unaccelerated_y
+#       interval: 0.01
+#       accel: 2
+#     end:
+#       command: xdotool mouseup 1
+pinch:
+  2:
+    in:
+      update:
+        sendkey: 'LEFTCTRL+EQUAL'
+        interval: 2
+    out:
+      update:
+        sendkey: 'LEFTCTRL+MINUS'
+        interval: 2
+
+---
+context:
+  application: Slack
+
+swipe:
+  3:
+    left:
+      sendkey: 'LEFTALT+RIGHT'
+    right:
+      sendkey: 'LEFTALT+LEFT'
+    up:
+      sendkey: "LEFTALT+DOWN"
+    down:
+      sendkey: "LEFTALT+UP"
