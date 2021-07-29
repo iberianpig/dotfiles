@@ -321,9 +321,7 @@ Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
 " Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
 Plug 'htlsne/asyncomplete-look'
 
-" Plug 'kitagry/asyncomplete-tabnine.vim', { 'do': './install.sh'  }
-
-" Plug 'zxqfl/tabnine-vim'
+Plug 'kitagry/asyncomplete-tabnine.vim', { 'do': './install.sh'  }
 
 Plug 'prettier/vim-prettier', {
  \ 'do': 'yarn install',
@@ -372,6 +370,9 @@ Plug 'janko-m/vim-test'
 " インデントの可視化
 Plug 'nathanaelkane/vim-indent-guides', {'on': ['IndentGuidesEnable', 'IndentGuidesToggle', 'IndentGuidesDisable', ]}
 
+" " p/Pで貼り付け先のインデントに合わせる
+" Plug 'deris/vim-pasta'
+
 " Git/SVNの差分箇所をマークで表示
 Plug 'mhinz/vim-signify'
 
@@ -387,9 +388,6 @@ Plug 'wakatime/vim-wakatime'
 " 自動保存
 " Plug 'vim-scripts/vim-auto-save'
 Plug '907th/vim-auto-save'
-
-" スタートページ
-Plug 'mhinz/vim-startify'
 
 " 再帰的なfジャンプ
 Plug 'rhysd/clever-f.vim'
@@ -840,6 +838,8 @@ nnoremap <silent> [fzf]b :Buffers<cr>
 nnoremap <silent> [fzf]h :<C-u>Helptags<CR>
 
 
+nnoremap <silent> [fzf]r :call fzf#run(fzf#wrap({'source': 'ghq list --full-path', 'sink': 'edit' }))<CR>
+
 " markdownの設定
 " see /usr/share/vim/vim80/syntax/*.vim
 let g:markdown_fenced_languages = ['ruby', 'json', 'vim', 'sh', 'javascript']
@@ -1266,6 +1266,15 @@ augroup lsp_enabled
     autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
+let g:lsp_settings = {
+     \ 'efm-langserver': {
+     \   'disabled': 0,
+     \   'allowlist': ['markdown'],
+     \  }
+     \ }
+
+let g:lsp_settings_filetype_go = ['gopls', 'golangci-lint-langserver']
+
 "vim-grammarous
 let g:grammarous#default_comments_only_filetypes = {
            \ '*' : 1, 'help' : 0, 'markdown' : 0,
@@ -1295,15 +1304,31 @@ augroup asyncomplete_register_source
   autocmd!
   au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#neosnippet#get_source_options({
         \ 'name': 'neosnippet',
-        \ 'whitelist': ['*'],
+        \ 'allowlist': ['*'],
         \ 'priority': 100,
         \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
         \ }))
 
-  au User asyncomplete_setup call asyncomplete#register_source({
-        \ 'name': 'look',
-        \ 'whitelist': ['*'],
-        \ 'priority': 1000,
-        \ 'completor': function('asyncomplete#sources#look#completor'),
-        \ })
+  " au User asyncomplete_setup call asyncomplete#register_source({
+  "      \ 'name': 'look',
+  "      \ 'allowlist': ['*'],
+  "      \ 'priority': 1000,
+  "      \ 'completor': function('asyncomplete#sources#look#completor'),
+  "      \ })
+
+  au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#tabnine#get_source_options({
+        \ 'name': 'tabnine',
+        \ 'allowlist': ['*'],
+        \ 'priority': 2000,
+        \ 'completor': function('asyncomplete#sources#tabnine#completor'),
+        \ 'config': {
+        \   'line_limit': 1000,
+        \   'max_num_result': 20,
+        \  },
+        \ }))
 augroup END
+
+
+nnoremap <silent> <Leader>r :QuickRun -runner terminal<CR>
+vnoremap <silent> <Leader>r :QuickRun -runner terminal<CR>
+

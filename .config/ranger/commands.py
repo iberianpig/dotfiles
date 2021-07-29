@@ -73,11 +73,11 @@ class fzf_select(Command):
         if self.quantifier:
             # match only directories
             command="find -L . \( -path '*/\.*' -o -fstype 'dev' -o -fstype 'proc' \) -prune \
-            -o -type d -print 2> /dev/null | sed 1d | cut -b3- | fzf +m"
+            -o -type d -print 2> /dev/null | sed 1d | cut -b3- |  fzf +m --preview='batcat --style=numbers --color=always --line-range :500 {}'"
         else:
             # match files and directories
             command="find -L . \( -path '*/\.*' -o -fstype 'dev' -o -fstype 'proc' \) -prune \
-            -o -print 2> /dev/null | sed 1d | cut -b3- | fzf +m"
+            -o -print 2> /dev/null | sed 1d | cut -b3- | fzf +m --preview='batcat --style=numbers --color=always --line-range :500 {}'"
         fzf = self.fm.execute_command(command, universal_newlines=True, stdout=subprocess.PIPE)
         stdout, stderr = fzf.communicate()
         if fzf.returncode == 0:

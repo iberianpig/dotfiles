@@ -1,0 +1,6 @@
+snippet curl
+abbr    curl -X POST
+    curl -H "Content-Type: application/json" \
+    -X POST \
+    -d '{"${1:key}": "${2:val}"}' \
+    -k ${3:url}
