@@ -108,7 +108,12 @@ export PATH="$HOME/flutter/bin:$PATH"
 if [ -e "$HOME/.ghq/github.com/tfutils/tfenv/bin/" ]; then export PATH="$HOME/.ghq/github.com/tfutils/tfenv/bin/:$PATH"; fi
 
 # gyazo-gif
-[ -f $HOME/.ghq/github.com/mpsijm/gyazo-gif-for-linux/gyazo-gif ] && export PATH="$HOME/.ghq/github.com/mpsijm/gyazo-gif-for-linux/:$PATH"
+[ -f $HOME/.ghq/github.com/mpsijm/gyazo-gif-for-linux/gyazo-gif ] && export PATH="$HOME/.ghq/github.com/mpsijm/gyazo-gif-for-linux:$PATH"
+
+# linuxbrew
+if [ -e "$HOME/linuxbrew/.linuxbrew/bin/brew" ]; then 
+  eval "$($HOME/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
 
 export PATH="$HOME/.vim/plugged/fzf/bin/:$PATH"
 export BYOBU_CONFIG_DIR="$HOME/.config/byobu"

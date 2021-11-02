@@ -11,8 +11,10 @@ set cursorline " カーソル行の背景色を変える
 
 augroup set_cursorline
   autocmd!
-  autocmd InsertEnter,InsertLeave * set cursorline!  "redraw!
+  autocmd InsertLeave * set cursorline
+  autocmd InsertEnter * set nocursorline
 augroup END
+
 
 set laststatus=2   " ステータス行を常に表示
 set cmdheight=2    " メッセージ表示欄を2行確保
@@ -530,12 +532,12 @@ set background=dark "暗めの背景
 " " colorschme
 " 
 " " " " hybrid
-" colorscheme hybrid
-let g:seiya_auto_enable=1
+colorscheme hybrid
+" let g:seiya_auto_enable=1
 
 " " hybrid-material
 let g:hybrid_transparent_background = 1
-colorscheme hybrid_material
+" colorscheme hybrid_material
 
 " " gruvbox
 " colorscheme gruvbox
@@ -632,14 +634,14 @@ endfunction
 function! MyFilename()
   let fname = expand('%:t')
   return fname  ==# 'ControlP' ? g:lightline.ctrlp_item :
-      \ fname ==# '__Tagbar__' ? g:lightline.fname :
-      \ fname =~? '__Gundo\|NERD_tree' ? '' :
-      \ &filetype   ==# 'vimfiler' ? vimfiler#get_status_string() :
-      \ &filetype   ==# 'unite' ? unite#get_status_string() :
-      \ &filetype   ==# 'vimshell' ? vimshell#get_status_string() :
-      \ (''   !=# MyReadonly() ? MyReadonly() . ' ' : '') .
-      \ (''   !=# fname ? MyStatusPath() . '/' . fname : '[No Name]') .
-      \ (''   !=# MyModified() ? ' ' . MyModified() : '')
+        \ fname ==# '__Tagbar__' ? g:lightline.fname :
+        \ fname =~? '__Gundo\|NERD_tree' ? '' :
+        \ &filetype   ==# 'vimfiler' ? vimfiler#get_status_string() :
+        \ &filetype   ==# 'unite' ? unite#get_status_string() :
+        \ &filetype   ==# 'vimshell' ? vimshell#get_status_string() :
+        \ (''   !=# MyReadonly() ? MyReadonly() . ' ' : '') .
+        \ (''   !=# fname ? MyStatusPath() . '/' . fname : '[No Name]') .
+        \ (''   !=# MyModified() ? ' ' . MyModified() : '')
 endfunction
 
 function! MyStatusPath()
@@ -1266,14 +1268,23 @@ augroup lsp_enabled
     autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
-let g:lsp_settings = {
-     \ 'efm-langserver': {
-     \   'disabled': 0,
-     \   'allowlist': ['markdown'],
-     \  }
-     \ }
+" let g:lsp_settings = {
+"     \ 'efm-langserver': {
+"     \   'disabled': 0,
+"     \   'allowlist': ['markdown'],
+"     \  }
+"     \ }
 
-let g:lsp_settings_filetype_go = ['gopls', 'golangci-lint-langserver']
+" let g:lsp_settings_filetype_go = ['gopls', 'golangci-lint-langserver']
+augroup vim_lsp_golangci_lint_langserver
+  au!
+  autocmd User lsp_setup call lsp#register_server({
+      \ 'name': 'golangci-lint-langserver',
+      \ 'cmd': {server_info->['golangci-lint-langserver']},
+      \ 'initialization_options': {'command': ['golangci-lint', 'run', '--out-format', 'json']},
+      \ 'whitelist': ['go'],
+      \ })
+augroup END
 
 "vim-grammarous
 let g:grammarous#default_comments_only_filetypes = {
@@ -1331,4 +1342,3 @@ augroup END
 
 nnoremap <silent> <Leader>r :QuickRun -runner terminal<CR>
 vnoremap <silent> <Leader>r :QuickRun -runner terminal<CR>
-

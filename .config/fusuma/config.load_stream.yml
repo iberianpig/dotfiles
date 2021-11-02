@@ -1,67 +1,89 @@
 swipe:
-  3:
+  drag: &drag
     begin:
       command: xdotool mousedown 1
     update:
       command: xdotool mousemove_relative -- $move_x, $move_y
       # command: xdotool mousemove_relative -- $unaccelerated_x, $unaccelerated_y
       interval: 0.01
-      accel: 2
+      accel: 3
     end:
       command: xdotool mouseup 1
       keypress:
         LEFTSHIFT+LEFTCTRL: &deepl
-          command: xdotool mouseup 1; test -n "$(xsel -p)" && echo $(xsel -p) | ruby -ne 'p URI.encode $_' | xargs -I{} google-chrome  --incognito --app=deepl.com https://www.deepl.com/translator#auto/auto/{}
+          command: |
+            xdotool mouseup 1
+            test -n "$(xsel -p)" && echo $(xsel -p)  | ruby -r 'erb' -ne 'puts ERB::Util.url_encode $_.chomp'  | xargs -I{} google-chrome  --incognito --app=deepl.com https://www.deepl.com/translator#en/ja/{}
           interval: 5
         LEFTCTRL+LEFTSHIFT:
           <<: *deepl
+
+  alt+tab: &alt_tab
+    begin:
+      command: xdotool keydown Alt
+    right:
+      update:
+        command: xdotool key Tab
+        interval: 5
+    left:
+      update:
+        command: xdotool key Shift+Tab
+        interval: 5
+    end:
+      command: xdotool keyup Alt
+  3:
+    <<: *drag
   4:
     up:
-      sendkey: 'LEFTMETA+S'
+      # sendkey: 'LEFTMETA+S'
+      # interval: 0.5
+      # threshold: 0.2
+      workspace: next
       keypress:
         LEFTSHIFT:
-          command: xdotool key --clearmodifiers Super+Down
+          # command: xdotool key --clearmodifiers Super+Down
+          window: next
     down:
-      sendkey: 'LEFTMETA+W'
+      # sendkey: 'LEFTMETA+W'
+      # command: xdotool key --clearmodifiers Super+w
+      # interval: 0.5
+      # threshold: 0.2
+      workspace: prev
       keypress:
         LEFTSHIFT:
-          command: xdotool key --clearmodifiers Super+Up
+          # command: xdotool key --clearmodifiers Super+Up
+          window: prev
     left:
       sendkey: 'LEFTMETA+D'
       keypress:
         LEFTSHIFT:
-          command: xdotool key --clearmodifiers Super+Right
+          sendkey: LEFTMETA+Right
     right:
       sendkey: 'LEFTMETA+A'
       keypress:
         LEFTSHIFT:
-          command: xdotool key --clearmodifiers Super+Left
+          sendkey: LEFTMETA+Left
 
 pinch:
   2:
-    begin: {command: xdotool keydown ctrl} 
-    end: {command: xdotool keyup ctrl} 
+    # in:
+    #   update:
+    #     command: 'xdotool key ctrl+equal'
+    #     interval: 3.0
+    # out:
+    #   update:
+    #     command: 'xdotool key ctrl+minus'
+    #     interval: 3.0
+    begin:
+      command: xdotool keydown ctrl
+    end:
+      command: xdotool keyup ctrl
     in:
-      # threshold: 0.1
-      # interval: 0.5
       update:
-        # sendkey: 'LEFTCTRL+EQUAL'
-        # command: xdotool key ctrl click 4 
-        # interval: 0.1
         command: xdotool click 4 # Zoom in
-        keypress:
-          LEFTALT:
-            sendkey: VOLUMEUP
     out:
-      # threshold: 0.1
-      # interval: 0.5
       update:
-        # sendkey: 'LEFTCTRL+MINUS'
-        # command: xdotool click 5 
         command: xdotool click 5 # Zoom out
-        keypress:
-          LEFTALT:
-            sendkey: VOLUMEDOWN
   4:
     in:
       command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
@@ -74,26 +96,63 @@ pinch:
 rotate:
   3:
     clockwise:
-      # sendkey: "LEFTMETA+SPACE" # next layout
       update:
         sendkey: VOLUMEUP
+        LEFTSHIFT:
+          sendkey: LEFTSHIFT+VOLUMEUP
         LEFTALT:
-          command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepUp
+          sendkey: BRIGHTNESSUP
     counterclockwise:
-      # sendkey: "LEFTMETA+LEFTSHIFT+SPACE"  # previous layout
       update:
         sendkey: VOLUMEDOWN
         LEFTALT:
-          command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepDown
+          sendkey: BRIGHTNESSDOWN
+        LEFTSHIFT:
+          sendkey: LEFTSHIFT+VOLUMEDOWN
+
+tap:
+  1:
+    command: "echo ----------------tap1----------------------------"
+  2:
+    command: "echo ----------------tap2----------------------------"
+  3:
+    command: "echo ----------------tap3----------------------------"
+  4:
+    command: "echo ----------------tap4----------------------------"
 
 hold:
+  1:
+    command: "echo ----------------hold1----------------------------"
+  2:
+    command: "echo ----------------hold2----------------------------"
   3:
-    sendkey: "LEFTALT+F7" # move window
-    keypress:
-      LEFTSHIFT:
-        sendkey: "LEFTALT+F8" # resize window
+    command: "echo ----------------hold3----------------------------"
   4:
-    sendkey: "MUTE"
+    command: "echo ----------------hold4----------------------------"
+# hold:
+#   3:
+#     sendkey: "LEFTALT+F7" # move window
+#     keypress:
+#       LEFTSHIFT:
+#         sendkey: "LEFTALT+F8" # resize window
+#   4:
+#     sendkey: "MUTE"
+# 
+# tap:
+#   4:
+#     sendkey: "LEFTMETA"
+#     # window: fullscreen
+
+typing: # disable while typing
+  command: |
+    touchpad_id=$(xinput | grep Touchpad | grep -oE "id=[0-9]*" | cut -d"=" -f 2)
+    xinput set-prop $touchpad_id "libinput Tapping Enabled" 0
+    file=/tmp/typing_command_break
+    touch "$file"
+    sleep 0.6
+    [ `find "$file" -mmin +0.01` ] && \
+      xinput set-prop $touchpad_id "libinput Tapping Enabled" 1
+  interval: 0.5
 
 plugin:
   inputs:
@@ -102,9 +161,17 @@ plugin:
       enable-tap: true
       enable-dwt: true
       verbose: true
+      # libinput-list-devices: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.19.1/libinput-list-devices
+      # libinput-debug-events: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.19.1/libinput-debug-events
+      libinput-list-devices: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.19.0/libinput-list-devices
+      libinput-debug-events: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.19.0/libinput-debug-events
+      # libinput-list-devices: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.17.0/libinput-list-devices
+      # libinput-debug-events: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.17.0/libinput-debug-events
+      # libinput-list-devices: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.16.5/libinput-list-devices
+      # libinput-debug-events: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.16.5/libinput-debug-events
 ---
 context:
-  application:  Google-chrome
+  application: Google-chrome
 
 swipe:
   3:
@@ -114,39 +181,71 @@ swipe:
       sendkey: 'LEFTALT+LEFT'
     up:
       sendkey: 'LEFTCTRL+T'
+      keypress:
+        LEFTSHIFT:
+          sendkey: 'LEFTSHIFT+LEFTCTRL+T'
     down:
       sendkey: 'LEFTCTRL+Q'
 ---
 context:
-  application:  Gnome-terminal
+  application: Firefox
+
+# swipe:
+#   3:
+#     left:
+#       sendkey: 'LEFTALT+RIGHT'
+#     right:
+#       sendkey: 'LEFTALT+LEFT'
+#     up:
+#       sendkey: 'LEFTCTRL+T'
+#     down:
+#       sendkey: 'LEFTCTRL+Q'
 swipe:
   3: 
+    begin:
+      command: xdotool keydown Ctrl
+    right:
+      sendkey: 'LEFTCTRL+PAGEDOWN'
+      keypress:
+        LEFTSHIFT:
+          sendkey: 'LEFTALT+LEFT'
+      update:
+        command: xdotool key Tab
+        interval: 3
+    left:
+      sendkey: 'LEFTCTRL+PAGEUP'
+      keypress:
+        LEFTSHIFT:
+          sendkey: 'LEFTALT+RIGHT'
+      update:
+        command: xdotool key Shift+Tab
+        interval: 3
+    end:
+      command: xdotool keyup Ctrl
+---
+context:
+  application: 
+    Gnome-terminal # X11
+    # gnome-terminal-server # wayland
+
+
+swipe:
+  3:
     up:
       sendkey: 'LEFTSHIFT+LEFTCTRL+T'
     down:
       sendkey: 'LEFTSHIFT+LEFTCTRL+W'
 
-# swipe:
-#   3:
-#     begin:
-#       command: xdotool mousedown 1
-#     update:
-#       command: xdotool mousemove_relative -- $move_x, $move_y
-#       # command: xdotool mousemove_relative -- $unaccelerated_x, $unaccelerated_y
-#       interval: 0.01
-#       accel: 2
-#     end:
-#       command: xdotool mouseup 1
-pinch:
-  2:
-    in:
-      update:
-        sendkey: 'LEFTCTRL+EQUAL'
-        interval: 2
-    out:
-      update:
-        sendkey: 'LEFTCTRL+MINUS'
-        interval: 2
+# pinch:
+#   2:
+#     in:
+#       update:
+#         sendkey: 'LEFTCTRL+EQUAL'
+#         interval: 3
+#     out:
+#       update:
+#         sendkey: 'LEFTCTRL+MINUS'
+#         interval: 3
 
 ---
 context:

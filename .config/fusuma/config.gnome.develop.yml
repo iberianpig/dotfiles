@@ -1,74 +1,88 @@
-application:
-  global:
-    swipe:
-      4:
-        up:
-          sendkey: 'LEFTCTRL+LEFTALT+DOWN'
-          keypress:
-            LEFTSHIFT:
-              sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+DOWN'
-        down:
-          sendkey: 'LEFTCTRL+LEFTALT+UP'
-          LEFTSHIFT:
-            sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+UP'
-        left:
-          command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
-          threshold: 1
-          interval: 1
-        right:
-          command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
-          threshold: 1
-          interval: 1
+swipe:
+  3:
+    begin:
+      command: xdotool mousedown 1
+    update:
+      command: xdotool mousemove_relative -- $move_x, $move_y
+      # command: xdotool mousemove_relative -- $unaccelerated_x, $unaccelerated_y
+      interval: 0.01
+      accel: 2
+    end:
+      command: xdotool mouseup 1
+      keypress:
+        LEFTMETA: {command: xdotool mouseup 1}
+        LEFTSHIFT+LEFTCTRL: &deepl
+          command: xdotool mouseup 1; test -n "$(xsel -p)" && echo $(xsel -p) | ruby -ne 'require "uri"; p URI.encode $_' | xargs -I{} google-chrome  --incognito --app=deepl.com https://www.deepl.com/translator#auto/auto/{}
+          interval: 5
+        LEFTCTRL+LEFTSHIFT:
+          <<: *deepl
+  4:
+    up:
+      sendkey: 'LEFTCTRL+LEFTALT+DOWN'
+      keypress:
+        LEFTSHIFT:
+          sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+DOWN'
+    down:
+      sendkey: 'LEFTCTRL+LEFTALT+UP'
+      LEFTSHIFT:
+        sendkey: 'LEFTSHIFT+LEFTCTRL+LEFTALT+UP'
+    left:
+      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
+      threshold: 1
+      interval: 1
+    right:
+      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
+      threshold: 1
+      interval: 1
 
-      3:
-        left:
-          sendkey: 'LEFTALT+RIGHT'
-          keypress:
-            LEFTMETA:
-              sendkey: 'LEFTMETA+LEFT'
-        right:
-          sendkey: 'LEFTALT+LEFT'
-          keypress:
-            LEFTMETA:
-              sendkey: 'LEFTMETA+RIGHT'
-        up:
-          sendkey: 'LEFTCTRL+T'
-          keypress:
-            LEFTMETA:
-              sendkey: 'RIGHTMETA+UP'
-        down:
-          sendkey: 'LEFTCTRL+W'
-          keypress:
-            LEFTMETA:
-              sendkey: 'RIGHTMETA+DOWN'
-    pinch:
-      2:
-        in:
-          sendkey: 'LEFTCTRL+EQUAL'
-          threshold: 0.1
-        out:
-          sendkey: 'LEFTCTRL+MINUS'
-          threshold: 0.1
-      4:
-        in:
-          command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
-          threshold: 1
-          interval: 2
-        out:
-          command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
-          threshold: 1
-          interval: 2
+pinch:
+  2:
+    in:
+      sendkey: 'LEFTCTRL+EQUAL'
+      threshold: 0.1
+    out:
+      sendkey: 'LEFTCTRL+MINUS'
+      threshold: 0.1
+  4:
+    in:
+      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
+      threshold: 1
+      interval: 2
+    out:
+      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
+      threshold: 1
+      interval: 2
 
-    hold:
-      3:
-        sendkey: "LEFTALT+F7" # move window
+rotate:
+  3:
+    clockwise:
+      # sendkey: "LEFTMETA+SPACE" # next layout
+      update:
+        sendkey: VOLUMEUP
         keypress:
           LEFTSHIFT:
-            sendkey: "LEFTALT+F8" # resize window
+            sendkey: LEFTSHIFT+VOLUMEUP
+          LEFTALT:
+            # command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepUp
+            sendkey: BRIGHTNESSUP
+    counterclockwise:
+      # sendkey: "LEFTMETA+LEFTSHIFT+SPACE"  # previous layout
+      update:
+        sendkey: VOLUMEDOWN
+        keypress:
+          LEFTSHIFT:
+            sendkey: LEFTSHIFT+VOLUMEDOWN
+          LEFTALT:
+            # command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepDown
+            sendkey: BRIGHTNESSDOWN
 
-  Google-chrome:
-    swipe: { 3: {down: { sendkey: 'LEFTCTRL+Q' } } }
 
+hold:
+  3:
+    sendkey: "LEFTALT+F7" # move window
+    keypress:
+      LEFTSHIFT:
+        sendkey: "LEFTALT+F8" # resize window
 
 plugin:
   inputs:
@@ -76,3 +90,38 @@ plugin:
       show-keycodes: true
       enable-tap: true
       verbose: true
+---
+context:
+  application: Google-chrome
+
+
+swipe:
+  3:
+    left:
+      sendkey: 'LEFTALT+RIGHT'
+      keypress:
+        LEFTMETA:
+          sendkey: 'LEFTMETA+LEFT'
+    right:
+      sendkey: 'LEFTALT+LEFT'
+      keypress:
+        LEFTMETA:
+          sendkey: 'LEFTMETA+RIGHT'
+    up:
+      sendkey: 'LEFTCTRL+T'
+      keypress:
+        LEFTMETA:
+          sendkey: 'RIGHTMETA+UP'
+    down:
+      sendkey: 'LEFTCTRL+Q'
+      keypress:
+        LEFTMETA:
+          sendkey: 'RIGHTMETA+DOWN'
+pinch:
+  2:
+    in:
+      sendkey: 'LEFTCTRL+EQUAL'
+      threshold: 0.1
+    out:
+      sendkey: 'LEFTCTRL+MINUS'
+      threshold: 0.1

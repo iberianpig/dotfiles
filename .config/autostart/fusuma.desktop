@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=fusuma(system ruby)
 Comment=run fusuma
-Exec=/usr/local/bin/fusuma -d
+Exec=/usr/local/bin/fusuma -d  --log=/tmp/fusuma.log
 Icon=input-touchpad
 X-GNOME-Autostart-enabled=true
 Type=Application

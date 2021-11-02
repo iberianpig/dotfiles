@@ -57,6 +57,7 @@
   algorithm = histogram
 [diff]
 	tool = vimdiff
+	submodule = log
 [fetch]
 	prune = true
 [ghq]

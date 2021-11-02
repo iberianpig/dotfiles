@@ -3,6 +3,7 @@
   user: iberianpig
   roles: 
     # ansible-galaxy install pddg.xkeysnail
+    # install with pip3
     - name: pddg.xkeysnail
       vars:
         xkeysnail_config_dir: /etc/opt/xkeysnail
