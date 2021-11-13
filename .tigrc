@@ -122,11 +122,11 @@ bind generic <Esc>p  <sh -c "tig $(git merge-base %(commit) $(git branch  | grep
 
 # githubでコミットのページを確認する
 # FIXME: .gitを含む場合の処理がおかしいので修正
-bind main  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab.com|github.com)[:/][^ ]+' | grep -Eo '(.*)[^.git$]' | sed 's/(.*)//')'/commit/%(commit)'"
-bind diff  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab.com|github.com)[:/][^ ]+' | grep -Eo '(.*)[^.git$]' | sed 's/(.*)//')'/commit/%(commit)'"
-bind tree  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab.com|github.com)[:/][^ ]+' | grep -Eo '(.*)[^.git$]' | sed 's/(.*)//')'/tree/%(commit)/%(directory)'"
-bind blob  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab.com|github.com)[:/][^ ]+' | grep -Eo '(.*)[^.git$]' | sed 's/(.*)//')'/tree/%(commit)/%(file)'"
-bind blame B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab.com|github.com)[:/][^ ]+' | grep -Eo '(.*)[^.git$]' | sed 's/(.*)//')'/tree/%(commit)/%(file)'"
+bind main  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/commit/%(commit)'"
+bind diff  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/commit/%(commit)'"
+bind tree  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/tree/%(commit)/%(directory)'"
+bind blob  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/tree/%(commit)/%(file)'"
+bind blame B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/tree/%(commit)/%(file)'"
 # bind main  B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
 # bind diff  B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
 # bind tree  B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
