@@ -13,7 +13,8 @@ swipe:
         LEFTSHIFT+LEFTCTRL: &deepl
           command: |
             xdotool mouseup 1
-            test -n "$(xsel -p)" && echo $(xsel -p)  | ruby -r 'erb' -ne 'puts ERB::Util.url_encode $_.chomp'  | xargs -I{} google-chrome  --incognito --app=deepl.com https://www.deepl.com/translator#en/ja/{}
+            text=$(xsel -p | ruby -r 'erb' -ne 'puts ERB::Util.url_encode $_')
+            google-chrome  --incognito --app=deepl.com "https://www.deepl.com/translator#en/ja/$text"
           interval: 5
         LEFTCTRL+LEFTSHIFT:
           <<: *deepl
