@@ -20,3 +20,4 @@ ln -fns ~/dotfiles/.config/ansible ~/.config/ansible
 ln -fns ~/dotfiles/.config/autostart ~/.config/autostart
 ln -fns ~/dotfiles/.config/alacritty ~/.config/alacritty
 ln -fns ~/dotfiles/.config/xkeysnail ~/.config/xkeysnail
+ln -fns ~/dotfiles/.config/efm-langserver ~/.config/efm-langserver

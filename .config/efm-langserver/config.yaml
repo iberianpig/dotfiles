@@ -1,0 +1,16 @@
+languages:
+  markdown:
+    lint-command: 'npx textlint --format unix ${INPUT}'
+    lint-formats:
+      - '%f:%l:%n: %m'
+  ruby:
+    lint-command: 'bundle exec rubocop --format emacs --force-exclusion --stdin ${INPUT}'
+    lint-formats:
+      - '%f:%l:%c: %m'
+    lint-stdin: true
+    root-markers:
+      - Gemfile
+      - Rakefile
+      - .rubocop.yml
+    format-command: 'bundle exec rubocop -A -f quiet --stderr -s ${INPUT}'
+    format-stdin: true

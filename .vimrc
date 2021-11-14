@@ -1228,7 +1228,7 @@ let g:lsp_textprop_enabled = 0 " エラー部の強調表示。solargraphで複�
 let g:lsp_diagnostics_highlights_insert_mode_enabled = 0
 let g:lsp_diagnostics_highlights_enabled = 0
 let g:lsp_diagnostics_highlights_delay = 2000
-	let g:lsp_format_sync_timeout = 1000
+" let g:lsp_format_sync_timeout = 1000
 
 let g:asyncomplete_auto_popup = 1
 inoremap <expr> <CR> pumvisible() ? asyncomplete#close_popup() . "\<CR>" : "\<CR>"
@@ -1268,12 +1268,12 @@ augroup lsp_enabled
     autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
-" let g:lsp_settings = {
-"     \ 'efm-langserver': {
-"     \   'disabled': 0,
-"     \   'allowlist': ['markdown'],
-"     \  }
-"     \ }
+let g:lsp_settings = {
+    \ 'efm-langserver': {
+    \   'disabled': 0,
+    \   'allowlist': ['markdown', 'ruby'],
+    \  }
+    \ }
 
 " let g:lsp_settings_filetype_go = ['gopls', 'golangci-lint-langserver']
 augroup vim_lsp_golangci_lint_langserver
@@ -1320,24 +1320,27 @@ augroup asyncomplete_register_source
         \ 'completor': function('asyncomplete#sources#neosnippet#completor'),
         \ }))
 
-  " au User asyncomplete_setup call asyncomplete#register_source({
-  "      \ 'name': 'look',
-  "      \ 'allowlist': ['*'],
-  "      \ 'priority': 1000,
-  "      \ 'completor': function('asyncomplete#sources#look#completor'),
-  "      \ })
+  au User asyncomplete_setup call asyncomplete#register_source({
+       \ 'name': 'look',
+       \ 'allowlist': ['*'],
+       \ 'priority': 1000,
+       \ 'completor': function('asyncomplete#sources#look#completor'),
+       \ })
 
   au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#tabnine#get_source_options({
-        \ 'name': 'tabnine',
-        \ 'allowlist': ['*'],
-        \ 'priority': 2000,
-        \ 'completor': function('asyncomplete#sources#tabnine#completor'),
-        \ 'config': {
-        \   'line_limit': 1000,
-        \   'max_num_result': 20,
-        \  },
-        \ }))
+       \ 'name': 'tabnine',
+       \ 'allowlist': ['*'],
+       \ 'priority': 2000,
+       \ 'completor': function('asyncomplete#sources#tabnine#completor'),
+       \ 'config': {
+       \   'line_limit': 1000,
+       \   'max_num_result': 20,
+       \  },
+       \ }))
 augroup END
+
+"" Delete with backspace to open configuration TabNine
+" TabNine::config.
 
 
 nnoremap <silent> <Leader>r :QuickRun -runner terminal<CR>
