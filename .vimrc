@@ -245,6 +245,7 @@ augroup END
 
 " set runtimepath+=~/.ghq/github.com/junegunn/fzf/bin/
 " set runtimepath+=~/.vim/snippets/
+set runtimepath+=~/.vim/ftplugin/
 
 " let g:ruby_path = system('echo $HOME/.rbenv/shims')
 

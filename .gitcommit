@@ -1,17 +1,15 @@
-# type(component): this is subject for change
+# feat(): feature
+# fix(): bug fix
+# style(): formatting, missing semi colons, …
+# docs(): documentation
+# refactor(): 
+# test(): when adding missing tests
+# chore(): maintain
 
 # Body
 
 # Closes #123, #456
+
 # Breaks 
 
-
-# feat (feature)
-# fix (bug fix)
-# docs (documentation)
-# style (formatting, missing semi colons, …)
-# refactor
-# test (when adding missing tests)
-# chore (maintain)
-#
-# ref: https://docs.google.com/document/d/1QrDFcIiPjSLDn3EL15IJygNPiHORgU1_OOAqWjiDU5Y/edit#heading=h.z8a3t6ehl060
+# ref: https://zenn.dev/uochan/articles/2021-12-08-vim-conventional-commits
