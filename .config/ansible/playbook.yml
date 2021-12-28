@@ -143,7 +143,6 @@
         - xdotool
         - gimp
         - inkscape
-        - calibre
         - shellcheck
         - global
         - byzanz
