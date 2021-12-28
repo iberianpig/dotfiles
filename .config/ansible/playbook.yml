@@ -1,16 +1,7 @@
 - hosts: 127.0.0.1
   connection: local
   user: iberianpig
-  roles: 
-    # ansible-galaxy install pddg.xkeysnail
-    # install with pip3
-    - name: pddg.xkeysnail
-      vars:
-        xkeysnail_config_dir: /etc/opt/xkeysnail
-        xkeysnail_config_file: "{{ ansible_env.HOME }}/.config/xkeysnail/config.py"
-
   tasks:
-
     - name: get upstream codename
       shell: lsb_release -sc # error latest ubuntu => shell: lsb_release -usc
       register: upstream
@@ -42,38 +33,6 @@
         state: present
       become: true
 
-    #- name: add playonlinux apt gpg
-    #  shell: curl -fsSL http://deb.playonlinux.com/public.gpg | apt-key add -
-    #  become: true
-    #  args:
-    #    warn: no
-
-    #- name: add playonlinux apt repository
-    #  apt_repository:
-    #    repo: deb http://deb.playonlinux.com/ {{ upstream.stdout }} main
-    #    state: present
-    #  become: true
-
-    - name: add spotify apt gpg
-      shell: curl -fsSL https://download.spotify.com/debian/pubkey_0D811D58.gpg | apt-key add -
-      become: true
-      args:
-        warn: no
-
-    - name: add spotify apt repository
-      apt_repository:
-        repo: deb http://repository.spotify.com stable non-free
-        state: present
-      become: true
-
-    - name: add gyazo apt repository
-      shell: |
-        which gyazo && exit 0
-        curl -s https://packagecloud.io/install/repositories/gyazo/gyazo-for-linux/script.deb.sh | os=ubuntu dist={{ upstream.stdout }} bash
-      become: true
-      args:
-        warn: no
-
     - name: add gh repository
       shell: |
         which gh && exit 0
@@ -88,10 +47,8 @@
       become: true
       with_items:
         - ppa:numix/ppa
-        # - ppa:philip.scott/elementary-tweaks
-        - ppa:openjdk-r/ppa
         - ppa:git-core/ppa
-        - ppa:mmstick76/alacritty
+        # - ppa:openjdk-r/ppa flutter
 
     - name: apt install
       apt: name={{ item }} update_cache=yes cache_valid_time=36
@@ -102,8 +59,6 @@
         - gnupg2                     # for docker
         - software-properties-common # for docker
         - docker-ce
-        - gyazo
-        - scrot # use from ~/.gyazo.config.yml
         - dconf-editor
         - gconf-editor
         - guake
@@ -117,8 +72,6 @@
         - tlp
         - powertop
         - numix-icon-theme-circle
-        - playonlinux
-        - wine-stable
         - xclip
         # - vim-gnome
         - vim-gtk
@@ -132,37 +85,22 @@
         - autoconf
         - pkg-config
         - tree
-        - sassc
         - gcc
         - snapd
         - gparted
-        # - python-pip
         - etckeeper
         - libreadline-dev
         - wmctrl
         - xdotool
-        - gimp
-        - inkscape
         - shellcheck
         - global
-        - byzanz
         - baobab
         # - libmysqlclient-dev # for mysql2 gem
         # - mysql-server
-          # - vagrant # error occured by dependency of gems. Install from https://releases.hashicorp.com/vagrant/2.2.5/vagrant_2.2.5_linux_amd64.zip
-          # - virtualbox
-          #- virtualbox-ext-pack
         - tmate
-        # - libxcb-xtest0 # zoom dependency
-        # - libgl1-mesa-glx # zoom dependency
-        - libegl1-mesa # zoom dependency
         # - libgnome2-bin # gnome-open
-        - lib32stdc++6 # flutter dependency
-        - openjdk-8-jdk # flutter dependency
-        - libreoffice
-        - vlc
-        - spotify-client
-        - alacritty
+        # - lib32stdc++6 # flutter dependency
+        # - openjdk-8-jdk # flutter dependency
         - gh
     - name: snap install
       command: snap install {{ item }}
@@ -241,14 +179,6 @@
       args:
         warn: no
 
-    - name: Install Zoom
-      shell: |
-        which zoom && exit 0
-        curl -L https://zoom.us/client/latest/zoom_amd64.deb -o /tmp/zoom.deb && dpkg -i /tmp/zoom.deb
-      become: true
-      args:
-        warn: no
-
     - name: Install AWS ECS CLI
       shell: |
         which ecs-cli && exit 0
@@ -293,3 +223,24 @@
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/$version/install.sh | bash
       args:
         warn: no
+
+    - name: install ghq
+      shell: |
+        which ghq && exit 0
+        go install github.com/x-motemen/ghq@latest
+      args:
+        warn: no
+
+    - name: ghq get
+      command: ghq get {{ item }}
+      with_items:
+        - iberianpig/fusuma
+        - iberianpig/fusuma-plugin-appmatcher
+        - iberianpig/fusuma-plugin-keypress
+        - iberianpig/fusuma-plugin-sendkey
+        - iberianpig/fusuma-plugin-tap
+        - iberianpig/fusuma-plugin-wmctrl
+        - iberianpig/ranger-explorer.vim
+        - iberianpig/tig-explorer.vim
+        - iberianpig/makef
+

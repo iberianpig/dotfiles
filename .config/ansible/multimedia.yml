@@ -1,0 +1,56 @@
+- hosts: 127.0.0.1
+  connection: local
+  user: iberianpig
+  tasks:
+    - name: get upstream codename
+      shell: lsb_release -sc # error latest ubuntu => shell: lsb_release -usc
+      register: upstream
+
+    - debug: var=upstream.stdout  # bionic
+
+    - name: add spotify apt gpg
+      shell: curl -fsSL https://download.spotify.com/debian/pubkey_0D811D58.gpg | apt-key add -
+      become: true
+      args:
+        warn: no
+
+    - name: add spotify apt repository
+      apt_repository:
+        repo: deb http://repository.spotify.com stable non-free
+        state: present
+      become: true
+
+    - name: add gyazo apt repository
+      shell: |
+        which gyazo && exit 0
+        curl -s https://packagecloud.io/install/repositories/gyazo/gyazo-for-linux/script.deb.sh | os=ubuntu dist={{ upstream.stdout }} bash
+      become: true
+      args:
+        warn: no
+
+    - name: Install Zoom
+      shell: |
+        which zoom && exit 0
+        curl -L https://zoom.us/client/latest/zoom_amd64.deb -o /tmp/zoom.deb && dpkg -i /tmp/zoom.deb
+      become: true
+      args:
+        warn: no
+
+
+    - name: apt install
+      apt: name={{ item }} update_cache=yes cache_valid_time=36
+      become: true
+      with_items:
+        - gyazo
+        - scrot # use from ~/.gyazo.config.yml
+        - byzanz
+        - spotify-client
+        - wine-stable
+        - playonlinux
+        - gimp
+        - inkscape
+        - libreoffice
+        - vlc
+        # - libxcb-xtest0 # zoom dependency
+        # - libgl1-mesa-glx # zoom dependency
+        # - libegl1-mesa # zoom dependency
