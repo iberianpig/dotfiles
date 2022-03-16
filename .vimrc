@@ -185,6 +185,14 @@ set autoindent                        " 改行時に前の行のインデント�
 set smartindent                       " 改行時に入力された行の末尾に合わせて次の行のインデントを増減する
 set indentkeys=!^F,o,O,0<Bar>,0=where " 自動インデントを発動させるタイミングを設定する
 
+" signの幅を予め確保しておく
+set signcolumn=yes
+
+" 新しいウィンドウを下に開く
+set splitbelow
+" 新しいウィンドウを右に開く
+set splitright
+
 " 日本語ヘルプを利用する
 set helplang=ja,en
 
@@ -243,8 +251,6 @@ augroup END
 
 " set re=1
 
-" set runtimepath+=~/.ghq/github.com/junegunn/fzf/bin/
-" set runtimepath+=~/.vim/snippets/
 set runtimepath+=~/.vim/ftplugin/
 
 " let g:ruby_path = system('echo $HOME/.rbenv/shims')
@@ -296,7 +302,6 @@ Plug 'thinca/vim-ref', { 'on': ['Ref', 'RefHistory'] }
 Plug 'mfumi/ref-dicts-en'
 Plug 'tyru/vim-altercmd'
 Plug 'ujihisa/neco-look'
-Plug 'skanehira/translate.vim'
 
 " カーソル下をハイライト
 Plug 'osyo-manga/vim-brightest'
@@ -397,8 +402,10 @@ Plug 'rhysd/clever-f.vim'
 
 " Surround
 " Plug 'tpope/vim-surround'
-Plug 'kana/vim-textobj-user' | Plug 'osyo-manga/vim-textobj-multiblock'
-Plug 'kana/vim-operator-user' | Plug 'rhysd/vim-operator-surround'
+Plug 'rhysd/vim-textobj-anyblock' | Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-line' | Plug 'kana/vim-textobj-user'
+Plug 'fvictorio/vim-textobj-backticks' | Plug 'kana/vim-textobj-user'
+Plug 'rhysd/vim-operator-surround' | Plug 'kana/vim-operator-user'
 
 " Rename
 Plug 'qpkorr/vim-renamer', { 'on': 'Renamer'}
@@ -418,13 +425,14 @@ Plug 'rcmdnk/vim-markdown',  { 'for': ['markdown'] } | Plug 'godlygeek/tabular' 
 " 日本語の句読点をTextObjectの区切りと扱う 
 Plug 'deton/jasentence.vim', { 'for': ['markdown'] }
 " マークダウンをブラウザ上でHTMLレンダリング
-" Plug 'kannokanno/previm', {'for': ['markdown'] }
 Plug 'rhysd/vim-gfm-syntax', { 'for': 'markdown' }
-Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'vim-plug']}
+Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'plantuml', 'vim-plug']}
 
 Plug 'heavenshell/vim-textlint', { 'for': 'markdown' }
 
-""Rails
+Plug 'mattn/vim-maketable', { 'for': 'markdown' }
+
+"" Rails
 " 規約ベースのコードジャンプ、b:rails_rootを定義
 Plug 'tpope/vim-rails', { 'for': ['ruby'] }
 " slimのsyntax highlight
@@ -432,7 +440,9 @@ Plug 'slim-template/vim-slim', { 'for': ['slim'] }
 
 "" Go
 Plug 'benmills/vimux' | Plug 'sebdah/vim-delve', { 'for': ['go'] }
-" Plug 'mattn/vim-goimports', { 'for': ['go'] }
+Plug 'mattn/vim-goimports', { 'for': ['go'] }
+Plug 'mattn/vim-gotmpl', { 'for': ['go'] }
+Plug 'mattn/vim-gomod', { 'for': ['go'] }
 
 "" python
 Plug 'Glench/Vim-Jinja2-Syntax'
@@ -464,6 +474,11 @@ Plug 'jparise/vim-graphql',  {'for':['javascript', 'html', 'graphql']}
 " vtl
 Plug 'lepture/vim-velocity', { 'for':['velocity', 'vtl'] }
 
+" toml
+Plug 'cespare/vim-toml', { 'for': ['toml'] }
+
+" PlantUML
+Plug 'aklt/plantuml-syntax', { 'for': ['plantuml'] }
 
 " css
 " Plug 'lilydjwg/colorizer'
@@ -476,18 +491,18 @@ Plug 'lepture/vim-velocity', { 'for':['velocity', 'vtl'] }
 Plug 'vim-scripts/AnsiEsc.vim', {'on': ['DM', 'RWP', 'AnsiEsc', 'RM', 'SM', 'WLR', 'SWP']}
 
 
-"colorscheme
+" colorscheme
 Plug 'w0ng/vim-hybrid' 
 Plug 'morhetz/gruvbox'
 Plug 'kristijanhusak/vim-hybrid-material'
 
 Plug 'miyakogi/seiya.vim'
 
-"help
+" help
 Plug 'vim-jp/vimdoc-ja'
 Plug 'KabbAmine/zeavim.vim'
 
-"readline lik keybindings
+" readline lik keybindings
 Plug 'tpope/vim-rsi'
 
 "create vim plugin's skeleton
@@ -849,22 +864,34 @@ let g:markdown_fenced_languages = ['ruby', 'json', 'vim', 'sh', 'javascript']
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
 
-"previm
-augroup MarkdownPreviews
+" markdown-preview
+let g:mkdp_filetypes = ['markdown', 'plantuml']
+
+augroup LeaderR
   autocmd!
-  autocmd  FileType markdown call s:loadMarkdownPreview()
+  autocmd BufEnter * call s:loadLeaderRMapping()
 augroup END
 
-function! s:loadMarkdownPreview()
-  nnoremap <Leader>r :MarkdownPreview<CR>
+function! s:loadLeaderRMapping()
+  if index(g:mkdp_filetypes, &ft) < 0
+    nnoremap <Leader>r :QuickRun -runner job<CR>
+    vnoremap <Leader>r :QuickRun -runner job<CR>
+  else
+    nnoremap <Leader>r :MarkdownPreview<CR>
+  endif
 endfunction
 
-" "vim-ref
-" vim-ref のバッファを q で閉じられるようにする
-augroup vimref_local_keymap
-  autocmd!
-  autocmd FileType ref-* nnoremap <buffer> <silent> q :<C-u>close<CR>
-augroup END
+let ruby_bundle_hook = {'kind': 'hook', 'name': 'ruby_bundle'}
+function ruby_bundle_hook.on_normalized(session, context) abort
+  if getcwd() !=# $HOME && isdirectory('.bundle')
+    let a:session.config.exec =
+          \   map(copy(a:session.config.exec), 's:bundle_exec(v:val)')
+  endif
+endfunction
+function s:bundle_exec(cmd) abort
+  return substitute(a:cmd, '\ze%c', 'bundle exec ', '')
+endfunction
+call quickrun#module#register(ruby_bundle_hook, 1)
 
 " テキストブラウザのインストールが必要
 " sudo apt-get install lynx
@@ -960,6 +987,9 @@ nnoremap <silent> <leader>a :TestSuite<CR>
 nnoremap <silent> <leader>l :TestLast<CR>
 nnoremap <silent> <leader>g :TestVisit<CR>
 
+" require 'yarn add global jest-vim-reporter'
+let g:test#javascript#jest#options = '--reporters jest-vim-reporter'
+let test#javascript#runner = 'jest'
 
 let test#go#runner = 'gotest'
 
@@ -1079,7 +1109,7 @@ let g:tig_explorer_keymap_edit_e  = 'e'
 " let g:tig_explorer_keymap_commit_tabedit = '<ESC>t'
 " let g:tig_explorer_keymap_commit_split   = '<ESC>s'
 " let g:tig_explorer_keymap_commit_vsplit  = '<ESC>v'
-let g:tig_explorer_use_builtin_term = 0
+let g:tig_explorer_use_builtin_term = 1
 
 " ranger-explorer
 nnoremap [explorer]c :<C-u>RangerOpenCurrentFile<CR>
@@ -1269,23 +1299,30 @@ augroup lsp_enabled
     autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
+" Enable efm-langserver for custom linter and formatter
 let g:lsp_settings = {
-    \ 'efm-langserver': {
-    \   'disabled': 0,
-    \   'allowlist': ['markdown', 'ruby'],
-    \  }
-    \ }
+  \ 'efm-langserver': {
+  \   'disabled': 1,
+  \  }
+  \ }
+" Configure efm-langserver in ~/.config/efm-langserver/config.yaml
+let g:lsp_settings_filetype_ruby = ['solargraph']
 
+let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'eslint-language-server']
+
+let g:lsp_settings_filetype_go = ['gopls']
 " let g:lsp_settings_filetype_go = ['gopls', 'golangci-lint-langserver']
-augroup vim_lsp_golangci_lint_langserver
-  au!
-  autocmd User lsp_setup call lsp#register_server({
-      \ 'name': 'golangci-lint-langserver',
-      \ 'cmd': {server_info->['golangci-lint-langserver']},
-      \ 'initialization_options': {'command': ['golangci-lint', 'run', '--out-format', 'json']},
-      \ 'whitelist': ['go'],
-      \ })
-augroup END
+
+" augroup vim_lsp_golangci_lint_langserver
+"   au!
+"   autocmd User lsp_setup call lsp#register_server({
+"      \ 'name': 'golangci-lint-langserver',
+"      \ 'cmd': {server_info->['golangci-lint-langserver']},
+"      \ 'initialization_options': {'command': ['golangci-lint', 'run', '--out-format', 'json']},
+"      \ 'whitelist': ['go'],
+"      \ })
+" augroup END
+
 
 "vim-grammarous
 let g:grammarous#default_comments_only_filetypes = {
@@ -1301,16 +1338,20 @@ map <silent> sd <Plug>(operator-surround-delete)
 map <silent> sr <Plug>(operator-surround-replace)
 
 " カーソル位置から一番近い括弧を削除する
-nmap <silent> sdd <Plug>(operator-surround-delete)<Plug>(textobj-multiblock-a)
+nmap <silent> sdd <Plug>(operator-surround-delete)<Plug>(textobj-anyblock-a)
 
 " カーソル位置から一番近い括弧を変更する
-nmap <silent> srr <Plug>(operator-surround-replace)<Plug>(textobj-multiblock-a)
+nmap <silent> srr <Plug>(operator-surround-replace)<Plug>(textobj-anyblock-a)
 
 " text objectの拡張
-omap ab <Plug>(textobj-multiblock-a)
-omap ib <Plug>(textobj-multiblock-i)
-vmap ab <Plug>(textobj-multiblock-a)
-vmap ib <Plug>(textobj-multiblock-i)
+omap ab <Plug>(textobj-anyblock-a)
+omap ib <Plug>(textobj-anyblock-i)
+vmap ab <Plug>(textobj-anyblock-a)
+vmap ib <Plug>(textobj-anyblock-i)
+omap al <Plug>(textobj-line-a)
+omap il <Plug>(textobj-line-i)
+vmap al <Plug>(textobj-line-a)
+vmap il <Plug>(textobj-line-i)
 
 augroup asyncomplete_register_source
   autocmd!
@@ -1344,5 +1385,47 @@ augroup END
 " TabNine::config.
 
 
-nnoremap <silent> <Leader>r :QuickRun -runner terminal<CR>
-vnoremap <silent> <Leader>r :QuickRun -runner terminal<CR>
+" function! OpenTig()
+"   silent !GIT_EDITOR=/home/iberianpig/Dropbox/document/2021-12-15_seamless_switching_between_vim_and_tui/editor.sh tig
+"   let callback_file = '/tmp/vim_tig_current_file'
+"   if !filereadable(callback_file)
+"     redraw!
+"     return
+"   endif
+"   execute readfile(callback_file)[0]
+"   call delete(callback_file)
+" endfunction
+" nnoremap <silent> ,t :call OpenTig()<CR>
+
+
+function! RangeChooser()
+    let temp = tempname()
+    " The option "--choosefiles" was added in ranger 1.5.1. Use the next line
+    " with ranger 1.4.2 through 1.5.0 instead.
+    "exec 'silent !ranger --choosefile=' . shellescape(temp)
+    if has("gui_running")
+        exec 'silent !xterm -e ranger --choosefiles=' . shellescape(temp)
+    else
+        exec 'silent !ranger --choosefiles=' . shellescape(temp)
+    endif
+    if !filereadable(temp)
+        redraw!
+        " Nothing to read.
+        return
+    endif
+    let names = readfile(temp)
+    if empty(names)
+        redraw!
+        " Nothing to open.
+        return
+    endif
+    " Edit the first item.
+    exec 'edit ' . fnameescape(names[0])
+    " Add any remaning items to the arg list/buffer list.
+    for name in names[1:]
+        exec 'argadd ' . fnameescape(name)
+    endfor
+    redraw!
+endfunction
+command! -bar RangerChooser call RangeChooser()
+nnoremap <leader>r :<C-U>RangerChooser<CR>

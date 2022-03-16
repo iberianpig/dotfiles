@@ -1,10 +1,10 @@
-# feat(): feature
-# fix(): bug fix
-# style(): formatting, missing semi colons, …
-# docs(): documentation
-# refactor(): 
-# test(): when adding missing tests
-# chore(): maintain
+# feat(*): feature
+# fix(*): bug fix
+# style(*): formatting, missing semi colons, …
+# docs(*): documentation
+# refactor(*): 
+# test(*): when adding missing tests
+# chore(*): maintain
 
 # Body
 

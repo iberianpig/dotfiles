@@ -43,7 +43,7 @@ bind generic F none
 bind generic F !git fe # git fetch
 
 bind branch c !?git co %(branch)
-bind branch C !?git co -b %(prompt) %(branch)
+bind branch C !?git co -b %(prompt) %(commit)
 bind branch P !?git push origin %(branch)
 bind branch L !?git pull origin %(branch)
 bind branch H !git-browse-remote %(branch)
@@ -68,6 +68,7 @@ bind diff    <Esc>i      ?git rebase -i %(branch)
 bind refs    <Esc>i      ?git rebase -i %(branch)
 bind main    I           ?git rebase -i %(commit)
 bind diff    I           ?git rebase -i %(commit)
+bind refs    I           ?git rebase -i %(commit)
 
 # reflog
 bind generic L      !sh -c "git reflog --pretty=raw | tig --pretty=raw"
@@ -142,6 +143,10 @@ bind generic T !git notes edit %(commit)
 # difftool
 bind status <Esc>d !sh -c "git difftool -y \"$(git rev-parse --show-toplevel)/%(file)\""
 bind main   <Esc>d !?sh -c "git difftool -d --trust-exit-code $(git merge-base origin/master %(commit))...%(commit)"
+
+bind diff   D !?sh "git difftool %(commit) -- %(file)"
+bind log    D !?sh "git difftool %(commit) -- %(file)"
+bind pager  D !?sh "git difftool %(commit) -- %(file)"
 
 # $ cp /usr/share/doc/tig/examples/large-repo.tigrc ~/dotfiles/.tigrc.large
 source ~/.tigrc.large
