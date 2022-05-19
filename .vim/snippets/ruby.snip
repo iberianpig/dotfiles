@@ -104,8 +104,18 @@ snippet     pry
 abbr        binding.pry
     require 'pry-byebug'; binding.pry
 
+snippet     dbg
+abbr        debugger
+    require 'debug'; debugger
+
 snippet defo
 abbr    def override_this_method(...
     def ${1:method}
       raise NotImplementedError, "override #{self.class.name}##{__method__}"
+    end
+
+snippet if__FILE__
+abbr if $PROGRAM_NAME == __FILE__
+    if $PROGRAM_NAME == __FILE__
+        ${1:# TODO}
     end

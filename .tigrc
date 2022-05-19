@@ -46,10 +46,8 @@ bind branch c !?git co %(branch)
 bind branch C !?git co -b %(prompt) %(commit)
 bind branch P !?git push origin %(branch)
 bind branch L !?git pull origin %(branch)
-bind branch H !git-browse-remote %(branch)
 bind branch f !git fe
 bind branch <ESC>m !?git branch --move %(branch) %(prompt)
-bind branch gc !sh -c 'git commit --allow-empty -m "chore(WIP): draft" && gh pr create --web'
 
 # M で merge
 bind generic M      none
@@ -123,11 +121,11 @@ bind generic <Esc>p  <sh -c "tig $(git merge-base %(commit) $(git branch  | grep
 
 # githubでコミットのページを確認する
 # FIXME: .gitを含む場合の処理がおかしいので修正
-bind main  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/commit/%(commit)'"
-bind diff  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/commit/%(commit)'"
-bind tree  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/tree/%(commit)/%(directory)'"
-bind blob  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/tree/%(commit)/%(file)'"
-bind blame B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/tree/%(commit)/%(file)'"
+bind main  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com|github\.[.A-z]*)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/commit/%(commit)'"
+bind diff  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com|github\.[.A-z]*)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/commit/%(commit)'"
+bind tree  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com|github\.[.A-z]*)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/tree/%(commit)/%(directory)'"
+bind blob  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com|github\.[.A-z]*)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/tree/%(commit)/%(file)'"
+bind blame B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com|github\.[.A-z]*)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/tree/%(commit)/%(file)'"
 # bind main  B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
 # bind diff  B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
 # bind tree  B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
@@ -147,6 +145,10 @@ bind main   <Esc>d !?sh -c "git difftool -d --trust-exit-code $(git merge-base o
 bind diff   D !?sh "git difftool %(commit) -- %(file)"
 bind log    D !?sh "git difftool %(commit) -- %(file)"
 bind pager  D !?sh "git difftool %(commit) -- %(file)"
+
+# gh
+bind branch <ESC>h !?sh -c "gh pr view %(branch) || git commit --allow-empty -m 'chore(WIP): draft' && gh pr create --draft"
+bind branch H !sh -c "gh pr view %(branch) || gh pr create --draft"
 
 # $ cp /usr/share/doc/tig/examples/large-repo.tigrc ~/dotfiles/.tigrc.large
 source ~/.tigrc.large

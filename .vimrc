@@ -234,6 +234,9 @@ nnoremap <silent> gx :tabclose<CR>
 nnoremap <silent> gp :tabprevious<CR>
 nnoremap <silent> gn :tabnext<CR>
 
+" terminal mode 
+" " ノーマルモード(コピーできるようにする)
+tnoremap <C-w>[ <C-w>N
 
 augroup add_syntax_highlight
   autocmd!
@@ -438,10 +441,10 @@ Plug 'tpope/vim-rails', { 'for': ['ruby'] }
 " slimのsyntax highlight
 Plug 'slim-template/vim-slim', { 'for': ['slim'] }
 
-"" Go
+"" Golang
 Plug 'benmills/vimux' | Plug 'sebdah/vim-delve', { 'for': ['go'] }
 Plug 'mattn/vim-goimports', { 'for': ['go'] }
-Plug 'mattn/vim-gotmpl', { 'for': ['go'] }
+" Plug 'mattn/vim-gotmpl', { 'for': ['go'] }
 Plug 'mattn/vim-gomod', { 'for': ['go'] }
 
 "" python
@@ -797,13 +800,13 @@ call submode#map('winsize',        'n', '', 'K', '<C-w>+')
 
 "" over.vim
 " over.vimの起動
-nnoremap <silent> <C-s> :OverCommandLine<CR>%s/<C-r><C-w>//<Left><C-r><C-w>
-vnoremap <silent> <C-s> y:OverCommandLine<CR>%s/<C-r>"//<Left><C-r>"
-vnoremap <silent> :s :OverCommandLine<CR>s//<Left>
+nnoremap <silent> <C-s> :OverCommandLine<CR>%s;<C-r><C-w>;;<Left><C-r><C-w>
+vnoremap <silent> <C-s> y:OverCommandLine<CR>%s;<C-r>";;<Left><C-r>"
+vnoremap <silent> :s :OverCommandLine<CR>s;;<Left>
 " カーソル下の単語をハイライト付きで置換
-nnoremap s :OverCommandLine<CR>%s/<C-r><C-w>//<Left>
+nnoremap s :OverCommandLine<CR>%s;<C-r><C-w>;;<Left>
 " コピーした文字列をハイライト付きで置換
-vnoremap s y:OverCommandLine<CR>%s/<C-r>=substitute(@0, '/', '/', 'g')<CR>//<Left>
+vnoremap s y:OverCommandLine<CR>%s;<C-r>=substitute(@0, ';', ';', 'g')<CR>//<Left>
 
 " <C-v> 時に特殊文字を挿入
 OverCommandLineMap <C-v> <C-q>
@@ -976,7 +979,8 @@ augroup indent_guides_color
 augroup END
 
 " vim-test setting
-let test#strategy = 'dispatch'
+" let test#strategy = 'dispatch'
+let test#strategy = 'vimterminal'
 augroup MyGroup
     autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
 augroup END

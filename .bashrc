@@ -16,7 +16,7 @@
 export HISTFILE=$HOME/.bash_history
 
 export HISTSIZE=10000                   # big big history
-export HISTFILESIZE=10000               # big big history
+export HISTFILESIZE=100000               # big big history
 # HISTCONTROL=ignoreboth:erasedups
 
 # https://piro.sakura.ne.jp/latest/blosxom/webtech/2018-03-04_history-nodup-with-tmux.htm
@@ -225,3 +225,8 @@ if [ -f '/home/iberianpig/google-cloud-sdk/path.bash.inc' ]; then . '/home/iberi
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/home/iberianpig/google-cloud-sdk/completion.bash.inc' ]; then . '/home/iberianpig/google-cloud-sdk/completion.bash.inc'; fi
+
+# kubectl
+if which kubectl > /dev/null; then
+  source <(kubectl completion bash)
+fi

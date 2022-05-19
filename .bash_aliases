@@ -42,12 +42,12 @@ alias mozc-dict="/usr/lib/mozc/mozc_tool --mode=dictionary_tool"
 # search markdown and open with vim
 alias 'md'='vim ./*.md'
 
-dic () {
-  w3m "http://ejje.weblio.jp/content/$1" | grep "用例"
-}
-
 alias vi='vim'
 
-alias open='gnome-open'
-
 alias ssh_ec2='~/.ghq/github.com/iberianpig/connect_ec2/ssh_ec2.sh'
+
+
+# awsume
+if which awsume > /dev/null; then
+  alias awsume=". awsume"
+fi

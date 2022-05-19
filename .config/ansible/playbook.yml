@@ -1,3 +1,5 @@
+# ansible-playbook -K --start-at='Install AWS eksctl' --step ~/.config/ansible/playbook.yml
+
 - hosts: 127.0.0.1
   connection: local
   user: iberianpig
@@ -33,14 +35,15 @@
         state: present
       become: true
 
-    - name: add gh repository
+    - name: gh
       shell: |
         which gh && exit 0
-        apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
-        apt-add-repository https://cli.github.com/packages
+        url=$(curl --silent https://api.github.com/repos/cli/cli/releases/latest | jq '.assets[] | select(.name | test("linux_amd64.deb")).browser_download_url')
+        curl -L $url -o /tmp/gh.deb && dpkg -i /tmp/gh.deb
       become: true
       args:
         warn: no
+
 
     - name: add apt repositories
       apt_repository: repo={{ item }}
@@ -197,6 +200,17 @@
         curl -o $zip https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip
         unzip $zip -d $dest
         $dest/aws/install
+      become: true
+      args:
+        warn: no
+
+    - name: Install AWS eksctl
+      shell: |
+        which eksctl && exit 0
+        archive=/tmp/eksctl.tar.gz
+        dest=/usr/local/bin
+        curl -L -o $archive https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz
+        tar xvf $archive -C $dest
       become: true
       args:
         warn: no
