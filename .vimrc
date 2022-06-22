@@ -321,11 +321,12 @@ Plug 'prabirshrestha/vim-lsp'
 " Plug '~/.ghq/github.com/prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 
-" Plug 'thomasfaingnaert/vim-lsp-snippets'
-" Plug 'thomasfaingnaert/vim-lsp-neosnippet'
 Plug 'Shougo/neosnippet.vim'
 Plug 'Shougo/neosnippet-snippets'
 Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
+
+Plug 'thomasfaingnaert/vim-lsp-snippets'
+Plug 'thomasfaingnaert/vim-lsp-neosnippet'
 
 " Plug 'yami-beta/asyncomplete-omni.vim'
 " Plug 'Shougo/neco-syntax'
@@ -333,6 +334,7 @@ Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
 Plug 'htlsne/asyncomplete-look'
 
 Plug 'kitagry/asyncomplete-tabnine.vim', { 'do': './install.sh'  }
+Plug 'iberianpig/copilot.vim'
 
 Plug 'prettier/vim-prettier', {
  \ 'do': 'yarn install',
@@ -372,8 +374,8 @@ Plug 'anyakichi/vim-qfutil'
 " Plug 'maximbaz/lightline-ale'
 
 " 非同期バッチをTmuxやTerminalに渡して処理出来る
-Plug 'tpope/vim-dispatch', {'on': ['Dispatch', 'FocusDispatch','Spawn', 'Start', 'Copen']}
-Plug 'skywind3000/asyncrun.vim'
+" Plug 'tpope/vim-dispatch', {'on': ['Dispatch', 'FocusDispatch','Spawn', 'Start', 'Copen']}
+" Plug 'skywind3000/asyncrun.vim'
 
 " テストランナー
 Plug 'janko-m/vim-test'
@@ -417,7 +419,7 @@ Plug 'qpkorr/vim-renamer', { 'on': 'Renamer'}
 Plug 'editorconfig/editorconfig-vim', { 'on': ['EditorConfigReload']}
 
 " cd project-root
-" Plug 'airblade/vim-rooter'
+Plug 'airblade/vim-rooter'
 
 " grammar checker
 Plug 'rhysd/vim-grammarous'
@@ -491,8 +493,7 @@ Plug 'aklt/plantuml-syntax', { 'for': ['plantuml'] }
 " Plug 'cakebaker/scss-syntax.vim', {'for':['scss']}
 
 " log
-Plug 'vim-scripts/AnsiEsc.vim', {'on': ['DM', 'RWP', 'AnsiEsc', 'RM', 'SM', 'WLR', 'SWP']}
-
+Plug 'powerman/vim-plugin-AnsiEsc'
 
 " colorscheme
 Plug 'w0ng/vim-hybrid' 
@@ -527,7 +528,10 @@ Plug 'pearofducks/ansible-vim', { 'do': 'cd ./UltiSnips; ./generate.py'  }
 " terraform
 Plug 'hashivim/vim-terraform'
 
-Plug 'lambdalisue/gina.vim'
+Plug 'direnv/direnv.vim'
+
+" protobuf
+Plug 'uarun/vim-protobuf'
 
 " ローカル管理のPlugin
 Plug '~/.ghq/github.com/iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.vim'
@@ -830,7 +834,9 @@ let g:fzf_layout = { 'down': '~25%' }
 "" fzf-filemru
 let g:fzf_filemru_bufwrite=1
 
-nnoremap <Space> <Nop>
+
+nnoremap  [fzf]  <Nop>
+nnoremap <Space> [fzf]
 nmap <Space> [fzf]
 vnoremap <Space> <Nop>
 vmap <Space> [fzf]
@@ -861,6 +867,9 @@ nnoremap <silent> [fzf]h :<C-u>Helptags<CR>
 
 nnoremap <silent> [fzf]r :call fzf#run(fzf#wrap({'source': 'ghq list --full-path', 'sink': 'edit' }))<CR>
 
+" カーソル下のパスを開く"
+nnoremap <silent> [fzf] gF
+
 " markdownの設定
 " see /usr/share/vim/vim80/syntax/*.vim
 let g:markdown_fenced_languages = ['ruby', 'json', 'vim', 'sh', 'javascript']
@@ -875,26 +884,47 @@ augroup LeaderR
   autocmd BufEnter * call s:loadLeaderRMapping()
 augroup END
 
+" Switch QuickRun / MarkdownPreview
 function! s:loadLeaderRMapping()
   if index(g:mkdp_filetypes, &ft) < 0
-    nnoremap <Leader>r :QuickRun -runner job<CR>
-    vnoremap <Leader>r :QuickRun -runner job<CR>
+    nnoremap <Leader>r :QuickRun -runner terminal<CR>
+    vnoremap <Leader>r :QuickRun -runner terminal<CR>
   else
     nnoremap <Leader>r :MarkdownPreview<CR>
   endif
 endfunction
 
-let ruby_bundle_hook = {'kind': 'hook', 'name': 'ruby_bundle'}
-function ruby_bundle_hook.on_normalized(session, context) abort
-  if getcwd() !=# $HOME && isdirectory('.bundle')
-    let a:session.config.exec =
-          \   map(copy(a:session.config.exec), 's:bundle_exec(v:val)')
-  endif
-endfunction
-function s:bundle_exec(cmd) abort
-  return substitute(a:cmd, '\ze%c', 'bundle exec ', '')
-endfunction
-call quickrun#module#register(ruby_bundle_hook, 1)
+" quickrun
+" let ruby_bundle_hook = {'kind': 'hook', 'name': 'ruby_bundle'}
+" function ruby_bundle_hook.on_normalized(session, context) abort
+"   if getcwd() !=# $HOME && isdirectory('.bundle')
+"     let a:session.config.exec =
+"          \   map(copy(a:session.config.exec), 's:bundle_exec(v:val)')
+"   endif
+" endfunction
+" function s:bundle_exec(cmd) abort
+"   return substitute(a:cmd, '\ze%c', 'bundle exec ', '')
+" endfunction
+" call quickrun#module#register(ruby_bundle_hook, 1)
+
+augroup quickrun
+  autocmd!
+  autocmd FileType quickrun AnsiEsc
+augroup END
+
+let g:quickrun_config = get(g:, 'quickrun_config', {})
+let g:quickrun_config._ = {
+      \ 'runner'    : 'terminal',
+      \   'hook/close_quickfix/enable_hook_loaded' : 1,
+      \   'hook/close_quickfix/enable_success'     : 1,
+      \   'hook/close_buffer/enable_hook_loaded'   : 1,
+      \   'hook/close_buffer/enable_failure'       : 1,
+      \   'hook/inu/enable'                        : 1,
+      \   'hook/inu/wait'                          : 1,
+      \   'outputter'                              : 'multi:buffer:quickfix',
+      \   'outputter/buffer/split'                 : 'botright',
+      \   'outputter/quickfix/open_cmd'            : 'copen',
+      \ }
 
 " テキストブラウザのインストールが必要
 " sudo apt-get install lynx
@@ -981,9 +1011,9 @@ augroup END
 " vim-test setting
 " let test#strategy = 'dispatch'
 let test#strategy = 'vimterminal'
-augroup MyGroup
-    autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
-augroup END
+" augroup MyGroup
+"     autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
+" augroup END
 
 nnoremap <silent> <leader>t :TestNearest<CR>
 nnoremap <silent> <leader>T :TestFile<CR>
@@ -1035,7 +1065,12 @@ function! DockerTransformer(cmd) abort
   let prefix = ''
   let compose_option = ''
 
+  echomsg 'SPEC_COMPOSE_FILE:' . $SPEC_COMPOSE_FILE
+  echomsg 'SPEC_PROJECT_ROOT__GO:' . $SPEC_PROJECT_ROOT__GO
+  echomsg 'SPEC_CONTAINER__GO:' . $SPEC_CONTAINER__GO
+
   if $SPEC_COMPOSE_FILE !=# ''
+    echomsg 1
     let compose_option = ' -f ' . $SPEC_COMPOSE_FILE
   endif
   if &filetype == 'ruby'
@@ -1050,9 +1085,9 @@ function! DockerTransformer(cmd) abort
       cd $SPEC_PROJECT_ROOT__GO
       let g:test#project_root = $SPEC_PROJECT_ROOT__GO
     endif
-    if $SPEC_CONTAINER__GO !=# ''    | let prefix = 'docker-compose' . compose_option . ' exec ' . $SPEC_CONTAINER__GO . ' ' . $SPEC_PREFIX__GO .' ' | endif
+    if $SPEC_CONTAINER__GO !=# '' | let prefix = 'docker-compose' . compose_option . ' exec ' . $SPEC_CONTAINER__GO . ' ' . $SPEC_PREFIX__GO .' '|  endif
   endif
-  if prefix
+  if prefix !=# ''
     let g:dispatch_compilers[prefix] = ''
     echomsg prefix . cmd
     return  prefix . cmd
@@ -1078,7 +1113,7 @@ vmap <Enter> <Plug>(EasyAlign)
 "" Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
-nnoremap , <Nop>
+nnoremap [explorer] <Nop>
 nmap , [explorer]
 vnoremap , <Nop>
 vmap , [explorer]
@@ -1113,7 +1148,7 @@ let g:tig_explorer_keymap_edit_e  = 'e'
 " let g:tig_explorer_keymap_commit_tabedit = '<ESC>t'
 " let g:tig_explorer_keymap_commit_split   = '<ESC>s'
 " let g:tig_explorer_keymap_commit_vsplit  = '<ESC>v'
-let g:tig_explorer_use_builtin_term = 1
+let g:tig_explorer_use_builtin_term = 0
 
 " ranger-explorer
 nnoremap [explorer]c :<C-u>RangerOpenCurrentFile<CR>
@@ -1376,7 +1411,7 @@ augroup asyncomplete_register_source
   au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#tabnine#get_source_options({
        \ 'name': 'tabnine',
        \ 'allowlist': ['*'],
-       \ 'priority': 2000,
+       \ 'priority': 20000,
        \ 'completor': function('asyncomplete#sources#tabnine#completor'),
        \ 'config': {
        \   'line_limit': 1000,
@@ -1402,34 +1437,34 @@ augroup END
 " nnoremap <silent> ,t :call OpenTig()<CR>
 
 
-function! RangeChooser()
-    let temp = tempname()
-    " The option "--choosefiles" was added in ranger 1.5.1. Use the next line
-    " with ranger 1.4.2 through 1.5.0 instead.
-    "exec 'silent !ranger --choosefile=' . shellescape(temp)
-    if has("gui_running")
-        exec 'silent !xterm -e ranger --choosefiles=' . shellescape(temp)
-    else
-        exec 'silent !ranger --choosefiles=' . shellescape(temp)
-    endif
-    if !filereadable(temp)
-        redraw!
-        " Nothing to read.
-        return
-    endif
-    let names = readfile(temp)
-    if empty(names)
-        redraw!
-        " Nothing to open.
-        return
-    endif
-    " Edit the first item.
-    exec 'edit ' . fnameescape(names[0])
-    " Add any remaning items to the arg list/buffer list.
-    for name in names[1:]
-        exec 'argadd ' . fnameescape(name)
-    endfor
-    redraw!
-endfunction
-command! -bar RangerChooser call RangeChooser()
-nnoremap <leader>r :<C-U>RangerChooser<CR>
+" function! RangeChooser()
+"     let temp = tempname()
+"     " The option "--choosefiles" was added in ranger 1.5.1. Use the next line
+"     " with ranger 1.4.2 through 1.5.0 instead.
+"     "exec 'silent !ranger --choosefile=' . shellescape(temp)
+"     if has("gui_running")
+"         exec 'silent !xterm -e ranger --choosefiles=' . shellescape(temp)
+"     else
+"         exec 'silent !ranger --choosefiles=' . shellescape(temp)
+"     endif
+"     if !filereadable(temp)
+"         redraw!
+"         " Nothing to read.
+"         return
+"     endif
+"     let names = readfile(temp)
+"     if empty(names)
+"         redraw!
+"         " Nothing to open.
+"         return
+"     endif
+"     " Edit the first item.
+"     exec 'edit ' . fnameescape(names[0])
+"     " Add any remaning items to the arg list/buffer list.
+"     for name in names[1:]
+"         exec 'argadd ' . fnameescape(name)
+"     endfor
+"     redraw!
+" endfunction
+" command! -bar RangerChooser call RangeChooser()
+" nnoremap <leader>r :<C-U>RangerChooser<CR>
