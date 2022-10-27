@@ -50,36 +50,22 @@ swipe:
       command: xdotool keyup Alt
   3:
     <<: *drag
+    # <<: *alt_tab
   4:
-    up:
-      # sendkey: 'LEFTMETA+S'
-      # interval: 0.5
-      # threshold: 0.2
-      workspace: next
-      keypress:
-        LEFTSHIFT:
-          # command: xdotool key --clearmodifiers Super+Down
-          window: next
-    down:
-      # sendkey: 'LEFTMETA+W'
-      # command: xdotool key --clearmodifiers Super+w
-      # interval: 0.5
-      # threshold: 0.2
-      workspace: prev
-      keypress:
-        LEFTSHIFT:
-          # command: xdotool key --clearmodifiers Super+Up
-          window: prev
     left:
-      sendkey: 'LEFTMETA+D'
+      sendkey: LEFTMETA+PAGEDOWN # move to next workspace
       keypress:
         LEFTSHIFT:
-          sendkey: LEFTMETA+Right
+          sendkey: LEFTSHIFT+LEFTMETA+PAGEDOWN # move window to next workspace
     right:
-      sendkey: 'LEFTMETA+A'
+      sendkey: LEFTMETA+PAGEUP # move to prev workspace
       keypress:
         LEFTSHIFT:
-          sendkey: LEFTMETA+Left
+          sendkey: LEFTSHIFT+LEFTMETA+PAGEUP # move window to prev workspace
+    up:
+      sendkey: LEFTMETA+S
+    down:
+      sendkey: LEFTMETA+S
 
 pinch:
   2:
@@ -101,15 +87,7 @@ pinch:
     out:
       update:
         command: xdotool click 5 # Zoom out
-  4:
-    in:
-      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
-      # threshold: 0.5
-      interval: 1
-    out:
-      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
-      # threshold: 0.5
-      interval: 1
+
 rotate:
   3:
     clockwise:
@@ -129,47 +107,14 @@ rotate:
           LEFTSHIFT:
             sendkey: LEFTSHIFT+VOLUMEDOWN
 
-tap:
-  1:
-    command: "echo ----------------tap1----------------------------"
-  2:
-    command: "echo ----------------tap2----------------------------"
-  3:
-    command: "echo ----------------tap3----------------------------"
-  4:
-    command: "echo ----------------tap4----------------------------"
-
 hold:
-  1:
-    command: "echo ----------------hold1----------------------------"
-  2:
-    command: "echo ----------------hold2----------------------------"
   3:
-    begin:
-      command: "echo ----------------hold3 begin----------------------------"
-    end:
-      command: "echo ----------------hold3 end----------------------------"
-    cancelled:
-      command: "echo ----------------hold3 cancelled----------------------------"
-    # command: "echo ----------------hold3 timeout----------------------------"
-    command: xdotool click --repeat 2 1
+    sendkey: "LEFTALT+F7" # move window
+    keypress:
+      LEFTSHIFT:
+        sendkey: "LEFTALT+F8" # resize window
   4:
-    # command: "echo ----------------hold4----------------------------"
-    sendkey: "LEFTMETA"
-    threshold: 3
-# hold:
-#   3:
-#     sendkey: "LEFTALT+F7" # move window
-#     keypress:
-#       LEFTSHIFT:
-#         sendkey: "LEFTALT+F8" # resize window
-#   4:
-#     sendkey: "MUTE"
-# 
-# tap:
-#   4:
-#     sendkey: "LEFTMETA"
-#     # window: fullscreen
+    sendkey: "MUTE"
 
 typing: # disable while typing
   # interval: 0.5
@@ -309,6 +254,10 @@ swipe:
       sendkey: 'LEFTSHIFT+LEFTCTRL+T'
     down:
       sendkey: 'LEFTSHIFT+LEFTCTRL+W'
+    right:
+      sendkey: 'LEFTCTRL+PAGEUP'
+    left:
+      sendkey: 'LEFTCTRL+PAGEDOWN'
 
 # pinch:
 #   2:

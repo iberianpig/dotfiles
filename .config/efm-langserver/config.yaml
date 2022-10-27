@@ -1,16 +1,29 @@
-languages:
-  markdown:
+tools:
+  mardkown-textlint: &markdown-textlint
     lint-command: 'npx textlint --format unix ${INPUT}'
     lint-formats:
       - '%f:%l:%n: %m'
-  ruby:
-    lint-command: 'bundle exec rubocop --format emacs --force-exclusion --stdin ${INPUT}'
+  ruby-rubocop: &ruby-rubocop
+      lint-command: 'bundle exec rubocop --format emacs --force-exclusion --stdin ${INPUT}'
+      lint-formats:
+        - '%f:%l:%c: %m'
+      lint-stdin: true
+      root-markers:
+        - Gemfile
+        - Rakefile
+        - .rubocop.yml
+      format-command: 'bundle exec rubocop -A -f quiet --stderr -s ${INPUT} || exit 0'
+      format-stdin: true
+  ruby-standard: &ruby-standardrb
+    lint-command: 'standardrb --no-fix ${INPUT}'
     lint-formats:
-      - '%f:%l:%c: %m'
-    lint-stdin: true
-    root-markers:
-      - Gemfile
-      - Rakefile
-      - .rubocop.yml
-    format-command: 'bundle exec rubocop -A -f quiet --stderr -s ${INPUT}'
+      - "%f:%l:%c: %t: %m"
+    format-command: 'standardrb --fix ${INPUT} || exit 0'
     format-stdin: true
+
+
+languages:
+  markdown:
+    <<: *markdown-textlint
+  ruby:
+    <<: *ruby-rubocop

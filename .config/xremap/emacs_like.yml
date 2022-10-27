@@ -1,0 +1,139 @@
+---
+modmap:
+- name: default
+  remap:
+    CapsLock: LEFTCTRL
+
+keymap:
+# - name: material-shell
+#   remap:
+#     Ctrl-Shift-j: Super-s
+#     Ctrl-Shift-k: Super-w
+#     Ctrl-Shift-l: Super-d
+#     Ctrl-Shift-h: Super-a
+- name: gnome-shell
+  remap:
+    Ctrl-Shift-j: Super-Alt-Up
+    Ctrl-Shift-k: Super-Alt-Down
+    Ctrl-Shift-l: Super-Alt-Right
+    Ctrl-Shift-h: Super-Alt-Left
+- name: vim+emacs
+  remap:
+    Ctrl-o: Alt-Left
+    Ctrl-i: Alt-Right
+    Ctrl-b: Left
+    Ctrl-f: Right
+    Ctrl-p: Up
+    Ctrl-n: Down
+    Ctrl-a: Home
+    Ctrl-e: End
+    Ctrl-k:
+    - Shift-End
+    - Delete
+    Ctrl-u:
+    - Shift-Home
+    - Delete
+    Ctrl-w:
+    - Ctrl-BackSpace
+    Ctrl-d: Delete
+    M-d: Ctrl-Delete
+    Ctrl-h: BackSpace
+    Ctrl-m: Enter
+    Ctrl-LEFTBRACE: Esc
+    Ctrl-q: Ctrl-w
+    Alt-a: Ctrl-a
+    Alt-z: Ctrl-z
+    Alt-x: Ctrl-x
+    Alt-c: Ctrl-c
+    Alt-v: Ctrl-v
+    Alt-w: Ctrl-w
+    Alt-t: Ctrl-t
+    Alt-f: Ctrl-f
+  application:
+    only:
+    - Google-chrome
+    - Navigator
+    - Slack
+    - keepassxc
+    - libreoffice
+    - synapse
+    - shift
+    - mysql-workbench-bin
+    - Mysql-workbench-bin
+    - mysql-workbench-bin.Mysql-workbench-bin
+    - crx_hbdpomandigafcibbmofojjchbcdagbl
+    - crx_edcifkpoamnkimdpjiabhfjahoinbpbp
+    - crx_hmjkmjkepdijhoojdojkdfohbdgmmhki
+    - crx_mjcnijlhddpbdemagnpefmlkjdagkogk
+    - crx_ojcflmmmcfpacggndoaaflkmcoblhnbh
+    - crx_ophjlpahpchlmihnnnihgmmeilfjmjjc
+    - crx_ngboffpgmgciiinnflnkgedmbalfkeeg
+    - evince
+    - discord
+    - calibre-ebook-viewer
+- name: Browser
+  remap:
+    Alt-space: Ctrl-f
+    Alt-n: Ctrl-Tab
+    Alt-p: Ctrl-Shift-Tab
+    Ctrl-q: Ctrl-w
+  application:
+    only:
+    - Google-chrome
+    - Navigator
+# - name: xremap-ruby
+#   remap:
+#     Alt-space: Ctrl-k
+#     Alt-k: Alt-Up
+#     Alt-j: Alt-Down
+#     Ctrl-Alt-k: Alt-Shift-Up
+#     Ctrl-Alt-j: Alt-Shift-Down
+#     Ctrl-Shift-p: Page_Up
+#     Ctrl-Shift-n: Page_Down
+#     Alt-t: Alt-Shift-Up
+#     Alt-w: Alt-Shift-Down
+#     Ctrl-q: Ctrl-w
+#   application:
+#     only:
+#     - discord
+#     - slack
+# - name: xremap-ruby
+#   remap:
+#     Alt-space: S
+#     Alt-t: n
+#     Alt-w:
+#     - Escape
+#     - Escape
+#     Ctrl-o: BackSpace
+#     Alt-Left: BackSpace
+#     Ctrl-q: Ctrl-w
+#   application:
+#     only:
+#     - crx_hbdpomandigafcibbmofojjchbcdagbl
+#     - crx_edcifkpoamnkimdpjiabhfjahoinbpbp
+# - name: xremap-ruby
+#   remap:
+#     Alt-space: S
+#     Ctrl-u: Page_Up
+#     Ctrl-d: Page_Down
+#     Ctrl-q: Ctrl-w
+#   application:
+#     only: crx_mjcnijlhddpbdemagnpefmlkjdagkogk
+# - name: xremap-ruby
+#   remap:
+#     Alt-space: Ctrl-f
+#     Alt-n: Ctrl-n
+#     Alt-b: Ctrl-b
+#     Alt-c: Ctrl-c
+#     Ctrl-q: Ctrl-w
+#   application:
+#     only: keepassxc
+# - name: xremap-ruby
+#   remap:
+#     Alt-space: Ctrl-f
+#     Ctrl-u: Page_Up
+#     Ctrl-d: Page_Down
+#     Alt-k: Ctrl-Up
+#     Alt-j: Ctrl-Down
+#   application:
+#     only: calibre-ebook-viewer

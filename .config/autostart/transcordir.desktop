@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Exec=/home/iberianpig/.ghq/github.com/iberianpig/transcordir/exe/transcordir --dir=/home/iberianpig/Videos/スクリーンキャスト/
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name[ja]=transcordir
+Name=transcordir
+Comment[ja]=
+Comment=

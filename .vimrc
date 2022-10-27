@@ -9,21 +9,30 @@ autocmd!
 set number     " 行番号を表示する
 set cursorline " カーソル行の背景色を変える
 
+" カーソルの設定
+" ref: https://stackoverflow.com/a/42118416
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+
 augroup set_cursorline
   autocmd!
   autocmd InsertLeave * set cursorline
   autocmd InsertEnter * set nocursorline
-augroup END
 
+  " reset the cursor on start (for older versions of vim, usually not required)
+  autocmd VimEnter * silent !echo -ne "\e[2 q"
+augroup END
 
 set laststatus=2   " ステータス行を常に表示
 set cmdheight=2    " メッセージ表示欄を2行確保
 set showmatch      " 対応する括弧を強調表示
 set matchpairs+=「:」,『:』,（:）,【:】,《:》,〈:〉,［:］,‘:’,“:”
+
 set helpheight=998 " ヘルプを画面いっぱいに開く
+
 " set synmaxcol=300  " 長い行の場合、syntaxをoffにする 既定では3000
 set list           " 不可視文字を表示
-set listchars=tab:▸\ ,eol:↲,extends:❯,precedes:❮,nbsp:%,trail:_ " 不可視文字の表示記号指定
+set listchars=tab:▸\ ,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
 " set iskeyword+=?,!,-,@-@ "?,!,@hogeなどをキーワードとする
 
@@ -52,32 +61,32 @@ augroup END
 " Charset, Line ending -----------------
 
 set fileformats=unix,dos,mac  " LF, CRLF, CR
-set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
+" set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
 
-function! s:detect_terminal()
-  if &buftype ==# 'terminal' && &filetype ==# ''
-    set filetype=terminal
-  endif
-endfunction
-
-function! s:set_terminal_option()
-   " ここに :terminal のバッファ固有の設定を記述する
-   set ambiwidth=single  " ズレが発生するので元に戻す
-endfunction
-
-function! s:unset_terminal_option()
-   " ここに :terminalから戻った時に設定を戻す
-   set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
-endfunction
-
-
-augroup toggle_terminal_option
-    autocmd!
-   " BufNew の時点では 'buftype' が設定されていないので timer イベントでごまかすなど…
-    autocmd BufNew * call timer_start(0, { -> s:detect_terminal() })
-    autocmd BufWinEnter,FileType * call s:unset_terminal_option()
-    autocmd BufWinEnter,FileType terminal call s:set_terminal_option()
-augroup END
+" function! s:detect_terminal()
+"   if &buftype ==# 'terminal' && &filetype ==# ''
+"     set filetype=terminal
+"   endif
+" endfunction
+" 
+" function! s:set_terminal_option()
+"    " ここに :terminal のバッファ固有の設定を記述する
+"    set ambiwidth=single  " ズレが発生するので元に戻す
+" endfunction
+" 
+" function! s:unset_terminal_option()
+"    " ここに :terminalから戻った時に設定を戻す
+"    set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
+" endfunction
+" 
+" 
+" augroup toggle_terminal_option
+"     autocmd!
+"    " BufNew の時点では 'buftype' が設定されていないので timer イベントでごまかすなど…
+"     autocmd BufNew * call timer_start(0, { -> s:detect_terminal() })
+"     autocmd BufWinEnter,FileType * call s:unset_terminal_option()
+"     autocmd BufWinEnter,FileType terminal call s:set_terminal_option()
+" augroup END
 
 " set nospell
 
@@ -160,17 +169,15 @@ set clipboard=unnamed,unnamedplus
 " インサートモードから抜けると自動的にIMEをオフにする
 set iminsert=0
 set imsearch=-1
-""Ctrl-Cでインサートモードを抜ける
-inoremap <C-c> <ESC>
 
 " ESC ESC でハイライトを消す
-nnoremap <silent> <ESC><ESC> :nohlsearch<CR>
-" nnoremap <silent> <ESC><ESC> :call ClearHighlight()<CR>
+" nnoremap <silent> <ESC><ESC> :nohlsearch<CR>
+nnoremap <silent> <ESC><ESC> :call ClearHighlight()<CR>
 " 
-" function! ClearHighlight() abort
-"   call feedkeys(":nohlsearch\<CR>", "n") " ハイライトをオフにする
-"   call popup_clear() "ポップアップのクリア
-" endfunction
+function! ClearHighlight() abort
+  call feedkeys(":nohlsearch\<CR>", "n") " ハイライトをオフにする
+  call popup_clear() "ポップアップのクリア
+endfunction
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
 cmap w!! w !sudo tee > /dev/null %
@@ -242,7 +249,8 @@ augroup add_syntax_highlight
   autocmd!
   "シンタックスハイライトの追加
   autocmd BufNewFile,BufRead *.json.jbuilder            set filetype=ruby
-  autocmd BufNewFile,BufRead Gemfile.local              set filetype=ruby
+  autocmd BufNewFile,BufRead Gemfile*                   set filetype=ruby
+  autocmd BufNewFile,BufRead *.thor                     set filetype=ruby
   autocmd BufNewFile,BufRead *.erb                      set filetype=eruby
   autocmd BufNewFile,BufRead *.slim                     set filetype=slim
   " autocmd BufNewFile,BufRead *.scss                     set filetype=scss.css
@@ -374,7 +382,7 @@ Plug 'anyakichi/vim-qfutil'
 " Plug 'maximbaz/lightline-ale'
 
 " 非同期バッチをTmuxやTerminalに渡して処理出来る
-" Plug 'tpope/vim-dispatch', {'on': ['Dispatch', 'FocusDispatch','Spawn', 'Start', 'Copen']}
+Plug 'tpope/vim-dispatch', {'on': ['Dispatch', 'FocusDispatch','Spawn', 'Start', 'Copen']}
 " Plug 'skywind3000/asyncrun.vim'
 
 " テストランナー
@@ -402,8 +410,8 @@ Plug 'wakatime/vim-wakatime'
 " Plug 'vim-scripts/vim-auto-save'
 Plug '907th/vim-auto-save'
 
-" 再帰的なfジャンプ
-Plug 'rhysd/clever-f.vim'
+" " 再帰的なfジャンプ
+" Plug 'rhysd/clever-f.vim'
 
 " Surround
 " Plug 'tpope/vim-surround'
@@ -411,6 +419,10 @@ Plug 'rhysd/vim-textobj-anyblock' | Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-line' | Plug 'kana/vim-textobj-user'
 Plug 'fvictorio/vim-textobj-backticks' | Plug 'kana/vim-textobj-user'
 Plug 'rhysd/vim-operator-surround' | Plug 'kana/vim-operator-user'
+
+" easymotion
+Plug 'vim-denops/denops.vim'
+Plug 'yuki-yano/fuzzy-motion.vim'
 
 " Rename
 Plug 'qpkorr/vim-renamer', { 'on': 'Renamer'}
@@ -439,13 +451,13 @@ Plug 'mattn/vim-maketable', { 'for': 'markdown' }
 
 "" Rails
 " 規約ベースのコードジャンプ、b:rails_rootを定義
-Plug 'tpope/vim-rails', { 'for': ['ruby'] }
+Plug 'tpope/vim-rails' ", { 'for': ['ruby'] }
 " slimのsyntax highlight
 Plug 'slim-template/vim-slim', { 'for': ['slim'] }
 
 "" Golang
 Plug 'benmills/vimux' | Plug 'sebdah/vim-delve', { 'for': ['go'] }
-Plug 'mattn/vim-goimports', { 'for': ['go'] }
+" Plug 'mattn/vim-goimports', { 'for': ['go'] }
 " Plug 'mattn/vim-gotmpl', { 'for': ['go'] }
 Plug 'mattn/vim-gomod', { 'for': ['go'] }
 
@@ -532,6 +544,8 @@ Plug 'direnv/direnv.vim'
 
 " protobuf
 Plug 'uarun/vim-protobuf'
+
+Plug 'rbtnn/vim-ambiwidth'
 
 " ローカル管理のPlugin
 Plug '~/.ghq/github.com/iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.vim'
@@ -841,17 +855,10 @@ nmap <Space> [fzf]
 vnoremap <Space> <Nop>
 vmap <Space> [fzf]
 
-""スペースキーとaキーでカレントディレクトリを表示
-nnoremap <silent> [fzf]a :call fzf#vim#files(expand("%:p:h"))<CR>
-"スペースキーとmキーでプロジェクト内で最近開いたファイル一覧を表示
-" nnoremap <silent> [fzf]m :<C-u>fzfWithProjectDir<Space>file_mru<CR>
-" "スペースキーとMキーで最近開いたファイル一覧を表示
-" nnoremap <silent> [fzf]M :<C-u>fzf<Space>file_mru<CR>
-" nnoremap <silent> [fzf]m :call fzf#run({'source': v:oldfiles, 'options': '-m -x +s'})<CR>
-" augroup custom_filemru
-"   autocmd!
-"   autocmd BufWinEnter * UpdateMru
-" augroup END
+" スペースキーとaキーでカレントディレクトリを表示
+nnoremap <expr> <silent><leader>lr ":Files<CR>".expand('%:h')
+
+" スペースキーとmキーでプロジェクト内で最近開いたファイル一覧を表示
 let g:fzf_mru_relative = 1
 nnoremap <silent> [fzf]m :FZFMru<cr>
 nnoremap <silent> [fzf]M :History<cr>
@@ -952,7 +959,7 @@ function! g:ref_source_webdict_sites.je.filter(output)
 endfunction
 
 function! g:ref_source_webdict_sites.ej.filter(output)
-  return join(split(a:output, "\n")[60 :], "\n")
+  return join(split(a:output, "\n")[88 :], "\n")
 endfunction
 
 call altercmd#load()
@@ -1009,11 +1016,21 @@ augroup indent_guides_color
 augroup END
 
 " vim-test setting
-" let test#strategy = 'dispatch'
 let test#strategy = 'vimterminal'
+" " vimterminalで色を維持するように
+" let g:termOpened = 0
+" function OnFirstTermOpen()
+"     " if !exists('g:termOpened')
+"     if g:termOpened != 1
+"         let g:termOpened = 1
+"         AnsiEsc
+"     endif
+" endfunction
+" 
 " augroup MyGroup
-"     autocmd User AsyncRunStart call asyncrun#quickfix_toggle(8, 1)
+"   au BufWinEnter terminal call OnFirstTermOpen()
 " augroup END
+
 
 nnoremap <silent> <leader>t :TestNearest<CR>
 nnoremap <silent> <leader>T :TestFile<CR>
@@ -1120,13 +1137,12 @@ vmap , [explorer]
 nnoremap [explorer]T :TigOpenCurrentFile<CR>
 nnoremap [explorer]t :TigOpenProjectRootDir<CR>
 nnoremap [explorer]g :TigGrep<CR>
-" nnoremap [explorer]gw :<C-u>:TigGrep<Space>\<<C-R><C-W>\><CR>
 ""選択状態のキーワードで検索"
-vnoremap [explorer]g y:TigGrep<Space>"<C-R>""
-""カーソル上のキーワードで検索
-nnoremap [explorer]r :TigGrepResume<CR>
+vnoremap [explorer]g y:TigGrep<CR>"<C-R>""
 
 " 履歴から検索
+nnoremap [explorer]r :TigGrepResume<CR>
+
 nnoremap [explorer]G :Tig -G""<LEFT>
 vnoremap [explorer]G y:Tig -G"<C-R>""
 
@@ -1221,7 +1237,7 @@ nnoremap <C-q> :cclose\|lclose<CR>
 " nnoremap <A-q> :lclose<CR>
 
 " Quickfix
-nnoremap <silent> q\ :<C-u>call qfutil#toggle()<CR>
+nnoremap <silent> qq :<C-u>call qfutil#toggle()<CR>
 
 nnoremap <silent> <C-n> :<C-u>call qfutil#next(v:count)<CR>
 nnoremap <silent> <C-p> :<C-u>call qfutil#previous(v:count)<CR>
@@ -1292,16 +1308,16 @@ let g:brightest#enable_on_CursorHold = 1
 let g:lsp_signs_enabled = 1        " enable signs
 let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
 let g:lsp_diagnostics_echo_delay = 500
-let g:lsp_signs_priority = 11
+let g:lsp_signs_priority = 10
 
-let g:lsp_textprop_enabled = 0 " エラー部の強調表示。solargraphで複数行削除時にエラーになるため無効化
+let g:lsp_textprop_enabled = 1 " エラー部の強調表示。solargraphで複数行削除時にエラーになるため無効化
 let g:lsp_diagnostics_highlights_insert_mode_enabled = 0
 let g:lsp_diagnostics_highlights_enabled = 0
 let g:lsp_diagnostics_highlights_delay = 2000
 " let g:lsp_format_sync_timeout = 1000
 
 let g:asyncomplete_auto_popup = 1
-inoremap <expr> <CR> pumvisible() ? asyncomplete#close_popup() . "\<CR>" : "\<CR>"
+" inoremap <expr> <CR> pumvisible() ? asyncomplete#close_popup() . "\<CR>" : "\<CR>"
 
 let g:lsp_log_verbose = 1
 let g:lsp_log_file          = expand('/tmp/vim-lsp.log')
@@ -1319,17 +1335,21 @@ let g:neosnippet#snippets_directory='~/.vim/snippets'
 setlocal signcolumn=yes
 
 function! s:on_lsp_buffer_enabled() abort
+  let b:lsp_restart_available = 1
   setlocal omnifunc=lsp#complete
   " nnoremap <buffer> <C-n> :<C-u>LspNextDiagnostic<CR>
   " nnoremap <buffer> <C-p> :<C-u>LspPreviousDiagnostic<CR>
   nnoremap <leader>w :<C-u>LspDocumentDiagnostics<cr>
   nmap <C-j> :<C-u>LspDefinition<cr>
   nmap <C-k> :<C-u>LspReferences<cr>
+  nmap <C-k>i :<C-u>LspImplementation<cr>
   nnoremap K :<C-u>LspHover<cr>
   nnoremap <C-s> :<C-u>LspRename<CR>
   nnoremap <leader>f :<C-u>LspDocumentFormatSync<CR>
   vnoremap <leader>f :<C-u>LspDocumentRangeFormatSync<CR>
   nnoremap <leader>c :<C-u>LspCodeAction<CR>
+  nnoremap <leader>s :<C-u>call LspRestart()<CR>
+
 endfunction
 
 augroup lsp_enabled
@@ -1337,6 +1357,40 @@ augroup lsp_enabled
     " call s:on_lsp_buffer_enabled only for languages that has the server registered.
     autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
+
+" lsp restart
+function! LspRestart() abort
+  execute 'DirenvExport'
+  if !exists('b:lsp_restart_available')
+    echomsg 'lsp is not available'
+    let b:lsp_restart_available = 0
+    return
+  endif
+  if b:lsp_restart_available == -1
+    return
+  endif
+
+  let s:timer = timer_start(100, {t ->
+        \ [
+        \ execute('LspStopServer', ''),
+        \]
+        \})
+  let s:timer2 = timer_start(1000, {t ->
+        \ [
+        \ execute('let b:lsp_restart_available = -1', ''),
+        \ execute(':e!', ''),
+        \ execute('echomsg "lsp restarted"', ''),
+        \ execute('let b:lsp_restart_available = 1', ''),
+        \]
+        \})
+endfunction
+
+" augroup OnRooterChdir
+"   autocmd!
+"   autocmd User RooterChDir execute 'DirenvExport' | call LspRestart()
+" augroup END
+
+let g:rooter_patterns = ['Gemfile', 'go.mod', '.git', '_darcs', '.hg', '.bzr', '.svn', 'Makefile', 'package.json']
 
 " Enable efm-langserver for custom linter and formatter
 let g:lsp_settings = {
@@ -1349,7 +1403,7 @@ let g:lsp_settings_filetype_ruby = ['solargraph']
 
 let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'eslint-language-server']
 
-let g:lsp_settings_filetype_go = ['gopls']
+" let g:lsp_settings_filetype_go = ['gopls']
 " let g:lsp_settings_filetype_go = ['gopls', 'golangci-lint-langserver']
 
 " augroup vim_lsp_golangci_lint_langserver
@@ -1406,12 +1460,16 @@ augroup asyncomplete_register_source
        \ 'allowlist': ['*'],
        \ 'priority': 1000,
        \ 'completor': function('asyncomplete#sources#look#completor'),
+       \ 'config': {
+       \   'line_limit': 1000,
+       \   'max_num_result': 20,
+       \  },
        \ })
 
   au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#tabnine#get_source_options({
        \ 'name': 'tabnine',
        \ 'allowlist': ['*'],
-       \ 'priority': 20000,
+       \ 'priority': 1000,
        \ 'completor': function('asyncomplete#sources#tabnine#completor'),
        \ 'config': {
        \   'line_limit': 1000,
@@ -1468,3 +1526,25 @@ augroup END
 " endfunction
 " command! -bar RangerChooser call RangeChooser()
 " nnoremap <leader>r :<C-U>RangerChooser<CR>
+
+"  mapping for copilot
+" nnoremap <silent> <leader>c :Copilot<CR>
+
+" inoremap <silent><expr> <TAB>
+"      \ !pum#visible() ? '<Cmd>call pum#map#insert_relative(+1)<CR>' :
+"      \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
+"      \ '<TAB>' : ddc#manual_complete()
+" inoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
+" inoremap <C-n>   <Cmd>call pum#map#select_relative(+1)<CR>
+" inoremap <C-p>   <Cmd>call pum#map#select_relative(-1)<CR>
+" inoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
+" inoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
+
+" disable auto format. but :GoImportRun will work.
+" let g:goimports = 0
+
+let g:rooter_cd_cmd = 'lcd'
+let g:rooter_resolve_links = 1
+
+
+nnoremap ff :<C-u>FuzzyMotion<CR>

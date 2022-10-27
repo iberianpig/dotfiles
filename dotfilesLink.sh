@@ -7,11 +7,11 @@ ln -isT ~/dotfiles/.vim ~/.vim
 ln -isT ~/dotfiles/.gitcommit ~/.gitcommit
 ln -isT ~/dotfiles/.gitconfig ~/.gitconfig
 ln -isT ~/dotfiles/.gitignore_global ~/.gitignore_global
-ln -isT ~/dotfiles/.byobu ~/.config/byobu
 ln -isT ~/dotfiles/.xbindkeysrc ~/.xbindkeysrc
 ln -isT ~/dotfiles/.ctags ~/.ctags
 ln -isT ~/dotfiles/.tigrc ~/.tigrc
 ln -isT ~/dotfiles/.tigrc.large ~/.tigrc.large
+ln -isT ~/dotfiles/.config/byobu ~/.byobu
 ln -isT ~/dotfiles/.config/fusuma ~/.config/fusuma
 ln -isT ~/dotfiles/.config/xremap ~/.config/xremap
 ln -isT ~/dotfiles/.config/ranger ~/.config/ranger

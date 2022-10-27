@@ -15,71 +15,50 @@ miraitranslate: &miraitranslate
   interval: 5
 
 swipe:
-  drag: &drag
-    begin:
-      command: xdotool mousedown 1
-    update:
-      command: xdotool mousemove_relative -- $move_x, $move_y
-      # command: xdotool mousemove_relative -- $unaccelerated_x, $unaccelerated_y
-      interval: 0.01
-      accel: 3
-    end:
-      command: xdotool mouseup 1
-      keypress:
-        LEFTSHIFT+LEFTCTRL:
-          <<: *deepl
-        LEFTCTRL+LEFTSHIFT:
-          <<: *deepl
-        LEFTSHIFT+LEFTALT:
-          <<: *miraitranslate
-        LEFTALT+LEFTSHIFT:
-          <<: *miraitranslate
-
-  alt+tab: &alt_tab
-    begin:
-      command: xdotool keydown Alt
-    right:
-      update:
-        command: xdotool key Tab
-        interval: 5
-    left:
-      update:
-        command: xdotool key Shift+Tab
-        interval: 5
-    end:
-      command: xdotool keyup Alt
   3:
-    <<: *drag
-  4:
-    up:
-      # sendkey: 'LEFTMETA+S'
-      # interval: 0.5
-      # threshold: 0.2
-      workspace: next
-      keypress:
-        LEFTSHIFT:
-          # command: xdotool key --clearmodifiers Super+Down
-          window: next
-    down:
-      # sendkey: 'LEFTMETA+W'
-      # command: xdotool key --clearmodifiers Super+w
-      # interval: 0.5
-      # threshold: 0.2
-      workspace: prev
-      keypress:
-        LEFTSHIFT:
-          # command: xdotool key --clearmodifiers Super+Up
-          window: prev
+    # <<: *drag
+    # <<: *alt_tab
     left:
-      sendkey: 'LEFTMETA+D'
       keypress:
-        LEFTSHIFT:
-          sendkey: LEFTMETA+Right
+        LEFTMETA:
+          sendkey: LEFTMETA+LEFT # move window to next workspace
     right:
-      sendkey: 'LEFTMETA+A'
+      keypress:
+        LEFTMETA:
+          sendkey: LEFTMETA+RIGHT # move window to next workspace
+    up:
+      keypress:
+        LEFTMETA:
+          sendkey: LEFTMETA+UP # move window to next workspace
+    down:
+      keypress:
+        LEFTMETA:
+          sendkey: LEFTMETA+DOWN # move window to next workspace
+    end:
+      keypress:
+        LEFTMETA:
+
+  4:
+    left:
+      sendkey: LEFTCTRL+LEFTALT+RIGHT
       keypress:
         LEFTSHIFT:
-          sendkey: LEFTMETA+Left
+          sendkey: LEFTSHIFT+LEFTMETA+PAGEDOWN # move window to next workspace
+    right:
+      sendkey: LEFTCTRL+LEFTALT+LEFT
+      keypress:
+        LEFTSHIFT:
+          sendkey: LEFTSHIFT+LEFTMETA+PAGEUP # move window to prev workspace
+
+    # In Gnome-shell, swipe-up or swipe-down triggers built-in swipe gestures(toggle overview) while pressing modifier keys
+    # up:
+    #   keypress:
+    #     LEFTSHIFT:
+    #       sendkey: LEFTSHIFT+LEFTMETA+down # move window to lower display
+    # down:
+    #   keypress:
+    #     LEFTSHIFT:
+    #       sendkey: LEFTSHIFT+LEFTMETA+UP # move window to upper display
 
 pinch:
   2:
@@ -101,15 +80,7 @@ pinch:
     out:
       update:
         command: xdotool click 5 # Zoom out
-  4:
-    in:
-      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
-      # threshold: 0.5
-      interval: 1
-    out:
-      command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
-      # threshold: 0.5
-      interval: 1
+
 rotate:
   3:
     clockwise:
@@ -129,47 +100,15 @@ rotate:
           LEFTSHIFT:
             sendkey: LEFTSHIFT+VOLUMEDOWN
 
-tap:
-  1:
-    command: "echo ----------------tap1----------------------------"
-  2:
-    command: "echo ----------------tap2----------------------------"
-  3:
-    command: "echo ----------------tap3----------------------------"
-  4:
-    command: "echo ----------------tap4----------------------------"
-
 hold:
-  1:
-    command: "echo ----------------hold1----------------------------"
-  2:
-    command: "echo ----------------hold2----------------------------"
   3:
-    begin:
-      command: "echo ----------------hold3 begin----------------------------"
-    end:
-      command: "echo ----------------hold3 end----------------------------"
-    cancelled:
-      command: "echo ----------------hold3 cancelled----------------------------"
-    # command: "echo ----------------hold3 timeout----------------------------"
-    command: xdotool click --repeat 2 1
+    sendkey: "LEFTALT+F7" # move window
+    keypress:
+      LEFTSHIFT:
+        sendkey: "LEFTALT+F8" # resize window
   4:
-    # command: "echo ----------------hold4----------------------------"
-    sendkey: "LEFTMETA"
-    threshold: 3
-# hold:
-#   3:
-#     sendkey: "LEFTALT+F7" # move window
-#     keypress:
-#       LEFTSHIFT:
-#         sendkey: "LEFTALT+F8" # resize window
-#   4:
-#     sendkey: "MUTE"
-# 
-# tap:
-#   4:
-#     sendkey: "LEFTMETA"
-#     # window: fullscreen
+    sendkey: "MUTE"
+
 
 typing: # disable while typing
   # interval: 0.5
@@ -250,6 +189,7 @@ context:
 swipe:
   3:
     left:
+      # sendevent: touchscreen
       sendkey: 'LEFTALT+RIGHT'
     right:
       sendkey: 'LEFTALT+LEFT'
@@ -299,8 +239,8 @@ swipe:
 ---
 context:
   application: 
-    Gnome-terminal # X11
-    # gnome-terminal-server # wayland
+    # Gnome-terminal # X11
+    gnome-terminal-server # wayland
 
 
 swipe:
@@ -309,17 +249,6 @@ swipe:
       sendkey: 'LEFTSHIFT+LEFTCTRL+T'
     down:
       sendkey: 'LEFTSHIFT+LEFTCTRL+W'
-
-# pinch:
-#   2:
-#     in:
-#       update:
-#         sendkey: 'LEFTCTRL+EQUAL'
-#         interval: 3
-#     out:
-#       update:
-#         sendkey: 'LEFTCTRL+MINUS'
-#         interval: 3
 
 ---
 context:

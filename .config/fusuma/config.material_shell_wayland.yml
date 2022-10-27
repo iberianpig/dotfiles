@@ -1,0 +1,217 @@
+plugin:
+  inputs:
+    libinput_command_input:
+      show-keycodes: true
+      enable-tap: true
+      enable-dwt: true
+      verbose: true
+
+hold:
+  3:
+    sendkey: LEFTALT+f8
+  4:
+    sendkey: "MUTE"
+swipe:
+  3:
+    right:
+      update:
+        keypress:
+          LEFTALT:
+            interval: 1
+            # threshold: 1
+            sendkey: VOLUMEUP
+    left:
+      update:
+        keypress:
+          LEFTALT:
+            interval: 1
+            # threshold: 1
+            sendkey: VOLUMEDOWN
+    up:
+      update:
+        keypress:
+          LEFTALT:
+            interval: 1
+            # sendkey: BRIGHTNESSUP # 動かない LEFTALT+BRIGHTNESSUP が弾かれるのでLEFTALTキャンセルする必要あり
+            command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepUp
+
+    down:
+      update:
+        keypress:
+          LEFTALT:
+            interval: 1
+            # sendkey: BRIGHTNESSUP
+            command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepDown
+
+  4:
+    up:
+      sendkey: 'LEFTMETA+S'
+      # workspace: next
+      # interval: 0.4
+      keypress:
+        LEFTSHIFT:
+          sendkey: LEFTMETA+DOWN # move window to next workspace
+    down:
+      sendkey: 'LEFTMETA+W'
+      # workspace: prev
+      # interval: 0.4
+      keypress:
+        LEFTSHIFT:
+          sendkey: LEFTMETA+UP # move window to prev workspace
+    left:
+      sendkey: 'LEFTMETA+D'
+      keypress:
+        LEFTSHIFT:
+          sendkey: LEFTMETA+RIGHT # move window to prev workspace
+    right:
+      sendkey: 'LEFTMETA+A'
+      keypress:
+        LEFTSHIFT:
+          sendkey: LEFTMETA+LEFT # move window to prev workspace
+
+    # begin:
+    #   command: xdotool keydown Alt
+    # right:
+    #   update:
+    #     command: xdotool key Tab
+    #     interval: 5
+    # left:
+    #   update:
+    #     command: xdotool key Shift+Tab
+    #     interval: 5
+    # end:
+    #   command: xdotool keyup Alt
+pinch:
+  2:
+    begin: {command: xdotool keydown ctrl} 
+    end: {command: xdotool keyup ctrl} 
+    in:
+      # threshold: 0.1
+      # interval: 0.5
+      update:
+        # sendkey: 'LEFTCTRL+EQUAL'
+        # command: xdotool key ctrl click 4 
+        # interval: 0.1
+        command: xdotool click 4 # Zoom in
+        keypress:
+          LEFTALT:
+            sendkey: VOLUMEUP
+    out:
+      # threshold: 0.1
+      # interval: 0.5
+      update:
+        # sendkey: 'LEFTCTRL+MINUS'
+        # command: xdotool click 5 
+        command: xdotool click 5 # Zoom out
+        keypress:
+          LEFTALT:
+            sendkey: VOLUMEDOWN
+  # 4:
+  #   in:
+  #     command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
+  #     # threshold: 1
+  #     interval: 1
+  #   out:
+  #     command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
+  #     # threshold: 1
+  #     interval: 1
+rotate:
+  3:
+    clockwise:
+      update:
+        sendkey: VOLUMEUP
+        keypress:
+          LEFTSHIFT:
+            sendkey: LEFTSHIFT+VOLUMEUP
+          LEFTALT:
+            sendkey: BRIGHTNESSUP
+    counterclockwise:
+      update:
+        sendkey: VOLUMEDOWN
+        keypress:
+          LEFTALT:
+            sendkey: BRIGHTNESSDOWN
+          LEFTSHIFT:
+            sendkey: LEFTSHIFT+VOLUMEDOWN
+
+---
+context:
+  application: Google-chrome
+
+swipe:
+  3:
+    left:
+      # sendevent: touchscreen
+      sendkey: 'LEFTALT+RIGHT'
+    right:
+      sendkey: 'LEFTALT+LEFT'
+    up:
+      sendkey: 'LEFTCTRL+T'
+      keypress:
+        LEFTSHIFT:
+          sendkey: 'LEFTSHIFT+LEFTCTRL+T'
+    down:
+      sendkey: 'LEFTCTRL+Q'
+---
+context:
+  application: Firefox
+
+# swipe:
+#   3:
+#     left:
+#       sendkey: 'LEFTALT+RIGHT'
+#     right:
+#       sendkey: 'LEFTALT+LEFT'
+#     up:
+#       sendkey: 'LEFTCTRL+T'
+#     down:
+#       sendkey: 'LEFTCTRL+Q'
+swipe:
+  3: 
+    begin:
+      command: xdotool keydown Ctrl
+    right:
+      sendkey: 'LEFTCTRL+PAGEDOWN'
+      keypress:
+        LEFTSHIFT:
+          sendkey: 'LEFTALT+LEFT'
+      update:
+        command: xdotool key Tab
+        interval: 3
+    left:
+      sendkey: 'LEFTCTRL+PAGEUP'
+      keypress:
+        LEFTSHIFT:
+          sendkey: 'LEFTALT+RIGHT'
+      update:
+        command: xdotool key Shift+Tab
+        interval: 3
+    end:
+      command: xdotool keyup Ctrl
+---
+context:
+  application: 
+    gnome-terminal-server # wayland
+
+
+swipe:
+  3:
+    up:
+      sendkey: 'LEFTALT+LEFTCTRL+T'
+    down:
+      sendkey: 'LEFTSHIFT+LEFTCTRL+W'
+
+---
+context:
+  application: Slack
+
+swipe:
+  3:
+    left:
+      sendkey: 'LEFTALT+RIGHT'
+    right:
+      sendkey: 'LEFTALT+LEFT'
+    up:
+      sendkey: "LEFTALT+DOWN"
+    down:
+      sendkey: "LEFTALT+UP"

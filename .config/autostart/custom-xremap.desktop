@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=xremap
 Comment=run xremap
-Exec=/usr/local/bin/xremap /home/iberianpig/.config/xremap/emacs_like.rb
+Exec=/home/iberianpig/.ghq/github.com/k0kubun/xremap/target/release/xremap /home/iberianpig/.config/xremap/emacs_like.yml
 Icon=input-keyboard
-X-GNOME-Autostart-enabled=false
+X-GNOME-Autostart-enabled=true
 Type=Application

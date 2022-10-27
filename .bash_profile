@@ -9,7 +9,7 @@ export XDG_DATA_HOME="$HOME/.local/share"
 
 # # golang
 export GOPATH=$HOME/go
-export PATH=$PATH:$GOPATH/bin
+export PATH=$PATH:$HOME/go/bin
 
 # java
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
@@ -117,3 +117,6 @@ fi
 
 export PATH="$HOME/.vim/plugged/fzf/bin/:$PATH"
 export BYOBU_CONFIG_DIR="$HOME/.config/byobu"
+
+export DENO_INSTALL="/home/iberianpig/.deno"
+export PATH="$DENO_INSTALL/bin:$PATH"
