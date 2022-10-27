@@ -12,6 +12,7 @@ ln -isT ~/dotfiles/.ctags ~/.ctags
 ln -isT ~/dotfiles/.tigrc ~/.tigrc
 ln -isT ~/dotfiles/.tigrc.large ~/.tigrc.large
 ln -isT ~/dotfiles/.config/byobu ~/.byobu
+ln -isT ~/dotfiles/.config/byobu/.tmux.conf ~/.tmux.conf
 ln -isT ~/dotfiles/.config/fusuma ~/.config/fusuma
 ln -isT ~/dotfiles/.config/xremap ~/.config/xremap
 ln -isT ~/dotfiles/.config/ranger ~/.config/ranger
