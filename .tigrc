@@ -52,7 +52,7 @@ bind branch <ESC>m !?git branch --move %(branch) %(prompt)
 # M で merge
 bind generic M      none
 bind branch  M      none
-bind branch  M      !git merge %(branch)
+bind branch  M      ?!git merge %(branch)
 bind diff    <Esc>m ?git merge %(commit)
 
 # R で rebase
