@@ -1,4 +1,3 @@
-set encoding=utf-8
 scriptencoding utf-8
 
 filetype off
@@ -24,7 +23,7 @@ augroup set_cursorline
 augroup END
 
 set laststatus=2   " ステータス行を常に表示
-set cmdheight=2    " メッセージ表示欄を2行確保
+set cmdheight=1    " メッセージ表示欄を2行確保
 set showmatch      " 対応する括弧を強調表示
 set matchpairs+=「:」,『:』,（:）,【:】,《:》,〈:〉,［:］,‘:’,“:”
 
@@ -117,10 +116,9 @@ set autoread   " 外部でファイルに変更がされた場合は読みなお
 augroup vimrc-checktime "window移動/一定時間カーソルが停止した場合に強制的に読みなおす
   autocmd!
   set updatetime=1000
-  autocmd WinEnter * checktime
-  autocmd CursorHold * checktime
+  " autocmd WinEnter,CursorHold * if mode() !=# "c" | checktime | endif " command line はmode()でnを返してしまう
+  autocmd WinEnter,CursorHold * if !bufexists("[Command Line]") && !bufexists("[コマンドライン]") | checktime | endif
 augroup END
-
 
 "検索関連
 set hlsearch   " 検索文字列をハイライトする
@@ -253,6 +251,7 @@ augroup add_syntax_highlight
   autocmd BufNewFile,BufRead *.thor                     set filetype=ruby
   autocmd BufNewFile,BufRead *.erb                      set filetype=eruby
   autocmd BufNewFile,BufRead *.slim                     set filetype=slim
+  autocmd BufNewFile,BufRead *json.jb                   set filetype=ruby
   " autocmd BufNewFile,BufRead *.scss                     set filetype=scss.css
   autocmd BufNewFile,BufRead *.coffee                   set filetype=coffee
   autocmd BufNewFile,BufRead *.{md,mdwn,mkd,mkdn,mark*} set filetype=markdown
@@ -325,8 +324,8 @@ Plug 'osyo-manga/vim-brightest'
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'prabirshrestha/async.vim'
-Plug 'prabirshrestha/vim-lsp'
-" Plug '~/.ghq/github.com/prabirshrestha/vim-lsp'
+" Plug 'prabirshrestha/vim-lsp'
+Plug '~/.ghq/github.com/prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 
 Plug 'Shougo/neosnippet.vim'
@@ -342,7 +341,7 @@ Plug 'thomasfaingnaert/vim-lsp-neosnippet'
 Plug 'htlsne/asyncomplete-look'
 
 Plug 'kitagry/asyncomplete-tabnine.vim', { 'do': './install.sh'  }
-Plug 'iberianpig/copilot.vim'
+Plug 'github/copilot.vim'
 
 Plug 'prettier/vim-prettier', {
  \ 'do': 'yarn install',
@@ -382,11 +381,11 @@ Plug 'anyakichi/vim-qfutil'
 " Plug 'maximbaz/lightline-ale'
 
 " 非同期バッチをTmuxやTerminalに渡して処理出来る
-Plug 'tpope/vim-dispatch', {'on': ['Dispatch', 'FocusDispatch','Spawn', 'Start', 'Copen']}
-" Plug 'skywind3000/asyncrun.vim'
+" Plug 'tpope/vim-dispatch', {'on': ['Dispatch', 'FocusDispatch','Spawn', 'Start', 'Copen']}
 
 " テストランナー
 Plug 'janko-m/vim-test'
+Plug 'jonleighton/vim-test-vimterminal-enhanced'
 
 " インデントの可視化
 Plug 'nathanaelkane/vim-indent-guides', {'on': ['IndentGuidesEnable', 'IndentGuidesToggle', 'IndentGuidesDisable', ]}
@@ -420,9 +419,11 @@ Plug 'kana/vim-textobj-line' | Plug 'kana/vim-textobj-user'
 Plug 'fvictorio/vim-textobj-backticks' | Plug 'kana/vim-textobj-user'
 Plug 'rhysd/vim-operator-surround' | Plug 'kana/vim-operator-user'
 
-" easymotion
+" " easymotion
 Plug 'vim-denops/denops.vim'
 Plug 'yuki-yano/fuzzy-motion.vim'
+Plug 'yuki-yano/denops-open-http.vim'
+Plug 'skanehira/denops-silicon.vim'
 
 " Rename
 Plug 'qpkorr/vim-renamer', { 'on': 'Renamer'}
@@ -454,6 +455,9 @@ Plug 'mattn/vim-maketable', { 'for': 'markdown' }
 Plug 'tpope/vim-rails' ", { 'for': ['ruby'] }
 " slimのsyntax highlight
 Plug 'slim-template/vim-slim', { 'for': ['slim'] }
+
+" heredocのハイライト
+Plug 'joker1007/vim-ruby-heredoc-syntax', { 'for': ['ruby'] }
 
 "" Golang
 Plug 'benmills/vimux' | Plug 'sebdah/vim-delve', { 'for': ['go'] }
@@ -508,6 +512,7 @@ Plug 'aklt/plantuml-syntax', { 'for': ['plantuml'] }
 Plug 'powerman/vim-plugin-AnsiEsc'
 
 " colorscheme
+Plug 'habamax/vim-habamax'
 Plug 'w0ng/vim-hybrid' 
 Plug 'morhetz/gruvbox'
 Plug 'kristijanhusak/vim-hybrid-material'
@@ -570,7 +575,7 @@ set background=dark "暗めの背景
 " 
 " " " " hybrid
 colorscheme hybrid
-" let g:seiya_auto_enable=1
+let g:seiya_auto_enable=1
 
 " " hybrid-material
 let g:hybrid_transparent_background = 1
@@ -622,7 +627,6 @@ let g:lightline = {
     \   'filetype':          'MyFiletype',
     \   'fileencoding':      'MyFileencoding',
     \   'mode':              'MyMode',
-    \   'ctrlpmark':         'CtrlPMark',
     \   'currentworkingdir': 'CurrentWorkingDir',
     \   'percent':           'MyPercent',
     \   'lineinfo':          'MyLineInfo',
@@ -653,19 +657,19 @@ let g:lightline = {
 
 
 function! MyModified()
-  return &filetype =~? 'help\|vimfiler\|gundo' ? '' : &modified ? '+' : &modifiable ? '' : '-'
+  return &modified ? '+' : &modifiable ? '' : '-'
 endfunction
 
 function! MyPercent()
-  return &filetype =~? 'vimfiler' ? '' : (100 * line('.') / line('$')) . '%'
+  return (100 * line('.') / line('$')) . '%'
 endfunction
 
 function! MyLineInfo()
-  return &filetype =~? 'vimfiler\|unite' ? '' : printf('%3d:%-2d', line('.'), col('.'))
+  return printf('%3d:%-2d', line('.'), col('.'))
 endfunction
 
 function! MyReadonly()
-  return &filetype !~? 'help\|vimfiler\|gundo' && &readonly ? '' : ''
+   return &readonly ? 'RO' : ''
 endfunction
 
 function! MyFilename()
@@ -720,62 +724,16 @@ function! MyFileencoding()
 endfunction
 
 function! MyMode()
-  let fname = expand('%:t')
-  return fname  ==# '__Tagbar__' ? 'Tagbar' :
-      \ fname ==# 'ControlP' ? 'CtrlP' :
-      \ fname ==# '__Gundo__' ? 'Gundo' :
-      \ fname ==# '__Gundo_Preview__' ? 'Gundo Preview' :
-      \ fname =~# 'NERD_tree' ? 'NERDTree' :
-      \ &filetype   ==# 'unite' ? 'Unite' :
-      \ &filetype   ==# 'vimfiler' ? 'VimFiler' :
-      \ &filetype   ==# 'vimshell' ? 'VimShell' :
-      \ winwidth(0) > 70 ? lightline#mode() : ''
-endfunction
-
-function! CtrlPMark()
-  if expand('%:t') =~# 'ControlP'
-    call lightline#link('iR'[g:lightline.ctrlp_regex])
-    return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
-        \ , g:lightline.ctrlp_next], 0)
-  else
-    return ''
-  endif
-endfunction
-
-let g:ctrlp_status_func = {
-    \ 'main': 'CtrlPStatusFunc_1',
-    \ 'prog': 'CtrlPStatusFunc_2',
-    \ }
-
-function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
-  let g:lightline.ctrlp_regex = a:regex
-  let g:lightline.ctrlp_prev  = a:prev
-  let g:lightline.ctrlp_item  = a:item
-  let g:lightline.ctrlp_next  = a:next
-  return lightline#statusline(0)
-endfunction
-
-function! CtrlPStatusFunc_2(str)
-  return lightline#statusline(0)
-endfunction
-
-let g:tagbar_status_func = 'TagbarStatusFunc'
-
-function! TagbarStatusFunc(current, sort, fname, ...) abort
-  let g:lightline.fname = a:fname
-  return lightline#statusline(0)
+  return winwidth(0) > 70 ? lightline#mode() : ''
 endfunction
 
 function! CurrentWorkingDir()
   return fnamemodify(getcwd(),':')
 endfunction
 
-
 "}}}
 
 " enable ruby & rails snippet only rails file
-
-
 function! s:RailsSnippet()
   if exists('b:rails_root') && (&filetype ==# 'ruby')
     :NeoSnippetSource ~/.vim/snippets/rails.snip
@@ -800,6 +758,36 @@ augroup rails_snippet
   au BufEnter * call s:RSpecSnippet()
   au BufEnter * call s:MinitestSnippet()
 augroup END
+
+" vim-rails
+let g:rails_projections = {
+      \  "app/controllers/*_controller.rb": {
+      \    "affinity": "controller",
+      \    "template": [
+      \      "class {camelcase|capitalize|colons}Controller < ApplicationController",
+      \      "end"
+      \    ],
+      \    "type": "controller",
+      \    "test": [
+      \      "spec/controllers/{}_controller_spec.rb",
+      \      "spec/requests/{}_spec.rb"
+      \    ],
+      \    "alternate": [
+      \      "spec/requests/{}_spec.rb",
+      \      "spec/controllers/{}_controller_spec.rb",
+      \    ],
+      \  },
+      \  "spec/requests/*_spec.rb": {
+      \    "affinity": "controller",
+      \    "alternate": [
+      \      "app/controllers/{}_controller.rb",
+      \    ],
+      \    "controller": [
+      \      "app/controllers/{}_controller.rb",
+      \    ],
+      \  }
+      \}
+
 
 "" switch
 nnoremap - :Switch<cr>
@@ -856,7 +844,7 @@ vnoremap <Space> <Nop>
 vmap <Space> [fzf]
 
 " スペースキーとaキーでカレントディレクトリを表示
-nnoremap <expr> <silent><leader>lr ":Files<CR>".expand('%:h')
+" nnoremap <expr> <silent> [fzf]a ":Files<CR>".expand('%:h')
 
 " スペースキーとmキーでプロジェクト内で最近開いたファイル一覧を表示
 let g:fzf_mru_relative = 1
@@ -877,6 +865,10 @@ nnoremap <silent> [fzf]r :call fzf#run(fzf#wrap({'source': 'ghq list --full-path
 " カーソル下のパスを開く"
 nnoremap <silent> [fzf] gF
 
+" コマンドを検索
+nnoremap <silent> [fzf]: :<C-u>Commands<CR>
+nnoremap <silent> [fzf]; :<C-u>Commands<CR>
+
 " markdownの設定
 " see /usr/share/vim/vim80/syntax/*.vim
 let g:markdown_fenced_languages = ['ruby', 'json', 'vim', 'sh', 'javascript']
@@ -894,8 +886,8 @@ augroup END
 " Switch QuickRun / MarkdownPreview
 function! s:loadLeaderRMapping()
   if index(g:mkdp_filetypes, &ft) < 0
-    nnoremap <Leader>r :QuickRun -runner terminal<CR>
-    vnoremap <Leader>r :QuickRun -runner terminal<CR>
+    nnoremap <Leader>r :QuickRun<CR>
+    vnoremap <Leader>r :QuickRun<CR>
   else
     nnoremap <Leader>r :MarkdownPreview<CR>
   endif
@@ -920,19 +912,24 @@ augroup quickrun
 augroup END
 
 let g:quickrun_config = get(g:, 'quickrun_config', {})
-let g:quickrun_config._ = {
-      \ 'runner'    : 'terminal',
-      \   'hook/close_quickfix/enable_hook_loaded' : 1,
-      \   'hook/close_quickfix/enable_success'     : 1,
-      \   'hook/close_buffer/enable_hook_loaded'   : 1,
-      \   'hook/close_buffer/enable_failure'       : 1,
-      \   'hook/inu/enable'                        : 1,
-      \   'hook/inu/wait'                          : 1,
-      \   'outputter'                              : 'multi:buffer:quickfix',
-      \   'outputter/buffer/split'                 : 'botright',
-      \   'outputter/quickfix/open_cmd'            : 'copen',
-      \ }
 
+let g:quickrun_config._ = {
+     \ 'runner'    : 'terminal',
+     \   'hook/close_quickfix/enable_hook_loaded' : 1,
+     \   'hook/close_quickfix/enable_success'     : 1,
+     \   'hook/close_buffer/enable_hook_loaded'   : 1,
+     \   'hook/close_buffer/enable_failure'       : 1,
+     \   'hook/inu/enable'                        : 1,
+     \   'hook/inu/wait'                          : 1,
+     \   'outputter'                              : 'multi:buffer:quickfix',
+     \   'outputter/buffer/split'                 : 'botright',
+     \   'outputter/quickfix/open_cmd'            : 'copen',
+     \ }
+
+	let g:quickrun_config.html = {
+        \ "command" : "cat",
+        \ "outputter" : "browser",
+        \}
 " テキストブラウザのインストールが必要
 " sudo apt-get install lynx
 
@@ -971,8 +968,8 @@ vnoremap ga y:<C-u>ej <C-R>"<CR>
 
 " for open-browser plugin
 " nmap gx <Plug>(openbrowser-smart-search)
-nnoremap gx :OpenBrowserSmartSearch <C-r><C-w> <CR>
-vnoremap gx y:<C-u>OpenBrowserSmartSearch <C-R>"<CR>
+nnoremap gx :OpenBrowserSmartSearch -google <C-r><C-w> <CR>
+vnoremap gx y:<C-u>OpenBrowserSmartSearch -google <C-R>"<CR>
 nnoremap gd :<C-u>OpenBrowserSmartSearch -devdocs <C-r><C-w> <CR>
 vnoremap gd y:<C-u>OpenBrowserSmartSearch -devdocs <C-R>"<CR>
 nnoremap ga :<C-u>OpenBrowserSmartSearch -alc <C-R>"<CR>
@@ -1007,30 +1004,13 @@ let g:indent_guides_start_level=2
 let g:indent_guides_enable_on_vim_startup=0
 let g:indent_guides_color_change_percent = 30
 let g:indent_guides_guide_size=1
-let g:indent_guides_exclude_filetypes = ['help', 'vimfiler', 'tagbar', 'unite']
+let g:indent_guides_exclude_filetypes = ['help']
 nnoremap <silent> <Leader>ig :IndentGuidesToggle<CR>
 augroup indent_guides_color
   autocmd!
   autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  ctermbg=236
   autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=238
 augroup END
-
-" vim-test setting
-let test#strategy = 'vimterminal'
-" " vimterminalで色を維持するように
-" let g:termOpened = 0
-" function OnFirstTermOpen()
-"     " if !exists('g:termOpened')
-"     if g:termOpened != 1
-"         let g:termOpened = 1
-"         AnsiEsc
-"     endif
-" endfunction
-" 
-" augroup MyGroup
-"   au BufWinEnter terminal call OnFirstTermOpen()
-" augroup END
-
 
 nnoremap <silent> <leader>t :TestNearest<CR>
 nnoremap <silent> <leader>T :TestFile<CR>
@@ -1071,8 +1051,8 @@ let g:delve_use_vimux = 1
 " quickfix for rspec with dispatch.vim
 " NOTE: https://github.com/tpope/vim-dispatch/issues/41#issuecomment-95080600
 let g:dispatch_compilers = {
-      \ 'latex': 'tex',
-      \ 'bundle exec': ''}
+     \ 'latex': 'tex',
+     \ 'bundle exec': ''}
 
 
 " docker and rspec
@@ -1082,9 +1062,10 @@ function! DockerTransformer(cmd) abort
   let prefix = ''
   let compose_option = ''
 
-  echomsg 'SPEC_COMPOSE_FILE:' . $SPEC_COMPOSE_FILE
-  echomsg 'SPEC_PROJECT_ROOT__GO:' . $SPEC_PROJECT_ROOT__GO
-  echomsg 'SPEC_CONTAINER__GO:' . $SPEC_CONTAINER__GO
+  "" debug
+  " echomsg 'SPEC_COMPOSE_FILE:' . $SPEC_COMPOSE_FILE
+  " echomsg 'SPEC_PROJECT_ROOT__GO:' . $SPEC_PROJECT_ROOT__GO
+  " echomsg 'SPEC_CONTAINER__GO:' . $SPEC_CONTAINER__GO
 
   if $SPEC_COMPOSE_FILE !=# ''
     echomsg 1
@@ -1169,6 +1150,7 @@ let g:tig_explorer_use_builtin_term = 0
 " ranger-explorer
 nnoremap [explorer]c :<C-u>RangerOpenCurrentFile<CR>
 nnoremap [explorer]f :<C-u>RangerOpenProjectRootDir<CR>
+nnoremap [explorer]a :<C-u>RangerOpenCurrentFile "--cmd=fzf_select"<CR>
 
 " vim-auto-save
 let g:auto_save_silent = 1  " do not display the auto-save notification
@@ -1220,7 +1202,7 @@ augroup END
 "" 検索結果Windowを閉じる
 " nnoremap <C-q> <C-w>j<C-w>q
 " https://github.com/neomake/neomake/issues/842
-nnoremap <C-q> :cclose\|lclose<CR>
+nnoremap <C-q> :cclose\|lclose\|TestClose<CR>
 
 " "" 検索結果に移動
 " nnoremap <A-c> :ll<CR>
@@ -1245,7 +1227,7 @@ nnoremap <silent> g<C-n> :<C-u>call qfutil#last(v:count)<CR>
 nnoremap <silent> g<C-p> :<C-u>call qfutil#first(v:count)<CR>
 
 nnoremap <silent> q. :<C-u>call qfutil#toggle_window()<CR>
-nnoremap <silent> qq :<C-u>call qfutil#qq(v:count)<CR>
+" nnoremap <silent> qq :<C-u>call qfutil#qq(v:count)<CR>
 nnoremap <silent> qn :<C-u>call qfutil#nfile(v:count)<CR>
 nnoremap <silent> qp :<C-u>call qfutil#pfile(v:count)<CR>
 nnoremap <silent> qa :<C-u>call qfutil#list()<CR>
@@ -1334,6 +1316,8 @@ let g:neosnippet#snippets_directory='~/.vim/snippets'
 
 setlocal signcolumn=yes
 
+nnoremap <leader>s :<C-u>call LspRestart(1)<CR>
+
 function! s:on_lsp_buffer_enabled() abort
   let b:lsp_restart_available = 1
   setlocal omnifunc=lsp#complete
@@ -1345,11 +1329,10 @@ function! s:on_lsp_buffer_enabled() abort
   nmap <C-k>i :<C-u>LspImplementation<cr>
   nnoremap K :<C-u>LspHover<cr>
   nnoremap <C-s> :<C-u>LspRename<CR>
-  nnoremap <leader>f :<C-u>LspDocumentFormatSync<CR>
-  vnoremap <leader>f :<C-u>LspDocumentRangeFormatSync<CR>
+  nnoremap <leader>f :<C-u>LspDocumentFormat<CR>
+  vnoremap <leader>f :<C-u>LspDocumentRangeFormat<CR>
   nnoremap <leader>c :<C-u>LspCodeAction<CR>
-  nnoremap <leader>s :<C-u>call LspRestart()<CR>
-
+  nnoremap <leader>s :<C-u>call LspRestart(0)<CR>
 endfunction
 
 augroup lsp_enabled
@@ -1359,14 +1342,14 @@ augroup lsp_enabled
 augroup END
 
 " lsp restart
-function! LspRestart() abort
+function! LspRestart(force) abort
   execute 'DirenvExport'
-  if !exists('b:lsp_restart_available')
+  if !a:force && !exists('b:lsp_restart_available')
     echomsg 'lsp is not available'
     let b:lsp_restart_available = 0
     return
   endif
-  if b:lsp_restart_available == -1
+  if !a:force && b:lsp_restart_available == -1
     return
   endif
 
@@ -1385,6 +1368,7 @@ function! LspRestart() abort
         \})
 endfunction
 
+
 " augroup OnRooterChdir
 "   autocmd!
 "   autocmd User RooterChDir execute 'DirenvExport' | call LspRestart()
@@ -1394,17 +1378,21 @@ let g:rooter_patterns = ['Gemfile', 'go.mod', '.git', '_darcs', '.hg', '.bzr', '
 
 " Enable efm-langserver for custom linter and formatter
 let g:lsp_settings = {
-  \ 'efm-langserver': {
-  \   'disabled': 1,
-  \  }
-  \ }
+ \  'efm-langserver': {
+ \    'disabled': 0,
+ \    'allowlist': ['markdown'],
+ \  }
+ \ }
+
 " Configure efm-langserver in ~/.config/efm-langserver/config.yaml
 let g:lsp_settings_filetype_ruby = ['solargraph']
+" let g:lsp_settings_filetype_ruby = ['ruby-lsp']
 
 let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'eslint-language-server']
+" let g:lsp_settings_filetype_javascript = ['typescript-language-server']
 
 " let g:lsp_settings_filetype_go = ['gopls']
-" let g:lsp_settings_filetype_go = ['gopls', 'golangci-lint-langserver']
+let g:lsp_settings_filetype_go = ['gopls', 'golangci-lint-langserver']
 
 " augroup vim_lsp_golangci_lint_langserver
 "   au!
@@ -1481,70 +1469,38 @@ augroup END
 "" Delete with backspace to open configuration TabNine
 " TabNine::config.
 
+let g:copilot_filetypes = {
+    \ 'gitcommit': v:true,
+    \ 'markdown': v:true,
+    \ 'yaml': v:true
+    \ }
+" let g:copilot_no_tab_map = v:true
+" imap <silent><script><expr> <C-j> copilot#Accept("\<CR>")
 
-" function! OpenTig()
-"   silent !GIT_EDITOR=/home/iberianpig/Dropbox/document/2021-12-15_seamless_switching_between_vim_and_tui/editor.sh tig
-"   let callback_file = '/tmp/vim_tig_current_file'
-"   if !filereadable(callback_file)
-"     redraw!
-"     return
-"   endif
-"   execute readfile(callback_file)[0]
-"   call delete(callback_file)
-" endfunction
-" nnoremap <silent> ,t :call OpenTig()<CR>
-
-
-" function! RangeChooser()
-"     let temp = tempname()
-"     " The option "--choosefiles" was added in ranger 1.5.1. Use the next line
-"     " with ranger 1.4.2 through 1.5.0 instead.
-"     "exec 'silent !ranger --choosefile=' . shellescape(temp)
-"     if has("gui_running")
-"         exec 'silent !xterm -e ranger --choosefiles=' . shellescape(temp)
-"     else
-"         exec 'silent !ranger --choosefiles=' . shellescape(temp)
-"     endif
-"     if !filereadable(temp)
-"         redraw!
-"         " Nothing to read.
-"         return
-"     endif
-"     let names = readfile(temp)
-"     if empty(names)
-"         redraw!
-"         " Nothing to open.
-"         return
-"     endif
-"     " Edit the first item.
-"     exec 'edit ' . fnameescape(names[0])
-"     " Add any remaning items to the arg list/buffer list.
-"     for name in names[1:]
-"         exec 'argadd ' . fnameescape(name)
-"     endfor
-"     redraw!
-" endfunction
-" command! -bar RangerChooser call RangeChooser()
-" nnoremap <leader>r :<C-U>RangerChooser<CR>
-
-"  mapping for copilot
-" nnoremap <silent> <leader>c :Copilot<CR>
-
-" inoremap <silent><expr> <TAB>
-"      \ !pum#visible() ? '<Cmd>call pum#map#insert_relative(+1)<CR>' :
-"      \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
-"      \ '<TAB>' : ddc#manual_complete()
-" inoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
-" inoremap <C-n>   <Cmd>call pum#map#select_relative(+1)<CR>
-" inoremap <C-p>   <Cmd>call pum#map#select_relative(-1)<CR>
-" inoremap <C-y>   <Cmd>call pum#map#confirm()<CR>
-" inoremap <C-e>   <Cmd>call pum#map#cancel()<CR>
-
-" disable auto format. but :GoImportRun will work.
-" let g:goimports = 0
+inoremap <expr> <C-n>   pumvisible() ? "\<C-n>" : "\<Plug>(copilot-next)"
+inoremap <expr> <C-p>   pumvisible() ? "\<C-p>" : "\<Plug>(copilot-previous)"
+inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
 
 let g:rooter_cd_cmd = 'lcd'
 let g:rooter_resolve_links = 1
 
+" disable auto format. but :GoImportRun will work.
+" let g:goimports = 0
 
 nnoremap ff :<C-u>FuzzyMotion<CR>
+" let g:go_fmt_command = "goimports"
+
+let g:silicon_options = {
+      \  'theme': '1337',
+      \  'no_window_controls': v:true,
+      \  'background_color': '#ffffff00',
+      \  'no_line_number': v:true,
+      \  'no_round_corner': v:false,
+      \  'line_offset': 1,
+      \  'line_pad': 0,
+      \  'pad_horiz': 80,
+      \  'pad_vert': 100,
+      \  'shadow_blur_radius': 10,
+      \ }
+
+vmap <leader>c :Silicon<CR>
