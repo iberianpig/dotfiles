@@ -5,10 +5,10 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
 # export HISTSIZE=100000                   # big big history
 # export HISTFILESIZE=100000               # big big history
-# shopt -s histappend                      # append to history, don't overwrite it
+shopt -s histappend                      # append to history, don't overwrite it
 #
 # # Save and reload the history after each command finishes
 # export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
@@ -22,18 +22,56 @@ export HISTFILESIZE=100000               # big big history
 # https://piro.sakura.ne.jp/latest/blosxom/webtech/2018-03-04_history-nodup-with-tmux.htm
 function share_history {
   history -a
-  tac ~/.bash_history | awk '!a[$0]++' | tac > ~/.bash_history.tmp
-  [ -f ~/.bash_history.tmp ] &&
-    mv ~/.bash_history{.tmp,} &&
-    history -c &&
-    history -r
+  history -n
 }
 PROMPT_COMMAND='share_history'
-shopt -u histappend
 
+# バックアップ用の関数
+function backup_bash_history {
+  local backup_dir="${HOME}/.bash_history_backups"
+  local timestamp=$(date +%Y%m%d_%H%M%S)
 
-# make histories uniq
-alias history_fix='history -n && history | sort -k2 -k1nr | uniq -f1 | sort -n | cut -c8- > ~/.tmp$$ && history -c && history -r ~/.tmp$$ && history -w && rm ~/.tmp$$'  
+  # バックアップディレクトリが存在しない場合は作成
+  [ ! -d "${backup_dir}" ] && mkdir -p "${backup_dir}"
+
+  # バックアップファイル名を設定
+  local backup_file="${backup_dir}/.bash_history_${timestamp}.bak"
+
+  # バックアップを作成
+  cp "${HISTFILE}" "${backup_file}"
+}
+
+function restore_bash_history {
+  local backup_dir="${HOME}/.bash_history_backups"
+  local backup_file
+
+  # fzf がインストールされているか確認
+  if ! command -v fzf > /dev/null; then
+    echo "fzf is not installed. Please install it to use this function."
+    return 1
+  fi
+
+  # バックアップディレクトリが存在しない場合はエラーを表示
+  if [ ! -d "${backup_dir}" ]; then
+    echo "Backup directory does not exist. No backups available."
+    return 1
+  fi
+
+  # fzf を使ってバックアップファイルを選択し、プレビューを表示
+  backup_file=$(find "${backup_dir}" -type f -name ".bash_history_*.bak" | fzf \
+    --preview='echo "Total lines: $(wc -l < {})"; echo ""; tail -n 100 {}' \
+    --preview-window=up:70%:wrap)
+
+  # 選択されたバックアップファイルがある場合、現在の履歴ファイルと置き換える
+  if [ -n "${backup_file}" ]; then
+    cp "${backup_file}" "${HISTFILE}"
+    echo "Restored history from ${backup_file}"
+    history -c
+    history -r
+  else
+    echo "No backup file selected."
+  fi
+}
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -196,7 +234,7 @@ fi # fzf
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "Task finished" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
+alias alert='notify-send --urgency=normal -i "$([ $? = 0 ] && echo terminal || echo error)" "Task finished" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # remap ctrl-w
 stty werase undef
@@ -230,3 +268,26 @@ if [ -f '/home/iberianpig/google-cloud-sdk/path.bash.inc' ]; then . '/home/iberi
 
 # The next line enables shell command completion for gcloud.
 if [ -f '/home/iberianpig/google-cloud-sdk/completion.bash.inc' ]; then . '/home/iberianpig/google-cloud-sdk/completion.bash.inc'; fi
+
+
+function bwu() {
+    BW_STATUS=$(bw status | jq -r .status)
+    case "$BW_STATUS" in
+    "unauthenticated")
+        echo "Logging into BitWarden"
+        export BW_SESSION=$(bw login --raw)
+        ;;
+    "locked")
+        echo "Unlocking Vault"
+        export BW_SESSION=$(bw unlock --raw)
+        ;;
+    "unlocked")
+        echo "Vault is unlocked"
+        ;;
+    *)
+        echo "Unknown Login Status: $BW_STATUS"
+        return 1
+        ;;
+    esac
+    bw sync
+}
