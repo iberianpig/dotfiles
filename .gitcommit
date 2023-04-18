@@ -10,6 +10,7 @@
 
 # Closes #123, #456
 
-# Breaks 
+# BREAKING CHANGE:
 
+# ref: https://www.conventionalcommits.org/ja/v1.0.0/
 # ref: https://zenn.dev/uochan/articles/2021-12-08-vim-conventional-commits

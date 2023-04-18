@@ -7,7 +7,7 @@
   fe = fetch
   tr = log --graph --pretty='format:%C(yellow)%h%Creset %s %Cgreen(%an)%Creset %Cred%d%Creset'
   st = status
-  ci = commit -a -v
+  ci = commit -a -v -v
   di = diff
   dic = diff --cached
   dc = diff --cached
@@ -21,6 +21,7 @@
   ss = stash save
   delete-merged-branches = !git branch --merged | grep -v \\* | xargs -I % git branch -d %
   remove-deleted-files = !git ls-files --deleted | xargs -I % git rm %
+  pushf = push --force-with-lease --force-if-includes
 [core]
   editor = vim
   excludesfile = ~/.gitignore_global
@@ -28,6 +29,7 @@
   pager = "diff-highlight | less"
 [push]
   default = current
+  useForceIfIncludes = true
 [pull]
   rebase = true
 [color]
@@ -57,6 +59,7 @@
 	root = ~/.ghq
 [commit]
 	template = ~/.gitcommit
+	verbose = true
 [secrets]
 	providers = git secrets --aws-provider
 	patterns = (A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}

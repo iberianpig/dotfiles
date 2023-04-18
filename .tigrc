@@ -22,8 +22,10 @@ set wrap-lines            = no # grepの位置がズレる
 set refresh-mode          = auto #options: auto / after-command / periodic / 1
 
 # Bind Settings
-bind generic <C-f> move-page-down
-bind generic <C-b> move-page-up
+bind generic <C-f> scroll-right
+bind generic <C-b> scroll-left
+bind generic l scroll-right
+bind generic h scroll-left
 bind generic g  none
 bind generic o  none
 bind generic R  none
@@ -32,6 +34,8 @@ bind main    G  none
 bind main    G  move-last-line
 bind generic G  move-last-line
 bind generic ;  :
+bind generic y  none
+bind generic Y  view-stash
 
 # revertを定義
 bind main v !?git revert %(commit)
@@ -48,6 +52,7 @@ bind branch P !?git push origin %(branch)
 bind branch L !?git pull origin %(branch)
 bind branch f !git fe
 bind branch <ESC>m !?git branch --move %(branch) %(prompt)
+bind branch - !?git checkout -
 
 # M で merge
 bind generic M      none
@@ -63,25 +68,28 @@ bind branch  R ?git rebase %(commit)
 # I で rebase -i
 bind main    <Esc>i      ?git rebase -i %(branch)
 bind diff    <Esc>i      ?git rebase -i %(branch)
-bind refs    <Esc>i      ?git rebase -i %(branch)
+bind branch  <Esc>i      ?git rebase -i %(branch)
 bind main    I           ?git rebase -i %(commit)
 bind diff    I           ?git rebase -i %(commit)
-bind refs    I           ?git rebase -i %(commit)
+bind branch  I           ?git rebase -i %(commit)
 
 # reflog
 bind generic L      !sh -c "git reflog --pretty=raw | tig --pretty=raw"
 bind generic _      ?git reset --hard HEAD@{"%(prompt Enter HEAD@{} number: )"}
 
 # 差分表示してコミットメッセージ編集
-bind status c !?git commit -v
+bind status c !?git commit -v -v
 # hookのキャンセルオプション付きコミット
-bind status C !?git commit -vn
+bind status C !?git commit -v -v -n
 # amendオプション
-bind status a !?git commit -v  --amend
+bind status a !?git commit -v  -v --amend
 # hookキャンセル+amendオプション
-bind status A !?git commit -vn --amend
+bind status A !?git commit -v -v -n --amend
 # remove file
 bind status D !@?rm %(file)
+# stage中のdiffを表示
+bind status d view-stage
+bind stage d view-stage
 
 # `-` でステージ・アンステージをスイッチ
 bind status u none
@@ -107,17 +115,17 @@ bind stash   p      !?git stash pop %(stash)
 ## . で HEAD との diff
 bind main    .      !sh -c "git diff %(commit) | tig"
 bind diff    .      !sh -c "git diff %(commit) %(file) | tig"
-bind refs    .      !sh -c "git diff %(branch) | tig"
+bind branch  .      !sh -c "git diff %(branch) | tig"
 ## Alt-. で指定 commit ID との diff
 bind main    <Esc>. ?sh -c "git diff %(commit)..%(prompt Enter commit ID: ) | tig"
 bind diff    <Esc>. ?sh -c "git diff %(commit)..%(prompt Enter commit ID: ) | tig"
-bind refs    <Esc>. ?sh -c "git diff %(branch)..%(prompt Enter branch name: ) | tig"
+bind branch  <Esc>. ?sh -c "git diff %(branch)..%(prompt Enter branch name: ) | tig"
 
 # authorで絞り込み
 bind main    a      <tig --author="%(prompt Enter author: )"
 
 # origin/masterと比較(PRのレビューに使う)
-bind generic <Esc>p  <sh -c "tig $(git merge-base %(commit) $(git branch  | grep '*' | cut -d ' ' -f 2))...$(git branch  | grep \* | cut -d ' ' -f 2)"
+bind main <Esc>p  <sh -c "tig $(git merge-base %(commit) $(git branch  | grep '*' | cut -d ' ' -f 2))...$(git branch  | grep \* | cut -d ' ' -f 2)"
 
 # githubでコミットのページを確認する
 # FIXME: .gitを含む場合の処理がおかしいので修正
@@ -131,12 +139,18 @@ bind blame B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head 
 # bind tree  B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
 # bind blob  B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
 # bind blame B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
-# bind refs  B !sh -c "gh pr view --web %(branch)"
+# bind branch  B !sh -c "gh pr view --web %(branch)"
 
 # reopen
 bind generic  <ESC>r  <tig
 
 bind generic T !git notes edit %(commit)
+
+## yank
+# copy commit hash
+bind generic yi @sh -c 'echo %(commit) | xclip -selection clipboard'
+# copy commit message
+bind generic ym @sh -c 'git log %(commit) -1 --pretty=format:"%s%n%n%b%n" | xclip -selection clipboard'
 
 # difftool
 bind status <Esc>d !sh -c "git difftool -y \"$(git rev-parse --show-toplevel)/%(file)\""
