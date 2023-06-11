@@ -305,3 +305,34 @@ function bwu() {
     esac
     bw sync
 }
+
+
+function gnome-wayland-change-finger-count() {
+local finger_count=$1
+case "${finger_count}" in
+  3|4|5)
+    echo "Changing finger count to ${finger_count}"
+
+  # Check if the file we want to customize is in the gresource list
+  if gresource list /usr/lib/gnome-shell/libgnome-shell.so | grep -q 'swipeTracker.js'; then
+    # Create a folder to hold your custom overlays
+    mkdir -p ~/.gnome-shell-custom-overlays/ui
+
+    # Extract the file we want to customize
+    gresource extract /usr/lib/gnome-shell/libgnome-shell.so /org/gnome/shell/ui/swipeTracker.js > ~/.gnome-shell-custom-overlays/ui/swipeTracker.js
+
+    # Change the GESTURE_FINGER_COUNT value
+    sed -i "s:const GESTURE_FINGER_COUNT = [[:digit:]];:const GESTURE_FINGER_COUNT = ${finger_count};:" ~/.gnome-shell-custom-overlays/ui/swipeTracker.js
+
+    # Set the G_RESOURCE_OVERLAYS environment variable in ~/.config/environment.d/gnome-shell-overlay.conf
+    mkdir -p ~/.config/environment.d
+    echo 'G_RESOURCE_OVERLAYS="/org/gnome/shell/ui/swipeTracker.js=$HOME/.gnome-shell-custom-overlays/ui/swipeTracker.js"' > ~/.config/environment.d/gnome-shell-overlay.conf
+  else 
+    echo "swipeTracker.js not found in libgnome-shell.so" > /tmp/swipeTracker.log
+  fi
+
+  ;;
+*)
+  echo "Usage: $0 [3|4|5]"
+esac
+}
