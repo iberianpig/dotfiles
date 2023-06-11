@@ -78,13 +78,13 @@ bind generic L      !sh -c "git reflog --pretty=raw | tig --pretty=raw"
 bind generic _      ?git reset --hard HEAD@{"%(prompt Enter HEAD@{} number: )"}
 
 # 差分表示してコミットメッセージ編集
-bind status c !?git commit -v -v
+bind status c !?git commit -v
 # hookのキャンセルオプション付きコミット
-bind status C !?git commit -v -v -n
+bind status C !?git commit -v -n
 # amendオプション
-bind status a !?git commit -v  -v --amend
+bind status a !?git commit -v --amend
 # hookキャンセル+amendオプション
-bind status A !?git commit -v -v -n --amend
+bind status A !?git commit -v -n --amend
 # remove file
 bind status D !@?rm %(file)
 # stage中のdiffを表示
