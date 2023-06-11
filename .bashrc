@@ -167,7 +167,7 @@ export FZF_DEFAULT_COMMAND='(git ls-files; git ls-files -o --exclude-standard ||
 if which fzf > /dev/null; then
 
   fzf-change-repo() {
-    local repository="$(ghq list -p | fzf)"
+    local repository="$(ghq list -p | grep -v "$PRIVATE_REPO" | fzf)"
     echo $repository
     if [ -n "${repository}" ]; then
       local dirname=$(basename "${repository}")
@@ -246,6 +246,10 @@ if [ -n "${DISPLAY+x}" ]; then
 fi
 
 eval "$(direnv hook bash)"
+
+if [[ -f "$HOME/.envrc" ]]; then
+  source "$HOME/.envrc"
+fi
 
 # wakatime
 [ -f ~/.ghq/github.com/gjsheep/bash-wakatime/bash-wakatime.sh ] && source ~/.ghq/github.com/gjsheep/bash-wakatime/bash-wakatime.sh
