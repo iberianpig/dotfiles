@@ -167,13 +167,23 @@ export FZF_DEFAULT_COMMAND='(git ls-files; git ls-files -o --exclude-standard ||
 if which fzf > /dev/null; then
 
   fzf-change-repo() {
-    local repository="$(ghq list -p | grep -v "$PRIVATE_REPO" | fzf)"
-    echo $repository
-    if [ -n "${repository}" ]; then
-      local dirname=$(basename "${repository}")
+    local repository
+
+    if [[ -z "${PRIVATE_REPO}" ]]; then
+      repository="$(ghq list -p | fzf)"
+    else
+      repository="$(ghq list -p | grep -v "$PRIVATE_REPO" | fzf)"
+    fi
+
+    echo "$repository"
+
+    if [[ -n "$repository" ]]; then
+      local dirname
+      dirname=$(basename "${repository}")
       cd "${repository}" && tmux rename-window "${dirname}" || return
     fi
   }
+
   alias cr=fzf-change-repo
 
   # Markdownのメモを探して開く
