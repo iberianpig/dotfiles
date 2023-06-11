@@ -113,7 +113,7 @@ fi
 # reset language
 case $TERM in
       linux) LANG=C ;;
-      *)     LANG=ja_JP.UTF-8;;
+      *)     LANG=us_EN.UTF-8;;
 esac
 
 unset color_prompt force_color_prompt
