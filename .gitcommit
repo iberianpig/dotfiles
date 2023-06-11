@@ -1,3 +1,20 @@
+#  Write git commit message written for following code diff
+#  - Message language must be English
+#  - Commit message must be a maximum of 72 characters.
+#  - Content must include `Changes to be committed` section
+#  - Format must be git commit message
+# 
+# ```example
+# feat(category): commit message
+#
+#
+# Body of commit message
+#
+# Closes #123, #456
+#
+# BREAKING CHANGE: description of breaking change
+# ```
+
 # feat(*): feature
 # fix(*): bug fix
 # style(*): formatting, missing semi colons, …
@@ -5,12 +22,3 @@
 # refactor(*): 
 # test(*): when adding missing tests
 # chore(*): maintain
-
-# Body
-
-# Closes #123, #456
-
-# BREAKING CHANGE:
-
-# ref: https://www.conventionalcommits.org/ja/v1.0.0/
-# ref: https://zenn.dev/uochan/articles/2021-12-08-vim-conventional-commits
