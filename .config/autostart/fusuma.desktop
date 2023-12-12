@@ -3,6 +3,6 @@ Name=fusuma(system ruby)
 Comment=run fusuma
 Exec=/home/iberianpig/.rbenv/shims/fusuma -d  --log=/tmp/fusuma.log --verbose
 Icon=input-touchpad
-X-GNOME-Autostart-enabled=true
+X-GNOME-Autostart-enabled=false
 Type=Application
 Name[ja]=fusuma

@@ -49,8 +49,8 @@ swipe:
     end:
       command: xdotool keyup Alt
   3:
-    <<: *drag
-    # <<: *alt_tab
+    # <<: *drag
+    <<: *alt_tab
   4:
     left:
       sendkey: LEFTMETA+PAGEDOWN # move to next workspace

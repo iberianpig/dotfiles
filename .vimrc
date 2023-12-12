@@ -25,7 +25,7 @@ augroup END
 set laststatus=2   " ステータス行を常に表示
 set cmdheight=1    " メッセージ表示欄を2行確保
 set showmatch      " 対応する括弧を強調表示
-set matchpairs+=「:」,『:』,（:）,【:】,《:》,〈:〉,［:］,‘:’,“:”
+set matchpairs+=「:」,『:』,（:）,【:】,《:》,〈:〉,［:］,‘:’,“:”,`:`
 
 set helpheight=998 " ヘルプを画面いっぱいに開く
 
@@ -33,24 +33,25 @@ set helpheight=998 " ヘルプを画面いっぱいに開く
 set list           " 不可視文字を表示
 set listchars=tab:▸\ ,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
-" set iskeyword+=?,!,-,@-@ "?,!,@hogeなどをキーワードとする
+set iskeyword+=?,!,-,@-@ "?,!,@hogeなどをキーワードとする
 
-" Don't screw up folds when inserting text that might affect them, until
-" leaving insert mode. Foldmethod is local to the window. Protect against
-" screwing up folding when switching between windows.
-augroup switch_folding_method
-  autocmd!
-  autocmd InsertEnter *
-     \ if !exists('w:last_fdm') |
-     \   let w:last_fdm=&foldmethod |
-     \   setlocal foldmethod=manual |
-     \ endif
-  autocmd InsertLeave,WinLeave *
-     \ if exists('w:last_fdm') |
-     \   let &l:foldmethod=w:last_fdm |
-     \   unlet w:last_fdm |
-     \ endif
-augroup END
+" " Don't screw up folds when inserting text that might affect them, until
+" " leaving insert mode. Foldmethod is local to the window. Protect against
+" " screwing up folding when switching between windows.
+" augroup switch_folding_method
+"   autocmd!
+"   autocmd InsertEnter *
+"     \ if !exists('w:last_fdm') |
+"     \   let w:last_fdm=&foldmethod |
+"     \   setlocal foldmethod=manual |
+"     \ endif
+"   autocmd InsertLeave,WinLeave *
+"     \ if exists('w:last_fdm') |
+"     \   let &l:foldmethod=w:last_fdm |
+"     \   unlet w:last_fdm |
+"     \ endif
+" augroup END
+set nofoldenable    " disable folding
 
 augroup vimrc-highlight
   autocmd!
@@ -175,6 +176,7 @@ nnoremap <silent> <ESC><ESC> :call ClearHighlight()<CR>
 function! ClearHighlight() abort
   call feedkeys(":nohlsearch\<CR>", "n") " ハイライトをオフにする
   call popup_clear() "ポップアップのクリア
+  call quickhl#manual#reset()
 endfunction
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
@@ -315,6 +317,7 @@ Plug 'ujihisa/neco-look'
 
 " カーソル下をハイライト
 Plug 'osyo-manga/vim-brightest'
+Plug 't9md/vim-quickhl'
 
 " 括弧補完
 " Plug 'cohama/lexima.vim'
@@ -323,9 +326,9 @@ Plug 'osyo-manga/vim-brightest'
 
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
-Plug 'prabirshrestha/async.vim'
-" Plug 'prabirshrestha/vim-lsp'
-Plug '~/.ghq/github.com/prabirshrestha/vim-lsp'
+" Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/vim-lsp'
+" Plug '~/.ghq/github.com/prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 
 Plug 'Shougo/neosnippet.vim'
@@ -340,8 +343,16 @@ Plug 'thomasfaingnaert/vim-lsp-neosnippet'
 " Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
 Plug 'htlsne/asyncomplete-look'
 
-Plug 'kitagry/asyncomplete-tabnine.vim', { 'do': './install.sh'  }
+" Plug 'kitagry/asyncomplete-tabnine.vim', { 'do': './install.sh'  }
 Plug 'github/copilot.vim'
+
+" deno
+Plug 'vim-denops/denops.vim'
+" Plug 'yuki-yano/fuzzy-motion.vim'
+" Plug 'yuki-yano/denops-open-http.vim'
+" Plug 'skanehira/denops-silicon.vim'
+
+" Plug 'skanehira/denops-gh.vim'
 
 Plug 'prettier/vim-prettier', {
  \ 'do': 'yarn install',
@@ -413,17 +424,15 @@ Plug '907th/vim-auto-save'
 " Plug 'rhysd/clever-f.vim'
 
 " Surround
-" Plug 'tpope/vim-surround'
-Plug 'rhysd/vim-textobj-anyblock' | Plug 'kana/vim-textobj-user'
-Plug 'kana/vim-textobj-line' | Plug 'kana/vim-textobj-user'
-Plug 'fvictorio/vim-textobj-backticks' | Plug 'kana/vim-textobj-user'
-Plug 'rhysd/vim-operator-surround' | Plug 'kana/vim-operator-user'
+Plug 'kana/vim-textobj-user'
+Plug 'rhysd/vim-textobj-anyblock'
+Plug 'kana/vim-textobj-line'
+Plug 'fvictorio/vim-textobj-backticks'
+Plug 'kana/vim-operator-user'
+Plug 'rhysd/vim-operator-surround'
+Plug 'tyru/operator-camelize.vim'
 
-" " easymotion
-Plug 'vim-denops/denops.vim'
-Plug 'yuki-yano/fuzzy-motion.vim'
-Plug 'yuki-yano/denops-open-http.vim'
-Plug 'skanehira/denops-silicon.vim'
+Plug 'aymericbeaumet/vim-symlink' | Plug 'moll/vim-bbye' " optional dependency
 
 " Rename
 Plug 'qpkorr/vim-renamer', { 'on': 'Renamer'}
@@ -446,9 +455,7 @@ Plug 'deton/jasentence.vim', { 'for': ['markdown'] }
 Plug 'rhysd/vim-gfm-syntax', { 'for': 'markdown' }
 Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': ['markdown', 'plantuml', 'vim-plug']}
 
-Plug 'heavenshell/vim-textlint', { 'for': 'markdown' }
-
-Plug 'mattn/vim-maketable', { 'for': 'markdown' }
+Plug 'mattn/vim-maketable' ", { 'for': 'markdown' }
 
 "" Rails
 " 規約ベースのコードジャンプ、b:rails_rootを定義
@@ -552,6 +559,8 @@ Plug 'uarun/vim-protobuf'
 
 Plug 'rbtnn/vim-ambiwidth'
 
+Plug 'vim-skk/skkeleton'
+
 " ローカル管理のPlugin
 Plug '~/.ghq/github.com/iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.vim'
 Plug '~/.ghq/github.com/iberianpig/ranger-explorer.vim'
@@ -594,6 +603,11 @@ highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
 highlight DiffAdd           cterm=bold ctermbg=none ctermfg=119
 highlight DiffDelete        cterm=bold ctermbg=none ctermfg=167
 highlight DiffChange        cterm=bold ctermbg=none ctermfg=227
+
+if &diff
+    " diff mode
+    set diffopt+=iwhite
+endif
 
 " " highlight signs in Sy
 highlight SignifySignAdd    cterm=bold ctermbg=235  ctermfg=155
@@ -760,6 +774,20 @@ augroup rails_snippet
 augroup END
 
 " vim-rails
+	" let g:rails_projections = {
+	"      \ "app/uploaders/*_uploader.rb": {
+	"      \   "command": "uploader",
+	"      \   "template":
+	"      \     ["class {camelcase|capitalize|colons}Uploader < "
+	"      \      . "CarrierWave::Uploader::Base", "end"],
+	"      \   "test": [
+	"      \     "test/unit/{}_uploader_test.rb",
+	"      \     "spec/models/{}_uploader_spec.rb"
+	"      \   ],
+	"      \   "rubyMacro": ["process", "version"]
+	"      \ },
+	"      \ "features/support/*.rb": {"command": "support"},
+	"      \ "features/support/env.rb": {"command": "support"}}
 let g:rails_projections = {
       \  "app/controllers/*_controller.rb": {
       \    "affinity": "controller",
@@ -785,7 +813,21 @@ let g:rails_projections = {
       \    "controller": [
       \      "app/controllers/{}_controller.rb",
       \    ],
-      \  }
+      \  },
+      \  "app/services/*.rb": {
+      \    "affinity": "service",
+      \    "template": [
+      \      "class {camelcase|capitalize|colons}",
+      \      "end"
+      \    ],
+      \    "type": "services",
+      \    "test": [
+      \      "spec/services/{}_spec.rb",
+      \    ],
+      \    "alternate": [
+      \      "spec/services/{}_spec.rb",
+      \    ],
+      \  },
       \}
 
 
@@ -803,7 +845,7 @@ call submode#map('winsize',        'n', '', 'L', '<C-w>>')
 call submode#map('winsize',        'n', '', 'H', '<C-w><')
 call submode#map('winsize',        'n', '', 'J', '<C-w>-')
 call submode#map('winsize',        'n', '', 'K', '<C-w>+')
-
+ 
 "" over.vim
 " over.vimの起動
 nnoremap <silent> <C-s> :OverCommandLine<CR>%s;<C-r><C-w>;;<Left><C-r><C-w>
@@ -1059,7 +1101,7 @@ let g:dispatch_compilers = {
 " https://qiita.com/joker1007/items/4dbff328f39c11e732af
 function! DockerTransformer(cmd) abort
   let cmd = a:cmd
-  let prefix = ''
+  " echomsg 'original cmd:' . cmd
   let compose_option = ''
 
   "" debug
@@ -1076,20 +1118,31 @@ function! DockerTransformer(cmd) abort
       cd $SPEC_PROJECT_ROOT__RUBY
       let g:test#project_root = $SPEC_PROJECT_ROOT__RUBY
     endif
-    if $SPEC_CONTAINER__RUBY !=# ''  | let prefix = 'docker-compose' . compose_option . ' exec ' .  $SPEC_CONTAINER__RUBY . ' ' . $SPEC_PREFIX__RUBY .' ' |  endif
+    if $SPEC_COMMAND__RUBY !=# ''
+      let path = substitute(a:cmd, '.*rspec ', '', '')
+      let cmd = substitute($SPEC_COMMAND__RUBY, 'rspec', 'rspec ' . path, '')
+    endif
+    if $SPEC_CONTAINER__RUBY !=# ''
+      let cmd = 'docker compose' . compose_option . ' exec ' .  $SPEC_CONTAINER__RUBY . ' ' . cmd .' '
+    endif
   endif
   if &filetype == 'go'
     if $SPEC_PROJECT_ROOT__GO !=# ''
       cd $SPEC_PROJECT_ROOT__GO
       let g:test#project_root = $SPEC_PROJECT_ROOT__GO
     endif
-    if $SPEC_CONTAINER__GO !=# '' | let prefix = 'docker-compose' . compose_option . ' exec ' . $SPEC_CONTAINER__GO . ' ' . $SPEC_PREFIX__GO .' '|  endif
+    if $SPEC_COMMAND__GO !=# ''
+      let cmd = $SPEC_COMMAND__GO
+    endif
+    if $SPEC_CONTAINER__GO !=# ''
+      let cmd = 'docker compose' . compose_option . ' exec ' . $SPEC_CONTAINER__GO . ' ' . cmd .' '
+    endif
   endif
-  if prefix !=# ''
-    let g:dispatch_compilers[prefix] = ''
-    echomsg prefix . cmd
-    return  prefix . cmd
-  endif
+  " if cmd !=# a:cmd
+  "   let g:dispatch_compilers[prefix] = ''
+  "   echomsg prefix . cmd
+  "   return  prefix . cmd
+  " endif
   echomsg cmd
   return cmd
 endfunction
@@ -1129,10 +1182,14 @@ vnoremap [explorer]G y:Tig -G"<C-R>""
 
 "" open tig blame with current file
 nnoremap [explorer]b :TigBlame<CR>
+nnoremap [explorer]B :Tig blame -M -C -C -C -w %<CR>
 
 nnoremap [explorer]s :Tig status<CR>
 nnoremap [explorer]y :Tig stash<CR>
 " nnoremap [explorer]r :Tig refs<CR>
+
+" diffthisの再適用
+nnoremap [explorer]d :windo diffoff!<CR>:windo diffthis<CR>
 
 " let g:tig_explorer_orig_tigrc='~/.tigrc'
 let g:tig_explorer_keymap_edit_e  = 'e'
@@ -1281,11 +1338,13 @@ augroup END
 " inoremap <expr> <C-x>  <SID>hint_i_ctrl_x()
 
 let g:brightest#highlight = {
-     \   'group' : 'BrightestUnderline'
-     \}
+    \   'group' : 'BrightestUnderline'
+    \}
 
-let g:brightest#pattern = '\k\+'
+" let g:brightest#pattern = '\k\+'
 let g:brightest#enable_on_CursorHold = 1
+
+map H <Plug>(operator-quickhl-manual-this-motion)
 
 let g:lsp_signs_enabled = 1        " enable signs
 let g:lsp_diagnostics_echo_cursor = 1 " enable echo under cursor when in normal mode
@@ -1298,14 +1357,26 @@ let g:lsp_diagnostics_highlights_enabled = 0
 let g:lsp_diagnostics_highlights_delay = 2000
 " let g:lsp_format_sync_timeout = 1000
 
+let g:lsp_highlight_references_enabled = 1
+let g:lsp_diagnostics_virtual_text_enabled=0 " Virtual Text見づらいので無効化
+" let g:lsp_diagnostics_virtual_text_wrap = "truncate"
+" let g:lsp_diagnostics_virtual_text_align = "after"
+
+highlight LspErrorText cterm=bold ctermbg=none ctermfg=red
+highlight LspWarningText cterm=bold ctermbg=none ctermfg=yellow
+highlight LspInformationText cterm=bold ctermbg=none ctermfg=blue
+highlight LspHintText cterm=bold ctermbg=none ctermfg=green
+" highlight LspErrorHighlight cterm=bold ctermbg=none ctermfg=122
+" highlight LspWarningHighlight cterm=bold ctermbg=none ctermfg=123
+" highlight LspInformationHighlight cterm=bold ctermbg=none ctermfg=124
+" highlight LspHintHighlight cterm=bold ctermbg=none ctermfg=125
+
 let g:asyncomplete_auto_popup = 1
 " inoremap <expr> <CR> pumvisible() ? asyncomplete#close_popup() . "\<CR>" : "\<CR>"
 
 let g:lsp_log_verbose = 1
 let g:lsp_log_file          = expand('/tmp/vim-lsp.log')
 let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
-
-let g:lsp_highlight_references_enabled = 1
 
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
@@ -1343,7 +1414,6 @@ augroup END
 
 " lsp restart
 function! LspRestart(force) abort
-  execute 'DirenvExport'
   if !a:force && !exists('b:lsp_restart_available')
     echomsg 'lsp is not available'
     let b:lsp_restart_available = 0
@@ -1355,6 +1425,7 @@ function! LspRestart(force) abort
 
   let s:timer = timer_start(100, {t ->
         \ [
+        \ execute('DirenvExport', ''),
         \ execute('LspStopServer', ''),
         \]
         \})
@@ -1424,6 +1495,9 @@ nmap <silent> sdd <Plug>(operator-surround-delete)<Plug>(textobj-anyblock-a)
 " カーソル位置から一番近い括弧を変更する
 nmap <silent> srr <Plug>(operator-surround-replace)<Plug>(textobj-anyblock-a)
 
+" キャメルケースとスネークケースの切り替え
+map <leader>c <plug>(operator-camelize-toggle)
+
 " text objectの拡張
 omap ab <Plug>(textobj-anyblock-a)
 omap ib <Plug>(textobj-anyblock-i)
@@ -1454,20 +1528,20 @@ augroup asyncomplete_register_source
        \  },
        \ })
 
-  au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#tabnine#get_source_options({
-       \ 'name': 'tabnine',
-       \ 'allowlist': ['*'],
-       \ 'priority': 1000,
-       \ 'completor': function('asyncomplete#sources#tabnine#completor'),
-       \ 'config': {
-       \   'line_limit': 1000,
-       \   'max_num_result': 20,
-       \  },
-       \ }))
-augroup END
-
-"" Delete with backspace to open configuration TabNine
-" TabNine::config.
+"   au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#tabnine#get_source_options({
+"      \ 'name': 'tabnine',
+"      \ 'allowlist': ['*'],
+"      \ 'priority': 1000,
+"      \ 'completor': function('asyncomplete#sources#tabnine#completor'),
+"      \ 'config': {
+"      \   'line_limit': 1000,
+"      \   'max_num_result': 20,
+"      \  },
+"      \ }))
+" augroup END
+" 
+" " Delete with backspace to open configuration TabNine
+" " TabNine::config.
 
 let g:copilot_filetypes = {
     \ 'gitcommit': v:true,
@@ -1503,4 +1577,4 @@ let g:silicon_options = {
       \  'shadow_blur_radius': 10,
       \ }
 
-vmap <leader>c :Silicon<CR>
+" vmap <leader>c :Silicon<CR>

@@ -35,10 +35,10 @@
         state: present
       become: true
 
-    - name: gh
+    - name: install gh
       shell: |
         which gh && exit 0
-        url=$(curl --silent https://api.github.com/repos/cli/cli/releases/latest | jq '.assets[] | select(.name | test("linux_amd64.deb")).browser_download_url')
+        url=$(curl --silent https://api.github.com/repos/cli/cli/releases/latest | jq -r '.assets[] | select(.name | test("linux_amd64.deb")).browser_download_url')
         curl -L $url -o /tmp/gh.deb && dpkg -i /tmp/gh.deb
       become: true
       args:
@@ -77,7 +77,7 @@
         - numix-icon-theme-circle
         - xclip
         # - vim-gnome
-        - vim-gtk
+        # - vim-gtk
         - synaptic
         - gdebi
         - xbindkeys
@@ -105,21 +105,22 @@
         # - lib32stdc++6 # flutter dependency
         # - openjdk-8-jdk # flutter dependency
         - gh
+        - libevdev-tools
     - name: snap install
       command: snap install {{ item }}
       become: true
       with_items:
         - bitwarden
+        - bw
         - authy
         # - slack --classic # it doesn't works with fcitx
         # - spotify # use too much CPU resouces
         # - libreoffice # cant open local file
-        - obs-studio
         - hub --classic
         - go --classic
         # - remmina # remmina can't read config on /home/ 
         # - ngrok   # ngrok   can't read config on /home/ 
-        - fwupd --classic
+        # - fwupd --classic # only for ubuntu (not pop os)
 
     - name: diff-highlight
       shell: |
@@ -143,7 +144,7 @@
       pip: name={{item}} executable=pip3 state=latest
       with_items:
         - vim-vint
-        - wakatime
+        # - wakatime
 
     - name: nvm
       shell: >
@@ -163,16 +164,16 @@
     - name: set color schemes
       command: bash /tmp/hybrid-pantheon.sh
 
-    - name: Install docker-compose # requrie 1.20 or later to use detachKeys in ~/.docker/config.json
-      shell: |
-        which docker-compose && exit 0
-        dest=/usr/local/bin/docker-compose
-        version=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
-        curl -L https://github.com/docker/compose/releases/download/$version/docker-compose-$(uname -s)-$(uname -m) -o $dest
-        chmod a+x $dest
-      args: 
-        creates: /usr/local/bin/docker-compose
-      become: true
+    # - name: Install docker-compose # requrie 1.20 or later to use detachKeys in ~/.docker/config.json
+    #   shell: |
+    #     which docker-compose && exit 0
+    #     dest=/usr/local/bin/docker-compose
+    #     version=$(curl --silent https://api.github.com/repos/docker/compose/releases/latest | jq .name -r)
+    #     curl -L https://github.com/docker/compose/releases/download/$version/docker-compose-$(uname -s)-$(uname -m) -o $dest
+    #     chmod a+x $dest
+    #   args: 
+    #     creates: /usr/local/bin/docker-compose
+    #   become: true
 
     - name: Install Vagrant
       shell: |

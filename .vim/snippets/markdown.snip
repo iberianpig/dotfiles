@@ -12,5 +12,14 @@ snippet ``l
 # Image
 snippet     image
 abbr        markdown image
-    ![](${0})
+	![](${0})
+
+snippet     details
+abbr        <details><summary></summary></details>
+options     head
+	<details>
+	<summary>${1:summary}</summary>
+
+	${2:details}
+	</details>
 

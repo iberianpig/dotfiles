@@ -3,6 +3,7 @@ ln -isT ~/dotfiles/.vimrc ~/.vimrc
 ln -isT ~/dotfiles/.bashrc ~/.bashrc
 ln -isT ~/dotfiles/.bash_profile ~/.bash_profile
 ln -isT ~/dotfiles/.bash_aliases ~/.bash_aliases
+ln -isT ~/dotfiles/.direnvrc ~/.direnvrc
 ln -isT ~/dotfiles/.vim ~/.vim
 ln -isT ~/dotfiles/.gitcommit ~/.gitcommit
 ln -isT ~/dotfiles/.gitconfig ~/.gitconfig

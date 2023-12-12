@@ -3,7 +3,7 @@ set main-view = id date author commit-title:graph=yes,refs=yes
 
 # # Visualization
 set id-width              = 8
-set blame-options         = -C -C -C
+set blame-options         = -M -C -w
 set horizontal-scroll     = 33%
 set show-notes            = yes
 set show-changes          = yes
@@ -46,9 +46,10 @@ bind diff V !?git revert %(prompt) %(commit)
 bind generic F none
 bind generic F !git fe # git fetch
 
-bind branch c !?git co %(branch)
+bind branch c !?git co %(ref)
 bind branch C !?git co -b %(prompt) %(commit)
-bind branch P !?git push origin %(branch)
+bind branch p !?git push origin %(branch)
+bind branch P !?git push origin %(branch) --force-with-lease --force-if-includes
 bind branch L !?git pull origin %(branch)
 bind branch f !git fe
 bind branch <ESC>m !?git branch --move %(branch) %(prompt)
@@ -75,7 +76,7 @@ bind branch  I           ?git rebase -i %(commit)
 
 # reflog
 bind generic L      !sh -c "git reflog --pretty=raw | tig --pretty=raw"
-bind generic _      ?git reset --hard HEAD@{"%(prompt Enter HEAD@{} number: )"}
+bind generic _      ?git reset --hard "%(commit)"
 
 # 差分表示してコミットメッセージ編集
 bind status c !?git commit -v
@@ -141,8 +142,8 @@ bind blame B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head 
 # bind blame B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
 # bind branch  B !sh -c "gh pr view --web %(branch)"
 
-# reopen
-bind generic  <ESC>r  <tig
+bind generic <ESC>r  <tig # reopen
+bind generic <C-L> :refresh
 
 bind generic T !git notes edit %(commit)
 
@@ -151,18 +152,29 @@ bind generic T !git notes edit %(commit)
 bind generic yi @sh -c 'echo %(commit) | xclip -selection clipboard'
 # copy commit message
 bind generic ym @sh -c 'git log %(commit) -1 --pretty=format:"%s%n%n%b%n" | xclip -selection clipboard'
+# copy path
+bind generic yp @sh -c 'echo %(file) | xclip -selection clipboard'
+# copy diff
+bind diff yy @sh -c 'git diff %(commit) | xclip -selection clipboard'
+# copy diff (HEAD とのファイル差分)
+bind stage yy @sh -c 'git diff HEAD -- %(file) | xclip -selection clipboard'
+bind status yy @sh -c 'git diff HEAD -- %(file) | xclip -selection clipboard'
 
 # difftool
 bind status <Esc>d !sh -c "git difftool -y \"$(git rev-parse --show-toplevel)/%(file)\""
 bind main   <Esc>d !?sh -c "git difftool -d --trust-exit-code $(git merge-base origin/master %(commit))...%(commit)"
 
-bind diff   D !?sh "git difftool %(commit) -- %(file)"
-bind log    D !?sh "git difftool %(commit) -- %(file)"
-bind pager  D !?sh "git difftool %(commit) -- %(file)"
+bind diff   D !?sh -c "git difftool %(commit) -- %(file)"
+bind log    D !?sh -c "git difftool %(commit) -- %(file)"
+bind pager  D !?sh -c "git difftool %(commit) -- %(file)"
 
 # gh
 bind branch <ESC>h !?sh -c "gh pr view %(branch) || git commit --allow-empty -m 'chore(WIP): draft' && gh pr create --draft"
 bind branch H !sh -c "gh pr view %(branch) || gh pr create --draft"
+
+# blame optionを切り替え
+bind generic i ?:set blame-options = -M -w
+bind generic <ESC>i ?:set blame-options = -M -C -C -C -w
 
 # $ cp /usr/share/doc/tig/examples/large-repo.tigrc ~/dotfiles/.tigrc.large
 source ~/.tigrc.large

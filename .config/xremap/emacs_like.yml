@@ -1,88 +1,106 @@
 ---
 modmap:
-- name: default
-  remap:
-    CapsLock: LEFTCTRL
+  - name: default
+    remap:
+      CapsLock: LEFTCTRL
 keymap:
-- name: Browser
-  remap:
-    Alt-space: Ctrl-f
-    Alt-n: Ctrl-Tab
-    Alt-p: Ctrl-Shift-Tab
-    Ctrl-q: Ctrl-w
-  application:
-    only:
-    - Google-chrome
-    - Chromium
-    - Navigator
-    - Microsoft-edge-dev
+  - name: Browser
+    remap:
+      Alt-space: Ctrl-f
+      Alt-n: Ctrl-Tab
+      Alt-p: Ctrl-Shift-Tab
+      Ctrl-q: Ctrl-w
+    application:
+      only:
+        - Google-chrome
+        - Chromium
+        - Navigator
+        - Microsoft-edge-dev
 
-- name: vim+emacs
-  remap:
-    Ctrl-q: Alt-q # Disable
-    Ctrl-o: Alt-Left
-    Ctrl-i: Alt-Right
-    Ctrl-b: Left
-    Ctrl-f: Right
-    Ctrl-p: Up
-    Ctrl-n: Down
-    Ctrl-a: Home
-    Ctrl-e: End
-    Ctrl-k:
-    - Shift-End
-    - Delete
-    Ctrl-u:
-    - Shift-Home
-    - Delete
-    Ctrl-w:
-    - Ctrl-BackSpace
-    Ctrl-d: Delete
-    M-d: Ctrl-Delete
-    Ctrl-h: BackSpace
-    Ctrl-m: Enter
-    Ctrl-LEFTBRACE: Esc
-    Alt-a: Ctrl-a
-    Alt-z: Ctrl-z
-    Alt-x: Ctrl-x
-    Alt-c: Ctrl-c
-    Alt-v: Ctrl-v
-    Alt-w: Ctrl-w
-    Alt-t: Ctrl-t
-    Alt-f: Ctrl-f
-  application:
-    only:
-    - Google-chrome
-    - Chromium
-    - Navigator
-    - Microsoft-edge-dev
-    - Slack
-    - keepassxc
-    - libreoffice
-    - synapse
-    - shift
-    - mysql-workbench-bin
-    - Mysql-workbench-bin
-    - mysql-workbench-bin.Mysql-workbench-bin
-    - crx_hbdpomandigafcibbmofojjchbcdagbl
-    - crx_edcifkpoamnkimdpjiabhfjahoinbpbp
-    - crx_hmjkmjkepdijhoojdojkdfohbdgmmhki
-    - crx_mjcnijlhddpbdemagnpefmlkjdagkogk
-    - crx_ojcflmmmcfpacggndoaaflkmcoblhnbh
-    - crx_ophjlpahpchlmihnnnihgmmeilfjmjjc
-    - crx_ngboffpgmgciiinnflnkgedmbalfkeeg
-    - evince
-    - discord
-    - calibre-ebook-viewer
+  - name: vim+emacs
+    remap:
+      Ctrl-q: Alt-q # Disable
+      Ctrl-o: Alt-Left
+      Ctrl-i: Alt-Right
+      Ctrl-b: Left
+      Ctrl-f: Right
+      Ctrl-p: Up
+      Ctrl-n: Down
+      Ctrl-a: Home
+      Ctrl-e: End
+      Ctrl-k:
+        - Shift-End
+        - Delete
+      Ctrl-u:
+        - Shift-Home
+        - Delete
+      Ctrl-w:
+        - Ctrl-BackSpace
+      Ctrl-d: Delete
+      M-d: Ctrl-Delete
+      Ctrl-h: BackSpace
+      Ctrl-m: Enter
+      Ctrl-LEFTBRACE: Esc
 
-# - name: gnome-shell
-#   remap:
-#     Ctrl-Shift-j: Super-Alt-Up
-#     Ctrl-Shift-k: Super-Alt-Down
-#     Ctrl-Shift-l: Super-Alt-Right
-#     Ctrl-Shift-h: Super-Alt-Left
-- name: material-shell
-  remap:
-    Ctrl-Shift-j: Super-s
-    Ctrl-Shift-k: Super-w
-    Ctrl-Shift-l: Super-d
-    Ctrl-Shift-h: Super-a
+      Alt-q: Ctrl-q # Disable
+      Alt-o: Ctrl-o
+      Alt-i: Ctrl-i
+      Alt-b: Ctrl-b
+      Alt-f: Ctrl-f
+      Alt-p: Ctrl-p
+      Alt-n: Ctrl-n
+      Alt-a: Ctrl-a
+      Alt-e: Ctrl-e
+      Alt-d: Ctrl-d
+      Alt-h: Ctrl-h
+      Alt-m: Ctrl-m
+      Alt-LEFTBRACE: Ctrl-LEFTBRACE
+      Alt-z: Ctrl-z
+      Alt-x: Ctrl-x
+      Alt-c: Ctrl-c
+      Alt-v: Ctrl-v
+      Alt-w: Ctrl-w
+      Alt-t: Ctrl-t
+
+    application:
+      only:
+        - Google-chrome
+        - Chromium
+        - Navigator
+        - Microsoft-edge-dev
+        - Slack
+        - keepassxc
+        - libreoffice
+        - synapse
+        - shift
+        - mysql-workbench-bin
+        - Mysql-workbench-bin
+        - mysql-workbench-bin.Mysql-workbench-bin
+        - crx_hbdpomandigafcibbmofojjchbcdagbl
+        - crx_edcifkpoamnkimdpjiabhfjahoinbpbp
+        - crx_hmjkmjkepdijhoojdojkdfohbdgmmhki
+        - crx_mjcnijlhddpbdemagnpefmlkjdagkogk
+        - crx_ojcflmmmcfpacggndoaaflkmcoblhnbh
+        - crx_ophjlpahpchlmihnnnihgmmeilfjmjjc
+        - crx_ngboffpgmgciiinnflnkgedmbalfkeeg
+        - evince
+        - discord
+        - calibre-ebook-viewer
+
+  # - name: gnome-shell
+  #   remap:
+  #     Ctrl-Shift-j: Super-Alt-Up
+  #     Ctrl-Shift-k: Super-Alt-Down
+  #     Ctrl-Shift-l: Super-Alt-Right
+  #     Ctrl-Shift-h: Super-Alt-Left
+  - name: material-shell
+    remap:
+      Ctrl-Shift-j: Super-s
+      Ctrl-Shift-k: Super-w
+      Ctrl-Shift-l: Super-d
+      Ctrl-Shift-h: Super-a
+      SUPER-r:
+        launch:
+          [
+            "/home/iberianpig/.ghq/github.com/material-shell/material-shell/disable_enable_shell.sh",
+          ]

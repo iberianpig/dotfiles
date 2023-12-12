@@ -54,3 +54,6 @@
         # - libxcb-xtest0 # zoom dependency
         # - libgl1-mesa-glx # zoom dependency
         # - libegl1-mesa # zoom dependency
+
+        # snap
+        # - obs-studio # should move for ./multimedia.yml

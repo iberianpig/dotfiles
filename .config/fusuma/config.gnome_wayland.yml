@@ -14,10 +14,67 @@ miraitranslate: &miraitranslate
     google-chrome  --incognito --app=deepl.com "$url"
   interval: 5
 
+swipe_drag: &swipe_drag
+  begin:
+    command: xdotool mousedown 1
+  update:
+    command: xdotool mousemove_relative -- $move_x, $move_y
+    # command: xdotool mousemove_relative -- $unaccelerated_x, $unaccelerated_y
+    interval: 0.01
+    accel: 3
+  end:
+    command: xdotool mouseup 1
+    keypress:
+      LEFTSHIFT+LEFTCTRL:
+        <<: *deepl
+      LEFTCTRL+LEFTSHIFT:
+        <<: *deepl
+      LEFTSHIFT+LEFTALT:
+        <<: *miraitranslate
+      LEFTALT+LEFTSHIFT:
+        <<: *miraitranslate
+
+swipe_alt+tab: &swipe_alt_tab
+  begin:
+    command: xdotool keydown Alt
+  right:
+    update:
+      # TODO: update効いてない？
+      command: xdotool key Tab
+      interval: 5
+  left:
+    update:
+      command: xdotool key Shift+Tab
+      interval: 5
+  end:
+    command: xdotool keyup Alt
+
+thumbsense:
+  J:
+    pressed:
+      sendbutton: 
+        pressed: LEFT
+    released:
+      sendbutton:
+        released: LEFT
+      # TODO: press/releaseと同期させる
+
+  # K:
+  #   pressed:
+  #     sendbutton: RIGHT
+  # F:
+  #   sendbutton: LEFT
+  # D:
+  #   sendbutton: RIGHT
+  # RIGHTALT:
+  #   sendbutton: LEFT
+  # RIGHTCTRL:
+  #   sendbutton: RIGHT
+
 swipe:
   3:
-    # <<: *drag
-    # <<: *alt_tab
+    # <<: *swipe_drag
+    # <<: *swipe_alt_tab
     left:
       keypress:
         LEFTMETA:
@@ -34,9 +91,6 @@ swipe:
       keypress:
         LEFTMETA:
           sendkey: LEFTMETA+DOWN # move window to next workspace
-    end:
-      keypress:
-        LEFTMETA:
 
   4:
     left:
@@ -109,64 +163,6 @@ hold:
   4:
     sendkey: "MUTE"
 
-
-typing: # disable while typing
-  # interval: 0.5
-  # command: |
-  #   ruby <<RUBY
-  #     require 'revdev'
-  #     require 'fileutils'
-  # 
-  #     filepath="/tmp/typing_command_break"
-  #     until_dir = "/tmp/typing_break/#{Process.ppid}"
-  #     evdev = Revdev::EventDevice.new("/dev/input/event10")
-  # 
-  #     if !Dir.exist?(until_dir)
-  #       begin
-  #         evdev.grab
-  #       rescue => ex
-  #         puts "====================="
-  #         puts ex.full_message
-  #         puts "====================="
-  #         return
-  #       end
-  #       FileUtils.mkdir_p(until_dir)
-  #     else
-  #       return
-  #     end
-  # 
-  #     sleep 0.4
-  # 
-  #     begin
-  #       evdev.ungrab
-  #     rescue => ex
-  #       puts "====================="
-  #       puts ex.full_message
-  #       puts "====================="
-  #     end
-  #     Dir.rmdir(until_dir)
-  #   RUBY
-
-  # interval: 0.6
-  # command: | # X11
-  #   touchpad_id=$(xinput | grep Touchpad | grep -oE "id=[0-9]*" | cut -d"=" -f 2)
-  #   xinput set-prop $touchpad_id "libinput Tapping Enabled" 0
-  #   file=/tmp/typing_command_break
-  #   touch "$file"
-  #   sleep 0.6
-  #   [ `find "$file" -mmin +0.01` ] && \
-  #     xinput set-prop $touchpad_id "libinput Tapping Enabled" 1
-  command: | # Gnome Wayland
-    gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click false
-
-    file=/tmp/typing_command_break
-    touch "$file"
-    sleep 0.6
-
-    [ `find "$file" -mmin +0.01` ] && gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
-  
-
-
 plugin:
   inputs:
     libinput_command_input:
@@ -182,24 +178,44 @@ plugin:
       # libinput-debug-events: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.17.0/libinput-debug-events
       # libinput-list-devices: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.16.5/libinput-list-devices
       # libinput-debug-events: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.16.5/libinput-debug-events
+
 ---
 context:
   application: Google-chrome
+  # default: { applicaton: Google-chrome }
 
 swipe:
   3:
     left:
       # sendevent: touchscreen
-      sendkey: 'LEFTALT+RIGHT'
+      sendkey: "LEFTALT+RIGHT"
     right:
-      sendkey: 'LEFTALT+LEFT'
+      sendkey: "LEFTALT+LEFT"
     up:
-      sendkey: 'LEFTCTRL+T'
+      sendkey: "LEFTCTRL+T"
       keypress:
         LEFTSHIFT:
-          sendkey: 'LEFTSHIFT+LEFTCTRL+T'
+          sendkey: "LEFTSHIFT+LEFTCTRL+T"
     down:
-      sendkey: 'LEFTCTRL+Q'
+      sendkey: "LEFTCTRL+Q"
+---
+context:
+  application: Chromium
+
+swipe:
+  3:
+    left:
+      # sendevent: touchscreen
+      sendkey: "LEFTALT+RIGHT"
+    right:
+      sendkey: "LEFTALT+LEFT"
+    up:
+      sendkey: "LEFTCTRL+T"
+      keypress:
+        LEFTSHIFT:
+          sendkey: "LEFTSHIFT+LEFTCTRL+T"
+    down:
+      sendkey: "LEFTCTRL+Q"
 ---
 context:
   application: Firefox
@@ -215,22 +231,22 @@ context:
 #     down:
 #       sendkey: 'LEFTCTRL+Q'
 swipe:
-  3: 
+  3:
     begin:
       command: xdotool keydown Ctrl
     right:
-      sendkey: 'LEFTCTRL+PAGEDOWN'
+      sendkey: "LEFTCTRL+PAGEDOWN"
       keypress:
         LEFTSHIFT:
-          sendkey: 'LEFTALT+LEFT'
+          sendkey: "LEFTALT+LEFT"
       update:
         command: xdotool key Tab
         interval: 3
     left:
-      sendkey: 'LEFTCTRL+PAGEUP'
+      sendkey: "LEFTCTRL+PAGEUP"
       keypress:
         LEFTSHIFT:
-          sendkey: 'LEFTALT+RIGHT'
+          sendkey: "LEFTALT+RIGHT"
       update:
         command: xdotool key Shift+Tab
         interval: 3
@@ -238,17 +254,21 @@ swipe:
       command: xdotool keyup Ctrl
 ---
 context:
-  application: 
+  application:
     # Gnome-terminal # X11
     gnome-terminal-server # wayland
-
 
 swipe:
   3:
     up:
-      sendkey: 'LEFTSHIFT+LEFTCTRL+T'
+      sendkey: "LEFTSHIFT+LEFTCTRL+T"
     down:
-      sendkey: 'LEFTSHIFT+LEFTCTRL+W'
+      sendkey: "LEFTSHIFT+LEFTCTRL+W"
+# thumbsense:
+#   L:
+#     sendkey: LEFTALT+RIGHT # tmux next window
+#   H:
+#     sendkey: LEFTALT+LEFT # tmux next window
 
 ---
 context:
@@ -257,9 +277,9 @@ context:
 swipe:
   3:
     left:
-      sendkey: 'LEFTALT+RIGHT'
+      sendkey: "LEFTALT+RIGHT"
     right:
-      sendkey: 'LEFTALT+LEFT'
+      sendkey: "LEFTALT+LEFT"
     up:
       sendkey: "LEFTALT+DOWN"
     down:

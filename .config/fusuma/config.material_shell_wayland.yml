@@ -1,10 +1,42 @@
 plugin:
   inputs:
+    debug_pattern: /^timer_input,/
     libinput_command_input:
       show-keycodes: true
       enable-tap: true
       enable-dwt: true
       verbose: true
+
+thumbsense:
+  leftclick: &leftclick
+    sendbutton: LEFT
+    interval: 0.1 # enable double click
+    # begin:
+    #   sendbutton:
+    #     press: LEFT
+    # end:
+    #   sendbutton:
+    #     release: LEFT
+  rightclick: &rightclick
+    sendbutton: RIGHT
+  F:
+    <<: *leftclick
+  # D:
+  #   <<: *rightclick
+  J:
+    <<: *leftclick
+  K:
+    <<: *rightclick
+  LEFTALT:
+    <<: *leftclick
+  # LEFTCTRL:
+  #   <<: *rightclick
+  RIGHTALT:
+    <<: *leftclick
+  RIGHTCTRL:
+    <<: *rightclick
+  G:
+    command: gnome-terminal
 
 hold:
   3:
@@ -43,28 +75,29 @@ swipe:
             # sendkey: BRIGHTNESSUP
             command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepDown
 
+
   4:
     up:
-      sendkey: 'LEFTMETA+S'
+      sendkey: "LEFTMETA+S"
       # workspace: next
       # interval: 0.4
       keypress:
         LEFTSHIFT:
           sendkey: LEFTMETA+DOWN # move window to next workspace
     down:
-      sendkey: 'LEFTMETA+W'
+      sendkey: "LEFTMETA+W"
       # workspace: prev
       # interval: 0.4
       keypress:
         LEFTSHIFT:
           sendkey: LEFTMETA+UP # move window to prev workspace
     left:
-      sendkey: 'LEFTMETA+D'
+      sendkey: "LEFTMETA+D"
       keypress:
         LEFTSHIFT:
           sendkey: LEFTMETA+RIGHT # move window to prev workspace
     right:
-      sendkey: 'LEFTMETA+A'
+      sendkey: "LEFTMETA+A"
       keypress:
         LEFTSHIFT:
           sendkey: LEFTMETA+LEFT # move window to prev workspace
@@ -83,14 +116,14 @@ swipe:
     #   command: xdotool keyup Alt
 pinch:
   2:
-    begin: {command: xdotool keydown ctrl} 
-    end: {command: xdotool keyup ctrl} 
+    begin: { command: xdotool keydown ctrl }
+    end: { command: xdotool keyup ctrl }
     in:
       # threshold: 0.1
       # interval: 0.5
       update:
         # sendkey: 'LEFTCTRL+EQUAL'
-        # command: xdotool key ctrl click 4 
+        # command: xdotool key ctrl click 4
         # interval: 0.1
         command: xdotool click 4 # Zoom in
         keypress:
@@ -101,7 +134,7 @@ pinch:
       # interval: 0.5
       update:
         # sendkey: 'LEFTCTRL+MINUS'
-        # command: xdotool click 5 
+        # command: xdotool click 5
         command: xdotool click 5 # Zoom out
         keypress:
           LEFTALT:
@@ -142,16 +175,34 @@ swipe:
   3:
     left:
       # sendevent: touchscreen
-      sendkey: 'LEFTALT+RIGHT'
+      sendkey: "LEFTALT+RIGHT"
     right:
-      sendkey: 'LEFTALT+LEFT'
+      sendkey: "LEFTALT+LEFT"
     up:
-      sendkey: 'LEFTCTRL+T'
+      sendkey: "LEFTCTRL+T"
       keypress:
         LEFTSHIFT:
-          sendkey: 'LEFTSHIFT+LEFTCTRL+T'
+          sendkey: "LEFTSHIFT+LEFTCTRL+T"
     down:
-      sendkey: 'LEFTCTRL+Q'
+      sendkey: "LEFTCTRL+Q"
+---
+context:
+  application: Brave-browser
+
+swipe:
+  3:
+    left:
+      # sendevent: touchscreen
+      sendkey: "LEFTALT+RIGHT"
+    right:
+      sendkey: "LEFTALT+LEFT"
+    up:
+      sendkey: "LEFTCTRL+T"
+      keypress:
+        LEFTSHIFT:
+          sendkey: "LEFTSHIFT+LEFTCTRL+T"
+    down:
+      sendkey: "LEFTCTRL+W"
 ---
 context:
   application: Firefox
@@ -167,22 +218,23 @@ context:
 #     down:
 #       sendkey: 'LEFTCTRL+Q'
 swipe:
-  3: 
+  3:
     begin:
       command: xdotool keydown Ctrl
     right:
-      sendkey: 'LEFTCTRL+PAGEDOWN'
+      sendkey: "LEFTCTRL+PAGEDOWN"
       keypress:
         LEFTSHIFT:
-          sendkey: 'LEFTALT+LEFT'
+          sendkey: "LEFTALT+LEFT"
       update:
         command: xdotool key Tab
         interval: 3
     left:
-      sendkey: 'LEFTCTRL+PAGEUP'
+      sendkey: "LEFTCTRL+PAGEUP"
       keypress:
         LEFTSHIFT:
-          sendkey: 'LEFTALT+RIGHT'
+          sendkey: "LEFTALT+RIGHT"
+          clearmodifier: "CAPSLOCK"
       update:
         command: xdotool key Shift+Tab
         interval: 3
@@ -190,16 +242,14 @@ swipe:
       command: xdotool keyup Ctrl
 ---
 context:
-  application: 
-    gnome-terminal-server # wayland
-
+  application: gnome-terminal-server # wayland
 
 swipe:
   3:
     up:
-      sendkey: 'LEFTALT+LEFTCTRL+T'
+      sendkey: "LEFTALT+LEFTCTRL+T"
     down:
-      sendkey: 'LEFTSHIFT+LEFTCTRL+W'
+      sendkey: "LEFTSHIFT+LEFTCTRL+W"
 
 ---
 context:
@@ -208,9 +258,9 @@ context:
 swipe:
   3:
     left:
-      sendkey: 'LEFTALT+RIGHT'
+      sendkey: "LEFTALT+RIGHT"
     right:
-      sendkey: 'LEFTALT+LEFT'
+      sendkey: "LEFTALT+LEFT"
     up:
       sendkey: "LEFTALT+DOWN"
     down:

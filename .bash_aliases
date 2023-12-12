@@ -39,11 +39,6 @@ alias tw='tw -yes'
 alias mozc-config="/usr/lib/mozc/mozc_tool -mode=config_dialog"
 alias mozc-dict="/usr/lib/mozc/mozc_tool --mode=dictionary_tool"
 
-# search markdown and open with vim
-alias 'md'='vim ./*.md'
-
-alias vi='vim'
-
 alias ssh_ec2='~/.ghq/github.com/iberianpig/connect_ec2/ssh_ec2.sh'
 
 

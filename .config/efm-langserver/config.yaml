@@ -1,8 +1,22 @@
+version: 2
+root-markers:
+  - .git/
+lint-debounce: 1s
 tools:
-  mardkown-textlint: &markdown-textlint
-    lint-command: 'npx textlint --format unix ${INPUT}'
+  markdown-textlint: &markdown-textlint
+    # installation
+    # deno cache --node-modules-dir npm:textlint@latest npm:textlint-rule-prh@latest npm:textlint-rule-preset-jtf-style@latest npm:textlint-rule-preset-ja-technical-writing@latest
+    # lint-command: 'deno run -A --node-modules-dir npm:textlint@latest --format unix --stdin --stdin-filename ${INPUT}'
+    #
+    # npm install --save-dev textlint-rule-prh textlint-rule-preset-jtf-style textlint-rule-preset-ja-technical-writing
+    lint-command: npx textlint --format unix --stdin --stdin-filename ${INPUT}
+    lint-ignore-exit-code: true
+    lint-stdin: true
     lint-formats:
-      - '%f:%l:%n: %m'
+      - '%f:%l:%c: %m [%trror/%r]'
+    root-markers:
+      - .textlintrc
+      - .textlintrc.json
   ruby-rubocop: &ruby-rubocop
       lint-command: 'bundle exec rubocop --format emacs --force-exclusion --stdin ${INPUT}'
       lint-formats:
@@ -24,6 +38,7 @@ tools:
 
 languages:
   markdown:
-    <<: *markdown-textlint
+    - <<: *markdown-textlint
   ruby:
-    <<: *ruby-rubocop
+    - <<: *ruby-rubocop
+    - <<: *ruby-standardrb

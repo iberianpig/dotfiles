@@ -5,7 +5,7 @@
 #  - Format must be git commit message
 # 
 # ```example
-# feat(category): commit message
+# feat: commit message
 #
 #
 # Body of commit message
@@ -15,10 +15,10 @@
 # BREAKING CHANGE: description of breaking change
 # ```
 
-# feat(*): feature
-# fix(*): bug fix
-# style(*): formatting, missing semi colons, …
-# docs(*): documentation
-# refactor(*): 
-# test(*): when adding missing tests
-# chore(*): maintain
+# feat: feature
+# fix: bug fix
+# style: formatting, missing semi colons, …
+# docs: documentation
+# refactor: 
+# test: when adding missing tests
+# chore: maintain

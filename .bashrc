@@ -6,10 +6,7 @@
 [ -z "$PS1" ] && return
 
 export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
-# export HISTSIZE=100000                   # big big history
-# export HISTFILESIZE=100000               # big big history
 shopt -s histappend                      # append to history, don't overwrite it
-#
 # # Save and reload the history after each command finishes
 # export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
@@ -26,60 +23,13 @@ function share_history {
 }
 PROMPT_COMMAND='share_history'
 
-# バックアップ用の関数
-function backup_bash_history {
-  local backup_dir="${HOME}/.bash_history_backups"
-  local timestamp=$(date +%Y%m%d_%H%M%S)
-
-  # バックアップディレクトリが存在しない場合は作成
-  [ ! -d "${backup_dir}" ] && mkdir -p "${backup_dir}"
-
-  # バックアップファイル名を設定
-  local backup_file="${backup_dir}/.bash_history_${timestamp}.bak"
-
-  # バックアップを作成
-  cp "${HISTFILE}" "${backup_file}"
-}
-
-function restore_bash_history {
-  local backup_dir="${HOME}/.bash_history_backups"
-  local backup_file
-
-  # fzf がインストールされているか確認
-  if ! command -v fzf > /dev/null; then
-    echo "fzf is not installed. Please install it to use this function."
-    return 1
-  fi
-
-  # バックアップディレクトリが存在しない場合はエラーを表示
-  if [ ! -d "${backup_dir}" ]; then
-    echo "Backup directory does not exist. No backups available."
-    return 1
-  fi
-
-  # fzf を使ってバックアップファイルを選択し、プレビューを表示
-  backup_file=$(find "${backup_dir}" -type f -name ".bash_history_*.bak" | fzf \
-    --preview='echo "Total lines: $(wc -l < {})"; echo ""; tail -n 100 {}' \
-    --preview-window=up:70%:wrap)
-
-  # 選択されたバックアップファイルがある場合、現在の履歴ファイルと置き換える
-  if [ -n "${backup_file}" ]; then
-    cp "${backup_file}" "${HISTFILE}"
-    echo "Restored history from ${backup_file}"
-    history -c
-    history -r
-  else
-    echo "No backup file selected."
-  fi
-}
-
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
 shopt -s checkwinsize
 
 # If set, the pattern "**" used in a pathname expansion context will
 # match all files and zero or more directories and subdirectories.
-#shopt -s globstar
+shopt -s globstar
 
 # make less more friendly for non-text input files, see lesspipe(1)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -136,7 +86,6 @@ if [ -f ~/.bash_profile ]; then
   . ~/.bash_profile
 fi
 
-# eval "$(EDITOR=/usr/bin/vim)"
 eval "$(SHELL=/bin/bash)"
 
 # reverse search, going forward(ctrl+s)
@@ -146,9 +95,6 @@ if [ "$DISPLAY" ]; then
   xset r rate 200 45
 fi
 
-
-export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
 
 # fzf
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
@@ -199,8 +145,10 @@ if which fzf > /dev/null; then
 
   # Blogのメモを探して開く
   fzf-search-blog() {
-    local note_path=~/.ghq/github.com/iberianpig/iberianpig.github.io/content/posts/
-    local selected_file="$(find  $note_path/201*.md -type f | fzf --tac)"
+    local note_path
+    local selected_file
+    note_path=~/.ghq/github.com/iberianpig/iberianpig.github.io/content/posts/
+    selected_file="$(find  $note_path/*.md -type f | fzf --tac)"
 
     if [ -n "${selected_file}" ]; then
       vi "${selected_file}"
@@ -211,7 +159,8 @@ if which fzf > /dev/null; then
   function fzf-git-ls-files() {
     # check whether the current directory is under `git` repository.
     if git rev-parse 2> /dev/null; then
-      local selected_file="$(git ls-files . | fzf --tac)"
+      local selected_file
+      selected_file="$(git ls-files . | fzf --tac)"
 
       if [ -n "${selected_file}" ]; then
         vi "${selected_file}"
@@ -221,10 +170,22 @@ if which fzf > /dev/null; then
   alias gl=fzf-git-ls-files
 
   function fzf-kill() {
-    local selected=$(ps aux | fzf)
+    local sig="TERM"
+    # $1 is signal
+    if [ -n "$1" ]; then
+      sig="$1"
+    fi
+    local selected
+    selected=$(ps -eo user,pid,ppid,c,tty,time,cmd | fzf --header-lines=1)
+        
     if [ -n "${selected}" ]; then
-      echo "${selected}" | cut -d " " -f 26- | xargs echo 'kill: '
-      echo "${selected}" | awk '{print $2}' | xargs kill -9
+      # header
+      echo "USER         PID    PPID  C TT           TIME CMD"
+      # body
+      echo "${selected}"
+      # kill process
+      echo "${selected}" | awk '{print $2}' | xargs echo kill -"${sig}"
+      echo "${selected}" | awk '{print $2}' | xargs kill -"${sig}"
     fi
   }
   alias pk=fzf-kill
@@ -240,7 +201,20 @@ if which fzf > /dev/null; then
     session=$(byobu list-sessions -F "#{session_name}" 2>/dev/null | fzf --exit-0) && byobu $change -t "$session" || echo "No sessions found."
   }
   alias bs=fzf-byobu # bs means byobu-session
+
+
+  # docker stop $(docker ps | fzf | cut -d' ' -f1)
+  function fzf-docker-stop() {
+    local selected
+    selected="$(docker ps | fzf)"
+    if [ -n "${selected}" ]; then
+      echo "${selected}" | cut -d' ' -f1 | xargs docker stop 
+    fi
+  }
+  alias ds=fzf-docker-stop
 fi # fzf
+
+
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -261,8 +235,8 @@ if [[ -f "$HOME/.envrc" ]]; then
   source "$HOME/.envrc"
 fi
 
-# wakatime
-[ -f ~/.ghq/github.com/gjsheep/bash-wakatime/bash-wakatime.sh ] && source ~/.ghq/github.com/gjsheep/bash-wakatime/bash-wakatime.sh
+# restore_backup
+[ -f ~/.ghq/github.com/iberianpig/backup_bash_history/restore.sh ] && source ~/.ghq/github.com/iberianpig/backup_bash_history/restore.sh
 
 # makef
 [ -f ~/.ghq/github.com/iberianpig/makef/makef.sh ] && source ~/.ghq/github.com/iberianpig/makef/makef.sh
@@ -270,7 +244,6 @@ fi
 # tabtab source for packages
 # uninstall by removing these lines
 [ -f ~/.config/tabtab/__tabtab.bash ] && . ~/.config/tabtab/__tabtab.bash || true
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 # kubectl
 if which kubectl > /dev/null; then
@@ -327,8 +300,15 @@ case "${finger_count}" in
     # Set the G_RESOURCE_OVERLAYS environment variable in ~/.config/environment.d/gnome-shell-overlay.conf
     mkdir -p ~/.config/environment.d
     echo 'G_RESOURCE_OVERLAYS="/org/gnome/shell/ui/swipeTracker.js=$HOME/.gnome-shell-custom-overlays/ui/swipeTracker.js"' > ~/.config/environment.d/gnome-shell-overlay.conf
+
+    echo "Please restart gnome-shell to apply the changes"
+    if [ -n "${XDG_SESSION_TYPE}" ] && [ "${XDG_SESSION_TYPE}" = "wayland" ]; then
+      echo "Log out and log back in to restart gnome-shell"
+    else
+      echo "Press Alt+F2, type 'r' and press Enter to restart gnome-shell"
+    fi
   else 
-    echo "swipeTracker.js not found in libgnome-shell.so" > /tmp/swipeTracker.log
+    echo "swipeTracker.js not found in libgnome-shell.so"
   fi
 
   ;;
@@ -336,3 +316,8 @@ case "${finger_count}" in
   echo "Usage: $0 [3|4|5]"
 esac
 }
+
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+

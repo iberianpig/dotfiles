@@ -3,5 +3,5 @@ Name=fusuma for Develop
 Comment=run fusuma
 Exec=/home/iberianpig/fusuma_dev/run.sh
 Icon=input-touchpad
-X-GNOME-Autostart-enabled=false
+X-GNOME-Autostart-enabled=true
 Type=Application
