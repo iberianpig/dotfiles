@@ -130,10 +130,8 @@ draw_bold_text_with_bright_colors: true
 colors:
   # Default colors
   primary:
-    # background: '#27292c'
     background: '#262626'
-    # foreground: '#d0d2d1'
-    foreground: '#c5c8c6'
+    foreground: '#d0d2d1'
 
   # Normal colors
   normal:
@@ -182,8 +180,8 @@ bell:
   animation: EaseOutExpo
   duration: 0
 
-# Mouse bindings
-#
+    # Mouse bindings
+    #
 # Available fields:
 #   - mouse
 #   - action

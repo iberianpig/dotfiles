@@ -4,8 +4,8 @@ plugin:
       show-keycodes: true
       enable-tap: true
       enable-dwt: false
-      libinput-list-devices: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.24.0/libinput-list-devices
-      libinput-debug-events: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.24.0/libinput-debug-events
+      # libinput-list-devices: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.24.0/libinput-list-devices
+      # libinput-debug-events: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.24.0/libinput-debug-events
     remap_keyboard_input:
       keyboard_name_patterns: xremap
   # executors:

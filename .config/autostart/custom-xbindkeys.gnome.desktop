@@ -1,8 +1,0 @@
-[Desktop Entry]
-Name=xbindkeys for GNOME
-Comment=run xbindkeys
-Exec=xbindkeys -f /home/iberianpig/.xbindkeysrc.gnome-shell
-Icon=input-keyboard
-X-GNOME-Autostart-enabled=false
-Type=Application
-OnlyShowIn=GNOME

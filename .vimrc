@@ -978,7 +978,7 @@ let g:quickrun_config._ = {
 " 辞書定義
 let g:ref_source_webdict_sites = {
      \   'je': {
-     \     'url': 'https://translate.google.com/#auto/ja/%s',
+     \     'url': 'http://eow.alc.co.jp/search?q=%s',
      \   },
      \   'ej': {
      \     'url': 'http://eow.alc.co.jp/search?q=%s',
@@ -993,13 +993,13 @@ let g:ref_source_webdict_sites.default = 'ej'
 
 " 出力に対するフィルタ
 " 最初の数行邪魔なので削除
-function! g:ref_source_webdict_sites.je.filter(output)
-  return join(split(a:output, "\n")[60 :], "\n")
-endfunction
+" function! g:ref_source_webdict_sites.je.filter(output)
+"   " return join(split(a:output, "\n")[60 :], "\n")
+" endfunction
 
-function! g:ref_source_webdict_sites.ej.filter(output)
-  return join(split(a:output, "\n")[88 :], "\n")
-endfunction
+" function! g:ref_source_webdict_sites.ej.filter(output)
+"   " return join(split(a:output, "\n")[88 :], "\n")
+" endfunction
 
 call altercmd#load()
 CAlterCommand ej Ref webdict ej

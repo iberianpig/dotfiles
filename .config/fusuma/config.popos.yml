@@ -1,87 +1,289 @@
-application:
-  global:
-    swipe:
-      4:
-        up:
-          sendkey: 'LEFTMETA+LEFTCTRL+DOWN'
-          keypress:
-            LEFTSHIFT:
-              sendkey: 'LEFTMETA+LEFTSHIFT+DOWN'
-        down:
-          sendkey: 'LEFTMETA+LEFTCTRL+UP'
-          keypress:
-            LEFTSHIFT:
-              sendkey: 'LEFTMETA+LEFTSHIFT+UP'
-        left:
-          command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
-        right:
-          command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
-    pinch:
-      2:
-        in:
-          sendkey: 'LEFTCTRL+EQUAL'
-          threshold: 0.1
-        out:
-          sendkey: 'LEFTCTRL+MINUS'
-          threshold: 0.1
-      4:
-        in:
-          command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && Main.overview.viewSelector._showAppsButton.checked) { Main.overview.hide();Main.overview.viewSelector._showAppsButton.checked=false;} else {Main.overview.show()}'"
-          threshold: 1
-          interval: 2
-        out:
-          command: "dbus-send --session --type=method_call --dest=org.gnome.Shell /org/gnome/Shell org.gnome.Shell.Eval string:'if (Main.overview.visible && !Main.overview.viewSelector._showAppsButton.checked) {Main.overview.hide()} else { Main.overview.viewSelector._showAppsButton.checked = true;Main.overview.show();}'"
-          threshold: 1
-          interval: 2
-    rotate:
-      3:
-        clockwise:
-          sendkey: "LEFTMETA+SPACE" # next layout
-        counterclockwise:
-          sendkey: "LEFTMETA+LEFTSHIFT+SPACE"  # previous layout
-
-    hold:
-      3:
-        sendkey: "LEFTALT+F7" # move window
-        keypress:
-          LEFTSHIFT:
-            sendkey: "LEFTALT+F8" # resize window
-      4:
-        # command: notify-send '4 fingers hold'
-        sendkey: "LEFTMETA+V"
-
-  Slack:
-    swipe: 
-      3:
-        up: 
-          sendkey: "LEFTALT+DOWN"
-        down: 
-          sendkey: "LEFTALT+UP"
-  Alcacritty:
-    swipe: 
-      3:
-        up: 
-          sendkey: "LEFTCTRL+G+N"
-        down: 
-          sendkey: "LEFTCTRL+G+N"
-
-  Google-chrome:
-    swipe:
-      3:
-        left:
-          sendkey: 'LEFTALT+RIGHT'
-        right:
-          sendkey: 'LEFTALT+LEFT'
-        up:
-          sendkey: 'LEFTCTRL+T'
-        # down:
-        #   sendkey: 'LEFTCTRL+W'
-        down: { sendkey: 'LEFTCTRL+Q' }
-
 plugin:
   inputs:
     libinput_command_input:
       show-keycodes: true
       enable-tap: true
-      enable-dwt: true
-      verbose: true
+      enable-dwt: false
+      # libinput-list-devices: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.24.0/libinput-list-devices
+      # libinput-debug-events: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.24.0/libinput-debug-events
+    remap_keyboard_input:
+      keyboard_name_patterns: xremap
+  # executors:
+  #   wmctrl_executor:
+  #     wrap-navigation: false
+  #   sendkey_executor:
+  #     device_name: fusuma_virtual_keyboard
+  # buffers:
+  #   keypress_buffer:
+  #     source: remap_keyboard_input
+
+threshold:
+  swipe: 0.5
+
+hold:
+  # 3:
+  #   sendkey: LEFTALT+f8
+  #   clearmodifiers: true
+  4:
+    sendkey: F9 # launch Fly-Pie
+    threshold: 0.5
+
+
+swipe: # 3finger drag
+  3:
+    # begin:
+    #   command: xdotool mousedown 1
+    # update:
+    #   command: xdotool mousemove_relative -- $move_x, $move_y
+    #   interval: 0
+    #   accel: 2
+    # end:
+    #   command: xdotool mouseup 1
+
+
+    ## swipe/3/updateが発火されないので以下をコメントアウト
+    right:
+      update:
+        keypress:
+          LEFTALT:
+            interval: 1
+            # threshold: 1
+            sendkey: VOLUMEUP
+            clearmodifiers: true
+
+    left:
+      update:
+        keypress:
+          LEFTALT:
+            interval: 1
+            # threshold: 1
+            sendkey: VOLUMEDOWN
+    up:
+      update:
+        keypress:
+          LEFTALT:
+            interval: 1
+            # sendkey: BRIGHTNESSUP # 動かない LEFTALT+BRIGHTNESSUP が弾かれるのでLEFTALTキャンセルする必要あり
+            command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepUp
+
+    down:
+      update:
+        keypress:
+          LEFTALT:
+            interval: 1
+            # sendkey: BRIGHTNESSUP
+            command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepDown
+
+  # need to disable cosmic gestures to avoid confilict 
+  4:
+    up:
+      sendkey: 'LEFTMETA+LEFTCTRL+DOWN'
+      # workspace: next
+      # interval: 0.4
+      keypress:
+        LEFTSHIFT:
+          # command: xdotool key --clearmodifiers Super+Down
+          sendkey: "LEFTMETA+LEFTSHIFT+DOWN"
+          clearmodifiers: true
+        LEFTMETA: # move window to external display
+          sendkey: "LEFTMETA+LEFTSHIFT+LEFT"
+          clearmodifiers: true
+    down:
+      sendkey: 'LEFTMETA+LEFTCTRL+UP'
+      # workspace: prev
+      # interval: 0.4
+      keypress:
+        LEFTSHIFT:
+          # command: xdotool key --clearmodifiers Super+Up
+          sendkey: "LEFTMETA+LEFTSHIFT+UP"
+          clearmodifiers: true
+        LEFTMETA: # move window to built-in display
+          sendkey: "LEFTMETA+LEFTSHIFT+RIGHT"
+          clearmodifiers: true
+    left:
+      sendkey: "LEFTMETA+D"
+      keypress:
+        LEFTMETA: # snap window to left
+          sendkey: "LEFTMETA+LEFTCTRL+LEFT"
+          clearmodifiers: true
+    right:
+      sendkey: "LEFTMETA+D"
+      keypress:
+        LEFTMETA: # snap window to right
+          sendkey: "LEFTMETA+LEFTCTRL+RIGHT"
+          clearmodifiers: true
+
+
+    # begin:
+    #   command: xdotool keydown Alt
+    # right:
+    #   update:
+    #     command: xdotool key Tab
+    #     interval: 5
+    # left:
+    #   update:
+    #     command: xdotool key Shift+Tab
+    #     interval: 5
+    # end:
+    #   command: xdotool keyup Alt
+# pinch:
+#   2:
+#     begin: { command: xdotool keydown ctrl }
+#     end: { command: xdotool keyup ctrl }
+#     in:
+#       # threshold: 0.1
+#       # interval: 0.5
+#       update:
+#         # sendkey: 'LEFTCTRL+MINUS'
+#         # command: echo scroll 1 | dotoolc # Zoom in
+#         command: xdotool click 5 # Zoom out
+#         # interval: 0.1
+#         keypress:
+#           LEFTALT:
+#             sendkey: VOLUMEUP
+#     out:
+#       # threshold: 0.1
+#       # interval: 0.5
+#       update:
+#         # sendkey: 'LEFTCTRL+EQUAL'
+#         # command: echo scroll -1 | dotoolc # Zoom out
+#         command: xdotool click 4 # Zoom in
+#         # interval: 0.1
+#         keypress:
+#           LEFTALT:
+#             sendkey: VOLUMEDOWN
+
+rotate:
+  3:
+    clockwise:
+      # sendkey: "LEFTMETA+SPACE" # next layout
+      update:
+        sendkey: VOLUMEUP
+        keypress:
+          LEFTALT:
+            command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepUp
+    counterclockwise:
+      # sendkey: "LEFTMETA+LEFTSHIFT+SPACE"  # previous layout
+      update:
+        sendkey: VOLUMEDOWN
+        keypress:
+          LEFTALT:
+            command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepDown
+
+    # hold:
+    #   3:
+    #     sendkey: "LEFTALT+F7" # move window
+    #     keypress:
+    #       LEFTSHIFT:
+    #         sendkey: "LEFTALT+F8" # resize window
+    #   4:
+    #     # command: notify-send '4 fingers hold'
+    #     sendkey: "LEFTMETA+V"
+
+---
+context:
+  application: Google-chrome
+
+swipe:
+  3:
+    left:
+      sendkey: "LEFTALT+RIGHT"
+    right:
+      sendkey: "LEFTALT+LEFT"
+    up:
+      sendkey: "LEFTCTRL+T"
+    down:
+      sendkey: 'LEFTCTRL+W'
+    # down: { sendkey: "LEFTCTRL+Q" }
+
+---
+context:
+  application: Microsoft-edge-dev
+
+swipe:
+  3:
+    left:
+      sendkey: "LEFTALT+RIGHT"
+    right:
+      sendkey: "LEFTALT+LEFT"
+    up:
+      sendkey: "LEFTCTRL+T"
+    down:
+      sendkey: 'LEFTCTRL+W'
+    # down: { sendkey: "LEFTCTRL+Q" }
+---
+context:
+  application: Slack
+
+swipe:
+  3:
+    up:
+      sendkey: "LEFTALT+DOWN"
+    down:
+      sendkey: "LEFTALT+UP"
+---
+context:
+  application: Alacritty
+
+swipe:
+  3:
+    begin:
+      keypress:
+        LEFTCTRL:
+          command: xdotool mousedown 1
+          interval: 0.0
+    update:
+      keypress:
+        LEFTCTRL:
+          command: xdotool mousemove_relative -- $move_x, $move_y
+          interval: 0.0
+          accel: 3
+    end:
+      keypress:
+        LEFTCTRL:
+          interval: 0.0
+          command: xdotool mouseup 1
+
+remap:
+  LEFTMETA: A
+
+---
+# FIXME: 複数のcontextに対応したい
+context:
+  thumbsense: true
+  application: Alacritty
+
+  H: { sendkey: LEFTALT+LEFT } # move to left tab
+  L: { sendkey: LEFTALT+RIGHT } # move to right tab
+  C: { sendkey: LEFTCTRL+SHIFT+C } # copy to clipboard
+
+---
+context:
+  thumbsense: true
+
+remap:
+  E: BTN_MIDDLE
+  F: BTN_LEFT
+  D: BTN_RIGHT
+  SPACE: BTN_LEFT
+  O:  BTN_SIDE # back
+  I:  BTN_EXTRA # forward
+  U:  BTN_TASK # close tab
+
+  T: F9 # launch Fly-Pie
+  TAB: F14 # launch Fly-Pie
+
+# TODO sendkeyじゃなくてremapで対応したい
+  J: PAGEDOWN
+  K: PAGEUP
+  H: { sendkey: LEFTCTRL+LEFTSHIFT+TAB } # sendkey使わずにはremapで良さそうだけど
+  L: { sendkey: LEFTCTRL+TAB }
+
+  S: { ABS_Y: REL_Y, ABS_X: REL_X } # scroll
+
+swipe: # ネイティブジェスチャがある環境でドラッグ中にワークスペースを移動させる設定
+  4:
+    left:
+      sendkey: "LEFTALT+LEFTCTRL+RIGHT"
+    right:
+      sendkey: "LEFTALT+LEFTCTRL+LEFT"

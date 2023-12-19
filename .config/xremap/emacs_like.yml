@@ -3,6 +3,9 @@ modmap:
   - name: default
     remap:
       CapsLock: LEFTCTRL
+  - name: us_layout_for_jp_keyboard
+    remap:
+      YEN: BACKSLASH # for jp
 keymap:
   - name: Browser
     remap:
@@ -93,14 +96,20 @@ keymap:
   #     Ctrl-Shift-k: Super-Alt-Down
   #     Ctrl-Shift-l: Super-Alt-Right
   #     Ctrl-Shift-h: Super-Alt-Left
-  - name: material-shell
+  # - name: material-shell
+  #   remap:
+  #     Ctrl-Shift-j: Super-s
+  #     Ctrl-Shift-k: Super-w
+  #     Ctrl-Shift-l: Super-d
+  #     Ctrl-Shift-h: Super-a
+  #     SUPER-r:
+  #       launch:
+  #         [
+  #           "/home/iberianpig/.ghq/github.com/material-shell/material-shell/disable_enable_shell.sh",
+  #         ]
+  - name: pop-shell
     remap:
-      Ctrl-Shift-j: Super-s
-      Ctrl-Shift-k: Super-w
+      Ctrl-Shift-j: Super-Ctrl-Down
+      Ctrl-Shift-k: Super-Ctrl-Up
       Ctrl-Shift-l: Super-d
-      Ctrl-Shift-h: Super-a
-      SUPER-r:
-        launch:
-          [
-            "/home/iberianpig/.ghq/github.com/material-shell/material-shell/disable_enable_shell.sh",
-          ]
+      Ctrl-Shift-h: Super-d

@@ -45,8 +45,10 @@ export GTAGSLABEL=pygments
 
 # rbenv
 # NOTE: should be placed on ~/.bashrc
-if [ -e "$HOME/.rbenv/bin" ]; then
-  export PATH="$HOME/.rbenv/bin:$PATH"
+if [ -e "$HOME/.rbenv/" ]; then
+  if [ -e "$HOME/.rbenv/bin" ]; then
+    export PATH="$HOME/.rbenv/bin:$PATH"
+  fi
   eval "$(rbenv init -)"
 fi
 
@@ -92,7 +94,6 @@ case "$TERM" in
     export LC_COLLATE="ja_JP.UTF-8";;
 esac
 
-export PATH="$HOME/.cargo/bin:$PATH"
 
 if [ -e "~/.nix-profile/etc/profile.d/nix.sh" ]; then . "~/.nix-profile/etc/profile.d/nix.sh"; fi # added by Nix installer
 
@@ -113,3 +114,4 @@ export BYOBU_CONFIG_DIR="$HOME/.config/byobu"
 
 export DENO_INSTALL="/home/iberianpig/.deno"
 export PATH="$DENO_INSTALL/bin:$PATH"
+. "$HOME/.cargo/env"

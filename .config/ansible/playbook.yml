@@ -63,12 +63,13 @@
         - software-properties-common # for docker
         - docker-ce
         - dconf-editor
-        - gconf-editor
         - guake
         - git
+        - git-secrets
         - tig
         - ranger
-        - fcitx-mozc
+        - fcitx5
+        - fcitx5-mozc
         - byobu
         - jq
         - direnv
@@ -76,6 +77,7 @@
         - powertop
         - numix-icon-theme-circle
         - xclip
+        - xsel
         # - vim-gnome
         # - vim-gtk
         - synaptic
@@ -258,4 +260,33 @@
         - iberianpig/ranger-explorer.vim
         - iberianpig/tig-explorer.vim
         - iberianpig/makef
+        - iberianpig/backup_bash_history
 
+    # TODO: 
+    # install deno with curl
+    #   curl -fsSL https://deno.land/x/install/install.sh | sh
+    #
+    #
+    # install node
+    #
+    #
+    # install rbenv
+    #
+    #
+    # install ruby
+    #
+    #
+    # install rust
+    #   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+    #
+    # install xremap
+    #   cargo install xremap --features gnome
+    #
+    # install tailscale
+    #   curl -fsSL https://tailscale.com/install.sh | sh
+    #
+    # install vim/vim
+    #   sudo apt install libncurses-dev libgtk-3-dev libxmu-dev libxpm-dev
+    #
+    # install dropbox
+    #   sudo apt install dropbox
