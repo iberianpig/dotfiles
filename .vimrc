@@ -174,9 +174,17 @@ set imsearch=-1
 nnoremap <silent> <ESC><ESC> :call ClearHighlight()<CR>
 " 
 function! ClearHighlight() abort
-  call feedkeys(":nohlsearch\<CR>", "n") " ハイライトをオフにする
+  call feedkeys(":nohlsearch\<CR>", "n") " searchのハイライトをオフにする
   call popup_clear() "ポップアップのクリア
-  call quickhl#manual#reset()
+endfunction
+
+" quickhlのハイライトをオフにする
+nnoremap <silent> <ESC><ESC><ESC> :call ClearQuickhl()<CR>
+
+function! ClearQuickhl() abort
+  call quickhl#manual#reset() " quickhlのハイライトをオフにする
+  call feedkeys(":nohlsearch\<CR>", "n") " searchのハイライトをオフにする
+  call popup_clear() "ポップアップのクリア
 endfunction
 
 " w!! でスーパーユーザーとして保存（sudoが使える環境限定）
