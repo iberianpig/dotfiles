@@ -109,6 +109,9 @@ if [ -e "$HOME/linuxbrew/.linuxbrew/bin/brew" ]; then
   eval "$($HOME/linuxbrew/.linuxbrew/bin/brew shellenv)"
 fi
 
+# rb
+[ -e ~/.ghq/github.com/thisredone/rb ] && export PATH="$HOME/.ghq/github.com/thisredone/rb:$PATH"
+
 export PATH="$HOME/.vim/plugged/fzf/bin/:$PATH"
 export BYOBU_CONFIG_DIR="$HOME/.config/byobu"
 
