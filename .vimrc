@@ -55,7 +55,7 @@ set nofoldenable    " disable folding
 
 augroup vimrc-highlight
   autocmd!
-  autocmd Syntax off if 10000 > line('$') | syntax sync minlines=100 | endif
+  autocmd Syntax off if 10000 > line('$') | syntax sync minlines=1000 | endif
 augroup END
 
 " Charset, Line ending -----------------
@@ -611,11 +611,6 @@ highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
 highlight DiffAdd           cterm=bold ctermbg=none ctermfg=119
 highlight DiffDelete        cterm=bold ctermbg=none ctermfg=167
 highlight DiffChange        cterm=bold ctermbg=none ctermfg=227
-
-if &diff
-    " diff mode
-    set diffopt+=iwhite
-endif
 
 " " highlight signs in Sy
 highlight SignifySignAdd    cterm=bold ctermbg=235  ctermfg=155
@@ -1196,8 +1191,24 @@ nnoremap [explorer]s :Tig status<CR>
 nnoremap [explorer]y :Tig stash<CR>
 " nnoremap [explorer]r :Tig refs<CR>
 
-" diffthisの再適用
-nnoremap [explorer]d :windo diffoff!<CR>:windo diffthis<CR>
+" switch diffthis/ignore all whitespace/diffoff
+function! s:diffthis_reapply() abort
+  if &diff
+    if &diffopt =~# 'iwhiteall'
+      echomsg 'diffoff!'
+      windo setlocal diffopt-=iwhiteall
+      diffoff!
+    else
+      echomsg 'iwhiteall'
+      windo setlocal diffopt+=iwhiteall
+    endif
+  else
+    echomsg 'diffthis'
+    windo diffthis
+  endif
+endfunction
+
+noremap <silent> [explorer]d :call <SID>diffthis_reapply()<CR>
 
 " let g:tig_explorer_orig_tigrc='~/.tigrc'
 let g:tig_explorer_keymap_edit_e  = 'e'
