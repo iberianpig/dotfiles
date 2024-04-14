@@ -336,7 +336,6 @@ Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 " Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/vim-lsp'
-" Plug '~/.ghq/github.com/prabirshrestha/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 
 Plug 'Shougo/neosnippet.vim'
@@ -358,7 +357,6 @@ Plug 'github/copilot.vim'
 Plug 'vim-denops/denops.vim'
 " Plug 'yuki-yano/fuzzy-motion.vim'
 " Plug 'yuki-yano/denops-open-http.vim'
-" Plug 'skanehira/denops-silicon.vim'
 
 " Plug 'skanehira/denops-gh.vim'
 
@@ -398,9 +396,6 @@ Plug 'anyakichi/vim-qfutil'
 " 
 " " " aleの結果をlightlineに出力
 " Plug 'maximbaz/lightline-ale'
-
-" 非同期バッチをTmuxやTerminalに渡して処理出来る
-" Plug 'tpope/vim-dispatch', {'on': ['Dispatch', 'FocusDispatch','Spawn', 'Start', 'Copen']}
 
 " テストランナー
 Plug 'janko-m/vim-test'
@@ -530,7 +525,6 @@ Plug 'powerman/vim-plugin-AnsiEsc'
 Plug 'habamax/vim-habamax'
 Plug 'w0ng/vim-hybrid' 
 Plug 'morhetz/gruvbox'
-Plug 'kristijanhusak/vim-hybrid-material'
 
 Plug 'miyakogi/seiya.vim'
 
@@ -594,28 +588,11 @@ set background=dark "暗めの背景
 colorscheme hybrid
 let g:seiya_auto_enable=1
 
-" " hybrid-material
-let g:hybrid_transparent_background = 1
-" colorscheme hybrid_material
-
 " " gruvbox
 " colorscheme gruvbox
 
 " カーソル行にアンダーラインを引く(color terminal)
 highlight CursorLine cterm=underline ctermfg=NONE ctermbg=NONE
-
-" " エラー箇所の行番号左にSignを表示
-
-" highlight lines in Sy and vimdiff etc.)
-
-highlight DiffAdd           cterm=bold ctermbg=none ctermfg=119
-highlight DiffDelete        cterm=bold ctermbg=none ctermfg=167
-highlight DiffChange        cterm=bold ctermbg=none ctermfg=227
-
-" " highlight signs in Sy
-highlight SignifySignAdd    cterm=bold ctermbg=235  ctermfg=155
-highlight SignifySignDelete cterm=bold ctermbg=235  ctermfg=196
-highlight SignifySignChange cterm=bold ctermbg=235  ctermfg=111
 
 let g:signify_sign_add               = '+'
 let g:signify_sign_delete            = '_'
