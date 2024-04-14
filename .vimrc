@@ -170,11 +170,9 @@ set iminsert=0
 set imsearch=-1
 
 " ESC ESC でハイライトを消す
-" nnoremap <silent> <ESC><ESC> :nohlsearch<CR>
 nnoremap <silent> <ESC><ESC> :call ClearHighlight()<CR>
 " 
 function! ClearHighlight() abort
-  call feedkeys(":nohlsearch\<CR>", "n") " searchのハイライトをオフにする
   call popup_clear() "ポップアップのクリア
 endfunction
 
@@ -183,7 +181,6 @@ nnoremap <silent> <ESC><ESC><ESC> :call ClearQuickhl()<CR>
 
 function! ClearQuickhl() abort
   call quickhl#manual#reset() " quickhlのハイライトをオフにする
-  call feedkeys(":nohlsearch\<CR>", "n") " searchのハイライトをオフにする
   call popup_clear() "ポップアップのクリア
 endfunction
 
@@ -326,6 +323,9 @@ Plug 'ujihisa/neco-look'
 " カーソル下をハイライト
 Plug 'osyo-manga/vim-brightest'
 Plug 't9md/vim-quickhl'
+
+" 検索
+Plug 'haya14busa/incsearch.vim'
 
 " 括弧補完
 " Plug 'cohama/lexima.vim'
@@ -1597,3 +1597,15 @@ let g:silicon_options = {
       \ }
 
 " vmap <leader>c :Silicon<CR>
+"" incsearch.vim
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+" 自動でハイライトを消す
+let g:incsearch#auto_nohlsearch = 1
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+map *  <Plug>(incsearch-nohl-*)
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
