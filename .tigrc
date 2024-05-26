@@ -81,6 +81,7 @@ bind main    A           !?sh -c "git commit -v --fixup amend:%(commit) && GIT_S
 # reflog
 bind generic L      !sh -c "git reflog --pretty=raw | tig --pretty=raw"
 bind generic _      ?git reset --hard "%(commit)"
+bind generic ~      ?git reset --soft "%(commit)"
 
 # 差分表示してコミットメッセージ編集
 bind status c !?git commit -v
