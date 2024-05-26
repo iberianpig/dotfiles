@@ -461,10 +461,17 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 
 Plug 'mattn/vim-maketable' ", { 'for': 'markdown' }
 
 "" Rails
-" 規約ベースのコードジャンプ、b:rails_rootを定義
+" Rails用の規約ベースのコードジャンプ, b:rails_rootを定義
 Plug 'tpope/vim-rails' ", { 'for': ['ruby'] }
+
+" Ruby用の規約ベースのコードジャンプ
+Plug 'tpope/vim-rake', { 'for': ['ruby'] } | Plug 'tpope/vim-projectionist', { 'for': ['ruby'] }
+
 " slimのsyntax highlight
 Plug 'slim-template/vim-slim', { 'for': ['slim'] }
+
+" vim-ruby
+Plug 'vim-ruby/vim-ruby', { 'for': ['ruby'] }
 
 " heredocのハイライト
 Plug 'joker1007/vim-ruby-heredoc-syntax', { 'for': ['ruby'] }
@@ -754,20 +761,6 @@ augroup rails_snippet
 augroup END
 
 " vim-rails
-	" let g:rails_projections = {
-	"      \ "app/uploaders/*_uploader.rb": {
-	"      \   "command": "uploader",
-	"      \   "template":
-	"      \     ["class {camelcase|capitalize|colons}Uploader < "
-	"      \      . "CarrierWave::Uploader::Base", "end"],
-	"      \   "test": [
-	"      \     "test/unit/{}_uploader_test.rb",
-	"      \     "spec/models/{}_uploader_spec.rb"
-	"      \   ],
-	"      \   "rubyMacro": ["process", "version"]
-	"      \ },
-	"      \ "features/support/*.rb": {"command": "support"},
-	"      \ "features/support/env.rb": {"command": "support"}}
 let g:rails_projections = {
       \  "app/controllers/*_controller.rb": {
       \    "affinity": "controller",
@@ -777,8 +770,8 @@ let g:rails_projections = {
       \    ],
       \    "type": "controller",
       \    "test": [
+      \      "spec/requests/{}_spec.rb",
       \      "spec/controllers/{}_controller_spec.rb",
-      \      "spec/requests/{}_spec.rb"
       \    ],
       \    "alternate": [
       \      "spec/requests/{}_spec.rb",
@@ -810,6 +803,23 @@ let g:rails_projections = {
       \  },
       \}
 
+" Projectionist globals
+let g:projectionist_heuristics = {
+      \  "shard.yml|shards.yml": {
+      \    "src/*.cr": {"alternate": "spec/{}_spec.cr"},
+      \    "spec/*_spec.cr": {"type": "spec", "alternate": "src/{}.cr"},
+      \  },
+      \ "Gemfile.lock|Rakefile": {
+      \    "lib/**/*.rb": {"alternate": "spec/{}_spec.rb"},
+      \    "spec/**/*_spec.rb": {"type": "spec", "alternate": "lib/{}.rb"},
+      \  },
+      \ "autoload/*.vim": {
+      \    "plugin/*.vim": {"type": "plugin"},
+      \    "autoload/*.vim": {"type": "autoload"},
+      \    "doc/*.txt": {"type": "doc"},
+      \    "README.md": {"type": "doc"}
+      \  },
+      \}
 
 "" switch
 nnoremap - :Switch<cr>
