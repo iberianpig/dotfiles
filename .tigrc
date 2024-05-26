@@ -43,9 +43,6 @@ bind diff v !?git revert %(commit)
 bind main V !?git revert %(prompt) %(commit)
 bind diff V !?git revert %(prompt) %(commit)
 
-bind generic F none
-bind generic F !git fe # git fetch
-
 bind branch c !?git co %(ref)
 bind branch C !?git co -b %(prompt) %(commit)
 bind branch p !?git push origin %(branch)
