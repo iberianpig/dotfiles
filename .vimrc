@@ -1580,3 +1580,83 @@ map *  <Plug>(incsearch-nohl-*)
 map #  <Plug>(incsearch-nohl-#)
 map g* <Plug>(incsearch-nohl-g*)
 map g# <Plug>(incsearch-nohl-g#)
+
+" call ChatGPT with https://github.com/kojix2/chatgpt-cli
+command! -range=% ChatGPT call ChatGPTSendSelectedRange(<line1>, <line2>)
+
+" Configuration Parameters
+let g:chatgpt_model = 'gpt-4o-2024-05-13'
+
+let g:marker = '-----👇-----'
+function! ChatGPTSendSelectedRange(startline, endline) abort
+  let l:command = 'chatgpt -M ' . g:chatgpt_model
+  let l:startline = a:startline
+
+  let l:resume_file = expand('%:p') . '.post_data.json'
+  if filereadable(l:resume_file)
+    let l:command = l:command . ' -l ' . l:resume_file
+
+    let l:markerline = search('^' . g:marker . '$', 'n', a:startline)
+    if l:markerline == a:endline
+      echomsg 'ChatGPT canceled: Write something to send after ' . g:marker
+      return
+    endif
+
+    let l:startline = l:markerline + 1
+  else
+    try
+      cnoremap <buffer> <silent> <Esc> __CANCELED__<CR>
+      let l:input = input('System Message: ')
+      let l:input = l:input =~# '__CANCELED__$' ? 0 : l:input
+    catch /^Vim:Interrupt$/
+      let l:input = -1
+    finally
+      silent! cnoremap <buffer> <Esc>
+
+      " if canceled
+      if l:input ==# '0' || l:input ==# '-1'
+        echomsg 'ChatGPT canceled'
+        return
+      endif
+    endtry
+
+    let l:system_message = shellescape(l:input, 1)
+    if l:system_message != ''
+      let l:command = l:command . ' -s ' . l:system_message
+    endif
+  endif
+
+  let l:outputfile = tempname() . '.response.md'
+  exec 'vsplit ' . l:outputfile
+  call setline(1, 'waiting for response...')
+  wincmd p " フォーカスを元のウィンドウに戻す
+
+  call job_start(l:command, {
+        \ 'in_io': 'buffer',
+        \ 'in_buf': bufnr('%'),
+        \ 'in_top': l:startline,
+        \ 'in_bot': a:endline,
+        \ 'out_io': 'buffer',
+        \ 'out_buf': bufnr(l:outputfile),
+        \ 'exit_cb': function('ChatGPTJobCallback', [l:outputfile]),
+        \ })
+endfunction
+
+function! ChatGPTJobCallback(outputfile, job, status) abort
+  " waiting for response... を削除
+  call deletebufline(bufnr(a:outputfile), 1)
+
+  " 末尾にここからマーカーを追加
+  call appendbufline(bufnr(a:outputfile), '$', [g:marker])
+
+  " ~/.config/chatgpt-cli/post_data.json を a:outputfile.json にコピー
+  let l:post_data = expand('~/.config/chatgpt-cli/post_data.json')
+  let l:post_data_json = a:outputfile . '.post_data.json'
+  call system('cp ' . l:post_data . ' ' . l:post_data_json)
+
+  echomsg 'Chat GPT response received'
+endfunction
+
+" vnoremap [explorer]a :ChatGPT<CR>
+vnoremap [explorer]a :ChatGPT<CR>
+noremap [explorer]a :ChatGPT<CR>
