@@ -74,6 +74,13 @@ bind main    I           ?git rebase -i %(commit)
 bind diff    I           ?git rebase -i %(commit)
 bind branch  I           ?git rebase -i %(commit)
 
+# f で fixup
+bind main    f           !?sh -c "git commit -v --fixup %(commit)"
+# F で instant fixup
+bind main    F           !?sh -c "git commit -v --fixup %(commit) && GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash %(commit)~"
+# A で instant amend
+bind main    A           !?sh -c "git commit -v --fixup amend:%(commit) && GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash %(commit)~"
+
 # reflog
 bind generic L      !sh -c "git reflog --pretty=raw | tig --pretty=raw"
 bind generic _      ?git reset --hard "%(commit)"
