@@ -53,10 +53,10 @@ set iskeyword+=?,!,-,@-@ "?,!,@hogeなどをキーワードとする
 " augroup END
 set nofoldenable    " disable folding
 
-augroup vimrc-highlight
-  autocmd!
-  autocmd Syntax off if 10000 > line('$') | syntax sync minlines=1000 | endif
-augroup END
+" augroup vimrc-highlight
+  " autocmd!
+"   autocmd Syntax off if 10000 > line('$') | syntax sync minlines=1000 | endif
+" augroup END
 
 " Charset, Line ending -----------------
 
@@ -209,7 +209,7 @@ set splitright
 set helplang=ja,en
 
 ".vimrcの編集用
-nnoremap <Space>. :<C-u>tabedit $HOME/dotfiles/.vimrc<CR>
+nnoremap <Space>. :<C-u>tab drop $HOME/dotfiles/.vimrc<CR>
 nnoremap R :<C-u>source $HOME/.vimrc<CR>
 
 " q: のタイポ抑制
@@ -542,6 +542,9 @@ Plug 'KabbAmine/zeavim.vim'
 " readline lik keybindings
 Plug 'tpope/vim-rsi'
 
+" Abbreviation, Substitution, and Capitalization
+Plug 'tpope/vim-abolish'
+
 "create vim plugin's skeleton
 Plug 'mopp/layoutplugin.vim', { 'on' : 'LayoutPlugin'} 
 
@@ -568,8 +571,6 @@ Plug 'uarun/vim-protobuf'
 
 Plug 'rbtnn/vim-ambiwidth'
 
-Plug 'vim-skk/skkeleton'
-
 " ローカル管理のPlugin
 Plug '~/.ghq/github.com/iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.vim'
 Plug '~/.ghq/github.com/iberianpig/ranger-explorer.vim'
@@ -586,7 +587,6 @@ syntax on
 " 読み込んだプラグインの設定
 " ...
 
-" " set background=light "明るめの背景
 set background=dark "暗めの背景
 " 
 " " colorschme
@@ -891,15 +891,15 @@ nnoremap <silent> [fzf]b :Buffers<cr>
 
 nnoremap <silent> [fzf]h :<C-u>Helptags<CR>
 
-
-nnoremap <silent> [fzf]r :call fzf#run(fzf#wrap({'source': 'ghq list --full-path', 'sink': 'edit' }))<CR>
-
-" カーソル下のパスを開く"
-nnoremap <silent> [fzf] gF
+" ghqで管理しているリポジトリを開く
+nnoremap <silent> [fzf]r :call fzf#run(fzf#wrap({'source': 'ghq list --full-path', 'sink': 'tabnew' }))<CR>
 
 " コマンドを検索
 nnoremap <silent> [fzf]: :<C-u>Commands<CR>
 nnoremap <silent> [fzf]; :<C-u>Commands<CR>
+
+" カーソル下のパスを開く"
+nnoremap <silent> [fzf] gF
 
 " markdownの設定
 " see /usr/share/vim/vim80/syntax/*.vim
@@ -1044,6 +1044,7 @@ augroup indent_guides_color
   autocmd VimEnter,Colorscheme * :hi IndentGuidesEven ctermbg=238
 augroup END
 
+" vim-test
 nnoremap <silent> <leader>t :TestNearest<CR>
 nnoremap <silent> <leader>T :TestFile<CR>
 nnoremap <silent> <leader>a :TestSuite<CR>
@@ -1079,12 +1080,6 @@ let g:delve_use_vimux = 1
 " \ 'file':    '--format documentation',
 " \ 'suite':   '--tag ~slow',
 "\}
-
-" quickfix for rspec with dispatch.vim
-" NOTE: https://github.com/tpope/vim-dispatch/issues/41#issuecomment-95080600
-let g:dispatch_compilers = {
-     \ 'latex': 'tex',
-     \ 'bundle exec': ''}
 
 
 " docker and rspec
@@ -1213,7 +1208,6 @@ let g:tig_explorer_use_builtin_term = 0
 " ranger-explorer
 nnoremap [explorer]c :<C-u>RangerOpenCurrentFile<CR>
 nnoremap [explorer]f :<C-u>RangerOpenProjectRootDir<CR>
-nnoremap [explorer]a :<C-u>RangerOpenCurrentFile "--cmd=fzf_select"<CR>
 
 " vim-auto-save
 let g:auto_save_silent = 1  " do not display the auto-save notification
@@ -1381,8 +1375,12 @@ let g:asyncomplete_auto_popup = 1
 " inoremap <expr> <CR> pumvisible() ? asyncomplete#close_popup() . "\<CR>" : "\<CR>"
 
 let g:lsp_log_verbose = 1
-let g:lsp_log_file          = expand('/tmp/vim-lsp.log')
-let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
+
+" sudo(root) ではないときだけ
+if system("whoami") != "root\n"
+  let g:lsp_log_file          = expand('/tmp/vim-lsp.log')
+  let g:asyncomplete_log_file = expand('/tmp/asyncomplete.log')
+endif
 
 imap <C-k>     <Plug>(neosnippet_expand_or_jump)
 smap <C-k>     <Plug>(neosnippet_expand_or_jump)
@@ -1465,8 +1463,8 @@ let g:lsp_settings = {
 let g:lsp_settings_filetype_ruby = ['solargraph']
 " let g:lsp_settings_filetype_ruby = ['ruby-lsp']
 
-let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'eslint-language-server']
-" let g:lsp_settings_filetype_javascript = ['typescript-language-server']
+let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'eslint-language-server', 'deno']
+let g:lsp_settings_filetype_javascript = ['typescript-language-server']
 
 " let g:lsp_settings_filetype_go = ['gopls']
 let g:lsp_settings_filetype_go = ['gopls', 'golangci-lint-langserver']
@@ -1570,20 +1568,6 @@ let g:rooter_resolve_links = 1
 nnoremap ff :<C-u>FuzzyMotion<CR>
 " let g:go_fmt_command = "goimports"
 
-let g:silicon_options = {
-      \  'theme': '1337',
-      \  'no_window_controls': v:true,
-      \  'background_color': '#ffffff00',
-      \  'no_line_number': v:true,
-      \  'no_round_corner': v:false,
-      \  'line_offset': 1,
-      \  'line_pad': 0,
-      \  'pad_horiz': 80,
-      \  'pad_vert': 100,
-      \  'shadow_blur_radius': 10,
-      \ }
-
-" vmap <leader>c :Silicon<CR>
 "" incsearch.vim
 map /  <Plug>(incsearch-forward)
 map ?  <Plug>(incsearch-backward)
