@@ -151,14 +151,16 @@ bind generic <C-L> :refresh
 bind generic T !git notes edit %(commit)
 
 ## yank
+# copy branch-name
+bind branch yb @sh -c 'echo -n %(branch) | xclip -selection clipboard'
 # copy commit hash
-bind generic yi @sh -c 'echo %(commit) | xclip -selection clipboard'
+bind generic yi @sh -c 'echo -n %(commit) | xclip -selection clipboard'
 # copy commit message
 bind generic ym @sh -c 'git log %(commit) -1 --pretty=format:"%s%n%n%b%n" | xclip -selection clipboard'
 # copy path
-bind generic yp @sh -c 'echo %(file) | xclip -selection clipboard'
+bind generic yp @sh -c 'echo -n %(file) | xclip -selection clipboard'
 # copy diff
-bind diff yy @sh -c 'git diff %(commit) | xclip -selection clipboard'
+bind diff yy @sh -c 'git diff %(commit)~ %(commit) | xclip -selection clipboard'
 # copy diff (HEAD とのファイル差分)
 bind stage yy @sh -c 'git diff HEAD -- %(file) | xclip -selection clipboard'
 bind status yy @sh -c 'git diff HEAD -- %(file) | xclip -selection clipboard'
