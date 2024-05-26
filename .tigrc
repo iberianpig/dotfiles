@@ -133,19 +133,17 @@ bind main    a      <tig --author="%(prompt Enter author: )"
 # origin/masterと比較(PRのレビューに使う)
 bind main <Esc>p  <sh -c "tig $(git merge-base %(commit) $(git branch  | grep '*' | cut -d ' ' -f 2))...$(git branch  | grep \* | cut -d ' ' -f 2)"
 
-# githubでコミットのページを確認する
-# FIXME: .gitを含む場合の処理がおかしいので修正
-bind main  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com|github\.[.A-z]*)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/commit/%(commit)'"
-bind diff  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com|github\.[.A-z]*)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/commit/%(commit)'"
-bind tree  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com|github\.[.A-z]*)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/tree/%(commit)/%(directory)'"
-bind blob  B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com|github\.[.A-z]*)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/tree/%(commit)/%(file)'"
-bind blame B !sh -c "xdg-open 'https://'$(git remote -v | grep %(remote) | head -1 | tr : / | grep -Eo '(gitlab\..+\.org|gitlab\.com|github\.com|github\.[.A-z]*)[:/][^ ]+' | sed 's/\.git$//' | sed 's/(.*)//')'/tree/%(commit)/%(file)'"
-# bind main  B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
-# bind diff  B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
-# bind tree  B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
-# bind blob  B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
-# bind blame B !sh -c "xdg-open $(gh api -XGET search/issues -F q='repo::owner/:repo is:pr %(commit)' | jq -r '.items[].html_url' | head -1 | tr -d [:blank:])"
-# bind branch  B !sh -c "gh pr view --web %(branch)"
+# GitHub/GitLabのURLで開く
+# gh browse -R でHostを指定しておくと、gitlabでも開ける
+bind main  B @!sh -c "repo=$(git remote get-url %(remote)) && gh browse --repo ${repo%/} %(commit)"
+bind diff  B @!sh -c "repo=$(git remote get-url %(remote)) && if [ -n '%(file)' ]; then gh browse --repo ${repo%/} --commit=%(commit) %(file):%(lineno); else gh browse --repo ${repo%/} %(commit); fi"
+bind tree  B @!sh -c "repo=$(git remote get-url %(remote)) && gh browse --repo ${repo%/} --commit=%(commit) %(directory)"
+bind blob  B @!sh -c "repo=$(git remote get-url %(remote)) && gh browse --repo ${repo%/} --commit=%(commit) %(file):%(lineno)"
+
+# bind blame B !sh -c "repo=$(git remote get-url %(remote)) && gh browse --repo ${repo%/} --commit=%(commit) %(file):%(lineno)"
+# %(ref)がHEADの場合、git branchで現在のブランチを取得して指定するのが良さそう, それ以外はcommitを使う
+# branch 取得 git branch | grep \* | awk '{print $(NF) }' | cut -d ')' -f 1
+bind blame B @!sh -c "repo=$(git remote get-url %(remote)) && if [ '%(ref)' = 'HEAD' ]; then branch=$(git branch | grep \\* | awk '{print $(NF) }' | cut -d ')' -f 1); gh browse --repo ${repo%/} --branch=$branch %(file):%(lineno); else gh browse --repo ${repo%/} --commit=%(ref) %(file):%(lineno); fi"
 
 bind generic <ESC>r  <tig # reopen
 bind generic <C-L> :refresh
