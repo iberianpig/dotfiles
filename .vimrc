@@ -68,18 +68,18 @@ set fileformats=unix,dos,mac  " LF, CRLF, CR
 "     set filetype=terminal
 "   endif
 " endfunction
-" 
+"
 " function! s:set_terminal_option()
 "    " ここに :terminal のバッファ固有の設定を記述する
 "    set ambiwidth=single  " ズレが発生するので元に戻す
 " endfunction
-" 
+"
 " function! s:unset_terminal_option()
 "    " ここに :terminalから戻った時に設定を戻す
 "    set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
 " endfunction
-" 
-" 
+"
+"
 " augroup toggle_terminal_option
 "     autocmd!
 "    " BufNew の時点では 'buftype' が設定されていないので timer イベントでごまかすなど…
@@ -171,7 +171,7 @@ set imsearch=-1
 
 " ESC ESC でハイライトを消す
 nnoremap <silent> <ESC><ESC> :call ClearHighlight()<CR>
-" 
+"
 function! ClearHighlight() abort
   call popup_clear() "ポップアップのクリア
 endfunction
@@ -246,7 +246,7 @@ nnoremap <silent> gx :tabclose<CR>
 nnoremap <silent> gp :tabprevious<CR>
 nnoremap <silent> gn :tabnext<CR>
 
-" terminal mode 
+" terminal mode
 " " ノーマルモード(コピーできるようにする)
 tnoremap <C-w>[ <C-w>N
 
@@ -393,7 +393,7 @@ Plug 'anyakichi/vim-qfutil'
 
 " " " 非同期処理でLinterを動かす
 " Plug 'w0rp/ale'
-" 
+"
 " " " aleの結果をlightlineに出力
 " Plug 'maximbaz/lightline-ale'
 
@@ -452,7 +452,7 @@ Plug 'rhysd/vim-grammarous'
 ""Markdown
 " syntax
 Plug 'rcmdnk/vim-markdown',  { 'for': ['markdown'] } | Plug 'godlygeek/tabular' | Plug 'joker1007/vim-markdown-quote-syntax'
-" 日本語の句読点をTextObjectの区切りと扱う 
+" 日本語の句読点をTextObjectの区切りと扱う
 Plug 'deton/jasentence.vim', { 'for': ['markdown'] }
 " マークダウンをブラウザ上でHTMLレンダリング
 Plug 'rhysd/vim-gfm-syntax', { 'for': 'markdown' }
@@ -530,7 +530,7 @@ Plug 'powerman/vim-plugin-AnsiEsc'
 
 " colorscheme
 Plug 'habamax/vim-habamax'
-Plug 'w0ng/vim-hybrid' 
+Plug 'w0ng/vim-hybrid'
 Plug 'morhetz/gruvbox'
 
 Plug 'miyakogi/seiya.vim'
@@ -546,7 +546,7 @@ Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-abolish'
 
 "create vim plugin's skeleton
-Plug 'mopp/layoutplugin.vim', { 'on' : 'LayoutPlugin'} 
+Plug 'mopp/layoutplugin.vim', { 'on' : 'LayoutPlugin'}
 
 "unite like serching interface
 Plug 'junegunn/fzf'
@@ -588,9 +588,9 @@ syntax on
 " ...
 
 set background=dark "暗めの背景
-" 
+"
 " " colorschme
-" 
+"
 " " " " hybrid
 colorscheme hybrid
 let g:seiya_auto_enable=1
@@ -835,7 +835,7 @@ call submode#map('winsize',        'n', '', 'L', '<C-w>>')
 call submode#map('winsize',        'n', '', 'H', '<C-w><')
 call submode#map('winsize',        'n', '', 'J', '<C-w>-')
 call submode#map('winsize',        'n', '', 'K', '<C-w>+')
- 
+
 "" over.vim
 " over.vimの起動
 nnoremap <silent> <C-s> :OverCommandLine<CR>%s;<C-r><C-w>;;<Left><C-r><C-w>
@@ -1074,7 +1074,7 @@ let g:delve_use_vimux = 1
 " \ 'file':    '--format documentation',
 " \ 'suite':   '--tag ~slow',
 "\}
-" 
+"
 " let test#ruby#minitest#options = {
 " \ 'nearest': '--backtrace',
 " \ 'file':    '--format documentation',
@@ -1236,7 +1236,7 @@ augroup END
 "   autocmd!
 "   autocmd BufEnter * call s:switch_list_mapping()
 " augroup end
-" 
+"
 " function! s:switch_list_mapping() abort
 "   let wi = getwininfo(win_getid())[0]
 "   if wi.loclist
@@ -1249,10 +1249,10 @@ augroup END
 "" 検索結果に移動
 " nnoremap <C-c> :cl<CR>
 " nnoremap <C-c> :cc<CR>
-" 
+"
 " "" 次の検索結果に移動
 " nnoremap <C-n> :cnext<CR>
-" 
+"
 " "" 前の検索結果に移動
 " nnoremap <C-p> :cprevious<CR>
 
@@ -1263,13 +1263,13 @@ nnoremap <C-q> :cclose\|lclose\|TestClose<CR>
 
 " "" 検索結果に移動
 " nnoremap <A-c> :ll<CR>
-" 
+"
 " "" 次の検索結果に移動
 " nnoremap <A-n> :lnext<CR>
-" 
+"
 " "" 前の検索結果に移動
 " nnoremap <A-p> :lprevious<CR>
-" 
+"
 " "" 検索結果Windowを閉じる
 " " nnoremap <C-q> <C-w>j<C-w>q
 " " https://github.com/neomake/neomake/issues/842
@@ -1334,7 +1334,7 @@ augroup END
 "   let c = getchar()
 "   return get(s:compl_key_dict, c, nr2char(c))
 " endfunction
-" 
+"
 " inoremap <expr> <C-x>  <SID>hint_i_ctrl_x()
 
 let g:brightest#highlight = {
@@ -1543,7 +1543,7 @@ augroup asyncomplete_register_source
 "      \  },
 "      \ }))
 " augroup END
-" 
+"
 " " Delete with backspace to open configuration TabNine
 " " TabNine::config.
 
@@ -1587,33 +1587,38 @@ command! -range=% ChatGPT call ChatGPTSendSelectedRange(<line1>, <line2>)
 " Configuration Parameters
 let g:chatgpt_model = 'gpt-4o-2024-05-13'
 
+let g:system_marker = '-----🤖-----'
 let g:marker = '-----👇-----'
 function! ChatGPTSendSelectedRange(startline, endline) abort
   let l:command = 'chatgpt -M ' . g:chatgpt_model
   let l:startline = a:startline
 
   let l:resume_file = expand('%:p') . '.post_data.json'
+
   if filereadable(l:resume_file)
     let l:command = l:command . ' -l ' . l:resume_file
 
-    let l:markerline = search('^' . g:marker . '$', 'n', a:startline)
+    let l:save_pos = getpos('.')
+    call cursor(1, 1)
+    let l:markerline = search('^' . g:marker . '$', 'bnw')
+    let l:system_markerline = search('^' . g:system_marker . '$', 'bnw')
+    call setpos('.', l:save_pos)
+
     if l:markerline == a:endline
       echomsg 'ChatGPT canceled: Write something to send after ' . g:marker
       return
     endif
-
     let l:startline = l:markerline + 1
   else
     try
       cnoremap <buffer> <silent> <Esc> __CANCELED__<CR>
-      let l:input = input('System Message: ')
+      let l:input = input('System Message: ', '', 'customlist,ConfirmCompletion')
       let l:input = l:input =~# '__CANCELED__$' ? 0 : l:input
     catch /^Vim:Interrupt$/
       let l:input = -1
     finally
       silent! cnoremap <buffer> <Esc>
 
-      " if canceled
       if l:input ==# '0' || l:input ==# '-1'
         echomsg 'ChatGPT canceled'
         return
@@ -1626,10 +1631,19 @@ function! ChatGPTSendSelectedRange(startline, endline) abort
     endif
   endif
 
-  let l:outputfile = tempname() . '.response.md'
-  exec 'vsplit ' . l:outputfile
-  call setline(1, 'waiting for response...')
-  wincmd p " フォーカスを元のウィンドウに戻す
+  " ファイル名が /tmp/.*/.*\.response\.md の場合はそのファイルを編集
+  if expand('%') =~# '/tmp/.*/.*\.response\.md$'
+    exec 'edit ' . expand('%')
+    let l:outputfile = expand('%')
+    " 末尾にマーカーを追加
+    call append(line('$'), [g:system_marker])
+  else " それ以外の場合は新規バッファを開く
+    let l:outputfile = tempname() . '.response.md'
+    exec 'vsplit ' . l:outputfile
+    " system message
+    call setline(1, [l:system_message, g:system_marker])
+    exec 'wincmd p'
+  endif
 
   call job_start(l:command, {
         \ 'in_io': 'buffer',
@@ -1643,11 +1657,21 @@ function! ChatGPTSendSelectedRange(startline, endline) abort
 endfunction
 
 function! ChatGPTJobCallback(outputfile, job, status) abort
-  " waiting for response... を削除
-  call deletebufline(bufnr(a:outputfile), 1)
+  if a:status != 0
+    call setbufline(bufnr(a:outputfile), 1, 'Error: ChatGPT request failed with status ' . a:status)
+
+    return
+  endif
 
   " 末尾にここからマーカーを追加
   call appendbufline(bufnr(a:outputfile), '$', [g:marker])
+
+  " Restore cursor to system marker line
+  call cursor(1, 1)
+  let l:system_markerline = search('^' . g:system_marker . '$', 'bnw')
+  if l:system_markerline > 0
+    call cursor(l:system_markerline, 1)
+  endif
 
   " ~/.config/chatgpt-cli/post_data.json を a:outputfile.json にコピー
   let l:post_data = expand('~/.config/chatgpt-cli/post_data.json')
