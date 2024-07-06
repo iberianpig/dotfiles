@@ -902,6 +902,9 @@ nnoremap <silent> [fzf]; :<C-u>Commands<CR>
 " カーソル下のパスを開く"
 nnoremap <silent> [fzf] gF
 
+" 現在のファイルから行を検索
+nnoremap <silent> [fzf]/ :Lines<CR>
+
 " markdownの設定
 " see /usr/share/vim/vim80/syntax/*.vim
 let g:markdown_fenced_languages = ['ruby', 'json', 'vim', 'sh', 'javascript']
