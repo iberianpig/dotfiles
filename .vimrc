@@ -255,7 +255,7 @@ augroup add_syntax_highlight
   autocmd!
   "シンタックスハイライトの追加
   autocmd BufNewFile,BufRead *.json.jbuilder            set filetype=ruby
-  autocmd BufNewFile,BufRead Gemfile*                   set filetype=ruby
+  autocmd BufNewFile,BufRead Gemfile*,*.gemfile.*          set filetype=ruby
   autocmd BufNewFile,BufRead *.thor                     set filetype=ruby
   autocmd BufNewFile,BufRead *.erb                      set filetype=eruby
   autocmd BufNewFile,BufRead *.slim                     set filetype=slim
