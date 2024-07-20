@@ -1223,11 +1223,14 @@ let g:auto_save_events = ["CursorHold", "InsertLeave", "TextChanged"]
 function! s:auto_save_detect() abort
   " read onlyの場合は自動保存しない"
   " filenameがResultの場合は自動保存しない(dbext.vimで作られる一時ファイル)
-  if &readonly || expand('%:t') ==# 'Result'
+  if (exists("b:disable_auto_save_in_buffer") || (&readonly || expand('%:t') ==# 'Result'))
     let g:auto_save = 0 " 自動保存しない
+
+    " 後からw!!で編集権限のないファイルへ書き込みが行われた場合でもバッファが切り替わるまで自動保存をオフにする
+    let b:disable_auto_save_in_buffer = 1
   else
     let g:auto_save = 1 " 自動保存
-  end
+  endif
 endfunction
 
 augroup switch_auto_save
