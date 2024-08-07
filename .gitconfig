@@ -75,3 +75,7 @@
 	autostash = true
 [advice]
 	detachedHead = false
+[url "git@github.com:"]
+	pushInsteadOf = https://github.com/
+[rerere]
+	enabled = true
