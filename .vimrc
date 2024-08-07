@@ -1599,10 +1599,10 @@ map g# <Plug>(incsearch-nohl-g#)
 command! -range=% ChatGPT call ChatGPTSendSelectedRange(<line1>, <line2>)
 
 " Configuration Parameters
-let g:chatgpt_model = 'gpt-4o-2024-05-13'
+let g:chatgpt_model = 'gpt-4o-mini'
 
-let g:system_marker = '-----🤖-----'
-let g:marker = '-----👇-----'
+let g:chatgpt_system_marker = '-----🤖-----'
+let g:chatgpt_user_marker =        '-----✍------'
 function! ChatGPTSendSelectedRange(startline, endline) abort
   let l:command = 'chatgpt -M ' . g:chatgpt_model
   let l:startline = a:startline
@@ -1614,12 +1614,12 @@ function! ChatGPTSendSelectedRange(startline, endline) abort
 
     let l:save_pos = getpos('.')
     call cursor(1, 1)
-    let l:markerline = search('^' . g:marker . '$', 'bnw')
-    let l:system_markerline = search('^' . g:system_marker . '$', 'bnw')
+    let l:markerline = search('^' . g:chatgpt_user_marker . '$', 'bnw')
+    let l:system_markerline = search('^' . g:chatgpt_system_marker . '$', 'bnw')
     call setpos('.', l:save_pos)
 
     if l:markerline == a:endline
-      echomsg 'ChatGPT canceled: Write something to send after ' . g:marker
+      echomsg 'ChatGPT canceled: Write something to send after ' . g:chatgpt_user_marker
       return
     endif
     let l:startline = l:markerline + 1
@@ -1639,23 +1639,29 @@ function! ChatGPTSendSelectedRange(startline, endline) abort
       endif
     endtry
 
-    let l:system_message = shellescape(l:input, 1)
-    if l:system_message != ''
-      let l:command = l:command . ' -s ' . l:system_message
-    endif
+    " system message
+    let l:defalut_system_message = "以下を要約してください。レスポンスは日本語で回答すること。"
+    let l:system_message = l:input ==# '' ? l:defalut_system_message : shellescape(l:input, 1)
+    let l:command = l:command . ' -s ' . l:system_message
   endif
 
-  " ファイル名が /tmp/.*/.*\.response\.md の場合はそのファイルを編集
-  if expand('%') =~# '/tmp/.*/.*\.response\.md$'
+  let l:timestamp = strftime("%Y%m%d%H%M%S")
+  let l:directory = expand('~/.config/chatgpt-cli/history')
+  if !isdirectory(l:directory)
+    call mkdir(l:directory, "p")
+  endif
+
+  " ファイル名が ~/.config/chatgpt-cli/history/.*/.*\.response\.md の場合はそのファイルを編集
+  if expand('%') =~# l:directory . '/.*\.response\.md$'
     exec 'edit ' . expand('%')
     let l:outputfile = expand('%')
     " 末尾にマーカーを追加
-    call append(line('$'), [g:system_marker])
+    call append(line('$'), ["", g:chatgpt_system_marker, ""])
   else " それ以外の場合は新規バッファを開く
-    let l:outputfile = tempname() . '.response.md'
+    let l:outputfile = l:directory . '/' . l:timestamp . '.response.md'
     exec 'vsplit ' . l:outputfile
     " system message
-    call setline(1, [l:system_message, g:system_marker])
+    call setline(1, [l:system_message, "", g:chatgpt_system_marker, ""])
     exec 'wincmd p'
   endif
 
@@ -1678,13 +1684,18 @@ function! ChatGPTJobCallback(outputfile, job, status) abort
   endif
 
   " 末尾にここからマーカーを追加
-  call appendbufline(bufnr(a:outputfile), '$', [g:marker])
+  call appendbufline(bufnr(a:outputfile), '$', ["", g:chatgpt_user_marker, ""])
 
   " Restore cursor to system marker line
-  call cursor(1, 1)
-  let l:system_markerline = search('^' . g:system_marker . '$', 'bnw')
+  if bufnr('%') == bufnr(a:outputfile)
+    call cursor(1, 1)
+  endif
+  let l:system_markerline = search('^' . g:chatgpt_system_marker . '$', 'bnw')
   if l:system_markerline > 0
-    call cursor(l:system_markerline, 1)
+    " カレントバッファにマーカーがある場合はそこに移動
+    if bufnr('%') == bufnr(a:outputfile)
+      call cursor(l:system_markerline, 1)
+    endif
   endif
 
   " ~/.config/chatgpt-cli/post_data.json を a:outputfile.json にコピー
@@ -1695,6 +1706,5 @@ function! ChatGPTJobCallback(outputfile, job, status) abort
   echomsg 'Chat GPT response received'
 endfunction
 
-" vnoremap [explorer]a :ChatGPT<CR>
 vnoremap [explorer]a :ChatGPT<CR>
 noremap [explorer]a :ChatGPT<CR>
