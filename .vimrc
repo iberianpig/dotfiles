@@ -351,7 +351,6 @@ Plug 'thomasfaingnaert/vim-lsp-neosnippet'
 " Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
 Plug 'htlsne/asyncomplete-look'
 
-" Plug 'kitagry/asyncomplete-tabnine.vim', { 'do': './install.sh'  }
 Plug 'github/copilot.vim'
 
 " deno
@@ -413,9 +412,6 @@ Plug 'mhinz/vim-signify'
 
 " Git diff用
 Plug 'tpope/vim-fugitive', {'on': ['Gdiff']}
-
-" 自動整形プラグイン
-Plug 'Chiel92/vim-autoformat'
 
 " PJ毎の稼働時間を記録
 Plug 'wakatime/vim-wakatime'
