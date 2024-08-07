@@ -56,7 +56,7 @@ set iskeyword+=?,-,@-@ "?,@hogeなどをキーワードとする
 set nofoldenable    " disable folding
 
 " augroup vimrc-highlight
-  " autocmd!
+" autocmd!
 "   autocmd Syntax off if 10000 > line('$') | syntax sync minlines=1000 | endif
 " augroup END
 
@@ -104,9 +104,9 @@ set ttyfast                    " カーソル移動高速化
 augroup restore_cursor_position
   autocmd!
   autocmd BufReadPost * " 最後のカーソル位置を復元する
-    \ if line("'\"") > 0 && line ("'\"") <= line("$") |
-    \   exe "normal! g'\"" |
-    \ endif
+        \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+        \   exe "normal! g'\"" |
+        \ endif
 augroup END
 
 "File処理関連
@@ -363,24 +363,24 @@ Plug 'vim-denops/denops.vim'
 " Plug 'skanehira/denops-gh.vim'
 
 Plug 'prettier/vim-prettier', {
- \ 'do': 'yarn install',
- \ 'branch': 'release/1.x',
- \ 'for': [
-   \ 'javascript',
-   \ 'typescript',
-   \ 'css',
-   \ 'less',
-   \ 'scss',
-   \ 'json',
-   \ 'graphql',
-   \ 'markdown',
-   \ 'vue',
-   \ 'lua',
-   \ 'php',
-   \ 'python',
-   \ 'ruby',
-   \ 'html',
-   \ 'swift' ] }
+      \ 'do': 'yarn install',
+      \ 'branch': 'release/1.x',
+      \ 'for': [
+      \ 'javascript',
+      \ 'typescript',
+      \ 'css',
+      \ 'less',
+      \ 'scss',
+      \ 'json',
+      \ 'graphql',
+      \ 'markdown',
+      \ 'vue',
+      \ 'lua',
+      \ 'php',
+      \ 'python',
+      \ 'ruby',
+      \ 'html',
+      \ 'swift' ] }
 
 
 " %で閉じタグに飛ぶ
@@ -615,48 +615,48 @@ let g:signify_sign_change_delete     = g:signify_sign_change . g:signify_sign_de
 " Tomorrow_Night, Tomorrow_Night_Blue, Tomorrow_Night_Eighties,
 " PaperColor, seoul256, landscape and 16color
 let g:lightline = {
-    \ 'colorscheme': 'Tomorrow_Night',
-    \ 'active': {
-    \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], [ 'ctrlpmark'], [ 'currentfunction' ] ],
-    \   'right': [[ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], ['lsp_errors', 'lsp_warnings', 'lsp_ok'], ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]]
-    \ },
-    \ 'inactive': {
-    \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
-    \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
-    \ },
-    \ 'component_function':  {
-    \   'filename':          'MyFilename',
-    \   'fileformat':        'MyFileformat',
-    \   'filetype':          'MyFiletype',
-    \   'fileencoding':      'MyFileencoding',
-    \   'mode':              'MyMode',
-    \   'currentworkingdir': 'CurrentWorkingDir',
-    \   'percent':           'MyPercent',
-    \   'lineinfo':          'MyLineInfo',
-    \ },
-    \ 'component_expand':    {
-    \  'linter_checking': 'lightline#ale#checking',
-    \  'linter_warnings': 'lightline#ale#warnings',
-    \  'linter_errors': 'lightline#ale#errors',
-    \  'linter_ok': 'lightline#ale#ok',
-    \  'lsp_warnings': 'LightlineLSPWarnings',
-    \  'lsp_errors':   'LightlineLSPErrors',
-    \  'lsp_ok':       'LightlineLSPOk',
-    \ },
-    \ 'component_type':      {
-    \     'linter_checking': 'left',
-    \     'linter_warnings': 'warning',
-    \     'linter_errors': 'error',
-    \     'linter_ok': 'left',
-    \     'lsp_warnings': 'warning',
-    \     'lsp_errors':   'error',
-    \     'lsp_ok':       'middle',
-    \ },
-    \ 'tabline':             {
-    \   'left':              [ [ 'tabs' ] ],
-    \   'right':             [ [ 'currentworkingdir' ] ],
-    \ },
-    \}
+      \ 'colorscheme': 'Tomorrow_Night',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], [ 'ctrlpmark'], [ 'currentfunction' ] ],
+      \   'right': [[ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ], ['lsp_errors', 'lsp_warnings', 'lsp_ok'], ['linter_checking', 'linter_errors', 'linter_warnings', 'linter_ok' ]]
+      \ },
+      \ 'inactive': {
+      \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'filename' ], ['ctrlpmark'] ],
+      \   'right': [ [ 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      \ },
+      \ 'component_function':  {
+      \   'filename':          'MyFilename',
+      \   'fileformat':        'MyFileformat',
+      \   'filetype':          'MyFiletype',
+      \   'fileencoding':      'MyFileencoding',
+      \   'mode':              'MyMode',
+      \   'currentworkingdir': 'CurrentWorkingDir',
+      \   'percent':           'MyPercent',
+      \   'lineinfo':          'MyLineInfo',
+      \ },
+      \ 'component_expand':    {
+      \  'linter_checking': 'lightline#ale#checking',
+      \  'linter_warnings': 'lightline#ale#warnings',
+      \  'linter_errors': 'lightline#ale#errors',
+      \  'linter_ok': 'lightline#ale#ok',
+      \  'lsp_warnings': 'LightlineLSPWarnings',
+      \  'lsp_errors':   'LightlineLSPErrors',
+      \  'lsp_ok':       'LightlineLSPOk',
+      \ },
+      \ 'component_type':      {
+      \     'linter_checking': 'left',
+      \     'linter_warnings': 'warning',
+      \     'linter_errors': 'error',
+      \     'linter_ok': 'left',
+      \     'lsp_warnings': 'warning',
+      \     'lsp_errors':   'error',
+      \     'lsp_ok':       'middle',
+      \ },
+      \ 'tabline':             {
+      \   'left':              [ [ 'tabs' ] ],
+      \   'right':             [ [ 'currentworkingdir' ] ],
+      \ },
+      \}
 
 
 function! MyModified()
@@ -672,7 +672,7 @@ function! MyLineInfo()
 endfunction
 
 function! MyReadonly()
-   return &readonly ? 'RO' : ''
+  return &readonly ? 'RO' : ''
 endfunction
 
 function! MyFilename()
@@ -874,11 +874,11 @@ function! s:build_quickfix_list(lines)
 endfunction
 
 let g:fzf_action = {
- \ 'ctrl-q': function('s:build_quickfix_list'),
- \ 'ctrl-o': 'edit',
- \ 'ctrl-t': 'tab split',
- \ 'ctrl-s': 'split',
- \ 'ctrl-v': 'vsplit' }
+      \ 'ctrl-q': function('s:build_quickfix_list'),
+      \ 'ctrl-o': 'edit',
+      \ 'ctrl-t': 'tab split',
+      \ 'ctrl-s': 'split',
+      \ 'ctrl-v': 'vsplit' }
 let g:fzf_layout = { 'down': '~25%' }
 
 "" fzf-filemru
@@ -965,37 +965,37 @@ augroup END
 let g:quickrun_config = get(g:, 'quickrun_config', {})
 
 let g:quickrun_config._ = {
-     \ 'runner'    : 'terminal',
-     \   'hook/close_quickfix/enable_hook_loaded' : 1,
-     \   'hook/close_quickfix/enable_success'     : 1,
-     \   'hook/close_buffer/enable_hook_loaded'   : 1,
-     \   'hook/close_buffer/enable_failure'       : 1,
-     \   'hook/inu/enable'                        : 1,
-     \   'hook/inu/wait'                          : 1,
-     \   'outputter'                              : 'multi:buffer:quickfix',
-     \   'outputter/buffer/split'                 : 'botright',
-     \   'outputter/quickfix/open_cmd'            : 'copen',
-     \ }
+      \ 'runner'    : 'terminal',
+      \   'hook/close_quickfix/enable_hook_loaded' : 1,
+      \   'hook/close_quickfix/enable_success'     : 1,
+      \   'hook/close_buffer/enable_hook_loaded'   : 1,
+      \   'hook/close_buffer/enable_failure'       : 1,
+      \   'hook/inu/enable'                        : 1,
+      \   'hook/inu/wait'                          : 1,
+      \   'outputter'                              : 'multi:buffer:quickfix',
+      \   'outputter/buffer/split'                 : 'botright',
+      \   'outputter/quickfix/open_cmd'            : 'copen',
+      \ }
 
-	let g:quickrun_config.html = {
-        \ "command" : "cat",
-        \ "outputter" : "browser",
-        \}
+let g:quickrun_config.html = {
+      \ "command" : "cat",
+      \ "outputter" : "browser",
+      \}
 " テキストブラウザのインストールが必要
 " sudo apt-get install lynx
 
 " 辞書定義
 let g:ref_source_webdict_sites = {
-     \   'je': {
-     \     'url': 'http://eow.alc.co.jp/search?q=%s',
-     \   },
-     \   'ej': {
-     \     'url': 'http://eow.alc.co.jp/search?q=%s',
-     \   },
-     \   'alc': {
-     \     'url': 'http://eow.alc.co.jp/search?q=%s',
-     \   },
-     \ }
+      \   'je': {
+      \     'url': 'http://eow.alc.co.jp/search?q=%s',
+      \   },
+      \   'ej': {
+      \     'url': 'http://eow.alc.co.jp/search?q=%s',
+      \   },
+      \   'alc': {
+      \     'url': 'http://eow.alc.co.jp/search?q=%s',
+      \   },
+      \ }
 
 " デフォルトサイト
 let g:ref_source_webdict_sites.default = 'ej'
@@ -1031,23 +1031,23 @@ vnoremap gjx y:<C-u>OpenBrowserSmartSearch -deepl_ja <C-R>"<CR>
 " reloadしたら消えてしまう
 if !exists('g:openbrowser_search_engines')
   let g:openbrowser_search_engines = {
-       \ 'googletranslate_en': 'https://translate.google.com/#ja/en/{query}',
-       \ 'googletranslate_ja': 'https://translate.google.com/#en/ja/{query}',
-       \ 'deepl_en': 'https://www.deepl.com/translator#ja/en/{query}',
-       \ 'deepl_ja': 'https://www.deepl.com/translator#en/ja/{query}',
-       \ }
+        \ 'googletranslate_en': 'https://translate.google.com/#ja/en/{query}',
+        \ 'googletranslate_ja': 'https://translate.google.com/#en/ja/{query}',
+        \ 'deepl_en': 'https://www.deepl.com/translator#ja/en/{query}',
+        \ 'deepl_ja': 'https://www.deepl.com/translator#en/ja/{query}',
+        \ }
 endif
 
 let g:openbrowser_browser_commands = [
-     \ {'name': 'xdg-open',
-     \  'args': ['{browser}', '{uri}']},
-     \ {'name': 'x-www-browser',
-     \  'args': ['{browser}', '{uri}']},
-     \ {'name': 'firefox',
-     \  'args': ['{browser}', '{uri}']},
-     \ {'name': 'luakit',
-     \  'args': ['{browser}', '{uri}']},
-     \]
+      \ {'name': 'xdg-open',
+      \  'args': ['{browser}', '{uri}']},
+      \ {'name': 'x-www-browser',
+      \  'args': ['{browser}', '{uri}']},
+      \ {'name': 'firefox',
+      \  'args': ['{browser}', '{uri}']},
+      \ {'name': 'luakit',
+      \  'args': ['{browser}', '{uri}']},
+      \]
 
 " indent guides
 let g:indent_guides_auto_colors = 0
@@ -1283,45 +1283,6 @@ augroup quickfix_or_location
   autocmd FileType qf call UpdateListMappings()
 augroup END
 
-" " 入力キーの辞書
-" let s:compl_key_dict = {
-"     \ char2nr("\<C-l>"): "\<C-x>\<C-l>",
-"     \ char2nr("\<C-n>"): "\<C-x>\<C-n>",
-"     \ char2nr("\<C-p>"): "\<C-x>\<C-p>",
-"     \ char2nr("\<C-k>"): "\<C-x>\<C-k>",
-"     \ char2nr("\<C-t>"): "\<C-x>\<C-t>",
-"     \ char2nr("\<C-i>"): "\<C-x>\<C-i>",
-"     \ char2nr("\<C-]>"): "\<C-x>\<C-]>",
-"     \ char2nr("\<C-f>"): "\<C-x>\<C-f>",
-"     \ char2nr("\<C-d>"): "\<C-x>\<C-d>",
-"     \ char2nr("\<C-v>"): "\<C-x>\<C-v>",
-"     \ char2nr("\<C-u>"): "\<C-x>\<C-u>",
-"     \ char2nr("\<C-o>"): "\<C-x>\<C-o>",
-"     \ char2nr('s'): "\<C-x>s",
-"     \ char2nr("\<C-s>"): "\<C-x>s"
-"     \}
-" " 表示メッセージ
-" let s:hint_i_ctrl_x_msg = join([
-"     \ '<C-l>: While lines',
-"     \ '<C-n>: keywords in the current file',
-"     \ "<C-k>: keywords in 'dictionary'",
-"     \ "<C-t>: keywords in 'thesaurus'",
-"     \ '<C-i>: keywords in the current and included files',
-"     \ '<C-]>: tags',
-"     \ '<C-f>: file names',
-"     \ '<C-d>: definitions or macros',
-"     \ '<C-v>: Vim command-line',
-"     \ "<C-u>: User defined completion ('completefunc')",
-"     \ "<C-o>: omni completion ('omnifunc')",
-"     \ "s: Spelling suggestions ('spell')"
-"     \], "\n")
-" function! s:hint_i_ctrl_x() abort
-"   echo s:hint_i_ctrl_x_msg
-"   let c = getchar()
-"   return get(s:compl_key_dict, c, nr2char(c))
-" endfunction
-"
-" inoremap <expr> <C-x>  <SID>hint_i_ctrl_x()
 " Quickfix / Location list
 function! ToggleQuickfixLocation() abort
   cclose|lclose
@@ -1354,8 +1315,8 @@ nnoremap qq :call ToggleQuickfixLocation()<CR>
 nnoremap <C-q> :cclose\|lclose\|TestClose<CR>
 
 let g:brightest#highlight = {
-    \   'group' : 'BrightestUnderline'
-    \}
+      \   'group' : 'BrightestUnderline'
+      \}
 
 " let g:brightest#pattern = '\k\+'
 let g:brightest#enable_on_CursorHold = 1
@@ -1427,9 +1388,9 @@ function! s:on_lsp_buffer_enabled() abort
 endfunction
 
 augroup lsp_enabled
-    autocmd!
-    " call s:on_lsp_buffer_enabled only for languages that has the server registered.
-    autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
+  autocmd!
+  " call s:on_lsp_buffer_enabled only for languages that has the server registered.
+  autocmd User lsp_buffer_enabled call s:on_lsp_buffer_enabled()
 augroup END
 
 " lsp restart
@@ -1469,11 +1430,11 @@ let g:rooter_patterns = ['Gemfile', 'go.mod', '.git', '_darcs', '.hg', '.bzr', '
 
 " Enable efm-langserver for custom linter and formatter
 let g:lsp_settings = {
- \  'efm-langserver': {
- \    'disabled': 0,
- \    'allowlist': ['markdown'],
- \  }
- \ }
+      \  'efm-langserver': {
+      \    'disabled': 0,
+      \    'allowlist': ['markdown'],
+      \  }
+      \ }
 
 " Configure efm-langserver in ~/.config/efm-langserver/config.yaml
 let g:lsp_settings_filetype_ruby = ['solargraph']
@@ -1498,8 +1459,8 @@ let g:lsp_settings_filetype_go = ['gopls', 'golangci-lint-langserver']
 
 "vim-grammarous
 let g:grammarous#default_comments_only_filetypes = {
-           \ '*' : 1, 'help' : 0, 'markdown' : 0,
-           \ }
+      \ '*' : 1, 'help' : 0, 'markdown' : 0,
+      \ }
 
 " rhysd/vim-operator-surround
 " 括弧を追加する
@@ -1538,36 +1499,22 @@ augroup asyncomplete_register_source
         \ }))
 
   au User asyncomplete_setup call asyncomplete#register_source({
-       \ 'name': 'look',
-       \ 'allowlist': ['*'],
-       \ 'priority': 1000,
-       \ 'completor': function('asyncomplete#sources#look#completor'),
-       \ 'config': {
-       \   'line_limit': 1000,
-       \   'max_num_result': 20,
-       \  },
-       \ })
-
-"   au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#tabnine#get_source_options({
-"      \ 'name': 'tabnine',
-"      \ 'allowlist': ['*'],
-"      \ 'priority': 1000,
-"      \ 'completor': function('asyncomplete#sources#tabnine#completor'),
-"      \ 'config': {
-"      \   'line_limit': 1000,
-"      \   'max_num_result': 20,
-"      \  },
-"      \ }))
-" augroup END
-"
-" " Delete with backspace to open configuration TabNine
-" " TabNine::config.
+        \ 'name': 'look',
+        \ 'allowlist': ['*'],
+        \ 'priority': 1000,
+        \ 'completor': function('asyncomplete#sources#look#completor'),
+        \ 'config': {
+        \   'line_limit': 1000,
+        \   'max_num_result': 20,
+        \  },
+        \ })
+augroup END
 
 let g:copilot_filetypes = {
-    \ 'gitcommit': v:true,
-    \ 'markdown': v:true,
-    \ 'yaml': v:true
-    \ }
+      \ 'gitcommit': v:true,
+      \ 'markdown': v:true,
+      \ 'yaml': v:true
+      \ }
 " let g:copilot_no_tab_map = v:true
 " imap <silent><script><expr> <C-j> copilot#Accept("\<CR>")
 
