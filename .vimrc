@@ -1170,6 +1170,8 @@ nnoremap [explorer] <Nop>
 nmap , [explorer]
 vnoremap , <Nop>
 vmap , [explorer]
+
+" tig-explorer.vim
 nnoremap [explorer]T :TigOpenCurrentFile<CR>
 nnoremap [explorer]t :TigOpenProjectRootDir<CR>
 nnoremap [explorer]g :TigGrep<CR>
@@ -1179,8 +1181,8 @@ vnoremap [explorer]g y:TigGrep<CR>"<C-R>""
 " 履歴から検索
 nnoremap [explorer]r :TigGrepResume<CR>
 
-nnoremap [explorer]G :Tig -G""<LEFT>
-vnoremap [explorer]G y:Tig -G"<C-R>""
+nnoremap [explorer]G :Tig -G"" %<LEFT><LEFT><LEFT>
+vnoremap [explorer]G y:Tig -G"<C-R>"" %
 
 "" open tig blame with current file
 nnoremap [explorer]b :TigBlame<CR>
