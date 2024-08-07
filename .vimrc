@@ -33,7 +33,9 @@ set helpheight=998 " ヘルプを画面いっぱいに開く
 set list           " 不可視文字を表示
 set listchars=tab:▸\ ,nbsp:%,trail:_ " 不可視文字の表示記号指定
 set t_Co=256 "ターミナルで256色利用
-set iskeyword+=?,!,-,@-@ "?,!,@hogeなどをキーワードとする
+" FIXME: !を含めると↓ &ft == 'vim' のときにインデントが崩れる
+" set iskeyword+=?,!,-,@-@ "?,!,@hogeなどをキーワードとする 
+set iskeyword+=?,-,@-@ "?,@hogeなどをキーワードとする 
 
 " " Don't screw up folds when inserting text that might affect them, until
 " " leaving insert mode. Foldmethod is local to the window. Protect against
