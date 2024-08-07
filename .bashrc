@@ -5,6 +5,7 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+PS1='$ '
 export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
 shopt -s histappend                      # append to history, don't overwrite it
 # # Save and reload the history after each command finishes
