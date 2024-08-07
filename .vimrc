@@ -1708,3 +1708,38 @@ endfunction
 
 vnoremap [explorer]a :ChatGPT<CR>
 noremap [explorer]a :ChatGPT<CR>
+
+function! DiffWithinCodeBlock()
+  " Get the block surrounded by ``` from the current cursor position
+  let l:start_line = search('^```', 'bnW')
+  let l:end_line = search('^```', 'nW')
+
+  if l:start_line == 0 || l:end_line == 0
+    echoerr " No code block found. Please check your cursor position."
+    return
+  endif
+
+  let l:code_block = getline(l:start_line + 1, l:end_line - 1)
+
+  let l:buffer_name = 'code_block'
+  let l:buffer_number = bufnr(l:buffer_name)
+
+  if l:buffer_number != -1
+    execute "buffer" . l:buffer_number
+  else
+    enew
+    setlocal buftype=nofile
+    setlocal bufhidden=hide
+    setlocal noswapfile
+
+    echomsg "Creating a new buffer named " . l:buffer_name
+    execute "file " . l:buffer_name
+  endif
+
+  call setline(1, l:code_block)
+
+  setlocal filetype=diff
+  windo diffthis
+endfunction
+
+nnoremap <leader>d :call DiffWithinCodeBlock()<CR>
