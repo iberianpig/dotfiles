@@ -241,10 +241,6 @@ fi
 # makef
 [ -f ~/.ghq/github.com/iberianpig/makef/makef.sh ] && source ~/.ghq/github.com/iberianpig/makef/makef.sh
 
-# tabtab source for packages
-# uninstall by removing these lines
-[ -f ~/.config/tabtab/__tabtab.bash ] && . ~/.config/tabtab/__tabtab.bash || true
-
 # kubectl
 if which kubectl > /dev/null; then
   source <(kubectl completion bash)
