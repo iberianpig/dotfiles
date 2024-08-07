@@ -1253,70 +1253,32 @@ augroup switch_auto_save
   au BufEnter * call s:auto_save_detect()
 augroup END
 
+function! SetQuickfixMappings() abort
+  nnoremap <C-n> :cnext<CR>     " Move to the next search result
+  nnoremap <C-p> :cprevious<CR> " Move to the previous search result
+endfunction
 
-" augroup switch_list
-"   autocmd!
-"   autocmd BufEnter * call s:switch_list_mapping()
-" augroup end
-"
-" function! s:switch_list_mapping() abort
-"   let wi = getwininfo(win_getid())[0]
-"   if wi.loclist
-"     echo "Curwin is location list"
-"   elseif wi.quickfix
-"     echo "Curwin is quickfix"
-"   endif
-" endfunction
+function! SetLocationMappings() abort
+  nnoremap <C-n> :lnext<CR>     " Move to the next search result
+  nnoremap <C-p> :lprevious<CR> " Move to the previous search result
+endfunction
 
-"" 検索結果に移動
-" nnoremap <C-c> :cl<CR>
-" nnoremap <C-c> :cc<CR>
-"
-" "" 次の検索結果に移動
-" nnoremap <C-n> :cnext<CR>
-"
-" "" 前の検索結果に移動
-" nnoremap <C-p> :cprevious<CR>
+function! UpdateListMappings()
+  let win_info = getwininfo(win_getid())[0]
 
-"" 検索結果Windowを閉じる
-" nnoremap <C-q> <C-w>j<C-w>q
-" https://github.com/neomake/neomake/issues/842
-nnoremap <C-q> :cclose\|lclose\|TestClose<CR>
+  if win_info.loclist
+    call SetLocationMappings()
+  elseif win_info.quickfix
+    call SetQuickfixMappings()
+  else
+    " Do nothing if neither
+  endif
+endfunction
 
-" "" 検索結果に移動
-" nnoremap <A-c> :ll<CR>
-"
-" "" 次の検索結果に移動
-" nnoremap <A-n> :lnext<CR>
-"
-" "" 前の検索結果に移動
-" nnoremap <A-p> :lprevious<CR>
-"
-" "" 検索結果Windowを閉じる
-" " nnoremap <C-q> <C-w>j<C-w>q
-" " https://github.com/neomake/neomake/issues/842
-" nnoremap <A-q> :lclose<CR>
-
-" Quickfix
-nnoremap <silent> qq :<C-u>call qfutil#toggle()<CR>
-
-nnoremap <silent> <C-n> :<C-u>call qfutil#next(v:count)<CR>
-nnoremap <silent> <C-p> :<C-u>call qfutil#previous(v:count)<CR>
-nnoremap <silent> g<C-n> :<C-u>call qfutil#last(v:count)<CR>
-nnoremap <silent> g<C-p> :<C-u>call qfutil#first(v:count)<CR>
-
-nnoremap <silent> q. :<C-u>call qfutil#toggle_window()<CR>
-" nnoremap <silent> qq :<C-u>call qfutil#qq(v:count)<CR>
-nnoremap <silent> qn :<C-u>call qfutil#nfile(v:count)<CR>
-nnoremap <silent> qp :<C-u>call qfutil#pfile(v:count)<CR>
-nnoremap <silent> qa :<C-u>call qfutil#list()<CR>
-nnoremap <silent> qo :<C-u>call qfutil#older(v:count)<CR>
-nnoremap <silent> qi :<C-u>call qfutil#newer(v:count)<CR>
-
-augroup open_quickfix_window_automatically
+augroup quickfix_or_location
   autocmd!
-  autocmd QuickFixCmdPost [^l]* cwindow
-  autocmd QuickFixCmdPost l* lwindow
+  " qf is the file type for quickfix and location lists
+  autocmd FileType qf call UpdateListMappings()
 augroup END
 
 " " 入力キーの辞書
@@ -1358,6 +1320,36 @@ augroup END
 " endfunction
 "
 " inoremap <expr> <C-x>  <SID>hint_i_ctrl_x()
+" Quickfix / Location list
+function! ToggleQuickfixLocation() abort
+  cclose|lclose
+
+  if !exists('g:toggle_quickfix_or_location')
+    let g:toggle_quickfix_or_location = 1
+  else
+    let g:toggle_quickfix_or_location = !g:toggle_quickfix_or_location
+  endif
+
+  " Set key mappings based on the list type
+  if g:toggle_quickfix_or_location
+    if empty(getqflist())
+      return
+    endif
+    call SetQuickfixMappings()
+    copen
+  else
+    if empty(getloclist(win_getid()))
+      return
+    endif
+    call SetLocationMappings()
+    lopen
+  endif
+endfunction
+
+" Key mapping to toggle between Quickfix and Location List
+nnoremap qq :call ToggleQuickfixLocation()<CR>
+
+nnoremap <C-q> :cclose\|lclose\|TestClose<CR>
 
 let g:brightest#highlight = {
     \   'group' : 'BrightestUnderline'
