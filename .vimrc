@@ -457,12 +457,15 @@ Plug 'iamcco/markdown-preview.nvim', { 'do': { -> mkdp#util#install() }, 'for': 
 
 Plug 'mattn/vim-maketable' ", { 'for': 'markdown' }
 
+
 "" Rails
 " Rails用の規約ベースのコードジャンプ, b:rails_rootを定義
-Plug 'tpope/vim-rails' ", { 'for': ['ruby'] }
+Plug 'tpope/vim-rails', { 'for': ['ruby'] }
 
 " Ruby用の規約ベースのコードジャンプ
-Plug 'tpope/vim-rake', { 'for': ['ruby'] } | Plug 'tpope/vim-projectionist', { 'for': ['ruby'] }
+Plug 'tpope/vim-rake', { 'for': ['ruby'] }
+Plug 'tpope/vim-projectionist', { 'for': ['ruby'] }
+
 
 " slimのsyntax highlight
 Plug 'slim-template/vim-slim', { 'for': ['slim'] }
@@ -798,6 +801,20 @@ let g:rails_projections = {
       \      "spec/services/{}_spec.rb",
       \    ],
       \  },
+      \  "app/entities/*.rb": {
+      \    "affinity": "entity",
+      \    "template": [
+      \      "class {camelcase|capitalize|colons}",
+      \      "end"
+      \    ],
+      \    "type": "entities",
+      \    "test": [
+      \      "spec/entities/{}_spec.rb",
+      \    ],
+      \    "alternate": [
+      \      "spec/entities/{}_spec.rb",
+      \    ],
+      \  }
       \}
 
 " Projectionist globals
