@@ -1,6 +1,7 @@
 [user]
   name = iberianpig
   email = yhkyky@gmail.com
+	signingkey = CE7BEAD350229688
 [alias]
   addw = !"git diff -w --no-color | git apply --cached" # http://qiita.com/quattro_4/items/b75de424038d616868db
   co = checkout
@@ -60,6 +61,7 @@
 [commit]
 	template = ~/.gitcommit
 	verbose = true
+	gpgsign = true
 [secrets]
 	providers = git secrets --aws-provider
 	patterns = (A3T[A-Z0-9]|AKIA|AGPA|AIDA|AROA|AIPA|ANPA|ANVA|ASIA)[A-Z0-9]{16}
@@ -79,3 +81,5 @@
 	pushInsteadOf = https://github.com/
 [rerere]
 	enabled = true
+[gpg]
+	program = /usr/bin/gpg
