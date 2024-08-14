@@ -1,7 +1,7 @@
 [user]
   name = iberianpig
   email = yhkyky@gmail.com
-	signingkey = CE7BEAD350229688
+	signingkey = /home/iberianpig/.ssh/id_ed25519.pub
 [alias]
   addw = !"git diff -w --no-color | git apply --cached" # http://qiita.com/quattro_4/items/b75de424038d616868db
   co = checkout
@@ -82,4 +82,4 @@
 [rerere]
 	enabled = true
 [gpg]
-	program = /usr/bin/gpg
+	format = ssh
