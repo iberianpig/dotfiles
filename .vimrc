@@ -116,13 +116,6 @@ set nobackup   " ファイル保存時にバックアップファイルを作ら
 set noswapfile " ファイル編集中にスワップファイルを作らない
 set autoread   " 外部でファイルに変更がされた場合は読みなおす
 
-augroup vimrc-checktime "window移動/一定時間カーソルが停止した場合に強制的に読みなおす
-  autocmd!
-  set updatetime=1000
-  " autocmd WinEnter,CursorHold * if mode() !=# "c" | checktime | endif " command line はmode()でnを返してしまう
-  autocmd WinEnter,CursorHold * if !bufexists("[Command Line]") && !bufexists("[コマンドライン]") | checktime | endif
-augroup END
-
 "検索関連
 set hlsearch   " 検索文字列をハイライトする
 set incsearch  " インクリメンタルサーチを行う
@@ -324,17 +317,12 @@ Plug 'tyru/vim-altercmd'
 Plug 'ujihisa/neco-look'
 
 " カーソル下をハイライト
-Plug 'osyo-manga/vim-brightest'
 Plug 't9md/vim-quickhl'
 
 " 検索
 Plug 'haya14busa/incsearch.vim'
 
-" 括弧補完
-" Plug 'cohama/lexima.vim'
-
 " 補完系
-
 Plug 'prabirshrestha/asyncomplete.vim'
 Plug 'prabirshrestha/asyncomplete-lsp.vim'
 " Plug 'prabirshrestha/async.vim'
@@ -348,19 +336,13 @@ Plug 'prabirshrestha/asyncomplete-neosnippet.vim'
 Plug 'thomasfaingnaert/vim-lsp-snippets'
 Plug 'thomasfaingnaert/vim-lsp-neosnippet'
 
-" Plug 'yami-beta/asyncomplete-omni.vim'
-" Plug 'Shougo/neco-syntax'
-" Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
 Plug 'htlsne/asyncomplete-look'
 
 Plug 'github/copilot.vim'
 
 " deno
 Plug 'vim-denops/denops.vim'
-" Plug 'yuki-yano/fuzzy-motion.vim'
-" Plug 'yuki-yano/denops-open-http.vim'
 
-" Plug 'skanehira/denops-gh.vim'
 
 Plug 'prettier/vim-prettier', {
       \ 'do': 'yarn install',
@@ -1313,13 +1295,6 @@ endfunction
 nnoremap qq :call ToggleQuickfixLocation()<CR>
 
 nnoremap <C-q> :cclose\|lclose\|TestClose<CR>
-
-let g:brightest#highlight = {
-      \   'group' : 'BrightestUnderline'
-      \}
-
-" let g:brightest#pattern = '\k\+'
-let g:brightest#enable_on_CursorHold = 1
 
 map H <Plug>(operator-quickhl-manual-this-motion)
 
