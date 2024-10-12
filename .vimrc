@@ -1536,6 +1536,11 @@ let g:chatgpt_model = 'gpt-4o-mini'
 let g:chatgpt_system_marker = '-----🤖-----'
 let g:chatgpt_user_marker =        '-----✍------'
 function! ChatGPTSendSelectedRange(startline, endline) abort
+  let l:chatgpt_cli_command_paths = '/home/iberianpig/.config/chatgpt-cli/commands/'
+  if $PATH !~ l:chatgpt_cli_command_paths
+    let $PATH .= ':' . l:chatgpt_cli_command_paths
+  endif
+
   let l:command = 'chatgpt -M ' . g:chatgpt_model
   let l:startline = a:startline
 
