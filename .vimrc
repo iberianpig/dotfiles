@@ -574,6 +574,9 @@ syntax on
 " 読み込んだプラグインの設定
 " ...
 
+"" denops
+let g:denops#deno = '/home/iberianpig/.deno/bin/deno'
+
 set background=dark "暗めの背景
 "
 " " colorschme
