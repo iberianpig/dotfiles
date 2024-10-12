@@ -1108,8 +1108,13 @@ function! DockerTransformer(cmd) abort
       let path = substitute(a:cmd, '.*rspec ', '', '')
       let cmd = substitute($SPEC_COMMAND__RUBY, 'rspec', 'rspec ' . path, '')
     endif
+
     if $SPEC_CONTAINER__RUBY !=# ''
-      let cmd = 'docker compose' . compose_option . ' exec ' .  $SPEC_CONTAINER__RUBY . ' ' . cmd .' '
+      if $SPEC_CONTAINER_WORKING_DIR__RUBY !=# ''
+        let working_dir_option = ' -w ' . $SPEC_CONTAINER_WORKING_DIR__RUBY
+      endif
+
+      let cmd = 'docker compose' . compose_option . ' exec ' .  working_dir_option . ' ' . $SPEC_CONTAINER__RUBY . ' ' . cmd .' '
     endif
   endif
   if &filetype == 'go'
@@ -1133,7 +1138,7 @@ function! DockerTransformer(cmd) abort
   return cmd
 endfunction
 
-" let test#ruby#rspec#executable = 'rspec'
+let test#ruby#rspec#executable = 'bundle exec rspec'
 let g:test#custom_transformations = {'docker': function('DockerTransformer')}
 let g:test#transformation = 'docker'
 
