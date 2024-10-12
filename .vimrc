@@ -1584,9 +1584,10 @@ function! ChatGPTSendSelectedRange(startline, endline) abort
   endif
 
   " ファイル名が ~/.config/chatgpt-cli/history/.*/.*\.response\.md の場合はそのファイルを編集
-  if expand('%') =~# l:directory . '/.*\.response\.md$'
-    exec 'edit ' . expand('%')
-    let l:outputfile = expand('%')
+  let l:current_file = expand('%:p')
+  if l:current_file =~# l:directory . '/.*\.response\.md$'
+    exec 'edit ' . l:current_file
+    let l:outputfile = l:current_file
     " 末尾にマーカーを追加
     call append(line('$'), ["", g:chatgpt_system_marker, ""])
   else " それ以外の場合は新規バッファを開く
