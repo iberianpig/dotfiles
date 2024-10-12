@@ -1663,17 +1663,16 @@ function! DiffWithinCodeBlock()
   let l:buffer_number = bufnr(l:buffer_name)
 
   if l:buffer_number != -1
-    execute "buffer" . l:buffer_number
-  else
-    enew
-    setlocal buftype=nofile
-    setlocal bufhidden=hide
-    setlocal noswapfile
-
-    echomsg "Creating a new buffer named " . l:buffer_name
-    execute "file " . l:buffer_name
+    execute 'bdelete ' . l:buffer_number
   endif
 
+  enew
+  setlocal buftype=nofile
+  setlocal bufhidden=hide
+  setlocal noswapfile
+
+  echomsg "Creating a new buffer named " . l:buffer_name
+  execute "file " . l:buffer_name
   call setline(1, l:code_block)
 
   setlocal filetype=diff
