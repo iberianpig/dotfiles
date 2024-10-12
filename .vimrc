@@ -1604,15 +1604,15 @@ function! ChatGPTSendSelectedRange(startline, endline) abort
         \ 'in_bot': a:endline,
         \ 'out_io': 'buffer',
         \ 'out_buf': bufnr(l:outputfile),
+        \ 'err_io' : 'file',
+        \ 'err_name': '/tmp/vim-chatgpt-err.log',
         \ 'exit_cb': function('ChatGPTJobCallback', [l:outputfile]),
         \ })
 endfunction
 
 function! ChatGPTJobCallback(outputfile, job, status) abort
   if a:status != 0
-    call setbufline(bufnr(a:outputfile), 1, 'Error: ChatGPT request failed with status ' . a:status)
-
-    return
+    call setbufline(bufnr(a:outputfile), 1, ['Chat GPT request failed', "", "see /tmp/vim-chatgpt-err.log for details"])
   endif
 
   " 末尾にここからマーカーを追加
