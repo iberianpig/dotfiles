@@ -1166,7 +1166,7 @@ vmap , [explorer]
 " tig-explorer.vim
 nnoremap [explorer]T :TigOpenCurrentFile<CR>
 nnoremap [explorer]t :TigOpenProjectRootDir<CR>
-nnoremap [explorer]g :TigGrep<CR>
+nnoremap [explorer]g :TigGrep<CR>""<LEFT>
 ""選択状態のキーワードで検索"
 vnoremap [explorer]g y:TigGrep<CR>"<C-R>""
 
