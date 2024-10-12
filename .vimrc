@@ -1638,8 +1638,14 @@ function! ChatGPTJobCallback(outputfile, job, status) abort
   echomsg 'Chat GPT response received'
 endfunction
 
+" :Rg で~/.config/chatgpt-cli/history/.*/.*\.response\.md を検索
+command! -bang -nargs=* ChatGPTHistories
+      \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case --glob '*.md' ".shellescape(<q-args>), 1,
+      \ fzf#vim#with_preview({'dir': expand('~/.config/chatgpt-cli/history'), 'options': ['--layout=reverse']}), <bang>0)
+
 vnoremap [explorer]a :ChatGPT<CR>
 noremap [explorer]a :ChatGPT<CR>
+noremap [explorer]h :ChatGPTHistories!<CR>
 
 function! DiffWithinCodeBlock()
   " Get the block surrounded by ``` from the current cursor position
