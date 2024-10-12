@@ -509,6 +509,9 @@ Plug 'aklt/plantuml-syntax', { 'for': ['plantuml'] }
 " Plug 'csscomb/vim-csscomb',       {'for':['scss', 'css']}
 " Plug 'cakebaker/scss-syntax.vim', {'for':['scss']}
 
+" sql
+Plug 'mattn/vim-sqlfmt'
+
 " log
 Plug 'powerman/vim-plugin-AnsiEsc'
 
