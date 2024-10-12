@@ -1571,10 +1571,10 @@ function! ChatGPTSendSelectedRange(startline, endline) abort
       endif
     endtry
 
-    " system message
-    let l:defalut_system_message = "以下を要約してください。レスポンスは日本語で回答すること。"
+    " システムメッセージの設定
+    let l:defalut_system_message = g:chatgpt_system_message
     let l:system_message = l:input ==# '' ? l:defalut_system_message : shellescape(l:input, 1)
-    let l:command = l:command . ' -s ' . l:system_message
+    let l:command = l:command . ' -s ' . '"' . l:system_message . '"'
   endif
 
   let l:timestamp = strftime("%Y%m%d%H%M%S")
