@@ -562,6 +562,7 @@ Plug 'rbtnn/vim-ambiwidth'
 Plug '~/.ghq/github.com/iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.vim'
 Plug '~/.ghq/github.com/iberianpig/ranger-explorer.vim'
 Plug '~/.ghq/github.com/iberianpig/ruby_hl_lvar.vim', { 'for' : ['ruby']   }
+Plug '~/.ghq/github.com/iberianpig/chatgpt.vim'
 
 " Initialize plugin system
 call plug#end()
@@ -813,11 +814,11 @@ let g:projectionist_heuristics = {
       \    "src/*.cr": {"alternate": "spec/{}_spec.cr"},
       \    "spec/*_spec.cr": {"type": "spec", "alternate": "src/{}.cr"},
       \  },
-      \ "Gemfile.lock|Rakefile": {
+      \  "Gemfile.lock|Rakefile": {
       \    "lib/**/*.rb": {"alternate": "spec/{}_spec.rb"},
       \    "spec/**/*_spec.rb": {"type": "spec", "alternate": "lib/{}.rb"},
       \  },
-      \ "autoload/*.vim": {
+      \  "autoload/*.vim": {
       \    "plugin/*.vim": {"type": "plugin"},
       \    "autoload/*.vim": {"type": "autoload"},
       \    "doc/*.txt": {"type": "doc"},
@@ -1527,162 +1528,22 @@ map #  <Plug>(incsearch-nohl-#)
 map g* <Plug>(incsearch-nohl-g*)
 map g# <Plug>(incsearch-nohl-g#)
 
-" call ChatGPT with https://github.com/kojix2/chatgpt-cli
-command! -range=% ChatGPT call ChatGPTSendSelectedRange(<line1>, <line2>)
+" iberianpig/chatgpt.vim
+let g:chatgpt_system_message = 'Please summarize the following. The response should be in "Japanese."'
+
 
 " Configuration Parameters
 let g:chatgpt_model = 'gpt-4o-mini'
 
 let g:chatgpt_system_marker = '-----🤖-----'
-let g:chatgpt_user_marker =        '-----✍------'
-function! ChatGPTSendSelectedRange(startline, endline) abort
-  let l:chatgpt_cli_command_paths = '/home/iberianpig/.config/chatgpt-cli/commands/'
-  if $PATH !~ l:chatgpt_cli_command_paths
-    let $PATH .= ':' . l:chatgpt_cli_command_paths
-  endif
-
-  let l:command = 'chatgpt -M ' . g:chatgpt_model
-  let l:startline = a:startline
-
-  let l:resume_file = expand('%:p') . '.post_data.json'
-
-  if filereadable(l:resume_file)
-    let l:command = l:command . ' -l ' . l:resume_file
-
-    let l:save_pos = getpos('.')
-    call cursor(1, 1)
-    let l:markerline = search('^' . g:chatgpt_user_marker . '$', 'bnw')
-    let l:system_markerline = search('^' . g:chatgpt_system_marker . '$', 'bnw')
-    call setpos('.', l:save_pos)
-
-    if l:markerline == a:endline
-      echomsg 'ChatGPT canceled: Write something to send after ' . g:chatgpt_user_marker
-      return
-    endif
-    let l:startline = l:markerline + 1
-  else
-    try
-      cnoremap <buffer> <silent> <Esc> __CANCELED__<CR>
-      let l:input = input('System Message: ', '', 'customlist,ConfirmCompletion')
-      let l:input = l:input =~# '__CANCELED__$' ? 0 : l:input
-    catch /^Vim:Interrupt$/
-      let l:input = -1
-    finally
-      silent! cnoremap <buffer> <Esc>
-
-      if l:input ==# '0' || l:input ==# '-1'
-        echomsg 'ChatGPT canceled'
-        return
-      endif
-    endtry
-
-    " システムメッセージの設定
-    let l:defalut_system_message = g:chatgpt_system_message
-    let l:system_message = l:input ==# '' ? l:defalut_system_message : shellescape(l:input, 1)
-    let l:command = l:command . ' -s ' . '"' . l:system_message . '"'
-  endif
-
-  let l:timestamp = strftime("%Y%m%d%H%M%S")
-  let l:directory = expand('~/.config/chatgpt-cli/history')
-  if !isdirectory(l:directory)
-    call mkdir(l:directory, "p")
-  endif
-
-  " ファイル名が ~/.config/chatgpt-cli/history/.*/.*\.response\.md の場合はそのファイルを編集
-  let l:current_file = expand('%:p')
-  if l:current_file =~# l:directory . '/.*\.response\.md$'
-    exec 'edit ' . l:current_file
-    let l:outputfile = l:current_file
-    " 末尾にマーカーを追加
-    call append(line('$'), ["", g:chatgpt_system_marker, ""])
-  else " それ以外の場合は新規バッファを開く
-    let l:outputfile = l:directory . '/' . l:timestamp . '.response.md'
-    exec 'vsplit ' . l:outputfile
-    " system message
-    call setline(1, [l:system_message, "", g:chatgpt_system_marker, ""])
-    exec 'wincmd p'
-  endif
-
-  call job_start(l:command, {
-        \ 'in_io': 'buffer',
-        \ 'in_buf': bufnr('%'),
-        \ 'in_top': l:startline,
-        \ 'in_bot': a:endline,
-        \ 'out_io': 'buffer',
-        \ 'out_buf': bufnr(l:outputfile),
-        \ 'err_io' : 'file',
-        \ 'err_name': '/tmp/vim-chatgpt-err.log',
-        \ 'exit_cb': function('ChatGPTJobCallback', [l:outputfile]),
-        \ })
-endfunction
-
-function! ChatGPTJobCallback(outputfile, job, status) abort
-  if a:status != 0
-    call setbufline(bufnr(a:outputfile), 1, ['Chat GPT request failed', "", "see /tmp/vim-chatgpt-err.log for details"])
-  endif
-
-  " 末尾にここからマーカーを追加
-  call appendbufline(bufnr(a:outputfile), '$', ["", g:chatgpt_user_marker, ""])
-
-  " Restore cursor to system marker line
-  if bufnr('%') == bufnr(a:outputfile)
-    call cursor(1, 1)
-  endif
-  let l:system_markerline = search('^' . g:chatgpt_system_marker . '$', 'bnw')
-  if l:system_markerline > 0
-    " カレントバッファにマーカーがある場合はそこに移動
-    if bufnr('%') == bufnr(a:outputfile)
-      call cursor(l:system_markerline, 1)
-    endif
-  endif
-
-  " ~/.config/chatgpt-cli/post_data.json を a:outputfile.json にコピー
-  let l:post_data = expand('~/.config/chatgpt-cli/post_data.json')
-  let l:post_data_json = a:outputfile . '.post_data.json'
-  call system('cp ' . l:post_data . ' ' . l:post_data_json)
-
-  echomsg 'Chat GPT response received'
-endfunction
+let g:chatgpt_user_marker = '-----✍------'
 
 " :Rg で~/.config/chatgpt-cli/history/.*/.*\.response\.md を検索
 command! -bang -nargs=* ChatGPTHistories
-      \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case --glob '*.md' ".shellescape(<q-args>), 1,
-      \ fzf#vim#with_preview({'dir': expand('~/.config/chatgpt-cli/history'), 'options': ['--layout=reverse']}), <bang>0)
+     \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case --glob '*.md' ".shellescape(<q-args>), 1,
+     \ fzf#vim#with_preview({'dir': expand('~/.config/chatgpt-cli/history'), 'options': ['--layout=reverse']}), <bang>0)
 
 vnoremap [explorer]a :ChatGPT<CR>
 noremap [explorer]a :ChatGPT<CR>
 noremap [explorer]h :ChatGPTHistories!<CR>
-
-function! DiffWithinCodeBlock()
-  " Get the block surrounded by ``` from the current cursor position
-  let l:start_line = search('^```', 'bnW')
-  let l:end_line = search('^```', 'nW')
-
-  if l:start_line == 0 || l:end_line == 0
-    echoerr " No code block found. Please check your cursor position."
-    return
-  endif
-
-  let l:code_block = getline(l:start_line + 1, l:end_line - 1)
-
-  let l:buffer_name = 'code_block'
-  let l:buffer_number = bufnr(l:buffer_name)
-
-  if l:buffer_number != -1
-    execute 'bdelete ' . l:buffer_number
-  endif
-
-  enew
-  setlocal buftype=nofile
-  setlocal bufhidden=hide
-  setlocal noswapfile
-
-  echomsg "Creating a new buffer named " . l:buffer_name
-  execute "file " . l:buffer_name
-  call setline(1, l:code_block)
-
-  setlocal filetype=diff
-  windo diffthis
-endfunction
-
 nnoremap <leader>d :call DiffWithinCodeBlock()<CR>
