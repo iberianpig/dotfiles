@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=xremap
 Comment=run xremap
-Exec=xremap /home/iberianpig/.config/xremap/emacs_like.yml
+Exec=xremap /home/iberianpig/.config/xremap/emacs_like.yml --watch=device --device=HHKB --device="AT Translated Set 2 keyboard"
 Icon=input-keyboard
 X-GNOME-Autostart-enabled=true
 Type=Application
