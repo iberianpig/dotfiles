@@ -1,12 +1,36 @@
 ---
 modmap:
-  - name: default
+  - name: capslock to ctrl
     remap:
       CapsLock: LEFTCTRL
   - name: us_layout_for_jp_keyboard
     remap:
-      YEN: BACKSLASH # for jp
+      YEN: BACKSLASH # for jp keyboard
+
+  - name: HHKB
+    device:
+      only: [HHKB]
+    remap:
+      Alt_R: Super_L
+      Super_L: Alt_R
+      Super_R: Alt_R
+      Alt_L: Super_L
+
+  - name: Japanese keyboard
+    device:
+      only: [AT Translated Set 2 keyboard]
+    remap:
+      Muhenkan: ALT_R
+      Henkan: SHIFT_L
+
 keymap:
+  - name: HHKB
+    device:
+      only: [HHKB]
+    remap:
+      Ctrl-LEFTBRACE: Esc
+      Esc: Grave
+
   - name: Browser
     remap:
       Alt-space: Ctrl-f
@@ -17,12 +41,16 @@ keymap:
       only:
         - Google-chrome
         - Chromium
+        - Chromium-browser
         - Navigator
         - Microsoft-edge-dev
+        - Brave-browser
+        - firefox
 
   - name: vim+emacs
     remap:
-      Ctrl-q: Alt-q # Disable
+      Ctrl-q: Ctrl-w
+      # Ctrl-q: Alt-q # Disable
       Ctrl-o: Alt-Left
       Ctrl-i: Alt-Right
       Ctrl-b: Left
@@ -67,13 +95,20 @@ keymap:
 
     application:
       only:
+        - "" # pop-os/launcher
         - Google-chrome
         - Chromium
+        - Chromium-browser
         - Navigator
         - Microsoft-edge-dev
+        - Brave-browser
+        - firefox
         - Slack
+        - Org.gnome.Nautilus
+        - xdg-desktop-portal-gnome
         - keepassxc
         - libreoffice
+        - libreoffice-calc
         - synapse
         - shift
         - mysql-workbench-bin
@@ -89,6 +124,8 @@ keymap:
         - evince
         - discord
         - calibre-ebook-viewer
+        - authenticator
+        - Code
 
   # - name: gnome-shell
   #   remap:
