@@ -6,14 +6,14 @@
 [ -z "$PS1" ] && return
 
 PS1='$ '
-export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+export HISTCONTROL=ignoreboth:erasedups  # no duplicate entries
 shopt -s histappend                      # append to history, don't overwrite it
 # # Save and reload the history after each command finishes
 # export PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 export HISTFILE=$HOME/.my_bash_history
 
-export HISTSIZE=10000                   # big big history
+export HISTSIZE=40000                   # big big history
 export HISTFILESIZE=100000               # big big history
 # HISTCONTROL=ignoreboth:erasedups
 
@@ -127,7 +127,12 @@ if which fzf > /dev/null; then
     if [[ -n "$repository" ]]; then
       local dirname
       dirname=$(basename "${repository}")
-      cd "${repository}" && tmux rename-window "${dirname}" || return
+      cd "${repository}"
+
+      # If inside a tmux session, rename the window
+      if [[ -n "$TMUX" ]]; then
+        tmux rename-window "${dirname}"
+      fi
     fi
   }
 
@@ -178,7 +183,7 @@ if which fzf > /dev/null; then
     fi
     local selected
     selected=$(ps -eo user,pid,ppid,c,tty,time,cmd | fzf --header-lines=1)
-        
+
     if [ -n "${selected}" ]; then
       # header
       echo "USER         PID    PPID  C TT           TIME CMD"
@@ -209,7 +214,7 @@ if which fzf > /dev/null; then
     local selected
     selected="$(docker ps | fzf)"
     if [ -n "${selected}" ]; then
-      echo "${selected}" | cut -d' ' -f1 | xargs docker stop 
+      echo "${selected}" | cut -d' ' -f1 | xargs docker stop
     fi
   }
   alias ds=fzf-docker-stop
@@ -304,7 +309,7 @@ case "${finger_count}" in
     else
       echo "Press Alt+F2, type 'r' and press Enter to restart gnome-shell"
     fi
-  else 
+  else
     echo "swipeTracker.js not found in libgnome-shell.so"
   fi
 
@@ -319,3 +324,12 @@ export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 . "$HOME/.cargo/env"
+
+alias awsp="source _awsp"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+# alias claude="/home/iberianpig/.claude/local/claude"
+export PATH="$HOME/.claude/local/node_modules/.bin/:$PATH"
