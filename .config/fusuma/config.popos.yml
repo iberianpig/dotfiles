@@ -1,21 +1,36 @@
 plugin:
   inputs:
+    remap_touchpad_input:
+      touchpad_name_patterns: ["touchpad", "Touchpad", "TOUCHPAD"]
+    pointing_stick_input:
+      device_name_pattern: HHKB-Studio
     libinput_command_input:
-      show-keycodes: true
-      enable-tap: true
-      enable-dwt: false
+      # show-keycodes: true
+      # enable-tap: true
+      # enable-dwt: false
       # libinput-list-devices: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.24.0/libinput-list-devices
       # libinput-debug-events: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.24.0/libinput-debug-events
+      # libinput-list-devices: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.27.0/libinput-list-devices
+      # libinput-debug-events: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.27.0/libinput-debug-events
+      libinput-command: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.27.1/libinput
+      # libinput-command: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.28.0/libinput
+      # libinput-command: /home/iberianpig/.ghq/gitlab.freedesktop.org/libinput/libinput/builddir/1.28.1/libinput
     remap_keyboard_input:
       keyboard_name_patterns: xremap
-  # executors:
+      emergency_ungrab_keys: RIGHTSHIFT+LEFTSHIFT
+  executors:
   #   wmctrl_executor:
   #     wrap-navigation: false
-  #   sendkey_executor:
-  #     device_name: fusuma_virtual_keyboard
+    sendkey_executor:
+      # device_name: fusuma_virtual_keyboard
+      # device_name: 'AT Translated Set 2 keyboard'
   # buffers:
   #   keypress_buffer:
   #     source: remap_keyboard_input
+  filters:
+    libinput_device_filter:
+      keep_device_names:
+        # - "04881080:00 0488:1052 Touchpad"
 
 threshold:
   swipe: 0.5
@@ -58,39 +73,43 @@ swipe: # 3finger drag
             interval: 1
             # threshold: 1
             sendkey: VOLUMEDOWN
+            clearmodifiers: true
     up:
       update:
         keypress:
           LEFTALT:
             interval: 1
-            # sendkey: BRIGHTNESSUP # 動かない LEFTALT+BRIGHTNESSUP が弾かれるのでLEFTALTキャンセルする必要あり
-            command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepUp
+            sendkey: BRIGHTNESSUP # LEFTALT+BRIGHTNESSUP が弾かれるのでLEFTALTキャンセルする必要あり → clearmodifiers: true で解決?
+            clearmodifiers: true
+            # command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepUp
 
     down:
       update:
         keypress:
           LEFTALT:
             interval: 1
-            # sendkey: BRIGHTNESSUP
-            command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepDown
+            sendkey: BRIGHTNESSDOWN
+            clearmodifiers: true
+            # command: gdbus call --session --dest org.gnome.SettingsDaemon.Power --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.StepDown
 
   # need to disable cosmic gestures to avoid confilict 
   4:
     up:
-      sendkey: 'LEFTMETA+LEFTCTRL+DOWN'
-      # workspace: next
+      # sendkey: 'LEFTMETA+LEFTCTRL+DOWN'
+      workspace: next
       # interval: 0.4
       keypress:
         LEFTSHIFT:
           # command: xdotool key --clearmodifiers Super+Down
           sendkey: "LEFTMETA+LEFTSHIFT+DOWN"
           clearmodifiers: true
-        LEFTMETA: # move window to external display
-          sendkey: "LEFTMETA+LEFTSHIFT+LEFT"
+        LEFTMETA: # move window to upper external display
+          sendkey: "LEFTMETA+LEFTCTRL+LEFTSHIFT+UP"
+          # sendkey: "LEFTMETA+LEFTSHIFT+RIGHT"
           clearmodifiers: true
     down:
-      sendkey: 'LEFTMETA+LEFTCTRL+UP'
-      # workspace: prev
+      # sendkey: 'LEFTMETA+LEFTCTRL+UP'
+      workspace: prev
       # interval: 0.4
       keypress:
         LEFTSHIFT:
@@ -98,7 +117,7 @@ swipe: # 3finger drag
           sendkey: "LEFTMETA+LEFTSHIFT+UP"
           clearmodifiers: true
         LEFTMETA: # move window to built-in display
-          sendkey: "LEFTMETA+LEFTSHIFT+RIGHT"
+          sendkey: "LEFTMETA+LEFTCTRL+LEFTSHIFT+DOWN"
           clearmodifiers: true
     left:
       sendkey: "LEFTMETA+D"
@@ -126,32 +145,32 @@ swipe: # 3finger drag
     #     interval: 5
     # end:
     #   command: xdotool keyup Alt
-# pinch:
-#   2:
-#     begin: { command: xdotool keydown ctrl }
-#     end: { command: xdotool keyup ctrl }
-#     in:
-#       # threshold: 0.1
-#       # interval: 0.5
-#       update:
-#         # sendkey: 'LEFTCTRL+MINUS'
-#         # command: echo scroll 1 | dotoolc # Zoom in
-#         command: xdotool click 5 # Zoom out
-#         # interval: 0.1
-#         keypress:
-#           LEFTALT:
-#             sendkey: VOLUMEUP
-#     out:
-#       # threshold: 0.1
-#       # interval: 0.5
-#       update:
-#         # sendkey: 'LEFTCTRL+EQUAL'
-#         # command: echo scroll -1 | dotoolc # Zoom out
-#         command: xdotool click 4 # Zoom in
-#         # interval: 0.1
-#         keypress:
-#           LEFTALT:
-#             sendkey: VOLUMEDOWN
+pinch:
+  2:
+    begin: { command: xdotool keydown ctrl }
+    end: { command: xdotool keyup ctrl }
+    in:
+      # threshold: 0.1
+      # interval: 0.5
+      update:
+        # sendkey: 'LEFTCTRL+MINUS'
+        # command: echo scroll 1 | dotoolc # Zoom in
+        command: xdotool click 5 # Zoom out
+        # interval: 0.1
+        keypress:
+          LEFTALT:
+            sendkey: VOLUMEUP
+    out:
+      # threshold: 0.1
+      # interval: 0.5
+      update:
+        # sendkey: 'LEFTCTRL+EQUAL'
+        # command: echo scroll -1 | dotoolc # Zoom out
+        command: xdotool click 4 # Zoom in
+        # interval: 0.1
+        keypress:
+          LEFTALT:
+            sendkey: VOLUMEDOWN
 
 rotate:
   3:
@@ -248,11 +267,14 @@ remap:
   LEFTMETA: A
 
 ---
-# FIXME: 複数のcontextに対応したい
+# 複数のcontextに対応している
 context:
   thumbsense: true
   application: Alacritty
 
+remap:
+  # FIXME: H, C は sendkeyは効くもののの、H,Cが入力されることがある
+  # 逆にL は 正しく変換され、Lが入力されることがない
   H: { sendkey: LEFTALT+LEFT } # move to left tab
   L: { sendkey: LEFTALT+RIGHT } # move to right tab
   C: { sendkey: LEFTCTRL+SHIFT+C } # copy to clipboard
@@ -262,24 +284,39 @@ context:
   thumbsense: true
 
 remap:
-  E: BTN_MIDDLE
   F: BTN_LEFT
+  # E: BTN_MIDDLE
+  E: { sendkey: LEFTCTRL+BTN_LEFT, clearmodifiers: true }  # open link in new tab
+  A: { sendkey: LEFTCTRL+A }
   D: BTN_RIGHT
-  SPACE: BTN_LEFT
-  O:  BTN_SIDE # back
-  I:  BTN_EXTRA # forward
-  U:  BTN_TASK # close tab
 
-  T: F9 # launch Fly-Pie
-  TAB: F14 # launch Fly-Pie
+  # J: BTN_LEFT
+  # I: BTN_MIDDLE # MIDDLEペーストが誤爆するとツラい
+  # K: BTN_RIGHT
+  # L: { sendkey: HOMEPAGE,RIGHT }
+ 
+
+  # Translate in Google Chrome
+  # T: { sendkey: [ESC, LEFTSHIFT+F10, T, ENTER, ESC] }
+  T: { sendkey: [BTN_RIGHT, T, ENTER, ESC] }
+
+  # open rack-mini-profiler
+  P: { sendkey: LEFTALT+P }
+
+  # TAB: { sendkey: LEFTCTRL+F14 } # launch Fly-Pie
 
 # TODO sendkeyじゃなくてremapで対応したい
-  J: PAGEDOWN
-  K: PAGEUP
-  H: { sendkey: LEFTCTRL+LEFTSHIFT+TAB } # sendkey使わずにはremapで良さそうだけど
-  L: { sendkey: LEFTCTRL+TAB }
+  # J: PAGEDOWN
+  # K: PAGEUP
+  # H: { sendkey: LEFTCTRL+LEFTSHIFT+TAB } # sendkey使わずにはremapで良さそうだけど
+  # L: { sendkey: LEFTCTRL+TAB }
 
-  S: { ABS_Y: REL_Y, ABS_X: REL_X } # scroll
+  # S: { ABS_Y: REL_Y, ABS_X: REL_X } # scroll
+  # S:
+  #   touchpad_ABS_Y: REL_Y
+  #   touchpad_ABS_X: REL_X
+  S:
+    enable_scroll
 
 swipe: # ネイティブジェスチャがある環境でドラッグ中にワークスペースを移動させる設定
   4:
@@ -287,3 +324,10 @@ swipe: # ネイティブジェスチャがある環境でドラッグ中にワ�
       sendkey: "LEFTALT+LEFTCTRL+RIGHT"
     right:
       sendkey: "LEFTALT+LEFTCTRL+LEFT"
+
+---
+context:
+  application: Code
+
+remap:
+  H: BACKSPACE
