@@ -1,20 +1,22 @@
 #  Write git commit message written for following code diff
 #  - Message language must be English
 #  - Commit message must be a maximum of 72 characters.
-#  - Content must include `Changes to be committed` section
+#  - Content must be written with markdown format.
 #  - Format must be git commit message
 # 
 # ```example
 # feat: commit message
 #
-#
-# Body of commit message
+# - Body of commit message
+# - Body of commit message
 #
 # Closes #123, #456
 #
 # BREAKING CHANGE: description of breaking change
 # ```
 
+# Choose one of the following types:
+# --
 # feat: feature
 # fix: bug fix
 # style: formatting, missing semi colons, …

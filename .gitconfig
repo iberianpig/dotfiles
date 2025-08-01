@@ -20,7 +20,7 @@
   sl = stash list
   sp = stash pop
   ss = stash save
-  delete-merged-branches = !git branch --merged | grep -v \\* | xargs -I % git branch -d %
+  delete-merged-branches = !git branch --merged | grep -v \\* | grep -v \\+ | xargs -I % git branch -d %
   remove-deleted-files = !git ls-files --deleted | xargs -I % git rm %
   pushf = push --force-with-lease --force-if-includes
 [core]
@@ -53,10 +53,10 @@
 [diff]
 	tool = vimdiff
 	submodule = log
+	context = 10
 [fetch]
 	prune = true
 [ghq]
-	root = ~/go/src
 	root = ~/.ghq
 [commit]
 	template = ~/.gitcommit
@@ -83,3 +83,5 @@
 	enabled = true
 [gpg]
 	format = ssh
+[gpg "ssh"]
+	allowedSignersFile = /home/iberianpig/.ssh/allowed_signers

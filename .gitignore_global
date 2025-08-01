@@ -35,3 +35,12 @@ cscope.po.out
 # ruby
 .pryrc
 Gemfile.local*
+
+# iberianpig/chatgpt.vim
+.chatgpt_history/
+
+# aider
+.aider*
+
+# claude
+.claude/settings.local.json
