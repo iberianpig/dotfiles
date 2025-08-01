@@ -24,7 +24,7 @@
         python3 $dest
 
     - name: add Docker CE apt gpg
-      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
       become: true
       args:
         warn: no
@@ -66,25 +66,22 @@
         - guake
         - git
         - git-secrets
-        - tig
+        # - tig # cpu 100% bug on pop os, so build from source
         - ranger
         - fcitx5
         - fcitx5-mozc
         - byobu
         - jq
         - direnv
-        - tlp
+        # - tlp # tlp show error on pop os
         - powertop
         - numix-icon-theme-circle
         - xclip
         - xsel
-        # - vim-gnome
-        # - vim-gtk
         - synaptic
         - gdebi
         - xbindkeys
         - libinput-tools
-        # - elementary-tweaks
         - make
         - automake
         - autoconf
@@ -114,7 +111,6 @@
       with_items:
         - bitwarden
         - bw
-        - authy
         # - slack --classic # it doesn't works with fcitx
         # - spotify # use too much CPU resouces
         # - libreoffice # cant open local file
@@ -274,7 +270,6 @@
     #
     #
     # install ruby
-    #
     #
     # install rust
     #   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
