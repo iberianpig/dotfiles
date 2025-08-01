@@ -36,61 +36,9 @@ set t_Co=256 "ターミナルで256色利用
 " FIXME: !を含めると↓ &ft == 'vim' のときにインデントが崩れる
 " set iskeyword+=?,!,-,@-@ "?,!,@hogeなどをキーワードとする 
 set iskeyword+=?,-,@-@ "?,@hogeなどをキーワードとする 
-
-" " Don't screw up folds when inserting text that might affect them, until
-" " leaving insert mode. Foldmethod is local to the window. Protect against
-" " screwing up folding when switching between windows.
-" augroup switch_folding_method
-"   autocmd!
-"   autocmd InsertEnter *
-"     \ if !exists('w:last_fdm') |
-"     \   let w:last_fdm=&foldmethod |
-"     \   setlocal foldmethod=manual |
-"     \ endif
-"   autocmd InsertLeave,WinLeave *
-"     \ if exists('w:last_fdm') |
-"     \   let &l:foldmethod=w:last_fdm |
-"     \   unlet w:last_fdm |
-"     \ endif
-" augroup END
 set nofoldenable    " disable folding
 
-" augroup vimrc-highlight
-" autocmd!
-"   autocmd Syntax off if 10000 > line('$') | syntax sync minlines=1000 | endif
-" augroup END
-
-" Charset, Line ending -----------------
-
 set fileformats=unix,dos,mac  " LF, CRLF, CR
-" set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
-
-" function! s:detect_terminal()
-"   if &buftype ==# 'terminal' && &filetype ==# ''
-"     set filetype=terminal
-"   endif
-" endfunction
-"
-" function! s:set_terminal_option()
-"    " ここに :terminal のバッファ固有の設定を記述する
-"    set ambiwidth=single  " ズレが発生するので元に戻す
-" endfunction
-"
-" function! s:unset_terminal_option()
-"    " ここに :terminalから戻った時に設定を戻す
-"    set ambiwidth=double  " UTF-8の□や○でカーソル位置がずれないようにする
-" endfunction
-"
-"
-" augroup toggle_terminal_option
-"     autocmd!
-"    " BufNew の時点では 'buftype' が設定されていないので timer イベントでごまかすなど…
-"     autocmd BufNew * call timer_start(0, { -> s:detect_terminal() })
-"     autocmd BufWinEnter,FileType * call s:unset_terminal_option()
-"     autocmd BufWinEnter,FileType terminal call s:set_terminal_option()
-" augroup END
-
-" set nospell
 
 " カーソル移動系
 set backspace=indent,eol,start " Backspaceキーの影響範囲に制限を設けない
@@ -98,8 +46,8 @@ set whichwrap=b,s,h,l,<,>,[,]  " 行頭行末の左右移動で行をまたぐ
 set scrolloff=8                " 上下8行の視界を確保
 set sidescrolloff=16           " 左右スクロール時の視界を確保
 set sidescroll=1               " 左右スクロールは一文字づつ行う
-set lazyredraw                 " 描画を遅延させる
-set ttyfast                    " カーソル移動高速化
+" set lazyredraw                 " 描画を遅延させる
+" set ttyfast                    " カーソル移動高速化
 
 augroup restore_cursor_position
   autocmd!
@@ -204,6 +152,9 @@ set splitright
 " 日本語ヘルプを利用する
 set helplang=ja,en
 
+" diffの設定
+set diffopt=internal,filler,algorithm:histogram,indent-heuristic
+
 ".vimrcの編集用
 nnoremap <Space>. :<C-u>tab drop $HOME/dotfiles/.vimrc<CR>
 nnoremap R :<C-u>source $HOME/.vimrc<CR>
@@ -232,11 +183,8 @@ imap <4-MiddleMouse> <Nop>
 for n in range(1, 9)
   execute 'nnoremap <silent> g'.n  ':<C-u>tabnext'.n.'<CR>'
 endfor
-" tc 新しいタブを右に作る
+
 nnoremap <silent> gc :tabnew<CR>
-" tn 新しいタブを一番右に作る
-" nnoremap <silent> gn :tablast <bar> tabnew<CR>
-" " tx タブを閉じる
 nnoremap <silent> gq :tabclose<CR>
 nnoremap <silent> gx :tabclose<CR>
 nnoremap <silent> gp :tabprevious<CR>
@@ -308,7 +256,6 @@ Plug 'AndrewRadev/switch.vim', {'on': ['Switch', 'SwitchReverse']}
 Plug 'kana/vim-submode'
 Plug 'tyru/caw.vim'
 
-Plug 'osyo-manga/vim-over',  { 'on': ['OverCommandLineNoremap', 'OverCommandLineMap', 'OverCommandLine', 'OverCommandLineUnmap']}
 
 " 辞書系
 Plug 'thinca/vim-ref', { 'on': ['Ref', 'RefHistory'] }
@@ -432,7 +379,7 @@ Plug 'rhysd/vim-grammarous'
 
 ""Markdown
 " syntax
-Plug 'rcmdnk/vim-markdown',  { 'for': ['markdown'] } | Plug 'godlygeek/tabular' | Plug 'joker1007/vim-markdown-quote-syntax'
+" Plug 'rcmdnk/vim-markdown',  { 'for': ['markdown'] } | Plug 'godlygeek/tabular' | Plug 'joker1007/vim-markdown-quote-syntax'
 " 日本語の句読点をTextObjectの区切りと扱う
 Plug 'deton/jasentence.vim', { 'for': ['markdown'] }
 " マークダウンをブラウザ上でHTMLレンダリング
@@ -459,6 +406,8 @@ Plug 'vim-ruby/vim-ruby', { 'for': ['ruby'] }
 
 " heredocのハイライト
 Plug 'joker1007/vim-ruby-heredoc-syntax', { 'for': ['ruby'] }
+
+Plug 'jlcrochet/vim-rbs', { 'for': ['ruby'] }
 
 "" Golang
 Plug 'benmills/vimux' | Plug 'sebdah/vim-delve', { 'for': ['go'] }
@@ -563,6 +512,8 @@ Plug '~/.ghq/github.com/iberianpig/tig-explorer.vim' | Plug 'rbgrouleff/bclose.v
 Plug '~/.ghq/github.com/iberianpig/ranger-explorer.vim'
 Plug '~/.ghq/github.com/iberianpig/ruby_hl_lvar.vim', { 'for' : ['ruby']   }
 Plug '~/.ghq/github.com/iberianpig/chatgpt.vim'
+Plug '~/.ghq/github.com/iberianpig/vim-over',  { 'on': ['OverCommandLineNoremap', 'OverCommandLineMap', 'OverCommandLine', 'OverCommandLineUnmap'] }
+Plug '~/.ghq/github.com/iberianpig/claude.vim'
 
 " Initialize plugin system
 call plug#end()
@@ -761,10 +712,12 @@ let g:rails_projections = {
       \    ],
       \    "type": "controller",
       \    "test": [
+      \      "test/controllers/{}_controller_test.rb",
       \      "spec/requests/{}_spec.rb",
       \      "spec/controllers/{}_controller_spec.rb",
       \    ],
       \    "alternate": [
+      \      "test/controllers/{}_controller_test.rb",
       \      "spec/requests/{}_spec.rb",
       \      "spec/controllers/{}_controller_spec.rb",
       \    ],
@@ -841,8 +794,7 @@ call submode#map('winsize',        'n', '', 'H', '<C-w><')
 call submode#map('winsize',        'n', '', 'J', '<C-w>-')
 call submode#map('winsize',        'n', '', 'K', '<C-w>+')
 
-"" over.vim
-" over.vimの起動
+" vim-overの起動
 nnoremap <silent> <C-s> :OverCommandLine<CR>%s;<C-r><C-w>;;<Left><C-r><C-w>
 vnoremap <silent> <C-s> y:OverCommandLine<CR>%s;<C-r>";;<Left><C-r>"
 vnoremap <silent> :s :OverCommandLine<CR>s;;<Left>
@@ -897,7 +849,7 @@ nnoremap <silent> [fzf]b :Buffers<cr>
 nnoremap <silent> [fzf]h :<C-u>Helptags<CR>
 
 " ghqで管理しているリポジトリを開く
-nnoremap <silent> [fzf]r :call fzf#run(fzf#wrap({'source': 'ghq list --full-path', 'sink': 'tabnew' }))<CR>
+nnoremap <silent> [fzf]r :call fzf#run(fzf#wrap({'source': 'ghq list --full-path', 'sink': 'tabnew' }, 1))<CR>
 
 " コマンドを検索
 nnoremap <silent> [fzf]: :<C-u>Commands<CR>
@@ -910,10 +862,11 @@ nnoremap <silent> [fzf] gF
 nnoremap <silent> [fzf]/ :Lines<CR>
 
 " markdownの設定
-" see /usr/share/vim/vim80/syntax/*.vim
+" see /usr/local/share/vim/vim91/ftplugin/markdown.vim
 let g:markdown_fenced_languages = ['ruby', 'json', 'vim', 'sh', 'javascript']
 let g:vim_markdown_folding_disabled = 1
 let g:vim_markdown_conceal = 0
+let g:markdown_recommended_style = 0
 
 " markdown-preview
 let g:mkdp_filetypes = ['markdown', 'plantuml']
@@ -934,17 +887,6 @@ function! s:loadLeaderRMapping()
 endfunction
 
 " quickrun
-" let ruby_bundle_hook = {'kind': 'hook', 'name': 'ruby_bundle'}
-" function ruby_bundle_hook.on_normalized(session, context) abort
-"   if getcwd() !=# $HOME && isdirectory('.bundle')
-"     let a:session.config.exec =
-"          \   map(copy(a:session.config.exec), 's:bundle_exec(v:val)')
-"   endif
-" endfunction
-" function s:bundle_exec(cmd) abort
-"   return substitute(a:cmd, '\ze%c', 'bundle exec ', '')
-" endfunction
-" call quickrun#module#register(ruby_bundle_hook, 1)
 
 augroup quickrun
   autocmd!
@@ -970,8 +912,16 @@ let g:quickrun_config.html = {
       \ "command" : "cat",
       \ "outputter" : "browser",
       \}
-" テキストブラウザのインストールが必要
-" sudo apt-get install lynx
+" 
+" let g:quickrun_config['ruby.bundle'] = { 'command': 'ruby', 'cmdopt': 'bundle exec', 'exec': '%o %c %s:.' }
+" 
+" function! BundleExecQuickrun()
+"   if filereadable("Gemfile")
+"     let b:quickrun_config = {'type' : 'ruby.bundle'}
+"   endif
+" endfunction
+" 
+" autocmd BufReadPost *.rb call BundleExecQuickrun()
 
 " 辞書定義
 let g:ref_source_webdict_sites = {
@@ -1185,17 +1135,11 @@ nnoremap [explorer]s :Tig status<CR>
 nnoremap [explorer]y :Tig stash<CR>
 " nnoremap [explorer]r :Tig refs<CR>
 
-" switch diffthis/ignore all whitespace/diffoff
+" apply diffthis to all windows
 function! s:diffthis_reapply() abort
   if &diff
-    if &diffopt =~# 'iwhiteall'
-      echomsg 'diffoff!'
-      windo setlocal diffopt-=iwhiteall
-      diffoff!
-    else
-      echomsg 'iwhiteall'
-      windo setlocal diffopt+=iwhiteall
-    endif
+    echomsg 'diffoff!'
+    diffoff!
   else
     echomsg 'diffthis'
     windo diffthis
@@ -1203,6 +1147,24 @@ function! s:diffthis_reapply() abort
 endfunction
 
 noremap <silent> [explorer]d :call <SID>diffthis_reapply()<CR>
+
+" switch diffopt
+function! s:diffopt_switch() abort
+  " diff モード中のみ動作
+  if &diff
+    if &diffopt =~# 'iwhiteall'
+      echomsg 'diffopt: remove iwhiteall'
+      windo setlocal diffopt-=iwhiteall
+    else
+      echomsg 'diffopt: add iwhiteall'
+      windo setlocal diffopt+=iwhiteall
+    endif
+  else
+    echomsg 'diffopt: not in diff mode'
+  endif
+endfunction
+
+noremap <silent> [explorer]w :call <SID>diffopt_switch()<CR>
 
 " let g:tig_explorer_orig_tigrc='~/.tigrc'
 let g:tig_explorer_keymap_edit_e  = 'e'
@@ -1388,12 +1350,15 @@ function! LspRestart(force) abort
     return
   endif
 
+  " 100ms後にLSPとDirenvの停止を行うタイマーを設定
   let s:timer = timer_start(100, {t ->
         \ [
         \ execute('DirenvExport', ''),
         \ execute('LspStopServer', ''),
         \]
         \})
+
+  " 1000ms後にLSPを再起動しメッセージを表示するタイマーを設定
   let s:timer2 = timer_start(1000, {t ->
         \ [
         \ execute('let b:lsp_restart_available = -1', ''),
@@ -1421,8 +1386,9 @@ let g:lsp_settings = {
       \ }
 
 " Configure efm-langserver in ~/.config/efm-langserver/config.yaml
-let g:lsp_settings_filetype_ruby = ['solargraph']
+" let g:lsp_settings_filetype_ruby = ['solargraph']
 " let g:lsp_settings_filetype_ruby = ['ruby-lsp']
+" let g:lsp_settings_filetype_ruby = ['typeprof']
 
 let g:lsp_settings_filetype_typescript = ['typescript-language-server', 'eslint-language-server', 'deno']
 let g:lsp_settings_filetype_javascript = ['typescript-language-server']
@@ -1500,7 +1466,7 @@ let g:copilot_filetypes = {
       \ 'yaml': v:true
       \ }
 " let g:copilot_no_tab_map = v:true
-" imap <silent><script><expr> <C-j> copilot#Accept("\<CR>")
+imap <silent><script><expr> <C-j> copilot#Accept("\<CR>")
 
 inoremap <expr> <C-n>   pumvisible() ? "\<C-n>" : "\<Plug>(copilot-next)"
 inoremap <expr> <C-p>   pumvisible() ? "\<C-p>" : "\<Plug>(copilot-previous)"
@@ -1511,8 +1477,6 @@ let g:rooter_resolve_links = 1
 
 " disable auto format. but :GoImportRun will work.
 " let g:goimports = 0
-
-nnoremap ff :<C-u>FuzzyMotion<CR>
 " let g:go_fmt_command = "goimports"
 
 "" incsearch.vim
@@ -1529,11 +1493,37 @@ map g* <Plug>(incsearch-nohl-g*)
 map g# <Plug>(incsearch-nohl-g#)
 
 " iberianpig/chatgpt.vim
-let g:chatgpt_system_message = 'Please summarize the following. The response should be in "Japanese."'
+let g:chatgpt_system_message = 'The response should be in "Japanese", and use "Markdown" format without Triple backquote in Top level. Please read following contents.'
 
+" ChatGPT agent types configuration
+let g:chatgpt_agents = {
+      \ 'coder': {
+      \   'message': 'You are a helpful coding assistant. Provide clear, concise, and well-commented code solutions. Use Markdown format and include ``` for code blocks. Format without Triple backquote in Top level.',
+      \   'model': 'gpt-4o'
+      \ },
+      \ 'reviewer': {
+      \   'message': 'You are a code reviewer. Analyze the code for potential issues, best practices, and provide constructive feedback. Responses should be written in Markdown format, utilize ``` for code snippets, and use Japanese for the feedback. Format without Triple backquote in Top level.',
+      \   'model': 'gpt-4o'
+      \ },
+      \ 'committer': {
+      \   'message': 'You are a git commit message writer. Create clear, concise commit messages following conventional commit standards. Use Markdown formatting where appropriate. Format without Triple backquote in Top level.',
+      \   'model': 'gpt-4o-mini'
+      \ },
+      \ 'summarizer': {
+      \   'message': 'Please summarize the following content. Ensure your response is formatted in Markdown and includes ``` for clarity, but use Japanese for the summary. Format without Triple backquote in Top level.',
+      \   'model': 'gpt-4o-mini'
+      \ },
+      \ 'translator': {
+      \   'message': 'Translate the following text to Japanese.',
+      \   'model': 'gpt-4o-mini'
+      \ }
+      \ }
 
 " Configuration Parameters
 let g:chatgpt_model = 'gpt-4o-mini'
+" let g:chatgpt_model = 'gpt-4o'
+" let g:chatgpt_model = 'o4-mini'
+" let g:chatgpt_model = 'o3-mini'
 
 let g:chatgpt_system_marker = '-----🤖-----'
 let g:chatgpt_user_marker = '-----✍------'
@@ -1546,4 +1536,40 @@ command! -bang -nargs=* ChatGPTHistories
 vnoremap [explorer]a :ChatGPT<CR>
 noremap [explorer]a :ChatGPT<CR>
 noremap [explorer]h :ChatGPTHistories!<CR>
-nnoremap <leader>d :call DiffWithinCodeBlock()<CR>
+nnoremap <leader>d :DiffWithinCodeBlock<CR>
+
+" :set autoread | au CursorHold * checktime | call feedkeys("G")
+" :set noautoread | au! CursorHold *
+
+function! Tailf()
+    " カーソルをバッファの末尾に移動
+    normal! G
+    " 自動読み込みを有効にする
+    set autoread
+    augroup TailfAutoRead
+        autocmd!
+        " CursorHold時にチェック
+        autocmd CursorHold * checktime | normal! G
+    augroup END
+endfunction
+
+function! TailfStop()
+    " 自動読み込みを無効にする
+    set noautoread
+    " イベントを削除
+    augroup TailfAutoRead
+        autocmd!
+    augroup END
+endfunction
+
+command! Tailf call Tailf()
+command! TailfStop call TailfStop()
+
+" 末尾の空白を削除する
+function! RemoveTrailingWhitespace()
+    " カーソル位置から行末までの空白を削除
+    :%s/\s\+$//e
+    " カーソルを行末に移動
+    normal! $
+endfunction
+command! RemoveTrailingWhitespace call RemoveTrailingWhitespace()

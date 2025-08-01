@@ -19,6 +19,6 @@ options     head
   %!{ cat-repo ${1:path} }
 
 snippet    curl
-abbr       %!{ curl }
+abbr       %!{ md-fetch }
 options    head
-  %!{ curl ${1:url} | html2markdown }
+  %!{ md-fetch ${1:url} }
