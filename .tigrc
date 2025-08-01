@@ -43,6 +43,7 @@ bind diff v !?git revert %(commit)
 bind main V !?git revert %(prompt) %(commit)
 bind diff V !?git revert %(prompt) %(commit)
 
+# bind branch c !?git switch %(ref)
 bind branch c !?git co %(ref)
 bind branch C !?git co -b %(prompt) %(commit)
 bind branch p !?git push origin %(branch)
@@ -152,7 +153,7 @@ bind generic T !git notes edit %(commit)
 
 ## yank
 # copy branch-name
-bind branch yb @sh -c 'echo -n %(branch) | xclip -selection clipboard'
+bind generic yb @sh -c 'echo -n %(branch) | xclip -selection clipboard'
 # copy commit hash
 bind generic yi @sh -c 'echo -n %(commit) | xclip -selection clipboard'
 # copy commit message
